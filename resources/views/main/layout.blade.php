@@ -22,7 +22,7 @@
 
     </head>
     <!-- <body style="background-color: #F8F2DE;" class="montserrat"> -->
-    <body style="" class="montserrat d-flex flex-column min-vh-100">
+    <body class="montserrat d-flex flex-column min-vh-100">
         <div class="wrapper d-flex flex-column flex-grow-1">
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg rounded" style="background-color: #F8F2DE;" aria-label="Thirteenth navbar example">
