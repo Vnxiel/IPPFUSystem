@@ -102,8 +102,8 @@
                                                 <select id="fundSource" class="form-select">
                                                     <option value="">-- --</option>
                                                     <option value="System Admin">System Admin</option>
-                                                    <option value="Wages">Permanent</option>
-                                                    <option value="Temporary">Temporary</option>
+                                                    <option value="Admin">Admin</option>
+                                                    <option value="Staff">Staff</option>
                                                 </select>
                                             </div>                                
                                         </div>
@@ -139,8 +139,9 @@
                                             <label for="userRole" class="form-label fw-bolder">User Role</label>
                                             <select id="userRole" class="form-select">
                                                 <option value="">-- --</option>
+                                                <option value="Admin">System Admin</option>
                                                 <option value="Admin">Admin</option>
-                                                <option value="Employee">Employee</option>
+                                                <option value="Staff">Staff</option>
                                             </select>
 
                                             <!-- Time Frame Select (Initially Hidden) -->
@@ -154,7 +155,7 @@
                                             <!-- Temporary Position Input (Initially Hidden) -->
                                             <div id="temporaryDateContainer" class="mt-2 fw-bolder" style="display: none;">
                                                 <label for="temporaryDate" class="form-label">End Date for Temporary Position:</label>
-                                                <input type="date" id="temporaryDate" class="form-control">
+                                                <input type="datetime-local" id="temporaryDate" class="form-control">
                                             </div>
                                         </div>                                
                                     </div>
@@ -179,8 +180,8 @@
             
             // Event listener for user role selection
             userRoleSelect.addEventListener('change', function() {
-                // Check if "Admin" or "Employee" is selected
-                if (userRoleSelect.value === 'Admin' || userRoleSelect.value === 'Employee') {
+                // Check if "Admin" or "Staff" is selected
+                if (userRoleSelect.value === 'Admin' || userRoleSelect.value === 'Staff') {
                     // Show Time Frame Select
                     timeFrameLabel.style.display = 'block';
                     timeFrameSelect.style.display = 'block';

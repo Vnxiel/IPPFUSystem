@@ -19,6 +19,10 @@ Route::get('/', function () {
     return view('index');
 });
 
+// Route::get('/', function () {
+//     return view('register');
+// });
+
 Route::get('/main/index', function () {
     $username = request('username');
     $password = request('password');

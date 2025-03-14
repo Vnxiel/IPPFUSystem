@@ -41,13 +41,11 @@
                                     <span class="input-group-text" id="password"><i class="fa-solid fa-key"></i></span>
                                     <input type="text" class="form-control" placeholder="Password" aria-label="Password"id="password">
                                 </div>
-                                <!-- <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberAcc">
-                                    <label class="form-check-label" for="rememberAcc">Remember me.</label>
-                                </div> -->
+                                <div class="mb-3 text-center">
+                                   </p>
+                                </div>
                                 <button type="submit" class="btn btn-primary w-100" >Login <i class="fa-solid fa-right-to-bracket"></i></button>
                             </form>
-    
                         </div>
                     </div>
                 </div>
@@ -56,3 +54,4 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
 </html>
+
