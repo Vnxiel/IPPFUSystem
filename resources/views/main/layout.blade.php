@@ -71,7 +71,7 @@
                             </button>
 
                             <div class="dropdown">
-                                <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" 
+                                <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                                     data-bs-toggle="dropdown" aria-expanded="false" role="button">
                                     <span class="fa fa-user me-1"></span>
                                 </a>
