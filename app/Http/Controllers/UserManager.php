@@ -30,4 +30,8 @@ class UserManager extends Controller
     public function logout(){
         return view('main.logout');  // Logging out the user and terminating the session
     }
+
+    // public register(Request $request){
+
+    // }
 }
