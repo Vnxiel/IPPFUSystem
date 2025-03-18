@@ -1,5 +1,4 @@
 <!doctype html>
-<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -32,14 +31,14 @@
                             <div class="h6">Province of Nueva Vizcaya</div>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('main.index') }}" method="GET">
+                            <form action="" method="GET">
                                 <div class="input-group mb-3">
                                     <span class="input-group-text" id="username"><i class="fa-solid fa-user"></i></span>
                                     <input type="text" class="form-control" placeholder="Username" aria-label="Username"id="username">
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text" id="password"><i class="fa-solid fa-key"></i></span>
-                                    <input type="text" class="form-control" placeholder="Password" aria-label="Password"id="password">
+                                    <input type="password" class="form-control" placeholder="Password" aria-label="Password"id="password">
                                 </div>
                                 <div class="mb-3 text-center">
                                    </p>
@@ -52,6 +51,7 @@
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="{{ asset('js/login.js') }}"></script>
     </body>
 </html>
 
