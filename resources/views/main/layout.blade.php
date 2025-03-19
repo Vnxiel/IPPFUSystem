@@ -59,17 +59,6 @@
                             </li>
                         </ul>
                         <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search Projects" aria-label="Search">
-                                <button class="btn btn-danger btn-outline-light" type="button" id="button-search">
-                                    <span class="fa fa-search"></span>
-                                </button>
-                            </div>
-
-                            <button type="button" class="badge rounded-pill text-bg-warning p-2" data-bs-toggle="modal" data-bs-target="#filterSearch">
-                                <span class="fa fa-filter fw-bolder"></span>
-                            </button>
-
                             <div class="dropdown">
                                 <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                                     data-bs-toggle="dropdown" aria-expanded="false" role="button">

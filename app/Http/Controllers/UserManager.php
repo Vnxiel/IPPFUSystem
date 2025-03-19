@@ -38,7 +38,7 @@ class UserManager extends Controller
 
         if ($validator->fails()) {
             return response()->json(0); // Return 0 for validation errors
-            \Log::error('Error : ' . $validator->errors()->all());
+            // \Log::error('Error : ' . $validator->errors()->all());
         }
 
         try {
@@ -52,7 +52,7 @@ class UserManager extends Controller
 
             return response()->json(1); // Return 1 for success
         } catch (\Exception $e) {
-            \Log::error('Error: '. $e->getMessage());
+            // \Log::error('Error: '. $e->getMessage());
             return response()->json(2); // Return 2 for database errors
         }
     }
@@ -74,12 +74,58 @@ class UserManager extends Controller
                 return 404;
             }else{
                 if($user) {
-                    $user->password = Hash::make($request->password);
+                    if(Hash::check($request->password, $user->password)){
+                        if($user->role === 'System Admin') {
+                            $request->session()->put('loggedInSystemAdmin', [
+                                'id' => $user->id,
+                                'fullname' => $user->fullname,
+                                'position' => $user->position,
+                                'username' => $user->username,
+                                'role' => $user->role,
+                            ]);
+                            $user_id = session()->get('loggedInSystemAdmin')['id'];
+                            $fullname = session()->get('loggedInSystemAdmin')['fullname'];
+                            $role = session()->get('loggedInSystemAdmin')['role'];
+                            $activity = "Logged in into the system.";
+                            (new ActivityLogs)->createAuditTrail($fullname ,$user_id, $activity , $role);
+                            return 1;
+                        } else if ($user->role === "Admin") {
+                            $request->session()->put('loggedInAdmin', [
+                                'id' => $user->id,
+                                'fullname' => $user->fullname,
+                                'position' => $user->position,
+                                'username' => $user->username,
+                                'role' => $user->role,
+                            ]);
+                            $user_id = session()->get('loggedInAdmin')['id'];
+                            $fullname = session()->get('loggedInAdmin')['fullname'];
+                            $role = session()->get('loggedInAdmin')['role'];
+                            $activity = "Logged in into the system.";
+                            (new ActivityLogs)->createAuditTrail($fullname ,$user_id, $activity , $role);
+                            return 2;
+                        } else if ($user->role === "Employee") {
+                            $request->session()->put('loggedInEmployee', [
+                                'id' => $user->id,
+                                'fullname' => $user->fullname,
+                                'position' => $user->position,
+                                'username' => $user->username,
+                                'role' => $user->role,
+                            ]);
+                            $user_id = session()->get('loggedInEmployee')['id'];
+                            $fullname = session()->get('loggedInEmployee')['fullname'];
+                            $role = session()->get('loggedInEmployee')['role'];
+                            $activity = "Logged in into the system.";
+                            (new ActivityLogs)->createAuditTrail($fullname ,$user_id, $activity , $role);
+                            return 3;
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+
 
 
 
