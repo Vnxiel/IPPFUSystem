@@ -32,18 +32,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                   
                                         <tr>
-                                            <td>1</td>
-                                            <td>Juan Dela Cruz</td>
-                                            <td>Provincial Engineering Office</td>
-                                            <td>Construction</td>
-                                            <td>Superadmin</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                             <td>
                                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#roleModal">
                                                     <span class="fa-solid fa-address-card"></span>
                                                 </button>
                                             </td>
                                         </tr>
+                                   
                                     </tbody>
                                 </table>
                             </div>
@@ -61,59 +63,78 @@
                                 <h1 class="modal-title fs-5" id="addNewUserLabel">Add New User</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form>
+                            <form id="registerUserForm">
+                                @csrf
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <div class="row align-items-end">
-                                                    <div class="col-md-8">
-                                                            <label for="fullname" class="form-label fw-bolder">Full Name:</label>
-                                                            <input type="text" class="form-control" id="fullname" placeholder="Full Name">
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="mb-3">
+                                                                <label for="fullname" class="form-label fw-bolder">Full Name:</label>
+                                                                <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Full Name">
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="mb-3">
+                                                                <label for="fullname" class="form-label fw-bolder">Position:</label>
+                                                                <input type="text" class="form-control" name="position" id="position" aria-describedby="position" placeholder="Position">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="mb-3">
+                                                                <label for="fullname" class="form-label fw-bolder">Username:</label>
+                                                                <input type="text" class="form-control" name="username" id="username" aria-describedby="username" placeholder="Username">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="mb-3">
+                                                            <label for="fundSource" class="form-label fw-bolder">User Role</label>
+                                                            <select name="fundSource" id="fundSource" class="form-select">
+                                                                <option value="">-- --</option>
+                                                                <option value="System Admin">System Admin</option>
+                                                                <option value="Admin">Admin</option>
+                                                                <option value="Staff">Staff</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="mb-3">
+                                                                <label for="password" class="form-label fw-bolder">Password:</label>
+                                                                <input type="password" class="form-control" name="password" id="password" aria-describedby="password" placeholder="Password">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                                    <!-- OFMIS Button -->
-                                                    <div class="col-md-4 text-end">
-                                                        <button type="button" class="btn btn-primary" id="ofmisBtn">
-                                                            <i class="fa-solid fa-people-group me-2"></i>
-                                                            <span class="align-middle">OFMIS</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="mb-3">
-                                                            <label for="fullname" class="form-label fw-bolder">Position:</label>
-                                                            <input type="text" class="form-control" id="position" aria-describedby="position" placeholder="Position">
+                                                <!-- OFMIS Button -->
+                                                <div class="col-md-4">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="mb-3">
+                                                                <button type="button" class="btn btn-primary" id="ofmisBtn">
+                                                                    <i class="fa-solid fa-people-group me-2"></i>
+                                                                    <span class="align-middle">OFMIS</span>
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="mb-3">
-                                                            <label for="fullname" class="form-label fw-bolder">Username:</label>
-                                                            <input type="text" class="form-control" id="username" aria-describedby="username" placeholder="Username">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="mb-3">
-                                                        <label for="fundSource" class="form-label fw-bolder">User Role</label>
-                                                        <select id="fundSource" class="form-select">
-                                                            <option value="">-- --</option>
-                                                            <option value="System Admin">System Admin</option>
-                                                            <option value="Admin">Admin</option>
-                                                            <option value="Staff">Staff</option>
-                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save</button>
-                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
                                 </div>
                             </form>
                         </div>

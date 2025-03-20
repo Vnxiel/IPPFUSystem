@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>IPPFU</title>
         <style>
@@ -18,39 +19,40 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="icon" type="image/x-icon" href="{{ asset('img/temp_logo.png') }}">
-        <link href="{{ asset('vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
     </head>
     <body style="background-color: #F8F2DE;" class="montserrat">
         <div class="container-fluid">
             <div class="position-absolute top-50 start-50 translate-middle">
                 <div class="mx-auto d-block">
-                    <div class="card p-3 shadow-lg" style="width: 25rem;">
-                        <div class="text-center">
                             <img src="{{ asset('img/temp_logo.png') }}" style="height:9rem; width:10rem" class="img-fluid rounded">
-                            <div class="h5">Provincial Engineering Office</div>
-                            <div class="h6">Province of Nueva Vizcaya</div>
+                        </div>
+                        <div class="text-center m-3" style="background-color: #006400; padding: 10px">
+                            <div style="font-size: 40px; color: white; font-family: 'Times New Roman', serif; font-weight: bold;">.PGIS.</div>
+                            <div style="color: #FFD700; font-family: Arial, sans-serif;">Provincial Government Information System</div>
+                        </div>
+                        <div class="text-center pt-2">
+                            <div style="color:#006400;"> Login to Access (DMSv2.1.0.0.413)</div>
                         </div>
                         <div class="card-body">
-                            <form action="" method="GET">
+                            <form id="loginForm">
+                                @csrf
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="username"><i class="fa-solid fa-user"></i></span>
-                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username"id="username">
+                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                                    <input type="text" name="username" class="form-control" placeholder="Username" aria-label="Username" id="username" required>
                                 </div>
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="password"><i class="fa-solid fa-key"></i></span>
-                                    <input type="password" class="form-control" placeholder="Password" aria-label="Password"id="password">
+                                    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                                    <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password"id="password" required>
                                 </div>
-                                <div class="mb-3 text-center">
-                                   </p>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100" >Login <i class="fa-solid fa-right-to-bracket"></i></button>
+                                <button type="submit" class="btn w-100" style="background-color:#006400; color:white;">Login</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha384-oP9zYI5gsZQhG6mQ2F6YY1k3/JknFos8yH04R8U29JXL6aJ+aLWf/9DgRWCgXQrJ" crossorigin="anonymous"></script>
         <script src="{{ asset('js/login.js') }}"></script>
     </body>
 </html>

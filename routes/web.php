@@ -1,11 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-
-use App\Http\Controllers\APIController;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\UserManager;
 
 
@@ -13,11 +8,20 @@ Route::get('/', function() {
     return view('index');
 });
 
-
 Route::controller(UserManager::class)->group(function () {
-    Route::get('/','index')->name('index');
-    Route::get('/admin/register', action: 'goToRegister')->name('admin.register');
-    Route::post('/register', 'register')->name('register');
+    Route::get('/main/index', 'index')->name('main.index');
+    // Route::get('/systemAdmin/register', action: 'goToRegister')->name('systemAdmin.register');
+    // Route::post('/register', 'register')->name(name: 'register');
+    // Route::post('/', 'userLogin');
+    Route::post('','')->name('');
+
+
+    Route::get('/main/projects', 'projects')->name('main.projects');
+Route::get('/main/overview', 'overview')->name('main.overview');
+Route::get('/main/reports', 'funds')->name('main.funds');
+Route::get('/main/userManagement', 'userManagement')->name('main.userManagement');
+Route::get('/main/trash', 'trash')->name('main.trash');
+Route::get('/main/activityLogs', 'activityLogs')->name('main.activityLogs');
 });
 
 
