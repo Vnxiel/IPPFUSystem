@@ -19,43 +19,24 @@
                         </div>
                         <div class="row">
                             <div class="table-container table-responsive">
-                                <table id="projects" class="table table-striped table-hover table-bordered">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th style="width: 25%;">Project Title</th>
-                                            <th style="width: 15%;">Location</th>
-                                            <th style="width: 15%;">Status</th>
-                                            <th style="width: 10%;">Contract Amount</th>
-                                            <th style="width: 15%;">Contractor</th>
-                                            <th style="width: 12%;">Duration</th>
-                                            <th style="width: 8%;">Action</th>
-                                        </tr>   
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Road Widening Project</td>
-                                            <td>Quezon City</td>
-                                            <td>Ongoing <br>as of March 10, 2025 </td>
-                                            <td>₱2, 109,765.55</td>
-                                            <td>XYZ Construction Inc.</td>
-                                            <td>12 calendar days</td>
-                                            <td>
-                                                <a href={{ route('main.overview') }} class="btn btn-primary btn-sm">Overview</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Rehabilation/Improvement of Palabotan-Banila-Caino-Anayo-Canarem</td>
-                                            <td>Aritao, Nueva Vizcaya</td>
-                                            <td>Ongoing <br>as of March 10, 2025 </td>
-                                            <td>₱50,000,000</td>
-                                            <td>XYZ Construction Inc.</td>
-                                            <td>82 calendar Days</td>
-                                            <td>
-                                                <a href={{ route('main.overview') }} class="btn btn-primary btn-sm">Overview</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <table id="projects" class="table table-striped table-hover table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 15%;">Project Title</th>
+                                        <th style="width: 10%;">Location</th>
+                                        <th style="width: 10%;">Status</th>
+                                        <th style="width: 10%;">Contract Amount</th>
+                                        <th style="width: 10%;">Contractor</th>
+                                        <th style="width: 10%;">Duration</th>
+                                        <th style="width: 10%;">Action</th>
+                                    </tr>   
+                                </thead>
+                                <tbody id="projectTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center">Loading projects...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             </div>
                         </div>
                     </div>
@@ -63,49 +44,50 @@
 
 
 
-        <!-- Update Project Modal -->
-        <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
+             <!-- Add Project Modal -->
+             <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
             <div class="modal-dialog  modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="appNewProjectLabel">Update Project</h1>
+                        <h1 class="modal-title fs-5" id="appNewProjectLabel">Add Project</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                    <form action="{{ route('projects.addProject') }}" id="addProjectForm" method="POST">
+                             @csrf
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-1">
-                                        <label for="location" class="form-label">Project Title</label>
-                                        <input type="text" class="form-control" id="projectTitle" value="Enter project title." disabled>
-                                    </div>
+                                        <label for="projectTitle" class="form-label">Project Title</label>
+                                        <input type="text" class="form-control" id="projectTitle" name="projectTitle" required placeholder="Enter project title">
+                                   </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="location" class="form-label">Location</label>
-                                        <input type="text" class="form-control" id="location" value="Enter Location." disabled>
+                                        <label for="projectLoc" class="form-label">Location</label>
+                                        <input type="text" class="form-control" id="projectLoc" name="projectLoc" required placeholder="Enter location">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="projectID" class="form-label">Project ID</label>
-                                        <input type="text" class="form-control" id="projectID" value="Enter project ID." disabled>
-                                    </div>
+                                        <input type="text" class="form-control" id="projectID" name="projectID" required placeholder="Enter project ID">
+                                    </div>  
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="contractor" class="form-label">Contractor</label>
-                                        <input type="text" class="form-control" id="contractor" value="Enter contractor.">
-                                    </div>
+                                        <label for="projectContractor" class="form-label">Contractor</label>
+                                        <input type="text" class="form-control" id="projectContractor" name="projectContractor n" placeholder="Enter projectContractor">
+                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="fundSource" class="form-label fw-bolder">Select Fund Source</label>
-                                        <select id="fundSource" class="form-select" alt="source">
+                                        <label for="sourceOfFunds" class="form-label fw-bolder">Select Fund Source</label>
+                                        <select id="sourceOfFunds" name="sourceOfFunds" class="form-select" onchange="toggleOtherFund()">
                                             <option value="">-- --</option>
                                             <option value="Wages">Wages</option>
                                             <option value="% Mobilization">% Mobilization</option>
@@ -118,33 +100,38 @@
                                         <!-- Hidden text input for 'Others' -->
                                         <div id="otherFundContainer" class="mt-2 fw-bolder" style="display: none;">
                                             <label for="otherFund" class="form-label">Please specify:</label>
-                                            <input type="text" id="otherFund" class="form-control" placeholder="Enter fund source">
-                                        </div>
+                                            <input type="text" id="otherFund" name="otherFund" class="form-control" placeholder="Enter fund source">
+                                       </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="contractor" class="form-label">Mode of Implementation</label>
-                                        <input type="text" class="form-control" id="" value="Enter mode of implementation.">
-                                    </div>
+                                        <label for="modeOfImplementation" class="form-label">Mode of Implementation</label>
+                                        <input type="text" class="form-control" id="modeOfImplementation" name="modeOfImplementation" placeholder="Enter mode of implementation.">
+                            </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="editStatus" class="form-label fw-bolder">Status</label>
-                                        <select id="editStatus" class="form-select">
+                                        <label for="projectStatus" class="form-label fw-bolder">Status</label>
+                                        <select id="projectStatus" name="projectStatus" class="form-select" onchange="toggleOngoingStatus()">
                                             <option value="---">---</option>
-                                            <option id="ongoingStatusContainer" value="Ongoing">Ongoing</option>
+                                            <option value="Ongoing">Ongoing</option>
                                             <option value="Completed">Completed</option>
                                             <option value="Cancelled">Discontinued</option>
                                         </select>
 
                                         <!-- Hidden text input for 'Ongoing' -->
                                         <div id="ongoingStatusContainer" class="mt-2 fw-bolder" style="display: none;">
-                                            <label for="ongoingStatus" class="form-label">Please specify:</label>
-                                            <input type="text" id="ongoingStatus" class="form-control" placeholder="Enter status percentage.">
+                                            <label for="ongoingStatus" class="form-label">Please specify percentage completion:</label>
+                                            
+                                            <div class="d-flex gap-2"> 
+                                                <input type="text" id="ongoingStatus" name="ongoingStatus" class="form-control w-50" placeholder="Enter percentage">
+                                                <input type="date" id="ongoingDate" class="form-control w-50">
+                                            </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -152,8 +139,8 @@
                                 <div class="col-md-12">
                                     <div class="mb-1">
                                         <label for="projectDescription" class="form-label">Project Description</label>
-                                        <textarea class="form-control" id="projectDescription" rows="3" style="width:100%" placeholder="Enter project description."></textarea>
-                                    </div>
+                                        <textarea class="form-control" id="projectDescription" name="projectDescription" rows="3" placeholder="Enter project description"></textarea>
+                                  </div>
                                 </div>
                             </div>
                             <div class="row text-center">
@@ -164,46 +151,46 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="contractDays" class="form-label">Contract Days</label>
-                                        <input type="text" class="form-control" id="contractDays" value="73 Calendar Days">
+                                        <label for="projectContractDays" class="form-label">Contract Days</label>
+                                        <input type="text" class="form-control" id="projectContractDays" name="projectContractDays">
                                     </div>   
                                     <div class="mb-1">
                                         <label for="noticeOfAward" class="form-label">Notice of Award</label>
-                                        <input type="date" class="form-control" id="noticeOfAward" value="">
+                                        <input type="date" class="form-control" id="noticeOfAward" name="noticeOfAward">
                                     </div>  
                                     <div class="mb-1">
                                         <label for="noticeToProceed" class="form-label">Notice to Proceed</label>
-                                        <input type="date" class="form-control" id="noticeToProceed" value="">
+                                        <input type="date" class="form-control" id="noticeToProceed" name="noticeToProceed">
                                     </div>  
                                     <div class="mb-1">
                                         <label for="officialStart" class="form-label">Official Start</label>
-                                        <input type="date" class="form-control" id="officialStart" value="">
+                                        <input type="date" class="form-control" id="officialStart" name="officialStart">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="targetCompletion" class="form-label">Target Completion</label>
-                                        <input type="date" class="form-control" id="targetCompletion" value="">
+                                        <input type="date" class="form-control" id="targetCompletion" name="targetCompletion">
                                     </div> 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="SuspeOrder" class="form-label">Suspension Order No.1</label>
-                                        <input type="date" class="form-control" id="SuspeOrder" value="">
+                                        <label for="suspensionOrderNo" class="form-label">Suspension Order No.1</label>
+                                        <input type="date" class="form-control" id="suspensionOrderNo" name="suspensionOrderNo" value="">
                                     </div> 
                                     <div class="mb-1">
-                                        <label for="resumeOrder" class="form-label">Resume Order No.1</label>
-                                        <input type="date" class="form-control" id="resumeOrder" value="">
+                                        <label for="resumeOrderNo" class="form-label">Resume Order No.1</label>
+                                        <input type="date" class="form-control" id="resumeOrderNo" name="resumeOrderNo" value="">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="timeExtension" class="form-label">Time Extension</label>
-                                        <input type="text" class="form-control" id="timeExtension" value="">
+                                        <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="revisedTargetCompletion" class="form-label">Revised Target Completion</label>
-                                        <input type="text" class="form-control" id="" value="">
+                                        <input type="text" class="form-control" id="revisedTargetCompletion" name="revisedTargetCompletion" value="">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="CompletionDate" class="form-label">Completion Date</label>
-                                        <input type="text" class="form-control" id="" value="">
+                                        <input type="text" class="form-control" id="CompletionDate" name="CompletionDate" value="">
                                     </div> 
                                 </div>
                             </div>
@@ -212,43 +199,42 @@
                             </div>
                                 <!-- Financial Details -->
                             <div class="row">
-                                <div class="col-md-6 border-bottom">
+                            <div class="col-md-6 border-bottom">
                                     <div class="mb-1">
                                         <label for="abc" class="form-label">ABC</label>
-                                        <input type="text" class="form-control" id="abc" value="">
+                                        <input type="text" class="form-control currency-input" id="abc" value="">
                                     </div>
                                     <div class="mb-1">
                                         <label for="contractAmount" class="form-label">Contract Amount</label>
-                                        <input type="text" class="form-control" id="contractAmount" value="">
+                                        <input type="text" class="form-control currency-input" id="contractAmount" value="">
                                     </div>
                                     <div class="mb-1">
                                         <label for="engineering" class="form-label">Engineering</label>
-                                        <input type="text" class="form-control" id="engineering" value="">
+                                        <input type="text" class="form-control currency-input" id="engineering" value="">
                                     </div>
                                     <div class="mb-1">
                                         <label for="mqc" class="form-label">MQC</label>
-                                        <input type="text" class="form-control" id="mqc" value="">
+                                        <input type="text" class="form-control currency-input" id="mqc" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="contingency" class="form-label">Contingency</label>
-                                        <input type="text" class="form-control" id="contingency" value="">
+                                        <input type="text" class="form-control currency-input" id="contingency" value="">
                                     </div>
                                     <div class="mb-1">
                                         <label for="bid" class="form-label">Bid Difference</label>
-                                        <input type="text" class="form-control" id="bid" value="">
+                                        <input type="text" class="form-control currency-input" id="bid" value="">
                                     </div>
                                     <div class="mb-1">
                                         <label for="appropriate" class="form-label">Appropriation</label>
-                                        <input type="text" class="form-control" id="appropriate" value="">
+                                        <input type="text" class="form-control currency-input" id="appropriate" value="">
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Update</button>
+                            <button type="submit" class="btn btn-primary">Add Project</button>
                         </div>
                     </div>
                 </form>
@@ -258,24 +244,213 @@
 
    
 
-        <!-- DataTable Initialization -->
-        <script>    
-            $(document).ready(function() {
-                $('#fundSource').on('change', function() {
-                    if ($(this).val() === 'Others') {
-                        $('#otherFundContainer').slideDown(); // Show input with animation
-                    } else {
-                        $('#otherFundContainer').slideUp(); // Hide input with animation
+      <!-- DataTable & Fetching Script -->
+<script>    
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("{{ route('projects.showDetails') }}")
+        .then(response => response.json())
+        .then(data => {
+            console.log("Projects Data:", data); // Debugging
+            if (data.status === "success") {
+                loadProjects(data.projects);
+            } else {
+                console.error("Error fetching projects:", data.message);
+            }
+        })
+        .catch(error => console.error("Error fetching projects:", error));
+
+    loadProjects(); // Load projects when the page loads
+
+    // Handle Add Project Form Submission
+    document.getElementById("addProjectForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent normal form submission
+
+        let formData = new FormData(this);
+
+        fetch("{{ route('projects.addProject') }}", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                "Accept": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                Swal.fire({
+                    title: "Success!",
+                    text: data.message,
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    $("#addNewProjectModal").modal("hide"); // Hide modal
+                    document.getElementById("addProjectForm").reset(); // Reset form
+                    loadProjects(); // Reload projects without refreshing page
+                });
+            } else {
+                let errorMsg = data.message;
+                
+                if (data.errors) {
+                    errorMsg += "<ul>";
+                    for (const [field, errors] of Object.entries(data.errors)) {
+                        errorMsg += `<li>${errors.join(", ")}</li>`;
                     }
+                    errorMsg += "</ul>";
+                }
+
+                Swal.fire({
+                    title: "Error!",
+                    html: errorMsg,
+                    icon: "error",
+                    confirmButtonText: "OK"
                 });
-            });        
-            $(document).ready(function() {
-                $('#projectdata').DataTable({
-                    responsive: true,
-                    scrollX: true, // Optional: enables horizontal scrolling if needed
-                    paging: true,  // Optional: enables pagination
-                    searching: true, // Optional: enables searching
-                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: "Error!",
+                text: "An unexpected error occurred. Please try again.",
+                icon: "error",
+                confirmButtonText: "OK"
             });
-        </script>
+            console.error("Error:", error);
+        });
+    });
+
+
+// Fetch and Load Projects into DataTable
+document.addEventListener("DOMContentLoaded", function () {
+    loadProjects(); //  Load projects on page load
+});
+
+//  Fetch and Load Projects into DataTable
+function loadProjects() {
+    fetch("{{ route('projects.showDetails') }}", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Fetched Projects Data:", data); //  Debugging
+
+        if (data.status === "success") {
+            let projects = data.projects.map(project => [
+                project.projectTitle || "N/A",
+                project.projectLoc || "N/A",
+                project.projectStatus || "N/A",
+                project.contractAmount ? `₱${parseFloat(project.contractAmount).toLocaleString()}` : "N/A",
+                project.projectContractor || "N/A",
+                project.projectContractDays ? `${project.projectContractDays} days` : "N/A",
+                `<a href="{{ route('main.overview') }}?id=${project.id}" class="btn btn-primary btn-sm">Overview</a>`
+            ]);
+
+            //  Fix: Destroy DataTable before reloading
+            if ($.fn.DataTable.isDataTable("#projects")) {
+                $('#projects').DataTable().clear().destroy();
+                $("#projects tbody").empty(); //  Clear table content
+            }
+
+            //  Fix: Ensure Correct Column Mapping
+            $('#projects').DataTable({
+                data: projects, //  Sending only necessary data
+                columns: [
+                    { title: "Project Title" },
+                    { title: "Location" },
+                    { title: "Status" },
+                    { title: "Contract Amount" },
+                    { title: "Contractor" },
+                    { title: "Duration" },
+                    { title: "Action" }
+                ],
+                responsive: true,
+                scrollX: true,
+                paging: true,
+                searching: true,
+                autoWidth: false
+            });
+
+            console.log("✅ DataTable Reloaded Successfully!");
+        } else {
+            console.error("Error Fetching Projects:", data.message);
+        }
+    })
+    .catch(error => {
+        console.error("Fetch Error:", error);
+    });
+}
+
+
+function initializeDataTable() {
+        if ($.fn.DataTable.isDataTable("#projects")) {
+            $('#projects').DataTable().destroy(); // Destroy previous instance
+        }
+
+        dataTable = $('#projects').DataTable({
+            responsive: true,
+            scrollX: true,
+            paging: true,
+            searching: true
+        });
+
+        setTimeout(() => {
+            dataTable.columns.adjust().draw();
+        }, 500);
+    }
+
+
+    // Handle "Other Fund" Selection Toggle
+    function toggleOtherFund() {
+        var sourceOfFunds = document.getElementById("sourceOfFunds").value;
+        var otherFundContainer = document.getElementById("otherFundContainer");
+
+        if (sourceOfFunds === "Others") {
+            otherFundContainer.style.display = "block";
+        } else {
+            otherFundContainer.style.display = "none";
+        }
+    }
+
+    // Handle "Ongoing Status" Selection Toggle
+    function toggleOngoingStatus() {
+        var projectStatus = document.getElementById("projectStatus").value;
+        var ongoingStatusContainer = document.getElementById("ongoingStatusContainer");
+
+        if (projectStatus === "Ongoing") {
+            ongoingStatusContainer.style.display = "block";
+        } else {
+            ongoingStatusContainer.style.display = "none";
+        }
+    }
+
+    // Add Event Listener for Project Status Dropdown
+    document.getElementById("projectStatus").addEventListener("change", function () {
+        toggleOngoingStatus();
+    });
+
+    // Initialize DataTable
+    $(document).ready(function() {
+    $("#projects").DataTable({
+        responsive: true,
+        scrollX: true,
+        paging: true,
+        searching: true
+    });
+
+    loadProjects(); // ✅ Load projects after DataTable is initialized
+});
+
+
+        // Handle "Other Fund" Dropdown Change
+        $('#sourceOfFunds').on('change', function() {
+            if ($(this).val() === 'Others') {
+                $('#otherFundContainer').slideDown(); // Show input with animation
+            } else {
+                $('#otherFundContainer').slideUp(); // Hide input with animation
+            }
+        });
+    });
+
+</script>
+
 @endsection

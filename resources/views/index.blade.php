@@ -1,9 +1,10 @@
 <!doctype html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>IPPFU</title>
+        <title>Title</title>
         <style>
             .montserrat{
             font-family: "Montserrat", sans-serif;
@@ -31,27 +32,28 @@
                             <div class="h6">Province of Nueva Vizcaya</div>
                         </div>
                         <div class="card-body">
-                            <form action="" method="GET">
+                        <form action="{{ route('login.authenticate') }}" method="POST">
+                                @csrf
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="username"><i class="fa-solid fa-user"></i></span>
-                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username"id="username">
+                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                                    <input type="text" name="username" class="form-control" placeholder="Username" required>
                                 </div>
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="password"><i class="fa-solid fa-key"></i></span>
-                                    <input type="password" class="form-control" placeholder="Password" aria-label="Password"id="password">
+                                    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                                    <input type="password" name="password" class="form-control" placeholder="Password" required>
                                 </div>
-                                <div class="mb-3 text-center">
-                                   </p>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100" >Login <i class="fa-solid fa-right-to-bracket"></i></button>
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
                             </form>
+                            @if(session('error'))
+                                <div class="alert alert-danger mt-2">{{ session('error') }}</div>
+                            @endif 
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <script src="{{ asset('js/login.js') }}"></script>
     </body>
 </html>
 

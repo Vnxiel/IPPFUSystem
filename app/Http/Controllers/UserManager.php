@@ -11,14 +11,42 @@ use Illuminate\Support\Facades\Session;
 
 class UserManager extends Controller
 {
+    public function dashboard(){
+        return view('main.index');  // Returns the 'dashboard.blade.php' view
+    }
+
+    public function projects(){
+        return view('main.projects');
+    }
+
+    public function overview(){
+        return view('main.overview');
+    }
+
+    public function userManagement(){
+        return view('main.userManagement');
+    }
+    
+    public function trash(){
+        return view('main.trash');
+    }
+
+    public function activityLogs(){
+        return view('main.activityLogs');
+    }
+    
+    public function logout(){
+        Session::flush();
+        return redirect()->route('login');
+    }
+
     public function index(){
-        $userExists = User::count() > 0;
-        if (!$userExists) {
+        if (User::count() == 0) {
             return redirect()->route('admin.register');
         }
-    
         return view('index');  
     }
+
     public function goToRegister(){
         $userExists = User::count() > 0;
         if ($userExists) {
