@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Session;
+use App\Models\User;
+use App\Models\ActivityLogs;
+
 
 class UserManager extends Controller
 {
     public function index(){
         $userExists = User::count() > 0;
         if (!$userExists) {
-            return redirect()->route('admin.register');
+            return redirect()->route('systemAdmin.register');
         }
     
         return view('index');  
@@ -24,7 +24,7 @@ class UserManager extends Controller
         if ($userExists) {
             return redirect()->route('index');
         }
-        return view('admin.register');  
+        return view('systemAdmin.register');  
     }
 
     public function register(Request $request)
@@ -38,7 +38,11 @@ class UserManager extends Controller
 
         if ($validator->fails()) {
             return response()->json(0); // Return 0 for validation errors
+<<<<<<< Updated upstream
             // \Log::error('Error : ' . $validator->errors()->all());
+=======
+            // Log::error('Error : ' . $validator->errors()->all());
+>>>>>>> Stashed changes
         }
 
         try {
@@ -52,12 +56,16 @@ class UserManager extends Controller
 
             return response()->json(1); // Return 1 for success
         } catch (\Exception $e) {
+<<<<<<< Updated upstream
             // \Log::error('Error: '. $e->getMessage());
+=======
+            // Log::error('Error: '. $e->getMessage());
+>>>>>>> Stashed changes
             return response()->json(2); // Return 2 for database errors
         }
     }
 
-    public function login(Request $request){
+    public function userLogin(Request $request){
         $validator = Validator::make($request->all(), 
         [
             'username' => 'required|string|max:20',
@@ -74,6 +82,7 @@ class UserManager extends Controller
                 return 404;
             }else{
                 if($user) {
+<<<<<<< Updated upstream
                     if(Hash::check($request->password, $user->password)){
                         if($user->role === 'System Admin') {
                             $request->session()->put('loggedInSystemAdmin', [
@@ -119,9 +128,94 @@ class UserManager extends Controller
                             return 3;
                         }
                     }
+=======
+                    $user->password = Hash::make($request->password);
+                    if(Hash::check($request->password, $user->password)){
+                        if($user->role === 'System Admin') {
+                            // $request->session()->put('loggedInSystemAdmin', [
+                            //     'id' => $user->id,
+                            //     'performedBy' => $user->performedBy,
+                            //     'role'=> $user->role,
+                            //     'action' => $user->action,
+                            // ]);
+                            // $id = session()->get('loggedInSystemAdmin')['id'];
+                            // $performedBy = session()->get('loggedInSystemAdmin')['fullname'];
+                            // $role = session()->get('loggedInSystemAdmin')['role'];
+                            // $action = "Logged in into the system.";
+                            // (new ActivityLogs)->userAction($id, $performedBy, $role , $action);
+                            return 1;
+                        // } else if ($user->role === "Admin") {
+                        //     $request->session()->put('loggedInAdmin', [
+                        //         'id' => $user->id,
+                        //         'fullname' => $user->fullname,
+                        //         'position' => $user->position,
+                        //         'role'=> $user->role,
+                        //     ]);
+                        //     $id = session()->get('loggedInAdmin')['id'];
+                        //     $performedBy = session()->get('loggedInAdmin')['fullname'];
+                        //     $role = session()->get('loggedInAdmin')['role'];
+                        //     $action = "Logged in into the system.";
+                        //     (new ActivityLogs)->createActivityLogs($id, $performedBy, $role , $action);
+                        //     return 2;
+                        // } else if ($user->role === "Staff") {
+                        //     $request->session()->put('loggedInStaff', [
+                        //         'id' => $user->id,
+                        //         'fullname' => $user->fullname,
+                        //         'position' => $user->position,
+                        //         'role'=> $user->role,
+                        //     ]);
+                        //     $id = session()->get('loggedInStaff')['id'];
+                        //     $performedBy = session()->get('loggedInStaff')['fullname'];
+                        //     $role = session()->get('loggedInStaff')['role'];
+                        //     $action = "Logged in into the system.";
+                        //     (new ActivityLogs)->createActivityLogs($id, $performedBy, $role , $action);
+                        //     return 3;
+                        }
+                    }else{
+                        return 401;
+                    }
+                }else{
+                    return 404;
+>>>>>>> Stashed changes
                 }
             }
         }
+    }
+
+
+    public function validateUser(Request $request){
+
+    }
+
+    public function pointToSystemAccount(Request $request){
+
+    }
+
+    public function getUserAction(Request $request){
+
+    }
+
+
+    public function projects(){
+        return view('main.projects');  // Returns the 'projects.blade.php' view
+    }
+
+    public function overview(){
+        return view('main.overview');  // Returns the 'overview.blade.php' view
+    }
+
+    public function userManagement(){
+        return view('main.userManagement');  // Returns the 'userManagement.blade.php' view
+    }
+    public function trash(){
+        return view('main.trash');  // Returns the 'trash.blade.php' view
+    }
+
+    public function activityLogs(){
+        return view('main.activityLogs');  // Returns the 'activityLogs.blade.php' view
+    }
+    public function logout(){
+        return view('main.logout');  // Logging out the user and terminating the session
     }
 }
 
@@ -129,26 +223,12 @@ class UserManager extends Controller
 
 
 
+<<<<<<< Updated upstream
 
 
     // public function projects(){
     //     return view('main.projects');  // Returns the 'projects.blade.php' view
     // }
+=======
+>>>>>>> Stashed changes
 
-    // public function overview(){
-    //     return view('main.overview');  // Returns the 'overview.blade.php' view
-    // }
-
-    // public function userManagement(){
-    //     return view('main.userManagement');  // Returns the 'userManagement.blade.php' view
-    // }
-    // public function trash(){
-    //     return view('main.trash');  // Returns the 'trash.blade.php' view
-    // }
-
-    // public function activityLogs(){
-    //     return view('main.activityLogs');  // Returns the 'activityLogs.blade.php' view
-    // }
-    // public function logout(){
-    //     return view('main.logout');  // Logging out the user and terminating the session
-    // }
