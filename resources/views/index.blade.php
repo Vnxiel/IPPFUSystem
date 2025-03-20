@@ -25,6 +25,11 @@
         <div class="container-fluid">
             <div class="position-absolute top-50 start-50 translate-middle">
                 <div class="mx-auto d-block">
+                    <div class="card shadow-lg" style="width: 25rem;">
+                        <div class="card-header bg-light p-2" style="font-size: 10px;">
+                            &copy; 2022 - Provincial Information Technology Division
+                        </div>
+                        <div class="text-center p-3">
                             <img src="{{ asset('img/temp_logo.png') }}" style="height:9rem; width:10rem" class="img-fluid rounded">
                         </div>
                         <div class="text-center m-3" style="background-color: #006400; padding: 10px">
