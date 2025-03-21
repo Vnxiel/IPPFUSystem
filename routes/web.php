@@ -10,18 +10,18 @@ Route::get('/', function() {
 
 Route::controller(UserManager::class)->group(function () {
     Route::get('/main/index', 'index')->name('main.index');
-    // Route::get('/systemAdmin/register', action: 'goToRegister')->name('systemAdmin.register');
-    // Route::post('/register', 'register')->name(name: 'register');
-    // Route::post('/', 'userLogin');
+    Route::get('/systemAdmin/register', action: 'goToRegister')->name('systemAdmin.register');
+    Route::post('/register', 'register')->name(name: 'register');
+    Route::post('/', 'userLogin');
     Route::post('','')->name('');
 
 
     Route::get('/main/projects', 'projects')->name('main.projects');
-Route::get('/main/overview', 'overview')->name('main.overview');
-Route::get('/main/reports', 'funds')->name('main.funds');
-Route::get('/main/userManagement', 'userManagement')->name('main.userManagement');
-Route::get('/main/trash', 'trash')->name('main.trash');
-Route::get('/main/activityLogs', 'activityLogs')->name('main.activityLogs');
+    Route::get('/main/overview', 'overview')->name('main.overview');
+    Route::get('/main/reports', 'funds')->name('main.funds');
+    Route::get('/main/userManagement', 'userManagement')->name('main.userManagement');
+    Route::get('/main/trash', 'trash')->name('main.trash');
+    Route::get('/main/activityLogs', 'activityLogs')->name('main.activityLogs');
 });
 
 
