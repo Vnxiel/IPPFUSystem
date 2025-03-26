@@ -22,16 +22,16 @@
                             <table id="projects" class="table table-striped table-hover table-bordered">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width: 15%;">Project Title</th>
-                                        <th style="width: 10%;">Location</th>
-                                        <th style="width: 10%;">Status</th>
-                                        <th style="width: 10%;">Contract Amount</th>
-                                        <th style="width: 10%;">Contractor</th>
-                                        <th style="width: 10%;">Duration</th>
-                                        <th style="width: 10%;">Action</th>
-                                    </tr>   
+                                        <th>Project Title</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Contract Amount</th>
+                                        <th>Contractor</th>
+                                        <th>Duration</th>
+                                        <th>Action</th>
+                                    </tr>
                                 </thead>
-                                <tbody id="projectTableBody">
+                                <tbody>
                                     <tr>
                                         <td colspan="7" class="text-center">Loading projects...</td>
                                     </tr>
@@ -81,7 +81,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="projectContractor" class="form-label">Contractor</label>
-                                        <input type="text" class="form-control" id="projectContractor" name="projectContractor n" placeholder="Enter projectContractor">
+                                        <input type="text" class="form-control" id="projectContractor" name="projectContractor" placeholder="Enter projectContractor">
                                      </div>
                                 </div>
                                 <div class="col-md-6">
@@ -189,8 +189,8 @@
                                         <input type="text" class="form-control" id="revisedTargetCompletion" name="revisedTargetCompletion" value="">
                                     </div> 
                                     <div class="mb-1">
-                                        <label for="CompletionDate" class="form-label">Completion Date</label>
-                                        <input type="text" class="form-control" id="CompletionDate" name="CompletionDate" value="">
+                                        <label for="completionDate" class="form-label">Completion Date</label>
+                                        <input type="text" class="form-control" id="completionDate" name="completionDate" value="">
                                     </div> 
                                 </div>
                             </div>
@@ -202,33 +202,33 @@
                             <div class="col-md-6 border-bottom">
                                     <div class="mb-1">
                                         <label for="abc" class="form-label">ABC</label>
-                                        <input type="text" class="form-control currency-input" id="abc" value="">
+                                        <input type="text" class="form-control currency-input" id="abc" name="abc">
                                     </div>
                                     <div class="mb-1">
                                         <label for="contractAmount" class="form-label">Contract Amount</label>
-                                        <input type="text" class="form-control currency-input" id="contractAmount" value="">
+                                        <input type="text" class="form-control currency-input" id="contractAmount" id="contractAmount">
                                     </div>
                                     <div class="mb-1">
                                         <label for="engineering" class="form-label">Engineering</label>
-                                        <input type="text" class="form-control currency-input" id="engineering" value="">
+                                        <input type="text" class="form-control currency-input" id="engineering" name="engineering">
                                     </div>
                                     <div class="mb-1">
                                         <label for="mqc" class="form-label">MQC</label>
-                                        <input type="text" class="form-control currency-input" id="mqc" value="">
+                                        <input type="text" class="form-control currency-input" id="mqc" name="mqc">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="contingency" class="form-label">Contingency</label>
-                                        <input type="text" class="form-control currency-input" id="contingency" value="">
+                                        <input type="text" class="form-control currency-input" id="contingency" name="contingency">
                                     </div>
                                     <div class="mb-1">
                                         <label for="bid" class="form-label">Bid Difference</label>
-                                        <input type="text" class="form-control currency-input" id="bid" value="">
+                                        <input type="text" class="form-control currency-input" id="bid" name="bid">
                                     </div>
                                     <div class="mb-1">
-                                        <label for="appropriate" class="form-label">Appropriation</label>
-                                        <input type="text" class="form-control currency-input" id="appropriate" value="">
+                                        <label for="appropriation" class="form-label">Appropriation</label>
+                                        <input type="text" class="form-control currency-input" id="appropriation" name="appropriation">
                                     </div>
                                 </div>
                             </div>
@@ -245,115 +245,184 @@
    
 
       <!-- DataTable & Fetching Script -->
-<script>    
-document.addEventListener("DOMContentLoaded", function () {
+        <script>    
+        document.addEventListener("DOMContentLoaded", function () {
+    // Select all input fields with the "currency-input" class
+    let currencyInputs = document.querySelectorAll(".currency-input");
+
+    currencyInputs.forEach(input => {
+        input.addEventListener("input", function () {
+            formatCurrencyInput(this);
+        });
+
+        input.addEventListener("blur", function () {
+            formatCurrencyOnBlur(this);
+        });
+
+        // ✅ Format existing values on page load
+        if (input.value.trim() !== "") {
+            formatCurrencyOnBlur(input);
+        }
+    });
+
+    function formatCurrencyInput(input) {
+        // Remove non-numeric characters except decimal
+        let value = input.value.replace(/[^0-9.]/g, "");
+
+        // Ensure there's only one decimal point
+        let parts = value.split(".");
+        if (parts.length > 2) {
+            value = parts[0] + "." + parts.slice(1).join("");
+        }
+
+        input.value = value;
+    }
+
+    function formatCurrencyOnBlur(input) {
+        let value = input.value.trim();
+
+        if (value === "" || isNaN(value)) {
+            input.value = "";
+            return;
+        }
+
+        let formattedValue = parseFloat(value).toLocaleString("en-PH", {
+            style: "currency",
+            currency: "PHP",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        input.value = formattedValue;
+    }
+});
+
+            document.addEventListener("DOMContentLoaded", function () {
+                fetch("{{ route('projects.showDetails') }}")
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Projects Data:", data); // Debugging
+                        if (data.status === "success") {
+                            loadProjects(data.projects);
+                        } else {
+                            console.error("Error fetching projects:", data.message);
+                        }
+                    })
+                    .catch(error => console.error("Error fetching projects:", error));
+
+         loadProjects(); // Load projects when the page loads
+
+            // Handle Add Project Form Submission
+            document.getElementById("addProjectForm").addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent normal form submission
+                var statusValue = document.getElementById("projectStatus").value;
+                                var ongoingInput = document.getElementById("ongoingStatus");
+
+                                if (statusValue === "Ongoing") {
+                                    var percentage = ongoingInput.value.trim();
+                                    var date = document.getElementById("ongoingDate").value;
+
+                                    if (percentage && date) {
+                                        // Prevent duplicate concatenation
+                                        if (!ongoingInput.value.includes(" - ")) {
+                                            ongoingInput.value = percentage + " - " + date;
+                                        }
+                                    }
+                                }
+                            let formData = new FormData(this);
+
+                            fetch("{{ route('projects.addProject') }}", {
+                                method: "POST",
+                                body: formData,
+                                headers: {
+                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                                    "Accept": "application/json"
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === "success") {
+                                    Swal.fire({
+                                        title: "Success!",
+                                        text: data.message,
+                                        icon: "success",
+                                        confirmButtonText: "OK"
+                                    }).then(() => {
+                                        $("#addNewProjectModal").modal("hide"); // Hide modal
+                                        document.getElementById("addProjectForm").reset(); // Reset form
+                                        loadProjects(); // Reload projects without refreshing page
+                                    });
+                                } else {
+                                    let errorMsg = data.message;
+                                    
+                                    if (data.errors) {
+                                        errorMsg += "<ul>";
+                                        for (const [field, errors] of Object.entries(data.errors)) {
+                                            errorMsg += `<li>${errors.join(", ")}</li>`;
+                                        }
+                                        errorMsg += "</ul>";
+                                    }
+
+                                    Swal.fire({
+                                        title: "Error!",
+                                        html: errorMsg,
+                                        icon: "error",
+                                        confirmButtonText: "OK"
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: "An unexpected error occurred. Please try again.",
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
+                                console.error("Error:", error);
+                            });
+                        });
+
+                        document.addEventListener("DOMContentLoaded", function () {
+                            loadProjects(); // Load projects on page load
+                        });
+
+function loadProjects() {
     fetch("{{ route('projects.showDetails') }}")
         .then(response => response.json())
         .then(data => {
-            console.log("Projects Data:", data); // Debugging
-            if (data.status === "success") {
-                loadProjects(data.projects);
-            } else {
-                console.error("Error fetching projects:", data.message);
+            console.log("API Response:", data);
+
+            if (!data || typeof data !== "object" || !Array.isArray(data.projects)) {
+                console.error("Invalid API Response Structure:", data);
+                showError("No valid projects found.");
+                return;
             }
-        })
-        .catch(error => console.error("Error fetching projects:", error));
 
-    loadProjects(); // Load projects when the page loads
-
-    // Handle Add Project Form Submission
-    document.getElementById("addProjectForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent normal form submission
-
-        let formData = new FormData(this);
-
-        fetch("{{ route('projects.addProject') }}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                "Accept": "application/json"
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "success") {
-                Swal.fire({
-                    title: "Success!",
-                    text: data.message,
-                    icon: "success",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    $("#addNewProjectModal").modal("hide"); // Hide modal
-                    document.getElementById("addProjectForm").reset(); // Reset form
-                    loadProjects(); // Reload projects without refreshing page
-                });
-            } else {
-                let errorMsg = data.message;
-                
-                if (data.errors) {
-                    errorMsg += "<ul>";
-                    for (const [field, errors] of Object.entries(data.errors)) {
-                        errorMsg += `<li>${errors.join(", ")}</li>`;
-                    }
-                    errorMsg += "</ul>";
-                }
-
-                Swal.fire({
-                    title: "Error!",
-                    html: errorMsg,
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                title: "Error!",
-                text: "An unexpected error occurred. Please try again.",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
-            console.error("Error:", error);
-        });
-    });
-
-
-// Fetch and Load Projects into DataTable
-document.addEventListener("DOMContentLoaded", function () {
-    loadProjects(); //  Load projects on page load
-});
-
-//  Fetch and Load Projects into DataTable
-function loadProjects() {
-    fetch("{{ route('projects.showDetails') }}", {
-        method: "GET",
-        headers: { "Accept": "application/json" }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Fetched Projects Data:", data); //  Debugging
-
-        if (data.status === "success") {
             let projects = data.projects.map(project => [
                 project.projectTitle || "N/A",
                 project.projectLoc || "N/A",
                 project.projectStatus || "N/A",
-                project.contractAmount ? `₱${parseFloat(project.contractAmount).toLocaleString()}` : "N/A",
+                project.contractAmount
+                    ? `₱${parseFloat(project.contractAmount).toLocaleString()}`
+                    : "N/A",
                 project.projectContractor || "N/A",
-                project.projectContractDays ? `${project.projectContractDays} days` : "N/A",
-                `<a href="{{ route('main.overview') }}?id=${project.id}" class="btn btn-primary btn-sm">Overview</a>`
+                project.projectContractDays
+                    ? `${project.projectContractDays} days`
+                    : "N/A",
+                `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.projectID}">Overview</button>`
             ]);
 
-            //  Fix: Destroy DataTable before reloading
+            console.log("Processed Data:", projects);
+
+            // Destroy existing DataTable before reloading
             if ($.fn.DataTable.isDataTable("#projects")) {
                 $('#projects').DataTable().clear().destroy();
-                $("#projects tbody").empty(); //  Clear table content
+                console.log("Existing DataTable destroyed.");
             }
 
-            //  Fix: Ensure Correct Column Mapping
+            // Initialize DataTable with correct array format
             $('#projects').DataTable({
-                data: projects, //  Sending only necessary data
+                data: projects,
                 columns: [
                     { title: "Project Title" },
                     { title: "Location" },
@@ -361,7 +430,7 @@ function loadProjects() {
                     { title: "Contract Amount" },
                     { title: "Contractor" },
                     { title: "Duration" },
-                    { title: "Action" }
+                    { title: "Action", orderable: false }
                 ],
                 responsive: true,
                 scrollX: true,
@@ -370,34 +439,47 @@ function loadProjects() {
                 autoWidth: false
             });
 
-            console.log("✅ DataTable Reloaded Successfully!");
-        } else {
-            console.error("Error Fetching Projects:", data.message);
-        }
-    })
-    .catch(error => {
-        console.error("Fetch Error:", error);
-    });
+            console.log("DataTable Reloaded Successfully!");
+        })
+        .catch(error => {
+            console.error("Fetch Error:", error);
+            showError("Failed to load project data.");
+        });
 }
 
+// Show an error message inside the table if data fetching fails
+function showError(message) {
+    document.querySelector("#projects tbody").innerHTML = `
+        <tr><td colspan="7" class="text-center text-danger">${message}</td></tr>
+    `;
+}
 
-function initializeDataTable() {
-        if ($.fn.DataTable.isDataTable("#projects")) {
-            $('#projects').DataTable().destroy(); // Destroy previous instance
-        }
+// Attach event listener for overview button clicks (event delegation)
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("overview-btn")) {
+        let projectID = e.target.getAttribute("data-id");
 
-        dataTable = $('#projects').DataTable({
-            responsive: true,
-            scrollX: true,
-            paging: true,
-            searching: true
-        });
-
-        setTimeout(() => {
-            dataTable.columns.adjust().draw();
-        }, 500);
+        // Store projectID in session via AJAX
+        fetch("/store-project-id", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") // Laravel CSRF token
+            },
+            body: JSON.stringify({ projectID })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Project ID stored successfully, redirecting...");
+                window.location.href = "{{ route('main.overview') }}"; // Redirect without ID in URL
+            } else {
+                console.error("Failed to store project ID:", data);
+            }
+        })
+        .catch(error => console.error("Error storing project ID:", error));
     }
-
+});
 
     // Handle "Other Fund" Selection Toggle
     function toggleOtherFund() {
@@ -427,18 +509,6 @@ function initializeDataTable() {
     document.getElementById("projectStatus").addEventListener("change", function () {
         toggleOngoingStatus();
     });
-
-    // Initialize DataTable
-    $(document).ready(function() {
-    $("#projects").DataTable({
-        responsive: true,
-        scrollX: true,
-        paging: true,
-        searching: true
-    });
-
-    loadProjects(); // ✅ Load projects after DataTable is initialized
-});
 
 
         // Handle "Other Fund" Dropdown Change

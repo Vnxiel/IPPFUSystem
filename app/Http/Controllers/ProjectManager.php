@@ -87,23 +87,29 @@ class ProjectManager extends Controller
     }
     }
 
-    public function getProject($id)
+    public function getProject($projectID)
     {
         try {
-            $project = showDetails::findOrFail($id);
+            $project = showDetails::where('projectID', $projectID)->first();
+    
+            if (!$project) {
+                return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
+            }
+    
             return response()->json(['status' => 'success', 'project' => $project]);
         } catch (\Exception $e) {
             Log::error('Error fetching project details: ' . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => 'Project not found.']);
         }
     }
+    
 
     public function getProjectSummary()
     {
         try {
             Log::info('Fetching project summary...');
 
-            if (!Schema::hasTable('projects')) {
+            if (!Schema::hasTable('projects_tbl')) {
                 Log::error('Error: Table "projects" does not exist.');
                 return response()->json(['status' => 'error', 'message' => 'Database table not found.']);
             }

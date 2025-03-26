@@ -10,12 +10,13 @@ class FileUpload extends Model
 {
     use HasFactory;
 
-    protected $table = 'project_files'; // Ensure it matches your database table name
+    protected $table = 'projectfiles_tbl'; // Ensure it matches your database table name
 
     protected $fillable = [
         'projectID',
         'fileName',
-        'field',
+        'fileID',
+        'file',
         'actionBy',
     ];
 
