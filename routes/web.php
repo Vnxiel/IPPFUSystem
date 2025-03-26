@@ -13,7 +13,7 @@ Route::get('/', function () {
     return view('index');
 });
 
-// 🔹 Authentication Routes
+//  Authentication Routes
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -21,14 +21,14 @@ Route::get('/login', function () {
 Route::post('/login/authenticate', [LoginDetails::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [LoginDetails::class, 'logout'])->name('logout');
 
-// 🔹 User Registration & Management
+//  User Registration & Management
 Route::controller(UserManager::class)->group(function () {
     Route::get('/', 'index')->name('index');
     Route::get('/admin/register', 'goToRegister')->name('admin.register');
     Route::post('/register', 'register')->name('register');
 });
 
-// 🔹 Dashboard Route
+//  Dashboard Route
 Route::get('/main/index', function () {
     return view('main.index', [
         'username' => request('username'),
@@ -36,10 +36,10 @@ Route::get('/main/index', function () {
     ]);
 })->name('main.index');
 
-// 🔹 Grouped Routes (Requires Authentication)
+//  Grouped Routes (Requires Authentication)
 Route::middleware(['auth'])->group(function () {
 
-    // 🔸 User Manager Routes
+    //  User Manager Routes
     Route::controller(UserManager::class)->group(function () {
         Route::get('/main/projects', 'projects')->name('main.projects');
         Route::get('/main/overview', 'overview')->name('main.overview');

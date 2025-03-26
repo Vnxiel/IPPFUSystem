@@ -246,56 +246,56 @@
 
       <!-- DataTable & Fetching Script -->
         <script>    
-        document.addEventListener("DOMContentLoaded", function () {
-    // Select all input fields with the "currency-input" class
-    let currencyInputs = document.querySelectorAll(".currency-input");
+                    document.addEventListener("DOMContentLoaded", function () {
+                // Select all input fields with the "currency-input" class
+                let currencyInputs = document.querySelectorAll(".currency-input");
 
-    currencyInputs.forEach(input => {
-        input.addEventListener("input", function () {
-            formatCurrencyInput(this);
-        });
+                currencyInputs.forEach(input => {
+                    input.addEventListener("input", function () {
+                        formatCurrencyInput(this);
+                    });
 
-        input.addEventListener("blur", function () {
-            formatCurrencyOnBlur(this);
-        });
+                    input.addEventListener("blur", function () {
+                        formatCurrencyOnBlur(this);
+                    });
 
-        // ✅ Format existing values on page load
-        if (input.value.trim() !== "") {
-            formatCurrencyOnBlur(input);
-        }
-    });
+                    // ✅ Format existing values on page load
+                    if (input.value.trim() !== "") {
+                        formatCurrencyOnBlur(input);
+                    }
+                });
 
-    function formatCurrencyInput(input) {
-        // Remove non-numeric characters except decimal
-        let value = input.value.replace(/[^0-9.]/g, "");
+                function formatCurrencyInput(input) {
+                    // Remove non-numeric characters except decimal
+                    let value = input.value.replace(/[^0-9.]/g, "");
 
-        // Ensure there's only one decimal point
-        let parts = value.split(".");
-        if (parts.length > 2) {
-            value = parts[0] + "." + parts.slice(1).join("");
-        }
+                    // Ensure there's only one decimal point
+                    let parts = value.split(".");
+                    if (parts.length > 2) {
+                        value = parts[0] + "." + parts.slice(1).join("");
+                    }
 
-        input.value = value;
-    }
+                    input.value = value;
+                }
 
-    function formatCurrencyOnBlur(input) {
-        let value = input.value.trim();
+                function formatCurrencyOnBlur(input) {
+                    let value = input.value.trim();
 
-        if (value === "" || isNaN(value)) {
-            input.value = "";
-            return;
-        }
+                    if (value === "" || isNaN(value)) {
+                        input.value = "";
+                        return;
+                    }
 
-        let formattedValue = parseFloat(value).toLocaleString("en-PH", {
-            style: "currency",
-            currency: "PHP",
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
+                    let formattedValue = parseFloat(value).toLocaleString("en-PH", {
+                        style: "currency",
+                        currency: "PHP",
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
 
-        input.value = formattedValue;
-    }
-});
+                    input.value = formattedValue;
+                }
+            });
 
             document.addEventListener("DOMContentLoaded", function () {
                 fetch("{{ route('projects.showDetails') }}")

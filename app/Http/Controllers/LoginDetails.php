@@ -33,7 +33,7 @@ class LoginDetails extends Controller
              * Authenticate with OFMIS API (Commented Out)
              * ----------------------
              */
-            /*
+        
             $apiUrl = rtrim(env('OFMIS_API_URL'), '/') . '/api/auth/login';
             \Log::info('Calling OFMIS Login API:', ['url' => $apiUrl]);
 
@@ -59,14 +59,14 @@ class LoginDetails extends Controller
             $token = $apiData['token'];
             Cache::put('ofmis_token', $token, now()->addMinutes(60));
             Session::put('ofmis_token', $token);
-            */
+        
 
             /**
              * ----------------------
              * Fetch User Role from OFMIS (Commented Out)
              * ----------------------
              */
-            /*
+            
             $userApiUrl = rtrim(env('OFMIS_API_URL'), '/') . '/OFMIS/user/';
             $headers = [
                 'Authorization' => 'Bearer ' . $token,
@@ -93,7 +93,7 @@ class LoginDetails extends Controller
             }
 
             $userRole = $userDetails['role']; // Store the role
-            */
+                
 
             // Simulating a user role since API is commented out
             $userRole = $user->role; // Assuming local database role

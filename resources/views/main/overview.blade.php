@@ -305,24 +305,24 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                                  <div class="mb-1">
-                                        <label for="projectStatus" class="form-label fw-bolder">Status</label>
-                                        <select id="projectStatus" name="projectStatus" class="form-select" onchange="toggleOngoingStatus()">
-                                            <option value="---">---</option>
-                                            <option value="Ongoing">Ongoing</option>
-                                            <option value="Completed">Completed</option>
-                                            <option value="Cancelled">Discontinued</option>
-                                        </select>
+                            <div class="mb-1">
+                                <label for="projectStatus" class="form-label fw-bolder">Status</label>
+                                <select id="projectStatus" name="projectStatus" class="form-select" onchange="toggleOngoingStatus()">
+                                    <option value="---">---</option>
+                                    <option value="Ongoing">Ongoing</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Discontinued</option>
+                                </select>
 
-                                        <!-- Hidden text input for 'Ongoing' -->
-                                        <div id="ongoingStatusContainer" class="mt-2 fw-bolder" style="display: none;">
-                                            <label for="ongoingStatus" class="form-label">Please specify percentage completion:</label>
-                                            
-                                            <div class="d-flex gap-2"> 
-                                                <input type="text" id="ongoingStatus" name="ongoingStatus" class="form-control w-50" placeholder="Enter percentage">
-                                                <input type="date" id="ongoingDate" class="form-control w-50">
-                                            </div>
-                                    </div>
+                                <!-- Hidden text input for 'Ongoing' -->
+                                <div id="ongoingStatusContainer" class="mt-2 fw-bolder" style="display: none;">
+                                    <label for="ongoingStatus" class="form-label">Please specify percentage completion:</label>
+                                    
+                                <div class="d-flex gap-2"> 
+                                    <input type="text" id="ongoingStatus" name="ongoingStatus" class="form-control w-50" placeholder="Enter percentage">
+                                    <input type="date" id="ongoingDate" class="form-control w-50">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
