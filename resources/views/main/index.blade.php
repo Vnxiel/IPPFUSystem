@@ -278,11 +278,11 @@
         <!-- DataTable Initialization -->
         <script>    
          document.addEventListener("DOMContentLoaded", function () {
-    fetchProjectSummary(); // ✅ Fetch project summary stats
-    fetchProjects(); // ✅ Fetch projects table data
+    fetchProjectSummary(); //  Fetch project summary stats
+    fetchProjects(); //  Fetch projects table data
 });
 
-// ✅ Fetch Project Summary (Total Projects, Ongoing, Completed, Budget)
+//  Fetch Project Summary (Total Projects, Ongoing, Completed, Budget)
 function fetchProjectSummary() {
     fetch("/projects/summary")
         .then(response => response.json())
@@ -295,7 +295,7 @@ function fetchProjectSummary() {
                 document.getElementById("ongoingProjects").textContent = summary.ongoingProjects;
                 document.getElementById("completedProjects").textContent = summary.completedProjects;
 
-                // ✅ Update budget values
+                //  Update budget values
                 document.getElementById("totalBudget").textContent = `₱${summary.totalBudget}`;
                 document.getElementById("totalUsed").textContent = `₱${summary.totalUsed}`;
                 document.getElementById("remainingBalance").textContent = `₱${summary.remainingBalance}`;
@@ -316,7 +316,7 @@ function fetchProjects() {
 
             if (data.status === "success" && Array.isArray(data.projects)) {
                 let tbody = document.getElementById("projectTableBody");
-                tbody.innerHTML = ""; // ✅ Clear old data
+                tbody.innerHTML = ""; //  Clear old data
 
                 if (data.projects.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="7" class="text-center">No projects available.</td></tr>`;
@@ -335,13 +335,13 @@ function fetchProjects() {
 
                 console.log("Processed Data for Table:", projects);
 
-                // ✅ Destroy existing DataTable before reloading
+                //  Destroy existing DataTable before reloading
                 if ($.fn.DataTable.isDataTable("#recentProjects")) {
                     $('#recentProjects').DataTable().clear().destroy();
                     console.log("Existing DataTable destroyed.");
                 }
 
-                // ✅ Initialize DataTable with correct format
+                //  Initialize DataTable with correct format
                 $('#recentProjects').DataTable({
                     data: projects,
                     columns: [
@@ -370,12 +370,12 @@ function fetchProjects() {
         });
 }
 
-// ✅ Handle Overview Button Click
+//  Handle Overview Button Click
 document.addEventListener("click", function (e) {
     if (e.target.classList.contains("overview-btn")) {
         let projectID = e.target.getAttribute("data-id");
 
-        // ✅ Store projectID in session via AJAX
+        //  Store projectID in session via AJAX
         fetch("/store-project-id", {
             method: "POST",
             headers: {
@@ -389,7 +389,7 @@ document.addEventListener("click", function (e) {
             if (data.success) {
                 console.log("Project ID stored successfully, redirecting...");
 
-                // ✅ Redirect to main.overview (correct Laravel route)
+                //  Redirect to main.overview (correct Laravel route)
                 window.location.href = "/main/overview";
             } else {
                 console.error("Failed to store project ID:", data);

@@ -49,23 +49,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/main/activityLogs', 'activityLogs')->name('main.activityLogs');
     });
 
-    // 🔸 Project Management Routes
-    Route::controller(ProjectManager::class)->group(function () {
-        Route::post('/projects/addProject', 'addProject')->name('projects.addProject');
-        Route::get('/projects/showDetails', 'showDetails')->name('projects.showDetails');
-        Route::get('/projects/getProject/{selectedProjectID}', 'getProject')->name('projects.getProject');
-        Route::get('/projects/summary', 'getProjectSummary')->name('projects.summary');
-        Route::put('/projects/update/{id}', 'updateProject')->name('projects.update');
-    });
+   // 🔸 Project Management Routes
+Route::controller(ProjectManager::class)->group(function () {
+    Route::post('/projects/addProject', 'addProject')->name('projects.addProject');
+    Route::get('/projects/showDetails', 'showDetails')->name('projects.showDetails');
+    Route::get('/projects/getProject/{projectID}', 'getProject')->name('projects.getProject');
+    Route::get('/projects/summary', 'getProjectSummary')->name('projects.summary');
+    Route::put('/projects/update/{projectID}', 'updateProject')->name('projects.update'); // Ensure ID consistency
+});
+
 
     // 🔸 Session Handling Routes
     Route::post('/store-project-id', [SessionController::class, 'storeProjectID'])->name('store.project.id');
     Route::get('/get-project-id', [SessionController::class, 'getProjectID']);
 
-    // 🔸 File Upload & Management Routes
     Route::controller(FileManager::class)->group(function () {
         Route::post('/uploadFile', 'uploadFile')->name('upload.file');
         Route::get('/files/{projectID}', 'getFiles')->name('get.files');
         Route::delete('/delete/{fileID}', 'delete')->name('delete.file');
     });
+    
 });

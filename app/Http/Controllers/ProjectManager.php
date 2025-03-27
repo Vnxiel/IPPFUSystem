@@ -27,6 +27,7 @@ class ProjectManager extends Controller
             'ongoingDate' => 'nullable|date',
             'projectDescription' => 'nullable|string',
             'projectContractDays' => 'nullable|integer',
+            'awardDate' => 'nullable|date',
             'noticeOfAward' => 'nullable|date',
             'noticeToProceed' => 'nullable|date',
             'officialStart' => 'nullable|date',
@@ -152,66 +153,88 @@ class ProjectManager extends Controller
     }
 
     public function updateProject(Request $request, $id)
-    {
-        try {
-            Log::info("Updating project ID: $id", $request->all());
+{
+    try {
+        Log::info("Updating project ID: $id", $request->all());
 
-            $validator = \Validator::make($request->all(), [
-                'projectTitle' => 'required|string|max:255',
-                'projectLoc' => 'required|string|max:255',
-                'projectID' => 'required|string|max:50|unique:projects,projectID,' . $id,
-                'projectContractor' => 'nullable|string|max:255',
-                'sourceOfFunds' => 'nullable|string|max:255',
-                'otherFund' => 'nullable|string|max:255',
-                'modeOfImplementation' => 'nullable|string|max:255',
-                'projectStatus' => 'required|string|max:50',
-                'ongoingStatus' => 'nullable|string|max:50',
-                'ongoingDate' => 'nullable|date',
-                'projectDescription' => 'nullable|string',
-                'projectContractDays' => 'nullable|integer',
-                'noticeOfAward' => 'nullable|date',
-                'noticeToProceed' => 'nullable|date',
-                'officialStart' => 'nullable|date',
-                'targetCompletion' => 'nullable|date',
-                'suspensionOrderNo' => 'nullable|date',
-                'resumeOrderNo' => 'nullable|date',
-                'timeExtension' => 'nullable|string|max:50',
-                'revisedTargetCompletion' => 'nullable|string|max:50',
-                'CompletionDate' => 'nullable|string|max:50',
-                'abc' => 'nullable|numeric',
-                'contractAmount' => 'nullable|numeric',
-                'engineering' => 'nullable|numeric',
-                'mqc' => 'nullable|numeric',
-                'contingency' => 'nullable|numeric',
-                'bid' => 'nullable|numeric',
-                'appropriate' => 'nullable|numeric',
-            ]);
+        // Validate input fields
+        $validator = \Validator::make($request->all(), [
+            'projectTitle' => 'required|string|max:255',
+            'projectLoc' => 'required|string|max:255',
+            'projectID' => 'required|string|max:50|unique:projects_tbl,projectID,' . $id . ',projectID',
+            'projectContractor' => 'nullable|string|max:255',
+            'sourceOfFunds' => 'nullable|string|max:255',
+            'otherFund' => 'nullable|string|max:255',
+            'modeOfImplementation' => 'nullable|string|max:255',
+            'projectStatus' => 'required|string|max:50',
+            'ongoingStatus' => 'nullable|string|max:50',
+            'ongoingDate' => 'nullable|date',
+            'projectDescription' => 'nullable|string',
+            'projectContractDays' => 'nullable|integer',
+            'noticeOfAward' => 'nullable|date',
+            'noticeToProceed' => 'nullable|date',
+            'officialStart' => 'nullable|date',
+            'targetCompletion' => 'nullable|date',
+            'suspensionOrderNo' => 'nullable|date',
+            'resumeOrderNo' => 'nullable|date',
+            'timeExtension' => 'nullable|string|max:50',
+            'revisedTargetCompletion' => 'nullable|string|max:50',
+            'completionDate' => 'nullable|string|max:50',
+            'abc' => 'nullable|numeric',
+            'contractAmount' => 'nullable|numeric',
+            'engineering' => 'nullable|numeric',
+            'mqc' => 'nullable|numeric',
+            'contingency' => 'nullable|numeric',
+            'bid' => 'nullable|numeric',
+            'appropriate' => 'nullable|numeric',
+        ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Validation failed!',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            $project = Project::findOrFail($id);
-            $project->update($request->all());
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Project updated successfully!',
-                'project' => $project
-            ]);
-        } catch (\Exception $e) {
-            Log::error("Error updating project ID $id: " . $e->getMessage());
+        // If validation fails, return errors
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to update project.',
-                'error_details' => $e->getMessage()
-            ]);
+                'message' => 'Validation failed!',
+                'errors' => $validator->errors()
+            ], 422);
         }
+
+        // Find the project by projectID
+        $project = showDetails::where('projectID', $id)->first();
+
+        if (!$project) {
+            return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
+        }
+
+        // Process ongoing status
+        if ($request->input('projectStatus') === 'Ongoing') {
+            $ongoingStatus = $request->input('ongoingStatus');
+            $ongoingDate = $request->input('ongoingDate');
+            $project->ongoingStatus = !empty($ongoingStatus) && !empty($ongoingDate)
+                ? "{$ongoingStatus} - {$ongoingDate}"
+                : null;
+        } else {
+            $project->ongoingStatus = null;
+        }
+
+        // Update project details
+        $project->update($request->except(['projectID', 'ongoingStatus', 'ongoingDate']));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Project updated successfully!',
+            'project' => $project
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error("Error updating project ID $id: " . $e->getMessage());
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to update project.',
+            'error_details' => $e->getMessage()
+        ]);
     }
+}
+
 
 
 }

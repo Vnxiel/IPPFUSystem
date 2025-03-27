@@ -3,97 +3,82 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ProjectFile;
+use App\Models\FileUpload;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+
 
 class FileManager extends Controller {
-    // ✅ Upload File
-    public function uploadFile(Request $request) {
+    //  Upload File
+    public function uploadFile(Request $request)
+    {
+        Log::info("Upload Request Received", $request->all());
+    
+        if (!$request->hasFile('file')) {
+            Log::error("No file found in request.");
+            return response()->json(['status' => 'error', 'message' => 'No file uploaded.'], 400);
+        }
+    
+        $validator = Validator::make($request->all(), [
+            'projectID' => 'required|string|max:50',
+            'file' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf,docx,xlsx,zip'
+        ]);
+    
+        if ($validator->fails()) {
+            Log::error("Validation Failed", $validator->errors()->toArray());
+            return response()->json(['status' => 'error', 'message' => 'Validation failed!', 'errors' => $validator->errors()], 422);
+        }
+    
         try {
-            \Log::info("Received project_id:", ['project_id' => $request->project_id]); // ✅ Debugging
-    
-            // ✅ Validate request
-            $request->validate([
-                'project_id' => 'required|exists:projects_tbl,id',
-                'file' => 'required|file|max:10240' // 10MB max
-            ]);
-    
-            // ✅ Read file content and encrypt it
             $file = $request->file('file');
-            $encryptedContent = Crypt::encrypt(file_get_contents($file));
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $filepath = $file->storeAs('project_files', $filename, 'public');
     
-            // ✅ Store file in database
-            $projectFile = ProjectFile::create([
-                'projectID' => $request->project_id,
-                'fileName' => $file->getClientOriginalName(),
+            Log::info("File stored at: " . $filepath);
+            
+            $projectFile = FileUpload::create([
+                'projectID' => $request->input('projectID'),
+                'fileName' => $filename,
                 'fileID' => uniqid(),
-                'file' => $encryptedContent, // ✅ Store encrypted file content
-                'actionBy' => auth()->user()->name ?? 'Guest',
+                'file' => $filepath,
+                'actionBy' => Session::get('username', 'Unknown'), // Retrieve username from session
             ]);
-    
-            return response()->json(['status' => 'success', 'file' => $projectFile], 201);
-    
+            
+            Log::info("File uploaded successfully: " . $filename);
+            return response()->json(['status' => 'success', 'message' => 'File uploaded successfully!', 'file' => $projectFile]);
         } catch (\Exception $e) {
-            \Log::error("File upload error: " . $e->getMessage());
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+            Log::error("Error uploading file: " . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Internal Server Error.', 'error_details' => $e->getMessage()], 500);
         }
     }
     
-    public function getFiles($projectID) {
-        try {
-            \Log::info("Fetching files for projectID: $projectID"); // ✅ Debugging
-    
-            // ✅ Ensure projectID exists in the projects table
-            if (!\App\Models\ProjectFile::where('projectID', $projectID)->exists()) {
-                \Log::error("Invalid project ID: $projectID");
-                return response()->json(['status' => 'error', 'message' => 'Project does not exist'], 400);
-            }
-    
-            // ✅ Fetch files for the project
-            $files = \App\Models\ProjectFile::where('projectID', $projectID)->get();
-    
-            // ✅ Log output
-            \Log::info("Files retrieved:", ['count' => $files->count(), 'data' => $files]);
-    
-            return response()->json([
-                'status' => 'success',
-                'files' => $files,
-                'message' => $files->isEmpty() ? 'No files found for this project.' : 'Files retrieved successfully.'
-            ]);
-    
-        } catch (\Exception $e) {
-            \Log::error("Error fetching files: " . $e->getMessage());
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
-        }
-    }
-    
+  
+  // Get Files by Project ID
+  public function getFiles($projectID)
+  {
+      $files = FileUpload::where('projectID', $projectID)->orderBy('created_at', 'desc')->get();
 
-    public function downloadFile($fileID) {
-        try {
-            $file = ProjectFile::findOrFail($fileID);
-    
-            // ✅ Decrypt the file content
-            $decryptedContent = Crypt::decrypt($file->files);
-    
-            // ✅ Return file as a response for download
-            return response($decryptedContent)
-                ->header('Content-Type', mime_content_type($file->file_name))
-                ->header('Content-Disposition', "attachment; filename=\"{$file->file_name}\"");
-        } catch (\Exception $e) {
-            \Log::error("Error downloading file: " . $e->getMessage());
-            return response()->json(['status' => 'error', 'message' => 'File not found or decryption failed.'], 404);
-        }
-    }
-    
-    
+      return response()->json([
+          'status' => 'success',
+          'files' => $files
+      ]);
+  }
 
-    // Delete File
-    public function delete($fileID) {
-        $file = ProjectFile::findOrFail($fileID);
-        Storage::delete($file->file_path);
-        $file->delete();
-        
-        return response()->json(['status' => 'success', 'message' => 'File deleted']);
-    }
+  // Delete File
+  public function delete($fileID)
+  {
+      $file = FileUpload::where('fileID', $fileID)->first();
+      
+      if (!$file) {
+          return response()->json(['status' => 'error', 'message' => 'File not found.'], 404);
+      }
+
+      Storage::delete('public/' . $file->file); // Delete from storage
+      $file->delete(); // Delete from database
+
+      return response()->json(['status' => 'success', 'message' => 'File deleted successfully.']);
+  }
 }
+

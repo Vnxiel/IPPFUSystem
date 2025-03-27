@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -66,12 +66,16 @@
                                 <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                                     data-bs-toggle="dropdown" aria-expanded="false" role="button">
                                     <span class="fa fa-user me-1"></span>
+                                    <span class="fw-bold">
+                                        <?php echo e(Session::get('username', 'Guest')); ?> <!-- Display username -->
+                                    </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownMenuButton">
                                     <li><a class="dropdown-item" href="/">Sign out</a></li>
                                 </ul>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </nav>

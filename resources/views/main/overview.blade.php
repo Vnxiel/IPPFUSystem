@@ -250,7 +250,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-1">
-                                <label for="location" class="form-label">Project Title</label>
+                                <label for="projectTitle" class="form-label">Project Title</label>
                                 <input type="text" class="form-control" id="projectTitle">
                             </div>
                         </div>
@@ -258,8 +258,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-1">
-                                <label for="location" class="form-label">Location</label>
-                                <input type="text" class="form-control" id="projectLoc" >
+                                <label for="projectLoc" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="projectLoc">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -307,29 +307,30 @@
                         <div class="col-md-6">
                             <div class="mb-1">
                                 <label for="projectStatus" class="form-label fw-bolder">Status</label>
-                                <select id="projectStatus" name="projectStatus" class="form-select" onchange="toggleOngoingStatus()">
+                                <select id="projectStatus" name="projectStatus" class="form-select">
                                     <option value="---">---</option>
                                     <option value="Ongoing">Ongoing</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Cancelled">Discontinued</option>
                                 </select>
 
-                                <!-- Hidden text input for 'Ongoing' -->
+                                <!-- Hidden text input for 'Ongoing' status -->
                                 <div id="ongoingStatusContainer" class="mt-2 fw-bolder" style="display: none;">
                                     <label for="ongoingStatus" class="form-label">Please specify percentage completion:</label>
-                                    
-                                <div class="d-flex gap-2"> 
-                                    <input type="text" id="ongoingStatus" name="ongoingStatus" class="form-control w-50" placeholder="Enter percentage">
-                                    <input type="date" id="ongoingDate" class="form-control w-50">
+                                    <div class="d-flex gap-2"> 
+                                        <input type="text" id="ongoingStatus" name="ongoingStatus" class="form-control w-50" placeholder="Enter percentage">
+                                        <input type="date" id="ongoingDate" class="form-control w-50">
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-1">
                                 <label for="projectDescription" class="form-label">Project Description</label>
-                                <textarea class="form-control" id="projectDescription" rows="3" style="width:100%">Expansion of a 4-lane road to 6 lanes</textarea>
+                                <textarea class="form-control" id="projectDescription" rows="3" style="width:100%"></textarea>
                             </div>
                         </div>
                     </div>
@@ -341,46 +342,46 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-1">
-                                <label for="contractDays" class="form-label">Contract Days</label>
-                                <input type="text" class="form-control" id="contractDays">
+                                <label for="projectContractDays" class="form-label">Contract Days</label>
+                                <input type="text" class="form-control" id="projectContractDays">
                             </div>   
                             <div class="mb-1">
                                 <label for="noticeOfAward" class="form-label">Notice of Award</label>
-                                <input type="date" class="form-control" id="awardDate">
+                                <input type="date" class="form-control" id="noticeOfAward">
                             </div>  
                             <div class="mb-1">
                                 <label for="noticeToProceed" class="form-label">Notice to Proceed</label>
-                                <input type="date" class="form-control" id="noticeToProceed" value="">
+                                <input type="date" class="form-control" id="noticeToProceed">
                             </div>  
                             <div class="mb-1">
                                 <label for="officialStart" class="form-label">Official Start</label>
-                                <input type="date" class="form-control" id="officialStart" value="">
+                                <input type="date" class="form-control" id="officialStart">
                             </div> 
                             <div class="mb-1">
                                 <label for="targetCompletion" class="form-label">Target Completion</label>
-                                <input type="date" class="form-control" id="targetCompletion" value="">
+                                <input type="date" class="form-control" id="targetCompletion">
                             </div> 
                         </div>
                         <div class="col-md-6">
                             <div class="mb-1">
                                 <label for="SuspeOrder" class="form-label">Suspension Order No.1</label>
-                                <input type="date" class="form-control" id="suspensionOrderNo" value="">
+                                <input type="date" class="form-control" id="suspensionOrderNo">
                             </div> 
                             <div class="mb-1">
                                 <label for="resumeOrder" class="form-label">Resume Order No.1</label>
-                                <input type="date" class="form-control" id="resumeOrderNo" value="">
+                                <input type="date" class="form-control" id="resumeOrderNo">
                             </div> 
                             <div class="mb-1">
                                 <label for="timeExtension" class="form-label">Time Extension</label>
-                                <input type="text" class="form-control" id="timeExtension" value="">
+                                <input type="text" class="form-control" id="timeExtension">
                             </div> 
                             <div class="mb-1">
                                 <label for="revisedTargetCompletion" class="form-label">Revised Target Completion</label>
-                                <input type="text" class="form-control" id="revisedTargetCompletion" value="">
+                                <input type="text" class="form-control" id="revisedTargetCompletion">
                             </div> 
                             <div class="mb-1">
                                 <label for="CompletionDate" class="form-label">Completion Date</label>
-                                <input type="text" class="form-control" id="completionDate" value="">
+                                <input type="text" class="form-control" id="completionDate">
                             </div> 
                         </div>
                     </div>
@@ -392,15 +393,15 @@
                         <div class="col-md-6 border-bottom">
                             <div class="mb-1">
                                 <label for="abc" class="form-label">ABC</label>
-                                <input type="text" class="form-control" id="abc" >
+                                <input type="text" class="form-control" id="abc">
                             </div>
                             <div class="mb-1">
                                 <label for="contractAmount" class="form-label">Contract Amount</label>
-                                <input type="text" class="form-control" id="contractAmount" >
+                                <input type="text" class="form-control" id="contractAmount">
                             </div>
                             <div class="mb-1">
                                 <label for="engineering" class="form-label">Engineering</label>
-                                <input type="text" class="form-control" id="engineering" >
+                                <input type="text" class="form-control" id="engineering">
                             </div>
                             <div class="mb-1">
                                 <label for="mqc" class="form-label">MQC</label>
@@ -414,17 +415,17 @@
                             </div>
                             <div class="mb-1">
                                 <label for="bid" class="form-label">Bid Difference</label>
-                                <input type="text" class="form-control" id="bid" >
+                                <input type="text" class="form-control" id="bid">
                             </div>
                             <div class="mb-1">
                                 <label for="appropriation" class="form-label">Appropriation</label>
-                                <input type="text" class="form-control" id="appropriation" >
+                                <input type="text" class="form-control" id="appropriation">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Close</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </form>
@@ -457,17 +458,12 @@ function setupUploadModal() {
 document.getElementById("uploadForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    // Fetch `projectID` from session first
+    // Fetch `projectID` first
     fetch("/get-project-id", {
         method: "GET",
         headers: { "Accept": "application/json" }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (!data.projectID) {
             Swal.fire({
@@ -479,11 +475,10 @@ document.getElementById("uploadForm").addEventListener("submit", function (e) {
             return;
         }
 
-        let projectID = data.projectID; // Use projectID from session
-        console.log("Retrieved Project ID from session:", projectID);
+        let projectID = data.projectID;
+        console.log("Retrieved Project ID:", projectID); // Debugging
 
         let fileInput = document.getElementById("file");
-
         if (!fileInput.files.length) {
             Swal.fire({
                 title: "Warning",
@@ -498,46 +493,52 @@ document.getElementById("uploadForm").addEventListener("submit", function (e) {
         formData.append("projectID", projectID);
         formData.append("file", fileInput.files[0]);
 
-        console.log("Uploading file with project_id:", projectID); //Debugging
+        console.log("Uploading file with formData:", formData); // Debugging
 
         fetch("/uploadFile", {
-            method: "POST",
-            headers: { 
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Server Response:", data); //Debugging
-            if (data.status === "success") {
-                Swal.fire({
-                    title: "Success!",
-                    text: "File uploaded successfully.",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                });
-                loadFiles(projectID); // Refresh file list   
-            } else {
-                Swal.fire({
-                    title: "Upload Failed",
-                    text: data.message || "Something went wrong!",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                title: "Upload Error",
-                text: error.message || "An unexpected error occurred.",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
-        }); 
+                method: "POST",
+                headers: { 
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                },
+                body: formData
+            })
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+})
+.then(data => {
+    console.log("Upload Response:", data);
+    if (data.status === "success") {
+        Swal.fire({
+            title: "Success!",
+            text: "File uploaded successfully.",
+            icon: "success",
+            confirmButtonText: "OK"
+        });
+    } else {
+        Swal.fire({
+            title: "Upload Failed",
+            text: data.message || "Something went wrong!",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+    }
+})
+.catch(error => {
+    console.error("Upload Error:", error);
+    Swal.fire({
+        title: "Error",
+        text: "Failed to upload file. Please check Laravel logs.",
+        icon: "error",
+        confirmButtonText: "OK"
+    });
+});
+
     })
     .catch(error => {
-        console.error("Error fetching project ID from session:", error);
+        console.error("Error fetching project ID:", error);
         Swal.fire({
             title: "Error",
             text: "Failed to get project ID. Please try again.",
@@ -631,84 +632,80 @@ $(document).ready(function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    fetchProjectID();
+    fetchProjectDetails(); // Fetch project details when page loads
 });
 
-
-//  Fetch Project ID from Session
-function fetchProjectID() {
+//  Fetch Project ID & Details
+function fetchProjectDetails() {
     fetch("/get-project-id", {
         method: "GET",
         headers: { "Accept": "application/json" }
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         return response.json();
     })
     .then(data => {
-        if (data.projectID) {
-            console.log("Retrieved Project ID from session:", data.projectID);
-            loadProjectDetails(data.projectID);
-            loadFiles(data.projectID);
-        } else {
+        if (!data.projectID) {
             console.error("No project ID found in session. Redirecting...");
             window.location.href = "{{ route('main.index') }}"; // Redirect if no ID
+            return;
         }
+        
+        console.log("Project ID:", data.projectID);
+        fetch(`/projects/getProject/${data.projectID}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    console.log(" Fetched Project Data:", data.project);
+                    updateProjectUI(data.project); // Populate UI
+                    updateProjectForm(data.project); // Populate form in modal
+                } else {
+                    console.error(" Error fetching project details:", data.message);
+                }
+            })
+            .catch(error => console.error(" Error fetching project data:", error));
     })
-    .catch(error => {
-        console.error("Error fetching project ID from session:", error);
-    });
-}
-
-
-//  Fetch and Display Project Details
-function loadProjectDetails(projectID) {
-    fetch(`/projects/getProject/${projectID}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Fetched Project Data:", data);
-
-            if (data.status === "success") {
-                updateProjectUI(data.project);
-             
-            } else {
-                console.error("Error fetching project details:", data.message);
-            }
-        })
-        .catch(error => console.error("Error fetching project data:", error));
+    .catch(error => console.error(" Error fetching project ID:", error));
 }
 
 //  Update UI with Project Data
 function updateProjectUI(project) {
-    document.getElementById("projectTitle").textContent = project.projectTitle || "N/A";
-    document.getElementById("projectLoc").textContent = project.projectLoc || "N/A";
-    document.getElementById("projectID").textContent = project.projectID || "N/A";
-    document.getElementById("projectDescription").textContent = project.projectDescription || "N/A";
-    document.getElementById("projectContractor").textContent = project.projectContractor || "N/A";
-    document.getElementById("projectStatus").textContent = project.projectStatus || "Loading...";
-    document.getElementById("noticeOfAward").textContent = project.noticeOfAward || "N/A";
-    document.getElementById("modeOfImplementation").textContent = project.modeOfImplementation || "N/A";
-    document.getElementById("officialStart").textContent = project.officialStart || "N/A";
-    document.getElementById("targetCompletion").textContent = project.targetCompletion || "N/A";
-    document.getElementById("suspensionOrderNo").textContent = project.suspensionOrderNo || "N/A";
-    document.getElementById("resumeOrderNo").textContent = project.resumeOrderNo || "N/A";
-    document.getElementById("timeExtension").textContent = project.timeExtension || "N/A";
-    document.getElementById("revisedTargetCompletion").textContent = project.revisedTargetCompletion || "N/A";
-    document.getElementById("completionDate").textContent = project.completionDate || "N/A";
-    document.getElementById("abc").textContent = project.abc || "N/A";
-    document.getElementById("mqc").textContent = project.mqc || "N/A";
-    document.getElementById("contractAmount").textContent = project.contractAmount || "N/A";
-    document.getElementById("bid").textContent = project.bid || "N/A";
-    document.getElementById("engineering").textContent = project.engineering || "N/A";
-    document.getElementById("contingency").textContent = project.contingency || "   ";
-    document.getElementById("appropriation").textContent = project.appropriation || "N/A";
+    let fields = {
+        "projectTitle": project.projectTitle,
+        "projectLoc": project.projectLoc,
+        "projectID": project.projectID,
+        "projectDescription": project.projectDescription,
+        "projectContractor": project.projectContractor,
+        "projectStatus": project.projectStatus,
+        "noticeOfAward": project.noticeOfAward,
+        "modeOfImplementation": project.modeOfImplementation,
+        "officialStart": project.officialStart,
+        "targetCompletion": project.targetCompletion,
+        "suspensionOrderNo": project.suspensionOrderNo,
+        "resumeOrderNo": project.resumeOrderNo,
+        "timeExtension": project.timeExtension,
+        "revisedTargetCompletion": project.revisedTargetCompletion,
+        "completionDate": project.completionDate,
+        "abc": project.abc,
+        "mqc": project.mqc,
+        "contractAmount": project.contractAmount,
+        "bid": project.bid,
+        "engineering": project.engineering,
+        "contingency": project.contingency,
+        "appropriation": project.appropriation
+    };
 
-    // Extract Percentage & Date from `ongoingStatus`
+    for (let id in fields) {
+        let element = document.getElementById(id);
+        if (element) {
+            element.textContent = fields[id] !== null && fields[id] !== undefined ? fields[id] : "N/A";
+        }
+    }
+
+    //  Extract & display ongoing project status (if applicable)
     let ongoingStatusText = project.ongoingStatus || "";
-    let percentage = "";
-    let date = "";
+    let percentage = "", date = "";
 
     if (ongoingStatusText.includes(" - ")) {
         let parts = ongoingStatusText.split(" - ");
@@ -716,49 +713,33 @@ function updateProjectUI(project) {
         date = formatDate(parts[1].trim());
     }
 
-    document.getElementById("ongoingStatus").textContent = percentage ? `${percentage} as of ${date}` : "N/A";
+    let ongoingStatusElem = document.getElementById("ongoingStatus");
+    if (ongoingStatusElem) {
+        ongoingStatusElem.textContent = percentage ? `${percentage} as of ${date}` : "N/A";
+    }
 }
 
-// Fetch & Populate Modal Form
-// Open Edit Modal **Only When "Edit" Button is Clicked**
+//  Open Edit Modal & Populate Form
 document.getElementById("editProjectBtn").addEventListener("click", function () {
-    fetch("/get-project-id", {
-        method: "GET",
-        headers: { "Accept": "application/json" }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.projectID) {
-            fetch(`/projects/getProject/${data.projectID}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        updateProjectForm(data.project);  // ✅ Now populate form inside modal
-                    } else {
-                        console.error("Error fetching project details:", data.message);
-                    }
-                })
-                .catch(error => console.error("Error fetching project data:", error));
-        } else {
-            console.error("No project ID found in session.");
-        }
-    })
-    .catch(error => console.error("Error fetching project ID:", error));
+    let projectModal = new bootstrap.Modal(document.getElementById("projectModal"));
+    projectModal.show();
 });
 
-//  Populate Modal Form with Fetched Data
+
+
+//  Populate Modal Form with Project Data
 function updateProjectForm(project) {
     if (!project) {
         console.error("Error: Project data is undefined or null.");
         return;
     }
 
-    console.log("Populating form with project data:", project);  
+    console.log("Populating form with project data:", project);
 
     let fields = [
         "projectTitle", "projectLoc", "projectID", "projectContractor",
         "sourceOfFunds", "modeOfImplementation", "projectStatus", "projectDescription",
-        "contractDays", "awardDate", "noticeToProceed", "officialStart",
+        "projectContractDays", "noticeOfAward", "noticeToProceed", "officialStart",
         "targetCompletion", "suspensionOrderNo", "resumeOrderNo", "timeExtension",
         "revisedTargetCompletion", "completionDate", "abc", "contractAmount",
         "engineering", "mqc", "contingency", "bid", "appropriation"
@@ -767,34 +748,58 @@ function updateProjectForm(project) {
     fields.forEach(field => {
         let input = document.getElementById(field);
         if (input) {
-            // ✅ Ensure no `null` or `undefined` values break the form
-            input.value = project[field] !== null && project[field] !== undefined ? project[field] : "";
+            let value = project[field] !== null && project[field] !== undefined ? project[field] : "";
+            
+            if (input.type === "date" && value.includes(" ")) {
+                value = value.split(" ")[0]; // Extract only YYYY-MM-DD
+            }
+
+            input.value = value;
         } else {
             console.warn(`Warning: Element #${field} not found.`);
         }
     });
 
-    // ✅ Handle dropdowns separately
-    let sourceOfFunds = document.getElementById("sourceOfFunds");
-    if (sourceOfFunds) {
-        sourceOfFunds.value = project["sourceOfFunds"] || ""; 
-    }
+    // Handle dropdowns separately
+    setDropdownValue("sourceOfFunds", project["sourceOfFunds"]);
+    setDropdownValue("projectStatus", project["projectStatus"]);
 
-    let projectStatus = document.getElementById("projectStatus");
-    if (projectStatus) {
-        projectStatus.value = project["projectStatus"] || "";
-    }
+    // Handle "Ongoing" status separately
+    let ongoingContainer = document.getElementById("ongoingStatusContainer");
+    let ongoingInput = document.getElementById("ongoingStatus");
+    let ongoingDateInput = document.getElementById("ongoingDate");
 
-    // ✅ Show the modal only after all data is populated
-    let projectModal = new bootstrap.Modal(document.getElementById("projectModal"));
-    projectModal.show();
+    if (project.projectStatus === "Ongoing" && project.ongoingStatus) {
+        ongoingContainer.style.display = "block";
+        let [percentage, date] = project.ongoingStatus.split(" - ");
+        ongoingInput.value = percentage.trim();
+        ongoingDateInput.value = date.trim();
+    } else {
+        ongoingContainer.style.display = "none";
+    }
 }
 
+//  Helper function to safely set dropdown values
+function setDropdownValue(elementID, value) {
+    let selectElement = document.getElementById(elementID);
+    if (!selectElement || !selectElement.options) {
+        console.warn(` Dropdown #${elementID} is not available.`);
+        return;
+    }
 
+    let options = Array.from(selectElement.options).map(option => option.value);
+    selectElement.value = options.includes(value) ? value : "";
+
+    // Handle the "Ongoing" status showing hidden fields
+    if (elementID === "projectStatus") {
+        let ongoingContainer = document.getElementById("ongoingStatusContainer");
+        ongoingContainer.style.display = value === "Ongoing" ? "block" : "none";
+    }
+}
 
 //  Handle Project Updates
 document.getElementById("updateProjectForm").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent normal form submission
+    event.preventDefault();
 
     fetch("/get-project-id", { method: "GET", headers: { "Accept": "application/json" } })
     .then(response => response.json())
@@ -804,34 +809,31 @@ document.getElementById("updateProjectForm").addEventListener("submit", function
             return;
         }
 
-        let updatedData = {
-            
-            projectContractor: document.getElementById("projectContractor").value,
-            sourceOfFunds: document.getElementById("sourceOfFunds").value,
-            modeOfImplementation: document.getElementById("modeOfImplementation").value,
-            projectStatus: document.getElementById("projectStatus").value,
-            projectDescription: document.getElementById("projectDescription").value,
-            contractDays: document.getElementById("contractDays").value,
-            awardDate: document.getElementById("awardDate").value,
-            noticeToProceed: document.getElementById("noticeToProceed").value,
-            officialStart: document.getElementById("officialStart").value,
-            targetCompletion: document.getElementById("targetCompletion").value,
-            suspensionOrderNo: document.getElementById("suspensionOrderNo").value,
-            resumeOrderNo: document.getElementById("resumeOrderNo").value,
-            timeExtension: document.getElementById("timeExtension").value,
-            revisedTargetCompletion: document.getElementById("revisedTargetCompletion").value,
-            completionDate: document.getElementById("completionDate").value,
-            abc: document.getElementById("abc").value,
-            contractAmount: document.getElementById("contractAmount").value,
-            engineering: document.getElementById("engineering").value,
-            mqc: document.getElementById("mqc").value,
-            contingency: document.getElementById("contingency").value,
-            bid: document.getElementById("bid").value,
-            appropriation: document.getElementById("appropriation").value
-        };
+        let updatedData = {};
+        let fieldIDs = [
+            "projectContractor", "sourceOfFunds", "modeOfImplementation", "projectStatus",
+            "projectDescription", "projectContractDays", "noticeOfAward", "noticeToProceed",
+            "officialStart", "targetCompletion", "suspensionOrderNo", "resumeOrderNo",
+            "timeExtension", "revisedTargetCompletion", "completionDate", "abc",
+            "contractAmount", "engineering", "mqc", "contingency", "bid", "appropriation"
+        ];
+
+        fieldIDs.forEach(id => {
+            let input = document.getElementById(id);
+            updatedData[id] = input ? input.value : null;
+        });
+
+        // Handle "Ongoing" status fields
+        if (updatedData.projectStatus === "Ongoing") {
+            let ongoingStatus = document.getElementById("ongoingStatus").value;
+            let ongoingDate = document.getElementById("ongoingDate").value;
+            updatedData.ongoingStatus = `${ongoingStatus} - ${ongoingDate}`;
+        } else {
+            updatedData.ongoingStatus = null;
+        }
 
         return fetch(`/projects/update/${data.projectID}`, {
-            method: "POST",
+            method: "PUT",  // FIX: Use PUT instead of POST
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
@@ -839,7 +841,12 @@ document.getElementById("updateProjectForm").addEventListener("submit", function
             body: JSON.stringify(updatedData)
         });
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP Error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.status === "success") {
             Swal.fire({ title: "Updated Successfully!", text: data.message, icon: "success", confirmButtonText: "OK" })
@@ -877,6 +884,14 @@ $(document).ready(function () {
 
     $('#sourceOfFunds').on('change', function () {
         $(this).val() === 'Others' ? $('#otherFundContainer').slideDown() : $('#otherFundContainer').slideUp();
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    let projectModal = document.getElementById("projectModal");
+
+    projectModal.addEventListener("hidden.bs.modal", function () {
+        location.reload(); // Reload the page after the modal is closed
     });
 });
 

@@ -259,7 +259,7 @@
                         formatCurrencyOnBlur(this);
                     });
 
-                    // ✅ Format existing values on page load
+                    //  Format existing values on page load
                     if (input.value.trim() !== "") {
                         formatCurrencyOnBlur(input);
                     }
