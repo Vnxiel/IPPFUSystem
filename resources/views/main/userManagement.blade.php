@@ -32,20 +32,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                   
+                                    @foreach ($users as $user)
                                         <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{ $user->id }}</td>
+                                            <td>{{ $user->fullname }}</td>
+                                            <td>{{ $user->username }}</td>
+                                            <td>{{ $user->position }}</td>
+                                            <td>{{ $user->role }}</td>
                                             <td>
-                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#roleModal">
+                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#roleModal" data-id="{{ $user->id }}">
                                                     <span class="fa-solid fa-address-card"></span>
                                                 </button>
                                             </td>
                                         </tr>
-                                   
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -81,35 +81,32 @@
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="mb-3">
-                                                                <label for="fullname" class="form-label fw-bolder">Position:</label>
-                                                                <input type="text" class="form-control" name="position" id="position" aria-describedby="position" placeholder="Position">
+                                                                <label for="position" class="form-label fw-bolder">Position:</label>
+                                                                <input type="text" class="form-control" name="position" id="position" placeholder="Position">
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="mb-3">
-                                                                <label for="fullname" class="form-label fw-bolder">Username:</label>
-                                                                <input type="text" class="form-control" name="username" id="username" aria-describedby="username" placeholder="Username">
+                                                                <label for="username" class="form-label fw-bolder">Username:</label>
+                                                                <input type="text" class="form-control" name="username" id="username" placeholder="Username">
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="mb-3">
-                                                            <label for="fundSource" class="form-label fw-bolder">User Role</label>
-                                                            <select name="fundSource" id="fundSource" class="form-select">
-                                                                <option value="">-- --</option>
-                                                                <option value="System Admin">System Admin</option>
-                                                                <option value="Admin">Admin</option>
-                                                                <option value="Staff">Staff</option>
-                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="mb-3">
                                                                 <label for="password" class="form-label fw-bolder">Password:</label>
-                                                                <input type="password" class="form-control" name="password" id="password" aria-describedby="password" placeholder="Password">
+                                                                <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="mb-3">
+                                                                <label for="password_confirmation" class="form-label fw-bolder">Confirm Password:</label>
+                                                                <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" aria-describedby="password_confirmation" placeholder="Confirm Password"  required minlength="6" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -134,22 +131,24 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="submit" id="registerNewStaff" class="btn btn-primary">Save</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
 
+
                 <!-- Change user role Modal -->
                 <div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="appNewProjectLabel">Profile</h1>
+                                <h1 class="modal-title fs-5" id="roleLabel">Change User Role</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form>
+                            <form id="userRoleForm">
+                                @csrf
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -157,8 +156,8 @@
                                                 <div class="mb-3">
                                                     <!-- User Role Select -->
                                                     <label for="userRole" class="form-label fw-bolder">User Role</label>
-                                                    <select id="userRole" class="form-select">
-                                                        <option value="">-- --</option>
+                                                    <select id="userRole" name="userRole" class="form-select">
+                                                        <option value="">-- Choose Role --</option>
                                                         <option value="System Admin">System Admin</option>
                                                         <option value="Admin">Admin</option>
                                                         <option value="Staff">Staff</option>
@@ -166,16 +165,16 @@
 
                                                     <!-- Time Frame Select (Initially Hidden) -->
                                                     <label for="timeFrame" class="form-label fw-bolder" id="timeFrameLabel" style="display: none;">User Time Frame</label>
-                                                    <select id="timeFrame" class="form-select" style="display: none;">
-                                                        <option value="">-- --</option>
+                                                    <select id="time_frame" name="time_frame" class="form-select" style="display: none;">
+                                                        <option value="">-- Choose Time Frame--</option>
                                                         <option value="Permanent">Permanent</option>
                                                         <option value="Temporary">Temporary</option>
                                                     </select>
 
                                                     <!-- Temporary Position Input (Initially Hidden) -->
-                                                    <div id="temporaryDateContainer" class="mt-2 fw-bolder" style="display: none;">
-                                                        <label for="temporaryDate" class="form-label">End Date for Temporary Position:</label>
-                                                        <input type="datetime-local" id="temporaryDate" class="form-control">
+                                                    <div id="timeLimitContainer" class="mt-2 fw-bolder" style="display: none;">
+                                                        <label for="timeLimit" class="form-label">End Date for Temporary Position:</label>
+                                                        <input type="datetime-local" id="timeLimit" name="timeLimit" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -183,7 +182,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save</button>
+                                        <button type="submit editRoleBtn" class="btn btn-primary">Submit</button>
                                     </div>
                                 </div>
                             </form>
@@ -191,39 +190,5 @@
                     </div>
                 </div>
 
-                <script>
-                    // Get references to the elements
-                    const userRoleSelect = document.getElementById('userRole');
-                    const timeFrameSelect = document.getElementById('timeFrame');
-                    const timeFrameLabel = document.getElementById('timeFrameLabel');
-                    const temporaryDateContainer = document.getElementById('temporaryDateContainer');
-
-                    // Event listener for user role selection
-                    userRoleSelect.addEventListener('change', function() {
-                        // Check if "Admin" or "Staff" is selected
-                        if (userRoleSelect.value === 'Admin' || userRoleSelect.value === 'Staff') {
-                            // Show Time Frame Select
-                            timeFrameLabel.style.display = 'block';
-                            timeFrameSelect.style.display = 'block';
-                        } else {
-                            // Hide Time Frame Select and Temporary Date input
-                            timeFrameLabel.style.display = 'none';
-                            timeFrameSelect.style.display = 'none';
-                            temporaryDateContainer.style.display = 'none';
-                        }
-                    });
-
-                    // Event listener for time frame selection
-                    timeFrameSelect.addEventListener('change', function() {
-                        // Check if "Temporary" is selected
-                        if (timeFrameSelect.value === 'Temporary') {
-                            // Show the Temporary Date input field
-                            temporaryDateContainer.style.display = 'block';
-                        } else {
-                            // Hide the Temporary Date input field
-                            temporaryDateContainer.style.display = 'none';
-                        }
-                    });
-                </script>
 
 @endsection

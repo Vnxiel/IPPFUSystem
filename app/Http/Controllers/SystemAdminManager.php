@@ -6,45 +6,122 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-use App\Models\ActivityLogs;
+use App\Models\ActLogs;
 
 class SystemAdminManager extends Controller
 {
+    public function index(){
+        return view('main.index');
+    }
+
+    public function userManagement(){
+        return view('main.userManagement'); 
+    }
+
     public function registerUser(Request $request){
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [ 
             'fullname' => 'required|min:3',
             'position' => 'required',
-            'username' => 'required|unique:users_tbl,username',
-            'role'=> 'required',
+            'username' => 'required|unique:users,username',
             'password' => 'required|min:6|confirmed',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(0); // Return 0 for validation errors
-            // Log::error('Error : ' . $validator->errors()->all());
+            return response()->json(0); 
         }
 
         try {
-            $user = new User();
+            $user = new User(); 
+            $user->role = $request->role; 
             $user->fullname = $request->fullname;
             $user->position = $request->position;
             $user->username = $request->username;
             $user->password = Hash::make($request->password);
-            $user->role = $request->role;
+            $user->role = $request->role; 
+            $user->time_frame = 'Permanent';
             $user->save();
 
-            return response()->json(1); // Return 1 for success
+        $user->save();
+
+        return response()->json([
+            'status' => 1,
+            'message' => $user->role, 
+        ]);
+
         } catch (\Exception $e) {
-            // Log::error('Error: '. $e->getMessage());
-            return response()->json(2); // Return 2 for database errors
+            return response()->json(2); 
         }
     }
+
     public function viewActivityLogs(Request $request){
+        $activityLogs = ActLogs::all();
 
+        return view('main.activityLogs', [
+            'activityLogs' => $activityLogs,
+        ]);
     }
-    public function viewUserManagement(Request $request){
 
+    public function viewUserManagement(Request $request)
+    {
+        $users = User::all(); 
+        return view('main.userManagement', [
+            'users'=> $users
+        ]);
     }
+
+    public function getUserRole(Request $request)
+    {
+        $user = User::find($request->id); 
+    
+        if ($user) {
+            return response()->json([
+                'success' => 1,
+                'user' => [
+                    'role' => $user->role,
+                    'time_frame' => $user->time_frame ?? '',
+                    'timeLimit' => $user->timeLimit ?? ''
+                ]
+            ]);
+        }
+    
+        return response()->json(['success' => 0]); 
+    }
+    
+    public function changeRole(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:users,id',
+            'userRole' => 'required|string',
+            'time_frame' => 'string',
+            'timeLimit' => 'nullable|date',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(0); 
+        }
+    
+        $user = User::find($request->id);
+    
+        if (!$user) {
+            return response()->json(2); 
+        }
+    
+        $user->role = $request->userRole;
+    
+        // Handle time frame
+        if ($request->userRole == 'System Admin' || 'Staff' || 'Admin' && $request->time_frame) {
+            $user->time_frame = $request->time_frame;
+            $user->timeLimit = $request->time_frame === 'Temporary' ? $request->timeLimit : null;
+        } else {
+            $user->timeLimit = null;
+        }
+    
+        $user->save();
+    
+    
+        return response()->json(1); // Success
+    }   
+
     public function addProjects(Request $request){
 
     }
@@ -70,15 +147,4 @@ class SystemAdminManager extends Controller
     public function ViewProjectStatus(Request $request){
 
     }
-    // public function logoutSuperAdmin(){
-    //     if(session()->has('loggedInSystemAdmin')){
-    //         $clientId = session()->get('loggedInSystemAdmin')['id'];
-    //         $fullname = session()->get('loggedInSystemAdmin')['fullname'];
-    //         $role = session()->get('loggedInSystemAdmin')['role'];
-    //         $activity = "Logged out into the system.";
-    //         (new ActivityLogs)->userAction($fullname ,$clientId, $activity , $role);
-    //         session()->pull('loggedInSystemAdmin');
-    //         return redirect('/');
-    //     }
-    // }
 }

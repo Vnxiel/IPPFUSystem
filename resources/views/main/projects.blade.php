@@ -43,17 +43,6 @@
                                                 <a href={{ route('main.overview') }} class="btn btn-primary btn-sm">Overview</a>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>Rehabilation/Improvement of Palabotan-Banila-Caino-Anayo-Canarem</td>
-                                            <td>Aritao, Nueva Vizcaya</td>
-                                            <td>Ongoing <br>as of March 10, 2025 </td>
-                                            <td>₱50,000,000</td>
-                                            <td>XYZ Construction Inc.</td>
-                                            <td>82 calendar Days</td>
-                                            <td>
-                                                <a href={{ route('main.overview') }} class="btn btn-primary btn-sm">Overview</a>
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

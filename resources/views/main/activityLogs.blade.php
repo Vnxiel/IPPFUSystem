@@ -15,38 +15,23 @@
                                 <table id="activityLogs"class="table table-striped table-hover table-bordered projectInfo">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Activity</th>
-                                            <th>Role</th>
-                                            <th>Time and Date</th>
+                                            <th style="width: 10%;">ID</th>
+                                            <th style="width: 20%">Performed By</th>
+                                            <th style="width: 10%;">Role</th>
+                                            <th style="width: 40%;">Activity</th>
+                                            <th style="width: 20%;">Time and Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    @foreach($activityLogs as $log)
                                         <tr>
-                                            <td>Juan Dela Cruz logged in</td>
-                                            <td>SuperAdmin</td>
-                                            <td>March 9, 2025 - 08:15 AM</td>
+                                            <td>${log.id}</td>
+                                            <td>${log.performedBy}</td>
+                                            <td>${log.role}</td>
+                                            <td>${log.action}</td>
+                                            <td>${new Date(log.created_at).toLocaleString()}</td>
                                         </tr>
-                                        <tr>
-                                            <td>Maria Santos updated project details (Project ID: 1023)</td>
-                                            <td>Personnel Admin</td>
-                                            <td>March 9, 2025 - 09:05 AM</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Carlos Reyes uploaded a document (Filename: contract.pdf)</td>
-                                            <td>Staff</td>
-                                            <td>March 9, 2025 - 09:30 AM</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Anna Mendoza deleted a record (User ID: 57)</td>
-                                            <td>Admin</td>
-                                            <td>March 9, 2025 - 10:12 AM</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mark Villanueva logged out</td>
-                                            <td>Staff</td>
-                                            <td>March 9, 2025 - 10:45 AM</td>
-                                        </tr>
-
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>

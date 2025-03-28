@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>IPPFU</title>
         <!-- Bootstrap CSS -->
@@ -65,7 +66,7 @@
                                     <span class="fa fa-user me-1"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="/">Sign out</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="logout()">Sign out</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -86,11 +87,8 @@
 
 
 
-        <!-- jQuery -->
-        <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
         <!-- DataTables JS -->
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
@@ -101,8 +99,11 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <!-- Your Custom Scripts -->
-        <script src="{{ asset('js/data.js') }}"></script>
+        <script src="{{ asset('js/register-user.js') }}"></script>
+        <script src="{{ asset('js/getData.js') }}"></script>
         <script src="{{ asset('js/load-data.js') }}"></script>
+        <script src="{{ asset('js/activityLogs.js') }}"></script>
+        <script src="{{ asset('js/logout.js') }}"></script>
     </body>
 </html>
 
@@ -194,7 +195,3 @@
                 </div>
             </div>
         </div>
-
-
-
-
