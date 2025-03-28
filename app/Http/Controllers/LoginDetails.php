@@ -2,13 +2,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use RealRashid\SweetAlert\Facades\Alert;
-use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class LoginDetails extends Controller
 {
@@ -19,26 +17,18 @@ class LoginDetails extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::where('username', $request->username)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            Alert::error('Error', 'Invalid username or password.');
-            return back();
-        }
-
         try {
-            // Authenticate with OFMIS API to get the token
+            /*
+            // Step 1: Authenticate with OFMIS to get the token
             $apiResponse = Http::timeout(15)->post('http://172.17.16.13:8888/api/auth/login', [
-                'username' => 'administrator', 
+                'username' => 'administrator',
                 'password' => 'Junnie%123',
                 'FileName' => ''
             ]);
 
-            // Log API response
-            \Log::info('OFMIS Login API Response:', ['body' => $apiResponse->body()]);
+            Log::info('OFMIS Login API Response:', ['status' => $apiResponse->status(), 'body' => $apiResponse->body()]);
 
             if (!$apiResponse->successful()) {
-                \Log::error("OFMIS Login API failed: " . $apiResponse->body());
                 return response()->json([
                     'error' => 'Authentication failed with OFMIS.',
                     'response' => $apiResponse->body()
@@ -53,69 +43,51 @@ class LoginDetails extends Controller
                 ]);
             }
 
-            $token = $apiData['token'];
+            $token = trim($apiData['token']);
             Cache::put('ofmis_token', $token, now()->addMinutes(60));
             Session::put('ofmis_token', $token);
 
-            return response()->json([
-                'message' => 'Login API working correctly',
-                'token' => $token
-            ]);
+            Log::info('OFMIS Token Retrieved:', ['token' => $token]);
 
-        } catch (\Exception $e) {
-            \Log::error('OFMIS Login API Error:', ['message' => $e->getMessage()]);
-            return response()->json([
-                'error' => 'Could not connect to OFMIS API. Check network.',
-                'exception' => $e->getMessage()
-            ]);
-        }
-    }
+            // Step 2: Fetch user details using the input username dynamically
+            $apiUrl = "http://172.17.16.13:8888/OFMIS/user/" . trim($request->username);
+            Log::info('OFMIS User API Request:', ['url' => $apiUrl, 'token' => $token]);
 
-    public function getUserDetails(Request $request)
-    {
-        try {
-            // Retrieve token from session
-            $token = Session::get('ofmis_token');
-            if (!$token) {
+            $userDetailsResponse = Http::timeout(15)->withHeaders([
+                'Authorization' => "Bearer {$token}",
+                'Content-Type'  => 'application/json',
+                'Accept'        => 'application/json',
+                'X-Requested-With' => 'XMLHttpRequest'
+            ])->get($apiUrl);
+            
+
+            Log::info('OFMIS User API Response:', ['status' => $userDetailsResponse->status(), 'body' => $userDetailsResponse->body()]);
+
+            if ($userDetailsResponse->status() == 401) {
                 return response()->json([
-                    'error' => 'OFMIS token missing. Please login first.'
+                    'error' => 'Unauthorized request. The token may be invalid or expired.',
+                    'response' => $userDetailsResponse->body()
                 ]);
             }
-    
-            // Log API request details
-            \Log::info('Calling OFMIS User API with token:', ['Authorization' => 'Bearer ' . $token]);
-
-            // Fetch user credentials from OFMIS (Using GET instead of POST)
-            $userDetailsResponse = Http::timeout(15)->withHeaders([
-                'Authorization' => 'Bearer ' . trim($token),
-                'Accept' => 'application/json'
-            ])->get('http://172.17.16.13:8888/OFMIS/user/');
-
-            // Log raw response
-            \Log::info('OFMIS User API Raw Response:', ['body' => $userDetailsResponse->body()]);
 
             if (!$userDetailsResponse->successful()) {
-                \Log::error("OFMIS User API failed:", [
-                    'status' => $userDetailsResponse->status(),
-                    'response' => $userDetailsResponse->body()
-                ]);
                 return response()->json([
                     'error' => 'User credentials not found in OFMIS system.',
-                    'status' => $userDetailsResponse->status(),
                     'response' => $userDetailsResponse->body()
                 ]);
             }
 
-            // Decode and log user details
             $userDetails = $userDetailsResponse->json();
-            \Log::info('OFMIS User Details Retrieved:', $userDetails);
+            Log::info('OFMIS User Detail Retrieved:', $userDetails);
 
-            // Log user into Laravel session
-            Auth::login($user);
-            $userRole = $user->role; // Ensure your User model has a 'role' field
+            // 🎉 Display Pop-Up with Retrieved User Details 🎉
+            Alert::success('User Verified', "Name: {$userDetails['name']}<br>Role: {$userDetails['role']}")->html();
+*/
+            // Store user details in session (optional)
+            Session::put('ofmis_user', $userDetails);
 
-            // Redirect based on user role
-            return match ($userRole) {
+            // Redirect based on role
+            return match ($userDetails['role']) {
                 'System Admin' => redirect()->route('main.index'),
                 'admin' => redirect()->route('admin.dashboard'),
                 'staff' => redirect()->route('staff.dashboard'),
@@ -123,9 +95,9 @@ class LoginDetails extends Controller
             };
 
         } catch (\Exception $e) {
-            \Log::error('OFMIS User API Error:', ['message' => $e->getMessage()]);
+            Log::error('OFMIS API Error:', ['message' => $e->getMessage()]);
             return response()->json([
-                'error' => 'Could not connect to User API.',
+                'error' => 'Could not connect to OFMIS API. Check network.',
                 'exception' => $e->getMessage()
             ]);
         }
@@ -135,7 +107,7 @@ class LoginDetails extends Controller
     {
         Cache::forget('ofmis_token');
         Session::forget('ofmis_token');
-        Auth::logout();
+        Session::forget('ofmis_user');
         return redirect()->route('login');
     }
 }
