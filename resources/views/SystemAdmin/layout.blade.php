@@ -63,7 +63,7 @@
                         </ul>
                         <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
                             <div class="dropdown">
-                             <?php
+                            <?php
 // ✅ Get username from session
 $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
 ?>

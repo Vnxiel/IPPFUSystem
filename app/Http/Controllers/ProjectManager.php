@@ -152,16 +152,16 @@ class ProjectManager extends Controller
         }
     }
 
-    public function updateProject(Request $request, $id)
+    public function updateProject(Request $request, $projectID)
 {
     try {
-        Log::info("Updating project ID: $id", $request->all());
+        Log::info("Updating project ID: $projectID", $request->all());
 
         // Validate input fields
         $validator = \Validator::make($request->all(), [
             'projectTitle' => 'required|string|max:255',
             'projectLoc' => 'required|string|max:255',
-            'projectID' => 'required|string|max:50|unique:projects_tbl,projectID,' . $id . ',projectID',
+            'projectID' => 'required|string|max:50|unique:projects_tbl,projectID,' . $projectID . ',projectID',
             'projectContractor' => 'nullable|string|max:255',
             'sourceOfFunds' => 'nullable|string|max:255',
             'otherFund' => 'nullable|string|max:255',
@@ -199,7 +199,7 @@ class ProjectManager extends Controller
         }
 
         // Find the project by projectID
-        $project = showDetails::where('projectID', $id)->first();
+        $project = showDetails::where('projectID', $projectID)->first();
 
         if (!$project) {
             return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
@@ -217,7 +217,7 @@ class ProjectManager extends Controller
         }
 
         // Update project details
-        $project->update($request->except(['projectID', 'ongoingStatus', 'ongoingDate']));
+        $project->update($request->except(['projectID']));
 
         return response()->json([
             'status' => 'success',
