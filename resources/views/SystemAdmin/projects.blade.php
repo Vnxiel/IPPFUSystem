@@ -19,24 +19,24 @@
                         </div>
                         <div class="row">
                             <div class="table-container table-responsive">
-                                <table id="projects" class="table table-striped table-hover table-bordered">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th style="width: 25%;">Project Title</th>
-                                            <th style="width: 15%;">Location</th>
-                                            <th style="width: 15%;">Status</th>
-                                            <th style="width: 10%;">Contract Amount</th>
-                                            <th style="width: 15%;">Contractor</th>
-                                            <th style="width: 12%;">Duration</th>
-                                            <th style="width: 8%;">Action</th>
-                                        </tr>   
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="7" class="text-center">Loading projects...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <table id="projects" class="table table-striped table-hover table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Project Title</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Contract Amount</th>
+                                        <th>Contractor</th>
+                                        <th>Duration</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="7" class="text-center">Loading projects...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             </div>
                         </div>
                     </div>

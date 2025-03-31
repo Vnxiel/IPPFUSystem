@@ -3,73 +3,16 @@
 @section('title', 'Dashboard Page')
 
 @section('content') 
-                <!-- Summary of No. of Projects Area -->
-                <div class="jumbotron jumbotron-fluid">
-                    <div class="container">
-                        <div class="row mt-1">
-                            <div class="col-12 d-flex flex-nowrap justify-content-center justify-content-md-between align-items-center overflow-auto">
-                             <!-- Total No. of Projects -->
-                            <div class="card m-1" style="width: 12rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total No. of Projects</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="totalProjects">0</p>
-                                </div>
-                            </div>
-
-                            <!-- On-going Projects -->
-                            <div class="card m-1" style="width: 12rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">On-going Projects</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="ongoingProjects">0</p>
-                                </div>
-                            </div>
-
-                            <!-- Completed Projects -->
-                            <div class="card m-1" style="width: 12rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Completed Projects</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="completedProjects">0</p>
-                                </div>
-                            </div>
-
-                            <!-- Total Budget Allocated -->
-                            <div class="card m-1" style="width: 16rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total Budget Allocated</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="totalBudget">₱0</p>
-                                </div>
-                            </div>
-
-                            <!-- Total Budget Used -->
-                            <div class="card m-1" style="width: 16rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total Budget Used</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="totalUsed">₱0</p>
-                                </div>
-                            </div>
-
-                            <!-- Remaining Balance -->
-                            <div class="card m-1" style="width: 16rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Remaining Balance</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="remainingBalance">₱0</p>
-                                </div>
-                            </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <hr class="mx-2">
                 <div class="container-fluid px-3">
                     <div class="col-md-12 m-2">
                         <div class="row">
-                            <h5 class="p-0">Recent Projects</h5>
+                            <h5 class="p-0">Trash</h5>
                             <hr>
                         </div>
                         <div class="row">
                             <div class="table-container table-responsive">
-                                <table id="recentProjects" class="table table-striped table-hover table-bordered">
+                            <table id="projects" class="table table-striped table-hover table-bordered">
                                     <thead class="table-light">
                                         <tr>
                                             <th style="width: 25%;">Project Title</th>
@@ -81,12 +24,19 @@
                                             <th style="width: 8%;">Action</th>
                                         </tr>   
                                     </thead>
-                                    <tbody id="projectTableBody">
+                                    <tbody>
                                         <tr>
-                                            <td colspan="7" class="text-center">Loading projects...</td>
+                                            <td>Road Widening Project</td>
+                                            <td>Quezon City</td>
+                                            <td>Ongoing <br>as of March 10, 2025 </td>
+                                            <td>₱2, 109,765.55</td>
+                                            <td>XYZ Construction Inc.</td>
+                                            <td>12 calendar days</td>
+                                            <td>
+                                                <a href="" class="btn btn-primary btn-sm">Restore</a>
+                                            </td>
                                         </tr>
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>
@@ -95,12 +45,12 @@
 
 
 
-        <!-- Add New Project Modal -->
+        <!-- Update Project Modal -->
         <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
             <div class="modal-dialog  modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="appNewProjectLabel">Add New Project</h1>
+                        <h1 class="modal-title fs-5" id="appNewProjectLabel">Update Project</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form>
@@ -264,7 +214,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-primary">Update</button>
                             </div>
                         </div>
                     </form>
@@ -273,144 +223,4 @@
         </div>
 
 
-
-
-        <!-- DataTable Initialization -->
-        <script>    
-         document.addEventListener("DOMContentLoaded", function () {
-    fetchProjectSummary(); //  Fetch project summary stats
-    fetchProjects(); //  Fetch projects table data
-});
-
-//  Fetch Project Summary (Total Projects, Ongoing, Completed, Budget)
-function fetchProjectSummary() {
-    fetch("/projects/summary")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Project Summary Data:", data);
-
-            if (data.status === "success" && data.data) {
-                let summary = data.data;
-                document.getElementById("totalProjects").textContent = summary.totalProjects;
-                document.getElementById("ongoingProjects").textContent = summary.ongoingProjects;
-                document.getElementById("completedProjects").textContent = summary.completedProjects;
-
-                //  Update budget values
-                document.getElementById("totalBudget").textContent = `₱${summary.totalBudget}`;
-                document.getElementById("totalUsed").textContent = `₱${summary.totalUsed}`;
-                document.getElementById("remainingBalance").textContent = `₱${summary.remainingBalance}`;
-            } else {
-                console.error("Invalid summary data received.");
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching project summary:", error);
-        });
-}
-
-function fetchProjects() {
-    fetch("/projects/showDetails")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Fetched Projects:", data);
-
-            if (data.status === "success" && Array.isArray(data.projects)) {
-                let tbody = document.getElementById("projectTableBody");
-                tbody.innerHTML = ""; //  Clear old data
-
-                if (data.projects.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" class="text-center">No projects available.</td></tr>`;
-                    return;
-                }
-
-                let projects = data.projects.map(project => [
-                    project.projectTitle || "N/A",
-                    project.projectLoc || "N/A",
-                    project.projectStatus || "N/A",
-                    `₱${parseFloat(project.contractAmount || 0).toLocaleString()}`,
-                    project.projectContractor || "N/A",
-                    project.projectContractDays ? `${project.projectContractDays} days` : "N/A",
-                    `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.projectID}">Overview</button>`
-                ]);
-
-                console.log("Processed Data for Table:", projects);
-
-                //  Destroy existing DataTable before reloading
-                if ($.fn.DataTable.isDataTable("#recentProjects")) {
-                    $('#recentProjects').DataTable().clear().destroy();
-                    console.log("Existing DataTable destroyed.");
-                }
-
-                //  Initialize DataTable with correct format
-                $('#recentProjects').DataTable({
-                    data: projects,
-                    columns: [
-                        { title: "Project Title" },
-                        { title: "Location" },
-                        { title: "Status" },
-                        { title: "Contract Amount" },
-                        { title: "Contractor" },
-                        { title: "Duration" },
-                        { title: "Action", orderable: false }
-                    ],
-                    responsive: true,
-                    scrollX: true,
-                    paging: true,
-                    searching: true,
-                    autoWidth: false
-                });
-
-                console.log("DataTable Reloaded Successfully!");
-            } else {
-                console.error("Invalid project data received.");
-            }
-        })
-        .catch(error => {
-            console.error("Error loading projects:", error);
-        });
-}
-
-//  Handle Overview Button Click
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("overview-btn")) {
-        let projectID = e.target.getAttribute("data-id");
-
-        //  Store projectID in session via AJAX
-        fetch("/store-project-id", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") // Laravel CSRF token
-            },
-            body: JSON.stringify({ projectID })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log("Project ID stored successfully, redirecting...");
-
-                //  Redirect to main.overview (correct Laravel route)
-                window.location.href = "/main/overview";
-            } else {
-                console.error("Failed to store project ID:", data);
-            }
-        })
-        .catch(error => console.error("Error storing project ID:", error));
-    }
-});
-
-
-
-
-$(document).ready(function() {
-                $('#sourceOfFunds').on('change', function() {
-                    if ($(this).val() === 'Others') {
-                        $('#otherFundContainer').slideDown(); // Show input with animation
-                    } else {
-                        $('#otherFundContainer').slideUp(); // Hide input with animation
-                    }
-                });
-            });        
-        
-        </script>
 @endsection

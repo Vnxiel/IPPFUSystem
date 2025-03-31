@@ -131,7 +131,8 @@ class UserManager extends Controller
                         return response()->json(['error' => 'Session not found'], 401);
                         }
 
-                        return 1;
+                        // Return values based on user role
+                         return $user->role === 'System Admin' ? 1 : ($user->role === 'Admin' ? 2 : 0);
                     }
                 } else {
                 return 401;
@@ -145,7 +146,97 @@ class UserManager extends Controller
 
     public function validateUser(Request $request) {}
 
-    public function pointToSystemAccount(Request $request) {}
+    public function pointToSystemAccount(Request $request)
+    {
+        //  Step 1: I-validate ang request para siguraduhin na may "username" na ipinasok
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|max:20', // Dapat may username
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->getMessageBag()], 400); 
+            // Kung hindi valid, ibalik ang error message (HTTP 400 - Bad Request)
+        }
+
+        //  Step 2: Hanapin ang user sa **local database**
+        $user = User::where('username', $request->input('username'))->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+            // Kung walang nakita sa database, ibalik ang error (HTTP 404 - Not Found)
+        }
+
+        //  Step 3: Gamitin ang **OFMIS API Authentication** para makakuha ng token
+        $ofmisAuthResponse = $this->authenticateWithOFMIS();
+
+        if (!$ofmisAuthResponse || !isset($ofmisAuthResponse['token'])) {
+            return response()->json(['error' => 'OFMIS Authentication Failed'], 401);
+            // Kung hindi nagtagumpay sa authentication, ibalik ang error (HTTP 401 - Unauthorized)
+        }
+
+        $token = $ofmisAuthResponse['token']; // Kunin ang authentication token mula sa response
+
+        //  Step 4: Gamitin ang token para kunin ang user details mula sa OFMIS API
+        $ofmisUserData = $this->getOFMISUserData($token, $user->username);
+
+        if (!$ofmisUserData) {
+            return response()->json(['error' => 'Failed to retrieve OFMIS user data'], 401);
+            // Kung walang nakuha na user data, ibalik ang error (HTTP 401 - Unauthorized)
+        }
+
+        //  Step 5: I-compare ang user data sa local database at sa OFMIS API
+        if (
+            $user->fullname === $ofmisUserData['fullname'] && // I-check kung parehas ang pangalan
+            $user->position === $ofmisUserData['position']   // I-check kung parehas ang posisyon
+        ) {
+            //  Step 6: Kung tugma, i-log in ang user at i-save ang session
+            $request->session()->put('loggedIn', [
+                'ofmis_id' => $user->ofmis_id,
+                'performedBy' => $user->username,
+                'role' => $user->role,
+                'action' => "Logged in into the system.",
+            ]);
+
+            return response()->json(['status' => 'success', 'message' => 'User logged in']);
+            // Ibalik ang success response
+        } else {
+            return response()->json(['error' => 'User credentials do not match OFMIS records'], 401);
+            // Kung hindi tugma ang credentials, ibalik ang error (HTTP 401 - Unauthorized)
+        }
+    }
+
+    /**
+     *  Function: authenticateWithOFMIS()
+     *  Magpapadala ng username at password sa OFMIS Authentication API upang makakuha ng token.
+     */
+    private function authenticateWithOFMIS($username, $password)
+    {
+        $authUrl = "http://172.17.16.13:8888/api/auth/login"; // OFMIS auth URL
+
+        $response = Http::post($authUrl, [
+            'username' => 'administrator',
+            'password' => 'Junnie%123',
+            'FileName' => ''
+        ]);
+
+        return $response->json(); // Ibalik ang response mula sa API (kasama ang token kung successful)
+    }
+
+    /**
+     *  Function: getOFMISUserData()
+     *  Gagamitin ang authentication token para makuha ang user details mula sa OFMIS API.
+     */
+    private function getOFMISUserData($token, $username)
+    {
+        $userInfoUrl = "http://172.17.16.13:8888/OFMIS/user/{$username}"; //  Palitan ito ng totoong OFMIS endpoint
+
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer $token", // Ilagay ang token sa request header
+        ])->get($userInfoUrl);
+
+        return $response->json(); // Ibalik ang response mula sa API (kasama ang user details kung successful)
+    }
+
 
     public function getUserAction(Request $request) {}
 
