@@ -176,7 +176,7 @@
             <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#projectModal">
                 <i class="fa fa-edit"></i>
             </button>
-            <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#generateProjectModal">
+            <button class="btn btn-primary btn-sm mb-2 w-100">
                 <i class="fa fa-download"></i>
             </button>
             <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#trashModal">
@@ -439,8 +439,5 @@
         </div>
     </div>
 </div>
-
-
-
 
 @endsection

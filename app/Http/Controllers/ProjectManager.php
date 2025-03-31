@@ -8,6 +8,7 @@ use App\Models\showDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProjectManager extends Controller
 {
@@ -37,13 +38,13 @@ class ProjectManager extends Controller
             'timeExtension' => 'nullable|string|max:50',
             'revisedTargetCompletion' => 'nullable|string|max:50',
             'CompletionDate' => 'nullable|string|max:50',
-            'abc' => 'nullable|numeric',
-            'contractAmount' => 'nullable|numeric',
-            'engineering' => 'nullable|numeric',
-            'mqc' => 'nullable|numeric',
-            'contingency' => 'nullable|numeric',
-            'bid' => 'nullable|numeric',
-            'appropriate' => 'nullable|numeric',
+            'abc' => 'nullable|string',
+            'contractAmount' => 'nullable|string',
+            'engineering' => 'nullable|string',
+            'mqc' => 'nullable|string',
+            'contingency' => 'nullable|string',
+            'bid' => 'nullable|string',
+            'appropriate' => 'nullable|string',
         ]);
     
         // If validation fails, return errors
@@ -72,21 +73,76 @@ class ProjectManager extends Controller
 
     public function showDetails()
     {
-    try {
-        $projects = showDetails::orderBy('created_at', 'desc')->get();
+        try {
+            // Siguraduhin na ang `is_hidden` ay `0` o `NULL`, kaya gumamit ng `whereNull` at `orWhere`
+            $projects = showDetails::where(function ($query) {
+                    $query->whereNull('is_hidden')  // Kapag walang value ang is_hidden
+                          ->orWhere('is_hidden', 0); // O kaya kapag `0` ang value
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+    
+            return response()->json([
+                'status' => 'success',
+                'projects' => $projects
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching projects: ' . $e->getMessage());
+    
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error fetching projects. Please try again.'
+            ], 500);
+        }
+    }
 
-        return response()->json([
-            'status' => 'success',
-            'projects' => $projects
-        ]);
+    public function fetchTrashedProjects()
+    {
+        try {
+            // Kunin lang ang mga projects na may `is_hidden = 1`
+            $projects = showDetails::where('is_hidden', 1)
+                ->orderBy('created_at', 'desc')
+                ->get();
+    
+            return response()->json(['status' => 'success', 'projects' => $projects]);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching trashed projects: ' . $e->getMessage());
+    
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error fetching trashed projects. Please try again.'
+            ], 500);
+        }
+    }
+    
+    public function restoreProject($projectID)
+{
+    try {
+        // Find the project by ID
+        $project = showDetails::where('projectID', $projectID)->first();
+
+        if (!$project) {
+            return response()->json(["status" => "error", "message" => "Project not found."], 404);
+        }
+
+        // Set is_hidden to 0 to restore the project
+        $project->is_hidden = 0;
+        $project->save();
+
+        return response()->json(["status" => "success", "message" => "Project successfully restored."]);
     } catch (\Exception $e) {
-        \Log::error('Error fetching projects: ' . $e->getMessage());
+        \Log::error('Error restoring project: ' . $e->getMessage());
+        
         return response()->json([
-            'status' => 'error',
-            'message' => 'Error fetching projects. Please try again.'
+            "status" => "error",
+            "message" => "Error restoring project. Please try again."
         ], 500);
     }
-    }
+}
+
+    
+
+    
 
     public function getProject($projectID)
     {
@@ -152,16 +208,16 @@ class ProjectManager extends Controller
         }
     }
 
-    public function updateProject(Request $request, $id)
+    public function updateProject(Request $request, $projectID)
 {
     try {
-        Log::info("Updating project ID: $id", $request->all());
+        Log::info("Updating project ID: $projectID", $request->all());
 
         // Validate input fields
         $validator = \Validator::make($request->all(), [
             'projectTitle' => 'required|string|max:255',
             'projectLoc' => 'required|string|max:255',
-            'projectID' => 'required|string|max:50|unique:projects_tbl,projectID,' . $id . ',projectID',
+            'projectID' => 'required|string|max:50|unique:projects_tbl,projectID,' . $projectID . ',projectID',
             'projectContractor' => 'nullable|string|max:255',
             'sourceOfFunds' => 'nullable|string|max:255',
             'otherFund' => 'nullable|string|max:255',
@@ -180,13 +236,13 @@ class ProjectManager extends Controller
             'timeExtension' => 'nullable|string|max:50',
             'revisedTargetCompletion' => 'nullable|string|max:50',
             'completionDate' => 'nullable|string|max:50',
-            'abc' => 'nullable|numeric',
-            'contractAmount' => 'nullable|numeric',
-            'engineering' => 'nullable|numeric',
-            'mqc' => 'nullable|numeric',
-            'contingency' => 'nullable|numeric',
-            'bid' => 'nullable|numeric',
-            'appropriate' => 'nullable|numeric',
+            'abc' => 'nullable|string',
+            'contractAmount' => 'nullable|string',
+            'engineering' => 'nullable|string',
+            'mqc' => 'nullable|string',
+            'contingency' => 'nullable|string',
+            'bid' => 'nullable|string',
+            'appropriate' => 'nullable|string',
         ]);
 
         // If validation fails, return errors
@@ -199,7 +255,7 @@ class ProjectManager extends Controller
         }
 
         // Find the project by projectID
-        $project = showDetails::where('projectID', $id)->first();
+        $project = showDetails::where('projectID', $projectID)->first();
 
         if (!$project) {
             return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
@@ -217,7 +273,7 @@ class ProjectManager extends Controller
         }
 
         // Update project details
-        $project->update($request->except(['projectID', 'ongoingStatus', 'ongoingDate']));
+        $project->update($request->except(['projectID']));
 
         return response()->json([
             'status' => 'success',
@@ -232,6 +288,36 @@ class ProjectManager extends Controller
             'message' => 'Failed to update project.',
             'error_details' => $e->getMessage()
         ]);
+    }
+}
+
+public function trashProject(Request $request, $projectID)
+{
+    $project = showDetails::where('projectID', $projectID)->first();
+
+    if (!$project) {
+        return response()->json(["status" => "error", "message" => "Project not found."], 404);
+    }
+
+    $project->is_hidden = 1;
+    $project->save();
+
+    return response()->json(["status" => "success", "message" => "Project successfully archived."]);
+}
+
+public function generateProjectPDF($projectID)
+{
+    try {
+        // Fetch project details
+        $project = showDetails::where('projectID', $projectID)->first();
+        // Load a Blade view into PDF
+        $pdf = Pdf::loadView('pdf.project', compact('project'));
+
+        // Return the generated PDF as a download
+        return $pdf->download("Project_{$project->projectTitle}.pdf");
+    } catch (\Exception $e) {
+        \Log::error("PDF Generation Error: " . $e->getMessage());
+        return back()->with('error', 'Failed to generate project PDF.');
     }
 }
 

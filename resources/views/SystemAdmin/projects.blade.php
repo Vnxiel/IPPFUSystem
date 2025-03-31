@@ -314,87 +314,79 @@
 
             // Handle Add Project Form Submission
             document.getElementById("addProjectForm").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent normal form submission
+                event.preventDefault(); // Prevent normal form submission
+                var statusValue = document.getElementById("projectStatus").value;
+                                var ongoingInput = document.getElementById("ongoingStatus");
 
-    // Remove the peso sign before submission
-    document.querySelectorAll(".currency-input").forEach(input => {
-        input.value = input.value.replace(/[₱,]/g, ""); // Remove peso sign and commas
-    });
+                                if (statusValue === "Ongoing") {
+                                    var percentage = ongoingInput.value.trim();
+                                    var date = document.getElementById("ongoingDate").value;
 
-    var statusValue = document.getElementById("projectStatus").value;
-    var ongoingInput = document.getElementById("ongoingStatus");
+                                    if (percentage && date) {
+                                        // Prevent duplicate concatenation
+                                        if (!ongoingInput.value.includes(" - ")) {
+                                            ongoingInput.value = percentage + " - " + date;
+                                        }
+                                    }
+                                }
+                            let formData = new FormData(this);
 
-    if (statusValue === "Ongoing") {
-        var percentage = ongoingInput.value.trim();
-        var date = document.getElementById("ongoingDate").value;
+                            fetch("{{ route('projects.addProject') }}", {
+                                method: "POST",
+                                body: formData,
+                                headers: {
+                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                                    "Accept": "application/json"
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === "success") {
+                                    Swal.fire({
+                                        title: "Success!",
+                                        text: data.message,
+                                        icon: "success",
+                                        confirmButtonText: "OK"
+                                    }).then(() => {
+                                        $("#addNewProjectModal").modal("hide"); // Hide modal
+                                        document.getElementById("addProjectForm").reset(); // Reset form
+                                        loadProjects(); // Reload projects without refreshing page
+                                    });
+                                } else {
+                                    let errorMsg = data.message;
+                                    
+                                    if (data.errors) {
+                                        errorMsg += "<ul>";
+                                        for (const [field, errors] of Object.entries(data.errors)) {
+                                            errorMsg += `<li>${errors.join(", ")}</li>`;
+                                        }
+                                        errorMsg += "</ul>";
+                                    }
 
-        if (percentage && date) {
-            // Prevent duplicate concatenation
-            if (!ongoingInput.value.includes(" - ")) {
-                ongoingInput.value = percentage + " - " + date;
-            }
-        }
-    }
+                                    Swal.fire({
+                                        title: "Error!",
+                                        html: errorMsg,
+                                        icon: "error",
+                                        confirmButtonText: "OK"
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: "An unexpected error occurred. Please try again.",
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
+                                console.error("Error:", error);
+                            });
+                        });
 
-    let formData = new FormData(this);
+                        document.addEventListener("DOMContentLoaded", function () {
+                            loadProjects(); // Load projects on page load
+                        });
 
-    fetch("{{ route('projects.addProject') }}", {
-        method: "POST",
-        body: formData,
-        headers: {
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-            "Accept": "application/json"
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            Swal.fire({
-                title: "Success!",
-                text: data.message,
-                icon: "success",
-                confirmButtonText: "OK"
-            }).then(() => {
-                $("#addNewProjectModal").modal("hide"); // Hide modal
-                document.getElementById("addProjectForm").reset(); // Reset form
-                loadProjects(); // Reload projects without refreshing page
-            });
-        } else {
-            let errorMsg = data.message;
-
-            if (data.errors) {
-                errorMsg += "<ul>";
-                for (const [field, errors] of Object.entries(data.errors)) {
-                    errorMsg += `<li>${errors.join(", ")}</li>`;
-                }
-                errorMsg += "</ul>";
-            }
-
-            Swal.fire({
-                title: "Error!",
-                html: errorMsg,
-                icon: "error",
-                confirmButtonText: "OK"
-            });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: "Error!",
-            text: "An unexpected error occurred. Please try again.",
-            icon: "error",
-            confirmButtonText: "OK"
-        });
-        console.error("Error:", error);
-    });
-});
-
-
-    document.addEventListener("DOMContentLoaded", function () {
-        loadProjects(); // Load projects on page load
-    });
-
-    function loadProjects() {
+                        function loadProjects() {
     fetch("{{ route('projects.showDetails') }}")
         .then(response => response.json())
         .then(data => {
