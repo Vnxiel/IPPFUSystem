@@ -1,16 +1,28 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\APIController;
 use App\Http\Controllers\UserManager;
 use App\Http\Controllers\SystemAdminManager;
 use App\Http\Controllers\ActivityLogs; // Import the ActivityLogs controller
 use App\Http\Controllers\ProjectManager;
 use App\Http\Controllers\FileManager;
+use App\Http\Controllers\LoginDetails;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\ProjectFileController;
 
 Route::get('/', function() {
     return view('index');
 });
+
+//  Authentication Routes
+// Route::get('/login', function () {
+//     return view('auth.login');
+// })->name('login');
+
+// Route::post('/login/authenticate', [LoginDetails::class, 'authenticate'])->name('login.authenticate');
+// Route::post('/logout', [LoginDetails::class, 'logout'])->name('logout');
+
 
 Route::controller(UserManager::class)->group(function () {
     Route::get('/systemAdmin/register', 'goToRegister')->name('systemAdmin.register');
@@ -37,6 +49,26 @@ Route::controller(SystemAdminManager::class)->group(function () {
     Route::get('/main/activityLogs', 'viewActivityLogs')->name('main.activityLogs');
 
 });
+
+//  Grouped Routes (Requires Authentication)
+// Route::middleware(['auth'])->group(function () {
+
+    Route::controller(ProjectManager::class)->group(function () {
+        Route::post('/projects/addProject', 'addProject')->name('projects.addProject');
+        Route::get('/projects/showDetails', 'showDetails')->name('projects.showDetails');
+        // Route::get('/projects/getProject/{projectID}', 'getProject')->name('projects.getProject');
+        // Route::get('/projects/summary', 'getProjectSummary')->name('projects.summary');
+        // Route::put('/projects/update/{projectID}', 'updateProject')->name('projects.update'); // Ensure ID consistency
+    });
+
+//     Route::post('/store-project-id', [SessionController::class, 'storeProjectID'])->name('store.project.id');
+//     Route::get('/get-project-id', [SessionController::class, 'getProjectID']);
+
+//     Route::controller(FileManager::class)->group(function () {
+//         Route::post('/uploadFile', 'uploadFile')->name('upload.file');
+//         Route::get('/files/{projectID}', 'getFiles')->name('get.files');
+//         Route::delete('/delete/{fileID}', 'delete')->name('delete.file');
+//     });
 
 Route::controller(ActivityLogs::class)->group(function () {
     // Activity Logs Routes
@@ -84,3 +116,10 @@ Route::controller(ActivityLogs::class)->group(function () {
      Route::get('/files/{projectID}', 'getFiles')->name('get.files');
      Route::delete('/delete/{fileID}', 'delete')->name('delete.file');
  });
+    Route::controller(ActivityLogs::class)->group(function () {
+        // Activity Logs Routes
+        Route::post('/activity-logs','store'); // Store a new log
+        Route::get('/activity-logs', 'index'); // Retrieve all logs
+        Route::get('/getActivityLogs', 'index')->name(name:'getActivityLogs');
+    });
+// });

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class addProject extends Model
 {
     use HasFactory;
-
     protected $table = 'projects_tbl'; // Ensure this matches your SQL Server table name
     protected $primaryKey = 'projectID'; // Define primary key if it's different from 'id'
     public $incrementing = false; // Disable auto-increment if projectID is manually set

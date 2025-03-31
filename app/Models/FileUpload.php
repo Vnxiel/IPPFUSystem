@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class FileUpload extends Model
 {
     use HasFactory;
-
     protected $table = 'projectfiles_tbl'; // Ensure it matches your database table name
 
     protected $fillable = [
         'projectID',
         'fileName',
         'fileID',
+        'file',
         'actionBy',
     ];
 

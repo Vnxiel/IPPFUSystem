@@ -51,6 +51,74 @@
                                 </div>
                             </div>
                             <div class="row p-1 border-bottom">
+                <hr class="mx-2">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 d-flex align-items-center gap-2">
+                            <a href="{{ route('main.projects') }}" type="button" class="btn btn-danger btn-sm"><span class="fa fa-arrow-left"></span></a>
+                            <h5 class="m-0">Project Overview</h5>
+                        </div>
+                        <hr class="mt-2">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-11">
+                            <div class="card bg-light mb-1">
+                                <div class="card-header">
+                                    <strong id="projectTitle">Construction of Barangay Multi-Purpose Hall</strong>
+                                </div>
+                                <div class="card-body" style="font-size: 14px;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <!-- Project Details -->
+                                            <div class="row p-1 border-bottom">
+                                                <div class="col-md-4 d-flex align-items-center">
+                                                    <strong id="projectLoc">Location:</strong>
+                                                </div>
+                                                <div class="col-md-8 d-flex align-items-center">
+                                                    Barangay San Isidro, Quezon City
+                                                </div>
+                                            </div>
+                                            <div class="row p-1 border-bottom">
+                                                <div class="col-md-4 d-flex align-items-center">
+                                                    <strong id="projectDescription">Project Description:</strong>
+                                                </div>
+                                                <div class="col-md-8 d-flex align-items-center">
+                                                    Expansion of a 4-lane road to 6 lanes
+                                                </div>                                                 
+                                            </div>
+                                            <div class="row p-1 border-bottom">
+                                                <div class="col-md-4 d-flex align-items-center">
+                                                    <strong id="projectContractor">Contractor:</strong>
+                                                </div>
+                                                <div class="col-md-8 d-flex align-items-center">
+                                                    JKL Builders & Co.
+                                                </div>
+                                            </div>
+                                            <div class="row p-1 border-bottom">
+                                                <div class="col-md-4 d-flex align-items-center">
+                                                    <strong id="projectID">Project ID:</strong>
+                                                </div>
+                                                <div class="col-md-8 d-flex align-items-center">
+                                                    003102025-01
+                                                </div>
+                                            </div>
+                                            <div class="row p-1 border-bottom">
+                                                <div class="col-md-4 d-flex align-items-center">
+                                                    <strong id="modeOfImplementation">Mode of Implementation:</strong>
+                                                </div>
+                                                <div class="col-md-8 d-flex align-items-center">
+                                                    Public Bidding
+                                                </div>
+                                            </div>
+                                            <div class="row p-1 border-bottom">
+                                                <div class="col-md-4 d-flex align-items-center">
+                                                    <strong id="projectStatus">Status:</strong>
+                                                </div>
+                                                <div class="col-md-8 d-flex align-items-center">
+                                                    <span class="badge bg-success" id="ongoingStatus">On-going</span>&nbsp;50% as of January 31, 2025
+                                                </div>
+                                            </div>
+                                            <div class="row p-1 border-bottom">
                                                 <div class="col-md-4 d-flex align-items-center">
                                                     <strong>Notice of Award:</strong>
                                                 </div>
@@ -254,6 +322,8 @@
             </div>
             <div class="modal-body">
             <form id="updateProjectForm">
+                <form id="updateProjectForm">
+                    @csrf
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-1">
@@ -287,6 +357,8 @@
                             <div class="mb-1">
                                 <label for="sourceOfFunds" class="form-label fw-bolder">Select Fund Source</label>
                                 <select id="sourceOfFunds" class="form-select" alt="source">
+                                <label for="sourceOfFunds" class="form-label fw-bolder">Select Fund Source</label>
+                                <select id="sourceOfFunds" class="form-select" alt="source">
                                     <option value="">-- --</option>
                                     <option value="Wages">Wages</option>
                                     <option value="% Mobilization">% Mobilization</option>
@@ -309,6 +381,7 @@
                             <div class="mb-1">
                                 <label for="contractor" class="form-label">Mode of Implementation</label>
                                 <input type="text" class="form-control" id="modeOfImplementation">
+                                <input type="text" class="form-control" id="modeOfImplementation" value="JKL Builders & Co.">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -436,8 +509,503 @@
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </form>
+                                <label for="appropriate" class="form-label">Appropriation</label>
+                                <input type="text" class="form-control" id="appropriate" value="PHP 2,500,000.00">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
+
+<script>
+        $(document).ready(function() {
+            $('#editStatus').on('change', function() {
+                if ($(this).val() === 'Ongoing') {
+                    $('#ongoingStatusContainer').stop(true, true).slideDown();
+                } else {
+                    $('#ongoingStatusContainer').stop(true, true).slideUp();
+                }
+            });
+        });
+        $(document).ready(function() {
+                $('#fundSource').on('change', function() {
+                    if ($(this).val() === 'Others') {
+                        $('#otherFundContainer').slideDown(); // Show input with animation
+                    } else {
+                        $('#otherFundContainer').slideUp(); // Hide input with animation
+                    }
+                });
+            });   
+            
+            
+            //...
+
+            // Show Image Preview Before Upload
+                function setupUploadModal() {
+                    document.getElementById("file").addEventListener("change", function (event) {
+                        let file = event.target.files[0];
+                        let previewContainer = document.getElementById("imagePreviewContainer");
+                        let previewImage = document.getElementById("imagePreview");
+
+                        if (file && file.type.startsWith("image/")) {
+                            let reader = new FileReader();
+                            reader.onload = function (e) {
+                                previewImage.src = e.target.result;
+                                previewContainer.style.display = "block";
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
+                            previewContainer.style.display = "none";
+                        }
+                    });
+                }
+
+                document.getElementById("uploadForm").addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    // Fetch `projectID` first
+                    fetch("/get-project-id", {
+                        method: "GET",
+                        headers: { "Accept": "application/json" }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.projectID) {
+                            Swal.fire({
+                                title: "Error",
+                                text: "No project ID found in session. Please select a project first.",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                            return;
+                        }
+
+                        let projectID = data.projectID;
+                        console.log("Retrieved Project ID:", projectID); // Debugging
+
+                        let fileInput = document.getElementById("file");
+                        if (!fileInput.files.length) {
+                            Swal.fire({
+                                title: "Warning",
+                                text: "Please select a file to upload.",
+                                icon: "warning",
+                                confirmButtonText: "OK"
+                            });
+                            return;
+                        }
+
+                        let formData = new FormData();
+                        formData.append("projectID", projectID);
+                        formData.append("file", fileInput.files[0]);
+
+                        console.log("Uploading file with formData:", formData); // Debugging
+
+                        fetch("/uploadFile", {
+                                method: "POST",
+                                headers: { 
+                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                                },
+                                body: formData
+                            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Upload Response:", data);
+                    if (data.status === "success") {
+                        Swal.fire({
+                            title: "Success!",
+                            text: "File uploaded successfully.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Upload Failed",
+                            text: data.message || "Something went wrong!",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Upload Error:", error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to upload file. Please check Laravel logs.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                });
+
+                    })
+                    .catch(error => {
+                        console.error("Error fetching project ID:", error);
+                        Swal.fire({
+                            title: "Error",
+                            text: "Failed to get project ID. Please try again.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    });
+                });
+
+
+                function loadFiles(projectID) {
+                    console.log("Fetching files for Project ID:", projectID);
+
+                    fetch(`/files/${projectID}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP Error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log("API Response:", data);
+
+                            if (!data || typeof data !== "object" || !Array.isArray(data.files)) {
+                                console.error("Invalid API response:", data);
+                                alert("Invalid file data received.");
+                                return;
+                            }
+
+                            let tbody = document.querySelector(" #projectFiles tbody");
+                            tbody.innerHTML = ""; // Clear old data
+                            
+                            if (data.files.length === 0) {
+                                console.warn("No files found for project:", projectID);
+                                tbody.innerHTML = `<tr><td colspan="6" class="text-center">No files uploaded yet.</td></tr>`;
+                                return;
+                            }
+
+                            data.files.forEach(file => {
+                                let fileSizeKB = (file.file_size / 1024).toFixed(2); // Convert to KB
+
+                                let row = `<tr>
+                                    <td>${file.file_name}</td>
+                                    <td>${file.file_type ? file.file_type.toUpperCase() : "Unknown"}</td>
+                                    <td>${fileSizeKB} KB</td>
+                                    <td>${file.uploaded_by || "Unknown"}</td>
+                                    <td>${file.created_at ? new Date(file.created_at).toLocaleDateString() : "N/A"}</td>
+                                    <td>
+                                        <a href="/storage/${file.file_path}" download class="btn btn-success btn-sm">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                        <button onclick="deleteFile('${file.id}')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>`;
+
+                                tbody.innerHTML += row;
+                            });
+                        })
+                        .catch(error => {
+                            console.error("Fetch Error:", error);
+                            alert("Error loading project files: " + error.message);
+                        });
+                }
+
+
+                // Delete File
+                function deleteFile(fileID) {
+                    fetch(`/delete/${fileID}`, { 
+                        method: "DELETE",
+                        headers: { "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        loadFiles(document.getElementById("projectID").value); // Reload files
+                    })
+                    .catch(error => console.error("Error deleting file:", error));
+                }
+
+                // Handle Status & Fund Source Change Animations
+                $(document).ready(function () {
+                    $('#projectStatus').on('change', function () {
+                        $(this).val() === 'Ongoing' ? $('#ongoingStatusContainer').slideDown() : $('#ongoingStatusContainer').slideUp();
+                    });
+
+                    $('#sourceOfFunds').on('change', function () {
+                        $(this).val() === 'Others' ? $('#otherFundContainer').slideDown() : $('#otherFundContainer').slideUp();
+                    });
+                });
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    fetchProjectDetails(); // Fetch project details when page loads
+                });
+
+                //  Fetch Project ID & Details
+                function fetchProjectDetails() {
+                    fetch("/get-project-id", {
+                        method: "GET",
+                        headers: { "Accept": "application/json" }
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data.projectID) {
+                            console.error("No project ID found in session. Redirecting...");
+                            window.location.href = "{{ route('main.index') }}"; // Redirect if no ID
+                            return;
+                        }
+                        
+                        console.log("Project ID:", data.projectID);
+                        fetch(`/projects/getProject/${data.projectID}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === "success") {
+                                    console.log(" Fetched Project Data:", data.project);
+                                    updateProjectUI(data.project); // Populate UI
+                                    updateProjectForm(data.project); // Populate form in modal
+                                } else {
+                                    console.error(" Error fetching project details:", data.message);
+                                }
+                            })
+                            .catch(error => console.error(" Error fetching project data:", error));
+                    })
+                    .catch(error => console.error(" Error fetching project ID:", error));
+                }
+
+                //  Update UI with Project Data
+                function updateProjectUI(project) {
+                    let fields = {
+                        "projectTitle": project.projectTitle,
+                        "projectLoc": project.projectLoc,
+                        "projectID": project.projectID,
+                        "projectDescription": project.projectDescription,
+                        "projectContractor": project.projectContractor,
+                        "projectStatus": project.projectStatus,
+                        "noticeOfAward": project.noticeOfAward,
+                        "modeOfImplementation": project.modeOfImplementation,
+                        "officialStart": project.officialStart,
+                        "targetCompletion": project.targetCompletion,
+                        "suspensionOrderNo": project.suspensionOrderNo,
+                        "resumeOrderNo": project.resumeOrderNo,
+                        "timeExtension": project.timeExtension,
+                        "revisedTargetCompletion": project.revisedTargetCompletion,
+                        "completionDate": project.completionDate,
+                        "abc": project.abc,
+                        "mqc": project.mqc,
+                        "contractAmount": project.contractAmount,
+                        "bid": project.bid,
+                        "engineering": project.engineering,
+                        "contingency": project.contingency,
+                        "appropriation": project.appropriation
+                    };
+
+                    for (let id in fields) {
+                        let element = document.getElementById(id);
+                        if (element) {
+                            element.textContent = fields[id] !== null && fields[id] !== undefined ? fields[id] : "N/A";
+                        }
+                    }
+
+                    //  Extract & display ongoing project status (if applicable)
+                    let ongoingStatusText = project.ongoingStatus || "";
+                    let percentage = "", date = "";
+
+                    if (ongoingStatusText.includes(" - ")) {
+                        let parts = ongoingStatusText.split(" - ");
+                        percentage = parts[0].trim() + "%";
+                        date = formatDate(parts[1].trim());
+                    }
+
+                    let ongoingStatusElem = document.getElementById("ongoingStatus");
+                    if (ongoingStatusElem) {
+                        ongoingStatusElem.textContent = percentage ? `${percentage} as of ${date}` : "N/A";
+                    }
+                }
+
+                //  Open Edit Modal & Populate Form
+                document.getElementById("editProjectBtn").addEventListener("click", function () {
+                    let projectModal = new bootstrap.Modal(document.getElementById("projectModal"));
+                    projectModal.show();
+                });
+
+
+
+                //  Populate Modal Form with Project Data
+                function updateProjectForm(project) {
+                    if (!project) {
+                        console.error("Error: Project data is undefined or null.");
+                        return;
+                    }
+
+                    console.log("Populating form with project data:", project);
+
+                    let fields = [
+                        "projectTitle", "projectLoc", "projectID", "projectContractor",
+                        "sourceOfFunds", "modeOfImplementation", "projectStatus", "projectDescription",
+                        "projectContractDays", "noticeOfAward", "noticeToProceed", "officialStart",
+                        "targetCompletion", "suspensionOrderNo", "resumeOrderNo", "timeExtension",
+                        "revisedTargetCompletion", "completionDate", "abc", "contractAmount",
+                        "engineering", "mqc", "contingency", "bid", "appropriation"
+                    ];
+
+                    fields.forEach(field => {
+                        let input = document.getElementById(field);
+                        if (input) {
+                            let value = project[field] !== null && project[field] !== undefined ? project[field] : "";
+                            
+                            if (input.type === "date" && value.includes(" ")) {
+                                value = value.split(" ")[0]; // Extract only YYYY-MM-DD
+                            }
+
+                            input.value = value;
+                        } else {
+                            console.warn(`Warning: Element #${field} not found.`);
+                        }
+                    });
+
+                    // Handle dropdowns separately
+                    setDropdownValue("sourceOfFunds", project["sourceOfFunds"]);
+                    setDropdownValue("projectStatus", project["projectStatus"]);
+
+                    // Handle "Ongoing" status separately
+                    let ongoingContainer = document.getElementById("ongoingStatusContainer");
+                    let ongoingInput = document.getElementById("ongoingStatus");
+                    let ongoingDateInput = document.getElementById("ongoingDate");
+
+                    if (project.projectStatus === "Ongoing" && project.ongoingStatus) {
+                        ongoingContainer.style.display = "block";
+                        let [percentage, date] = project.ongoingStatus.split(" - ");
+                        ongoingInput.value = percentage.trim();
+                        ongoingDateInput.value = date.trim();
+                    } else {
+                        ongoingContainer.style.display = "none";
+                    }
+                }
+
+                //  Helper function to safely set dropdown values
+                function setDropdownValue(elementID, value) {
+                    let selectElement = document.getElementById(elementID);
+                    if (!selectElement || !selectElement.options) {
+                        console.warn(` Dropdown #${elementID} is not available.`);
+                        return;
+                    }
+
+                    let options = Array.from(selectElement.options).map(option => option.value);
+                    selectElement.value = options.includes(value) ? value : "";
+
+                    // Handle the "Ongoing" status showing hidden fields
+                    if (elementID === "projectStatus") {
+                        let ongoingContainer = document.getElementById("ongoingStatusContainer");
+                        ongoingContainer.style.display = value === "Ongoing" ? "block" : "none";
+                    }
+                }
+
+                //  Handle Project Updates
+                document.getElementById("updateProjectForm").addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    fetch("/get-project-id", { method: "GET", headers: { "Accept": "application/json" } })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.projectID) {
+                            console.error("No project ID found in session.");
+                            return;
+                        }
+
+                        let updatedData = {};
+                        let fieldIDs = [
+                            "projectContractor", "sourceOfFunds", "modeOfImplementation", "projectStatus",
+                            "projectDescription", "projectContractDays", "noticeOfAward", "noticeToProceed",
+                            "officialStart", "targetCompletion", "suspensionOrderNo", "resumeOrderNo",
+                            "timeExtension", "revisedTargetCompletion", "completionDate", "abc",
+                            "contractAmount", "engineering", "mqc", "contingency", "bid", "appropriation"
+                        ];
+
+                        fieldIDs.forEach(id => {
+                            let input = document.getElementById(id);
+                            updatedData[id] = input ? input.value : null;
+                        });
+
+                        // Handle "Ongoing" status fields
+                        if (updatedData.projectStatus === "Ongoing") {
+                            let ongoingStatus = document.getElementById("ongoingStatus").value;
+                            let ongoingDate = document.getElementById("ongoingDate").value;
+                            updatedData.ongoingStatus = `${ongoingStatus} - ${ongoingDate}`;
+                        } else {
+                            updatedData.ongoingStatus = null;
+                        }
+
+                        return fetch(`/projects/update/${data.projectID}`, {
+                            method: "PUT",  // FIX: Use PUT instead of POST
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                            },
+                            body: JSON.stringify(updatedData)
+                        });
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP Error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === "success") {
+                            Swal.fire({ title: "Updated Successfully!", text: data.message, icon: "success", confirmButtonText: "OK" })
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire({ title: "Error!", text: data.message, icon: "error", confirmButtonText: "OK" });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error updating project:", error);
+                        Swal.fire({ title: "Error!", text: "Failed to update project. Please try again.", icon: "error", confirmButtonText: "OK" });
+                    });
+                });
+
+
+
+                // Helper: Format Date to "Month Day, Year"
+                function formatDate(inputDate) {
+                    if (!inputDate || inputDate === "N/A") return "N/A";
+
+                    let dateObj = new Date(inputDate);
+                    if (isNaN(dateObj.getTime())) {
+                        console.error("Invalid Date Format:", inputDate);
+                        return inputDate;
+                    }
+
+                    return dateObj.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+                }
+
+                // Handle Status Change Animation
+                $(document).ready(function () {
+                    $('#editStatus').on('change', function () {
+                        $(this).val() === 'Ongoing' ? $('#ongoingStatusContainer').slideDown() : $('#ongoingStatusContainer').slideUp();
+                    });
+
+                    $('#sourceOfFunds').on('change', function () {
+                        $(this).val() === 'Others' ? $('#otherFundContainer').slideDown() : $('#otherFundContainer').slideUp();
+                    });
+                });
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    let projectModal = document.getElementById("projectModal");
+
+                    projectModal.addEventListener("hidden.bs.modal", function () {
+                        location.reload(); // Reload the page after the modal is closed
+                    });
+                });
+</script>
 @endsection
