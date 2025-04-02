@@ -278,9 +278,9 @@
         <!-- DataTable Initialization -->
         <script>    
          document.addEventListener("DOMContentLoaded", function () {
-    fetchProjectSummary(); //  Fetch project summary stats
-    fetchProjects(); //  Fetch projects table data
-});
+            fetchProjectSummary(); //  Fetch project summary stats
+    fetchRecentProjects(); //  Fetch projects table data
+        });
 
 //  Fetch Project Summary (Total Projects, Ongoing, Completed, Budget)
 function fetchProjectSummary() {
@@ -308,67 +308,6 @@ function fetchProjectSummary() {
         });
 }
 
-function fetchProjects() {
-    fetch("/projects/showDetails")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Fetched Projects:", data);
-
-            if (data.status === "success" && Array.isArray(data.projects)) {
-                let tbody = document.getElementById("projectTableBody");
-                tbody.innerHTML = ""; //  Clear old data
-
-                if (data.projects.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" class="text-center">No projects available.</td></tr>`;
-                    return;
-                }
-
-                let projects = data.projects.map(project => [
-                    project.projectTitle || "N/A",
-                    project.projectLoc || "N/A",
-                    project.projectStatus || "N/A",
-                    `₱${parseFloat(project.contractAmount || 0).toLocaleString()}`,
-                    project.projectContractor || "N/A",
-                    project.projectContractDays ? `${project.projectContractDays} days` : "N/A",
-                    `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.projectID}">Overview</button>`
-                ]);
-
-                console.log("Processed Data for Table:", projects);
-
-                //  Destroy existing DataTable before reloading
-                if ($.fn.DataTable.isDataTable("#recentProjects")) {
-                    $('#recentProjects').DataTable().clear().destroy();
-                    console.log("Existing DataTable destroyed.");
-                }
-
-                //  Initialize DataTable with correct format
-                $('#recentProjects').DataTable({
-                    data: projects,
-                    columns: [
-                        { title: "Project Title" },
-                        { title: "Location" },
-                        { title: "Status" },
-                        { title: "Contract Amount" },
-                        { title: "Contractor" },
-                        { title: "Duration" },
-                        { title: "Action", orderable: false }
-                    ],
-                    responsive: true,
-                    scrollX: true,
-                    paging: true,
-                    searching: true,
-                    autoWidth: false
-                });
-
-                console.log("DataTable Reloaded Successfully!");
-            } else {
-                console.error("Invalid project data received.");
-            }
-        })
-        .catch(error => {
-            console.error("Error loading projects:", error);
-        });
-}
 
 //  Handle Overview Button Click
 document.addEventListener("click", function (e) {

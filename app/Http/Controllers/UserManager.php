@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Http;
 use App\Models\User;
 use App\Models\ActLogs;
 use App\Http\Controllers\ActivityLogs;
@@ -69,7 +67,7 @@ class UserManager extends Controller
     public function changeRole(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ofmis_id' => 'required|exists:users_tbl,ofmis_id',
+            'ofmis_id' => 'required|exists:users,ofmis_id',
             'userRole' => 'required|string',
             'time_frame' => 'required|string',
             'timeLimit' => 'nullable|date',
@@ -103,155 +101,126 @@ class UserManager extends Controller
             'username' => 'required|string|max:20',
             'password' => 'required|min:6|max:20',
         ]);
-    
         if ($validator->fails()) {
             return response()->json([ 
-                'message' => $validator->getMessageBag()
+            'message' => $validator->getMessageBag()
             ]);
-        } 
-    
-        $username = $request->input('username');
-        $user = User::where('username', $username)->first();
-    
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        } 
-    
-        // Check password
-        if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Invalid username or password'], 401);
-        }
-    
-        // Ensure pointToSystemAccount succeeds before logging in
-        $pointToSystemAccountResponse = $this->pointToSystemAccount($request);
-        $pointToSystemAccountData = json_decode($pointToSystemAccountResponse->getContent(), true);
-    
-        if (isset($pointToSystemAccountData['error'])) {
-            return response()->json($pointToSystemAccountData, 401);
-        }
-    
-        // Proceed to log in if pointToSystemAccount is successful
-        if ($user->role === 'System Admin' || $user->role === 'Admin' || $user->role === 'Staff') {
-            $request->session()->put('loggedIn', [
-                'ofmis_id' => $user->ofmis_id,
-                'performedBy' => $user->username,
-                'role' => $user->role,
-                'action' => "Logged in into the system.",
-            ]);
-    
-            if (session()->has('loggedIn')) {
-                $ofmis_id = session()->get('loggedIn')['ofmis_id'];
-                $performedBy = session()->get('loggedIn')['performedBy'];
-                $role = session()->get('loggedIn')['role'];
-                $action = session()->get('loggedIn')['action'];
-                (new ActivityLogs)->userAction($ofmis_id, $performedBy, $role, $action);
+        } else { 
+            $username = $request->input('username');
+            $user = User::where('username', $username)->first();
+            if (!$user) {
+            return 404;
             } else {
-                return response()->json(['error' => 'Session not found'], 401);
+            if ($user) {
+                if (Hash::check($request->password, $user->password)) {
+                    if ($user->role === 'System Admin' || $user->role === 'Admin' || $user->role === 'Staff') {
+                        $request->session()->put('loggedIn', [
+                            'ofmis_id' => $user->ofmis_id,
+                            'performedBy' => $user->username,
+                            'role' => $user->role,
+                            'action' => "Logged in into the system.",
+                        ]);
+                        
+                        if (session()->has('loggedIn')) {
+                            $ofmis_id = session()->get('loggedIn')['ofmis_id'];
+                            $performedBy = session()->get('loggedIn')['performedBy'];
+                            $role = session()->get('loggedIn')['role'];
+                            $action = session()->get('loggedIn')['action'];
+                            (new ActivityLogs)->userAction($ofmis_id, $performedBy, $role, $action);
+                        } else {
+                        return response()->json(['error' => 'Session not found'], 401);
+                        }
+
+                        // Return values based on user role
+                         return $user->role === 'System Admin' ? 1 : ($user->role === 'Admin' ? 2 : 0);
+                    }
+                } else {
+                return 401;
+                }
+            } else {
+                return 404;
             }
-    
-            // Return values based on user role
-            return $user->role === 'System Admin' ? 1 : ($user->role === 'Admin' ? 2 : 0);
+            }
         }
-    
-        return response()->json(['error' => 'Unauthorized access'], 401);
     }
-    
+
     public function validateUser(Request $request) {}
+
     public function pointToSystemAccount(Request $request)
     {
-        \Log::info("Received request for pointToSystemAccount", $request->all());
-    
+        //  Step 1: I-validate ang request para siguraduhin na may "username" na ipinasok
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:20', // Ensure username is provided
+            'username' => 'required|string|max:20', // Dapat may username
         ]);
-    
-        if ($validator->fails()) {
-            \Log::error("Validation failed", $validator->getMessageBag()->toArray());
-            return response()->json(['message' => $validator->getMessageBag()], 400);
-        }
-    
-        // Find user in local database
-        $user = User::where('username', $request->input('username'))->first();
-    
-        if (!$user) {
-            \Log::error("User not found in local database", ['username' => $request->input('username')]);
-            return response()->json(['error' => 'User not found'], 404);
-        }
-    
-        // Authenticate with OFMIS API
-        $ofmisAuthResponse = $this->authenticateWithOFMIS();
-        \Log::info("OFMIS Auth Response", $ofmisAuthResponse);
-    
-        if (!$ofmisAuthResponse || !isset($ofmisAuthResponse['token'])) {
-            \Log::error("OFMIS Authentication failed", $ofmisAuthResponse);
-            return response()->json(['error' => 'OFMIS Authentication Failed'], 401);
-        }
-    
-        $token = $ofmisAuthResponse['token'];
-    
-        // Retrieve user details from OFMIS API
-        $ofmisUserData = $this->getOFMISUserData($token, $user->username);
-        \Log::info("OFMIS User Data Response", $ofmisUserData);
-    
-        if (!is_array($ofmisUserData) || !isset($ofmisUserData['fullname'])) {
-            \Log::error("Failed to retrieve OFMIS user data", [
-                'username' => $user->username,
-                'response' => $ofmisUserData
-            ]);
 
-            return response()->json([
-                'error' => 'Failed to retrieve OFMIS user data',
-                'details' => $ofmisUserData
-            ], 401);
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->getMessageBag()], 400); 
+            // Kung hindi valid, ibalik ang error message (HTTP 400 - Bad Request)
         }
-    
-        // Compare user details
+
+        //  Step 2: Hanapin ang user sa **local database**
+        $user = User::where('username', $request->input('username'))->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+            // Kung walang nakita sa database, ibalik ang error (HTTP 404 - Not Found)
+        }
+
+        //  Step 3: Gamitin ang **OFMIS API Authentication** para makakuha ng token
+        $ofmisAuthResponse = $this->authenticateWithOFMIS();
+
+        if (!$ofmisAuthResponse || !isset($ofmisAuthResponse['token'])) {
+            return response()->json(['error' => 'OFMIS Authentication Failed'], 401);
+            // Kung hindi nagtagumpay sa authentication, ibalik ang error (HTTP 401 - Unauthorized)
+        }
+
+        $token = $ofmisAuthResponse['token']; // Kunin ang authentication token mula sa response
+
+        //  Step 4: Gamitin ang token para kunin ang user details mula sa OFMIS API
+        $ofmisUserData = $this->getOFMISUserData($token, $user->username);
+
+        if (!$ofmisUserData) {
+            return response()->json(['error' => 'Failed to retrieve OFMIS user data'], 401);
+            // Kung walang nakuha na user data, ibalik ang error (HTTP 401 - Unauthorized)
+        }
+
+        //  Step 5: I-compare ang user data sa local database at sa OFMIS API
         if (
-            $user->fullname === $ofmisUserData['fullname'] &&
-            $user->position === $ofmisUserData['position']
+            $user->fullname === $ofmisUserData['fullname'] && // I-check kung parehas ang pangalan
+            $user->position === $ofmisUserData['position']   // I-check kung parehas ang posisyon
         ) {
+            //  Step 6: Kung tugma, i-log in ang user at i-save ang session
             $request->session()->put('loggedIn', [
                 'ofmis_id' => $user->ofmis_id,
                 'performedBy' => $user->username,
                 'role' => $user->role,
                 'action' => "Logged in into the system.",
             ]);
-    
+
             return response()->json(['status' => 'success', 'message' => 'User logged in']);
+            // Ibalik ang success response
         } else {
-            \Log::error("User credentials do not match OFMIS records", [
-                'local' => ['fullname' => $user->fullname, 'position' => $user->position],
-                'OFMIS' => ['fullname' => $ofmisUserData['fullname'], 'position' => $ofmisUserData['position']]
-            ]);
-    
             return response()->json(['error' => 'User credentials do not match OFMIS records'], 401);
+            // Kung hindi tugma ang credentials, ibalik ang error (HTTP 401 - Unauthorized)
         }
     }
-    
 
     /**
      *  Function: authenticateWithOFMIS()
      *  Magpapadala ng username at password sa OFMIS Authentication API upang makakuha ng token.
      */
-    private function authenticateWithOFMIS()
-{
-    $authUrl = "http://172.17.16.13:8888/api/auth/login";
+    private function authenticateWithOFMIS($username, $password)
+    {
+        $authUrl = "http://172.17.16.13:8888/api/auth/login"; // OFMIS auth URL
 
-    try {
         $response = Http::post($authUrl, [
             'username' => 'administrator',
             'password' => 'Junnie%123',
             'FileName' => ''
         ]);
 
-        \Log::info("OFMIS Authentication API Response", $response->json());
-
-        return $response->json();
-    } catch (\Exception $e) {
-        \Log::error("OFMIS Authentication API Error", ['message' => $e->getMessage()]);
-        return null;
+        return $response->json(); // Ibalik ang response mula sa API (kasama ang token kung successful)
     }
-}
 
     /**
      *  Function: getOFMISUserData()
@@ -259,47 +228,14 @@ class UserManager extends Controller
      */
     private function getOFMISUserData($token, $username)
     {
-        // OFMIS API endpoint 
-        $userInfoUrl = "http://172.17.16.13:8888/OFMIS/user/{$username}";
-    
-        try {
-            \Log::info("🔹 Requesting OFMIS user data", [
-                'url' => $userInfoUrl,
-                'username' => $username,
-                'token' => $token
-            ]);
-    
-            // Send GET request with Bearer Token
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer $token",
-            ])->get($userInfoUrl);
-    
-            $responseData = $response->json();
-            
-            \Log::info("✅ OFMIS User Info API Response", [
-                'status' => $response->status(),
-                'data' => $responseData
-            ]);
-    
-            if ($response->failed()) {
-                \Log::error("❌ OFMIS User Data Retrieval Failed", [
-                    'status' => $response->status(),
-                    'response' => $responseData
-                ]);
-                return null;
-            }
-    
-            return $responseData;
-        } catch (\Exception $e) {
-            \Log::error("❌ OFMIS User Info API Error", [
-                'message' => $e->getMessage(),
-                'username' => $username
-            ]);
-            return null;
-        }
-    }
-    
+        $userInfoUrl = "http://172.17.16.13:8888/OFMIS/user/{$username}"; //  Palitan ito ng totoong OFMIS endpoint
 
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer $token", // Ilagay ang token sa request header
+        ])->get($userInfoUrl);
+
+        return $response->json(); // Ibalik ang response mula sa API (kasama ang user details kung successful)
+    }
 
 
     public function getUserAction(Request $request) {}

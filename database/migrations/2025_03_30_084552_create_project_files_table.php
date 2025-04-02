@@ -11,7 +11,6 @@ return new class extends Migration {
                 $table->string('projectID');
                 $table->string('fileName');
                 $table->string('fileID');
-                $table->longText('file');
                 $table->string('actionBy');
                 $table->timestamps();
 

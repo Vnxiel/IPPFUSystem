@@ -19,7 +19,7 @@
                         </div>
                         <div class="row">
                             <div class="table-container table-responsive">
-                            <table id="projects" class="table table-striped table-hover table-bordered">
+                            <table id="projects" class="table table-striped table-hover table-bordered display nowrap" style="width:100%;">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Project Title</th>
@@ -244,9 +244,9 @@
 
    
 
-      <!-- DataTable & Fetching Script -->
         <script>    
             document.addEventListener("DOMContentLoaded", function () {
+                loadProjects(); // Load projects on page load
                 // Select all input fields with the "currency-input" class
                 let currencyInputs = document.querySelectorAll(".currency-input");
 
@@ -297,248 +297,52 @@
                 }
             });
 
-            document.addEventListener("DOMContentLoaded", function () {
-                fetch("{{ route('projects.showDetails') }}")
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Projects Data:", data); // Debugging
-                        if (data.status === "success") {
-                            loadProjects(data.projects);
-                        } else {
-                            console.error("Error fetching projects:", data.message);
-                        }
-                    })
-                    .catch(error => console.error("Error fetching projects:", error));
+            // Handle "Other Fund" Selection Toggle
+            function toggleOtherFund() {
+                var sourceOfFunds = document.getElementById("sourceOfFunds").value;
+                var otherFundContainer = document.getElementById("otherFundContainer");
 
-         loadProjects(); // Load projects when the page loads
-
-            // Handle Add Project Form Submission
-            document.getElementById("addProjectForm").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent normal form submission
-
-    // Remove the peso sign before submission
-    document.querySelectorAll(".currency-input").forEach(input => {
-        input.value = input.value.replace(/[₱,]/g, ""); // Remove peso sign and commas
-    });
-
-    var statusValue = document.getElementById("projectStatus").value;
-    var ongoingInput = document.getElementById("ongoingStatus");
-
-    if (statusValue === "Ongoing") {
-        var percentage = ongoingInput.value.trim();
-        var date = document.getElementById("ongoingDate").value;
-
-        if (percentage && date) {
-            // Prevent duplicate concatenation
-            if (!ongoingInput.value.includes(" - ")) {
-                ongoingInput.value = percentage + " - " + date;
-            }
-        }
-    }
-
-    let formData = new FormData(this);
-
-    fetch("{{ route('projects.addProject') }}", {
-        method: "POST",
-        body: formData,
-        headers: {
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-            "Accept": "application/json"
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            Swal.fire({
-                title: "Success!",
-                text: data.message,
-                icon: "success",
-                confirmButtonText: "OK"
-            }).then(() => {
-                $("#addNewProjectModal").modal("hide"); // Hide modal
-                document.getElementById("addProjectForm").reset(); // Reset form
-                loadProjects(); // Reload projects without refreshing page
-            });
-        } else {
-            let errorMsg = data.message;
-
-            if (data.errors) {
-                errorMsg += "<ul>";
-                for (const [field, errors] of Object.entries(data.errors)) {
-                    errorMsg += `<li>${errors.join(", ")}</li>`;
+                if (sourceOfFunds === "Others") {
+                    otherFundContainer.style.display = "block";
+                } else {
+                    otherFundContainer.style.display = "none";
                 }
-                errorMsg += "</ul>";
             }
 
-            Swal.fire({
-                title: "Error!",
-                html: errorMsg,
-                icon: "error",
-                confirmButtonText: "OK"
+            // Handle "Ongoing Status" Selection Toggle
+            function toggleOngoingStatus() {
+                let statusSelect = document.getElementById("projectStatus");
+                let ongoingContainer = document.getElementById("ongoingStatusContainer");
+                let ongoingDate = document.getElementById("ongoingDate");
+
+                if (statusSelect.value === "Ongoing") {
+                    ongoingContainer.style.display = "block";
+
+                    // Set the ongoingDate to today's date
+                    let today = new Date().toISOString().split('T')[0];
+                    ongoingDate.value = today;
+                } else {
+                    ongoingContainer.style.display = "none";
+                    ongoingDate.value = ""; // Clear the date when status is not "Ongoing"
+                }
+            }
+
+
+            // Add Event Listener for Project Status Dropdown
+            document.getElementById("projectStatus").addEventListener("change", function () {
+                toggleOngoingStatus();
             });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: "Error!",
-            text: "An unexpected error occurred. Please try again.",
-            icon: "error",
-            confirmButtonText: "OK"
-        });
-        console.error("Error:", error);
-    });
-});
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-        loadProjects(); // Load projects on page load
-    });
-
-    function loadProjects() {
-    fetch("{{ route('projects.showDetails') }}")
-        .then(response => response.json())
-        .then(data => {
-            console.log("API Response:", data);
-
-            if (!data || typeof data !== "object" || !Array.isArray(data.projects)) {
-                console.error("Invalid API Response Structure:", data);
-                showError("No valid projects found.");
-                return;
-            }
-
-            let projects = data.projects.map(project => [
-                project.projectTitle || "N/A",
-                project.projectLoc || "N/A",
-                project.projectStatus || "N/A",
-                project.contractAmount
-                    ? `₱${parseFloat(project.contractAmount).toLocaleString()}`
-                    : "N/A",
-                project.projectContractor || "N/A",
-                project.projectContractDays
-                    ? `${project.projectContractDays} days`
-                    : "N/A",
-                `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.projectID}">Overview</button>`
-            ]);
-
-            console.log("Processed Data:", projects);
-
-            // Destroy existing DataTable before reloading
-            if ($.fn.DataTable.isDataTable("#projects")) {
-                $('#projects').DataTable().clear().destroy();
-                console.log("Existing DataTable destroyed.");
-            }
-
-            // Initialize DataTable with updated settings
-            $('#projects').DataTable({
-                data: projects,
-                columns: [
-                    { title: "Project Title" },
-                    { title: "Location" },
-                    { title: "Status" },
-                    { title: "Contract Amount" },
-                    { title: "Contractor" },
-                    { title: "Duration" },
-                    { title: "Action", orderable: false }
-                ],
-                aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-                pageLength: 10,
-                order: [[3, 'desc']], // Sorting based on the 4th column (Contract Amount)
-                scrollX: true,  // Enables horizontal scrolling
-                responsive: true, // Ensures responsiveness
-                autoWidth: false,   // Disable auto width setting
-                columnDefs: [
-                    {
-                        targets: '_all',   // Apply this to all columns
-                        orderable: true     // Ensure columns can still be sorted
-                    }
-                ],
-                fixedColumns: {
-                    leftColumns: 1  // Freezes the first column
+            // Handle "Other Fund" Dropdown Change
+            $('#sourceOfFunds').on('change', function() {
+                if ($(this).val() === 'Others') {
+                    $('#otherFundContainer').slideDown(); // Show input with animation
+                } else {
+                    $('#otherFundContainer').slideUp(); // Hide input with animation
                 }
             });
-
-            console.log("DataTable Reloaded Successfully!");
-        })
-        .catch(error => {
-            console.error("Fetch Error:", error);
-            showError("Failed to load project data.");
-        });
-}
-
-
-// Show an error message inside the table if data fetching fails
-function showError(message) {
-    document.querySelector("#projects tbody").innerHTML = `
-        <tr><td colspan="7" class="text-center text-danger">${message}</td></tr>
-    `;
-}
-
-// Attach event listener for overview button clicks (event delegation)
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("overview-btn")) {
-        let projectID = e.target.getAttribute("data-id");
-
-        // Store projectID in session via AJAX
-        fetch("/store-project-id", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") // Laravel CSRF token
-            },
-            body: JSON.stringify({ projectID })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log("Project ID stored successfully, redirecting...");
-                window.location.href = "{{ route('main.overview') }}"; // Redirect without ID in URL
-            } else {
-                console.error("Failed to store project ID:", data);
-            }
-        })
-        .catch(error => console.error("Error storing project ID:", error));
-    }
-});
-
-    // Handle "Other Fund" Selection Toggle
-    function toggleOtherFund() {
-        var sourceOfFunds = document.getElementById("sourceOfFunds").value;
-        var otherFundContainer = document.getElementById("otherFundContainer");
-
-        if (sourceOfFunds === "Others") {
-            otherFundContainer.style.display = "block";
-        } else {
-            otherFundContainer.style.display = "none";
-        }
-    }
-
-    // Handle "Ongoing Status" Selection Toggle
-    function toggleOngoingStatus() {
-        var projectStatus = document.getElementById("projectStatus").value;
-        var ongoingStatusContainer = document.getElementById("ongoingStatusContainer");
-
-        if (projectStatus === "Ongoing") {
-            ongoingStatusContainer.style.display = "block";
-        } else {
-            ongoingStatusContainer.style.display = "none";
-        }
-    }
-
-    // Add Event Listener for Project Status Dropdown
-    document.getElementById("projectStatus").addEventListener("change", function () {
-        toggleOngoingStatus();
-    });
-
-
-        // Handle "Other Fund" Dropdown Change
-        $('#sourceOfFunds').on('change', function() {
-            if ($(this).val() === 'Others') {
-                $('#otherFundContainer').slideDown(); // Show input with animation
-            } else {
-                $('#otherFundContainer').slideUp(); // Hide input with animation
-            }
-        });
-    });
+    
 
 </script>
 

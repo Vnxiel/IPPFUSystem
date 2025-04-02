@@ -25,7 +25,7 @@ class FileManager extends Controller {
             return response()->json(['status' => 'error', 'message' => 'No file uploaded.'], 400);
         }
     
-        // ✅ Removed username validation
+        //  Removed username validation
         $validator = Validator::make($request->all(), [
             'projectID' => 'required|string|max:50',
             'file' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf,docx,xlsx,zip'
@@ -41,7 +41,7 @@ class FileManager extends Controller {
             $filename = $file->getClientOriginalName();
             $projectID = $request->input('projectID');
     
-            // ✅ Get username from session
+            //  Get username from session
             if (session()->has('loggedIn')) {
                 $sessionData = session()->get('loggedIn');
                 $username = $sessionData['performedBy'];  // Assuming this is the username
@@ -70,10 +70,10 @@ class FileManager extends Controller {
                 'fileName' => $filename,
                 'fileID' => uniqid(),
                 'file' => $filepath,
-                'actionBy' => $username, // ✅ Now assigning from session
+                'actionBy' => $username, //  Now assigning from session
             ]);
     
-            // ✅ Logging user action
+            //  Logging user action
             $ofmis_id = $sessionData['ofmis_id'];
             $role = $sessionData['role'];
             $action = "Uploaded file: $filename.";
