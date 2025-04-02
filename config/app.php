@@ -171,6 +171,9 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
     ])->toArray(),
 
+
+    
+
     /*
     |--------------------------------------------------------------------------
     | Class Aliases

@@ -11,15 +11,11 @@ use App\Models\ActLogs;
 class SystemAdminManager extends Controller
 {
     public function index(){
-        return view('systemAdmin.index');
-    }
-
-    public function projects(){
-        return view('systemAdmin.projects');
+        return view('main.index');
     }
 
     public function userManagement(){
-        return view('systemAdmin.userManagement'); 
+        return view('main.userManagement'); 
     }
 
     public function registerUser(Request $request){
@@ -37,7 +33,7 @@ class SystemAdminManager extends Controller
         try {
             $user = new User(); 
             $user->role = $request->role; 
-            $user->fullname = $request->fullname;
+            $user->fullname = $request->fullname; 
             $user->position = $request->position;
             $user->username = $request->username;
             $user->password = Hash::make($request->password);
@@ -94,7 +90,7 @@ class SystemAdminManager extends Controller
     public function changeRole(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:users,id',
+            'id' => 'required|exists:users_tbl,id',
             'userRole' => 'required|string',
             'time_frame' => 'string',
             'timeLimit' => 'nullable|date',
@@ -126,24 +122,9 @@ class SystemAdminManager extends Controller
         return response()->json(1); // Success
     }   
 
-    public function addProject(Request $request)
-    {
-        $validatedData = $request->validate([
-            'projectTitle' => 'required|string',
-            'projectLoc' => 'required|string',
-            'projectID' => 'required|string',
-            'projectContractor' => 'required|string',
-            'sourceOfFunds' => 'required|string',
-            'timeExtension' => 'nullable|integer', // Validate timeExtension as nullable
-            // ...other fields...
-        ]);
+    public function addProjects(Request $request){
 
-        $validatedData['timeExtension'] = $validatedData['timeExtension'] ?? 0; // Default to 0 if null
-
-        Project::create($validatedData); // Ensure the model is properly configured
-        return response()->json(['message' => 'Project added successfully']);
     }
-
     public function viewProjects(Request $request){
 
     }

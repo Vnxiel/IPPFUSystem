@@ -63,15 +63,15 @@
                         </ul>
                         <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
                             <div class="dropdown">
-                                <?php
-                                    // ✅ Get username from session
-                                    $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
-                                    ?>
+                             <?php
+                                //  Get username from session
+                                $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
+                                ?>
 
-                                    <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                                    data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                    <span class="fa fa-user me-1"></span> <?php echo htmlspecialchars($username); ?>
-                                    </a>
+                                <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                                <span class="fa fa-user me-1"></span> <?php echo htmlspecialchars($username); ?>
+                                </a>
                                 <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownMenuButton">
                                     <li><a class="dropdown-item" href="javascript:void(0);" onclick="logout()">Sign out</a></li>
                                 </ul>
@@ -106,13 +106,20 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <!-- Your Custom Scripts -->
-        <script src="{{ asset('js/Project/add-project.js') }}"></script>
+      
         <script src="{{ asset('js/register-user.js') }}"></script>
         <script src="{{ asset('js/getData.js') }}"></script>
         <script src="{{ asset('js/load-data.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
         <script src="{{ asset('js/projects.js') }}"></script>
+        <script src="{{ asset('js/addProject.js') }}"></script>
+        <script src="{{ asset('js/fetchProjects.js') }}"></script>
+        <script src="{{ asset('js/trashProjects.js') }}"></script>
+        <script src="{{ asset('js/updateProjects.js') }}"></script>
+        <script src="{{ asset('js/restoreProjects.js') }}"></script>
+        <script src="{{ asset('js/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/logout.js') }}"></script>
+        
         
     </body>
 </html>

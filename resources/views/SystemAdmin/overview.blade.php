@@ -159,6 +159,14 @@
                                     Loading...
                                 </div>
                                 </div>
+                                <div class="row p-1 border-bottom">
+                                                <div class="col-md-4 d-flex align-items-center">
+                                                    <strong>Appropriation:</strong>
+                                                </div>
+                                                <div class="col-md-8 d-flex align-items-center currency-input" id="appropriationDisplay">
+                                    Loading...
+                                </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -176,7 +184,7 @@
             <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#projectModal">
                 <i class="fa fa-edit"></i>
             </button>
-            <button class="btn btn-primary btn-sm mb-2 w-100">
+            <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#generateProjectModal">
                 <i class="fa fa-download"></i>
             </button>
             <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#trashModal">
@@ -253,7 +261,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <form id="updateProjectForm">
+            <form id="updateProjectForm" name="updateProjectForm">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-1">
@@ -272,7 +280,7 @@
                         <div class="col-md-6">
                             <div class="mb-1">
                                 <label for="projectID" class="form-label">Project ID</label>
-                                <input type="text" class="form-control" id="projectID">
+                                <input type="text" class="form-control" id="projectID" disabled >
                             </div>
                         </div>
                     </div>
@@ -439,5 +447,8 @@
         </div>
     </div>
 </div>
+
+
+
 
 @endsection
