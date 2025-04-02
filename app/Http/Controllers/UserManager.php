@@ -42,11 +42,15 @@ class UserManager extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(0); 
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed!',
+                'errors' => $validator->errors()
+            ], 422); 
         } 
     
-            // Check if this is the first user
-            $isFirstUser = User::count() === 0;
+        // Check if this is the first user
+        $isFirstUser = User::count() === 0;
 
         $user = User::create([
             'ofmis_id' => $request->ofmis_id,
@@ -95,55 +99,60 @@ class UserManager extends Controller
         return response()->json(1); 
     }
 
-    public function userLogin(Request $request){
-        $validator = Validator::make($request->all(), 
-        [
-            'username' => 'required|string|max:20',
-            'password' => 'required|min:6|max:20',
+    public function userLogin(Request $request)
+    {
+        // Validator rules added inside make()
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string',
+            'password' => 'required|string',
         ]);
+    
         if ($validator->fails()) {
-            return response()->json([ 
-            'message' => $validator->getMessageBag()
-            ]);
-        } else { 
-            $username = $request->input('username');
-            $user = User::where('username', $username)->first();
-            if (!$user) {
-            return 404;
-            } else {
-            if ($user) {
-                if (Hash::check($request->password, $user->password)) {
-                    if ($user->role === 'System Admin' || $user->role === 'Admin' || $user->role === 'Staff') {
-                        $request->session()->put('loggedIn', [
-                            'ofmis_id' => $user->ofmis_id,
-                            'performedBy' => $user->username,
-                            'role' => $user->role,
-                            'action' => "Logged in into the system.",
-                        ]);
-                        
-                        if (session()->has('loggedIn')) {
-                            $ofmis_id = session()->get('loggedIn')['ofmis_id'];
-                            $performedBy = session()->get('loggedIn')['performedBy'];
-                            $role = session()->get('loggedIn')['role'];
-                            $action = session()->get('loggedIn')['action'];
-                            (new ActivityLogs)->userAction($ofmis_id, $performedBy, $role, $action);
-                        } else {
-                        return response()->json(['error' => 'Session not found'], 401);
-                        }
-
-                        // Return values based on user role
-                         return $user->role === 'System Admin' ? 1 : ($user->role === 'Admin' ? 2 : 0);
-                    }
-                } else {
-                return 401;
-                }
-            } else {
-                return 404;
-            }
-            }
+            return response()->json(['message' => $validator->errors()], 422);
         }
+    
+        $username = $request->input('username');
+        $user = User::where('username', $username)->first();
+    
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+    
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Invalid password'], 401);
+        }
+    
+        if (in_array($user->role, ['System Admin', 'Admin', 'Staff'])) {
+            $request->session()->put('loggedIn', [
+                'ofmis_id' => $user->ofmis_id,
+                'performedBy' => $user->username,
+                'role' => $user->role,
+                'action' => "Logged in into the system.",
+            ]);
+    
+            if (session()->has('loggedIn')) {
+                $sessionData = session()->get('loggedIn');
+                (new ActivityLogs)->userAction(
+                    $sessionData['ofmis_id'], 
+                    $sessionData['performedBy'], 
+                    $sessionData['role'], 
+                    $sessionData['action']
+                );
+            } else {
+                return response()->json(['error' => 'Session not found'], 401);
+            }
+    
+            // Return numerical response based on user role
+            return response()->json([
+                'role' => $user->role === 'System Admin' ? 1 : 
+                         ($user->role === 'Admin' ? 2 : 
+                         ($user->role === 'Staff' ? 3 : 0))
+            ]);        
+        }
+    
+        return response()->json(['error' => 'Unauthorized access'], 403);
     }
-
+    
     public function validateUser(Request $request) {}
 
     public function pointToSystemAccount(Request $request)

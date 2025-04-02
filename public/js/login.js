@@ -9,16 +9,32 @@ $(document).ready(function() {
             method: "POST",
             data: $(this).serialize(),
             success: function(response) {
-                if(response == 1){
-                    console.log("Redirecting to:", "/main/index"); // Debugging
-
+                if(response.role == 1){
                     Swal.fire({
                         icon: "success",
                         title: "Logging in!",
                         showConfirmButton: false,
                         timer: 2000,
                     }).then(function(){
-                        window.location = "/main/index";
+                        window.location = "/systemAdmin/index";
+                    });
+                } else if (response.role == 2){
+                    Swal.fire({
+                        icon: "success",
+                        title: "Logging in!",
+                        showConfirmButton: false,
+                        timer: 2000,
+                    }).then(function(){
+                        window.location = "/admin/index";
+                    });
+                } else if (response.role == 3){
+                    Swal.fire({
+                        icon: "success",
+                        title: "Logging in!",
+                        showConfirmButton: false,
+                        timer: 2000,
+                    }).then(function(){
+                        window.location = "/staff/index";
                     });
                 }else if(response.message){
                     var errorMessages = Object.values(response.message).join('<br>');

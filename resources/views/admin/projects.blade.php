@@ -5,7 +5,7 @@
 @section('content') 
                 <hr class="mx-2">
                 <div class="container-fluid px-3">
-                <div class="col-md-12 m-2">
+                    <div class="col-md-12 m-2">
                         <div class="row align-items-center">
                             <div class="col">
                                 <h5 class="m-0">Projects</h5>
@@ -44,28 +44,20 @@
 
 
 
-        <!-- Add Project Modal -->
-        <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
              <!-- Add Project Modal -->
-             <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
-            <div class="modal-dialog  modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="appNewProjectLabel">Add Project</h1>
-                        <h1 class="modal-title fs-5" id="appNewProjectLabel">Add Project</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addProjectForm">
-                            @csrf
-                    <form action="{{ route('projects.addProject') }}" id="addProjectForm" method="POST">
-                             @csrf
-                            <div class="row">
+            <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
+                <div class="modal-dialog  modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="appNewProjectLabel">Add Project</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addProjectForm">
+                                @csrf
+                                <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-1">
-                                        <label for="location" class="form-label">Project Title</label>
-                                        <input type="text" class="form-control" name="projectTitle" id="projectTitle" placeholder="Enter project title." required>
-                                    </div>
                                         <label for="projectTitle" class="form-label">Project Title</label>
                                         <input type="text" class="form-control" id="projectTitle" name="projectTitle" required placeholder="Enter project title">
                                    </div>
@@ -74,8 +66,6 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="location" class="form-label">Location</label>
-                                        <input type="text" class="form-control" name="location" id="location" placeholder="Enter Location." required>
                                         <label for="projectLoc" class="form-label">Location</label>
                                         <input type="text" class="form-control" id="projectLoc" name="projectLoc" required placeholder="Enter location">
                                     </div>
@@ -83,8 +73,6 @@
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="projectID" class="form-label">Project ID</label>
-                                        <input type="text" class="form-control" name="projectID" id="projectID" placeholder="Enter project ID." required>
-                                    </div>
                                         <input type="text" class="form-control" id="projectID" name="projectID" required placeholder="Enter project ID">
                                     </div>  
                                 </div>
@@ -92,24 +80,12 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="contractor" class="form-label">Contractor</label>
-                                        <input type="text" class="form-control" name="contractor" id="contractor" placeholder="Enter contractor." required>
-                                    </div>
                                         <label for="projectContractor" class="form-label">Contractor</label>
                                         <input type="text" class="form-control" id="projectContractor" name="projectContractor" placeholder="Enter projectContractor">
                                      </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="fundSource" class="form-label fw-bolder">Select Fund Source</label>
-                                        <select id="fundSource" class="form-select" alt="source" required>
-                                            <option placeholder="">-- --</option>
-                                            <option placeholder="Wages">Wages</option>
-                                            <option placeholder="% Mobilization">% Mobilization</option>
-                                            <option placeholder="1st Partial Billing">1st Partial Billing</option>
-                                            <option placeholder="Trust Fund">Trust Fund</option>
-                                            <option placeholder="Final Billing">Final Billing</option>
-                                            <option placeholder="Others" id="otherFundContainer">Others</option>
                                         <label for="sourceOfFunds" class="form-label fw-bolder">Select Fund Source</label>
                                         <select id="sourceOfFunds" name="sourceOfFunds" class="form-select" onchange="toggleOtherFund()">
                                             <option value="">-- --</option>
@@ -124,8 +100,6 @@
                                         <!-- Hidden text input for 'Others' -->
                                         <div id="otherFundContainer" class="mt-2 fw-bolder" style="display: none;">
                                             <label for="otherFund" class="form-label">Please specify:</label>
-                                            <input type="text" name="otherFund" name="otherFund" id="otherFund" class="form-control" placeholder="Enter fund source">
-                                        </div>
                                             <input type="text" id="otherFund" name="otherFund" class="form-control" placeholder="Enter fund source">
                                        </div>
                                     </div>
@@ -134,21 +108,12 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="contractor" class="form-label">Mode of Implementation</label>
-                                        <input type="text" class="form-control" name="contractor" id="contractor" placeholder="Enter mode of implementation.">
-                                    </div>
                                         <label for="modeOfImplementation" class="form-label">Mode of Implementation</label>
                                         <input type="text" class="form-control" id="modeOfImplementation" name="modeOfImplementation" placeholder="Enter mode of implementation.">
                             </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="editStatus" class="form-label fw-bolder">Status</label>
-                                        <select id="editStatus" class="form-select" required>
-                                            <option placeholder="---">---</option>
-                                            <option id="ongoingStatusContainer" placeholder="Ongoing">Ongoing</option>
-                                            <option placeholder="Completed">Completed</option>
-                                            <option placeholder="Cancelled">Discontinued</option>
                                         <label for="projectStatus" class="form-label fw-bolder">Status</label>
                                         <select id="projectStatus" name="projectStatus" class="form-select" onchange="toggleOngoingStatus()">
                                             <option value="---">---</option>
@@ -159,8 +124,6 @@
 
                                         <!-- Hidden text input for 'Ongoing' -->
                                         <div id="ongoingStatusContainer" class="mt-2 fw-bolder" style="display: none;">
-                                            <label for="ongoingStatus" class="form-label">Please specify:</label>
-                                            <input type="text" name="ongoingStatus" id="ongoingStatus" class="form-control" placeholder="Enter status percentage.">
                                             <label for="ongoingStatus" class="form-label">Please specify percentage completion:</label>
                                             
                                             <div class="d-flex gap-2"> 
@@ -176,8 +139,6 @@
                                 <div class="col-md-12">
                                     <div class="mb-1">
                                         <label for="projectDescription" class="form-label">Project Description</label>
-                                        <textarea class="form-control" name="projectDescription" id="projectDescription" rows="3" style="width:100%" placeholder="Enter project description."></textarea>
-                                    </div>
                                         <textarea class="form-control" id="projectDescription" name="projectDescription" rows="3" placeholder="Enter project description"></textarea>
                                   </div>
                                 </div>
@@ -190,58 +151,44 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="contractDays" class="form-label">Contract Days</label>
-                                        <input type="text" class="form-control" name="contractDays"id="contractDays" placeholder="Calendar Days">
                                         <label for="projectContractDays" class="form-label">Contract Days</label>
                                         <input type="text" class="form-control" id="projectContractDays" name="projectContractDays">
                                     </div>   
                                     <div class="mb-1">
                                         <label for="noticeOfAward" class="form-label">Notice of Award</label>
-                                        <input type="date" class="form-control" name="noticeOfAward" id="noticeOfAward" placeholder="">
                                         <input type="date" class="form-control" id="noticeOfAward" name="noticeOfAward">
                                     </div>  
                                     <div class="mb-1">
                                         <label for="noticeToProceed" class="form-label">Notice to Proceed</label>
-                                        <input type="date" class="form-control" name="noticeToProceed" id="noticeToProceed" placeholder="">
                                         <input type="date" class="form-control" id="noticeToProceed" name="noticeToProceed">
                                     </div>  
                                     <div class="mb-1">
                                         <label for="officialStart" class="form-label">Official Start</label>
-                                        <input type="date" class="form-control" name="officialStart" id="officialStart" placeholder="">
                                         <input type="date" class="form-control" id="officialStart" name="officialStart">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="targetCompletion" class="form-label">Target Completion</label>
-                                        <input type="date" class="form-control" name="targetCompletion" id="targetCompletion" placeholder="">
                                         <input type="date" class="form-control" id="targetCompletion" name="targetCompletion">
                                     </div> 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label for="SuspeOrder" class="form-label">Suspension Order No.1</label>
-                                        <input type="date" class="form-control" name="SuspeOrder" id="SuspeOrder" placeholder="">
                                         <label for="suspensionOrderNo" class="form-label">Suspension Order No.1</label>
                                         <input type="date" class="form-control" id="suspensionOrderNo" name="suspensionOrderNo" value="">
                                     </div> 
                                     <div class="mb-1">
-                                        <label for="resumeOrder" class="form-label">Resume Order No.1</label>
-                                        <input type="date" class="form-control" name="resumeOrder" id="resumeOrder" placeholder="">
                                         <label for="resumeOrderNo" class="form-label">Resume Order No.1</label>
                                         <input type="date" class="form-control" id="resumeOrderNo" name="resumeOrderNo" value="">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="timeExtension" class="form-label">Time Extension</label>
-                                        <input type="text" class="form-control" name="timeExtension" id="timeExtension" placeholder="">
                                         <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="revisedTargetCompletion" class="form-label">Revised Target Completion</label>
-                                        <input type="text" class="form-control" name="revisedTargetCompletion" id="revisedTargetCompletion" placeholder="">
                                         <input type="text" class="form-control" id="revisedTargetCompletion" name="revisedTargetCompletion" value="">
                                     </div> 
                                     <div class="mb-1">
-                                        <label for="CompletionDate" class="form-label">Completion Date</label>
-                                        <input type="text" class="form-control" name="CompletionDate" id="CompletionDate" placeholder="">
                                         <label for="completionDate" class="form-label">Completion Date</label>
                                         <input type="text" class="form-control" id="completionDate" name="completionDate" value="">
                                     </div> 
@@ -255,50 +202,38 @@
                             <div class="col-md-6 border-bottom">
                                     <div class="mb-1">
                                         <label for="abc" class="form-label">ABC</label>
-                                        <input type="text" class="form-control" name="abc" id="abc" placeholder="">
                                         <input type="text" class="form-control currency-input" id="abc" name="abc">
                                     </div>
                                     <div class="mb-1">
                                         <label for="contractAmount" class="form-label">Contract Amount</label>
-                                        <input type="text" class="form-control" name="contractAmount" id="contractAmount" placeholder="">
                                         <input type="text" class="form-control currency-input" id="contractAmount" id="contractAmount">
                                     </div>
                                     <div class="mb-1">
                                         <label for="engineering" class="form-label">Engineering</label>
-                                        <input type="text" class="form-control" name="engineering" id="engineering" placeholder="">
                                         <input type="text" class="form-control currency-input" id="engineering" name="engineering">
                                     </div>
                                     <div class="mb-1">
                                         <label for="mqc" class="form-label">MQC</label>
-                                        <input type="text" class="form-control" name="mqc" id="mqc" placeholder="">
                                         <input type="text" class="form-control currency-input" id="mqc" name="mqc">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="contingency" class="form-label">Contingency</label>
-                                        <input type="text" class="form-control" name="contingency" id="contingency" placeholder="">
                                         <input type="text" class="form-control currency-input" id="contingency" name="contingency">
                                     </div>
                                     <div class="mb-1">
                                         <label for="bid" class="form-label">Bid Difference</label>
-                                        <input type="text" class="form-control" name="bid" id="bid" placeholder="">
                                         <input type="text" class="form-control currency-input" id="bid" name="bid">
                                     </div>
                                     <div class="mb-1">
                                         <label for="appropriate" class="form-label">Appropriation</label>
-                                        <input type="text" class="form-control" name="appropriate" id="appropriate" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                                        <label for="appropriation" class="form-label">Appropriation</label>
-                                        <input type="text" class="form-control currency-input" id="appropriation" name="appropriation">
+                                        <input type="text" class="form-control currency-input" id="appropriate" name="appropriate">
                                     </div>
                                 </div>
                             </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Projects</button>
                             <button type="submit" class="btn btn-primary">Add Project</button>
                         </div>
                     </form>
@@ -306,6 +241,8 @@
             </div>
         </div>
     </div>
+
+
 
    
 
@@ -377,75 +314,75 @@
 
          loadProjects(); // Load projects when the page loads
 
-            // Handle Add Project Form Submission
-            document.getElementById("addProjectForm").addEventListener("submit", function (event) {
-                event.preventDefault(); // Prevent normal form submission
-                var statusValue = document.getElementById("projectStatus").value;
-                                var ongoingInput = document.getElementById("ongoingStatus");
+            // // Handle Add Project Form Submission
+            // document.getElementById("addProjectForm").addEventListener("submit", function (event) {
+            //     event.preventDefault(); // Prevent normal form submission
+            //     var statusValue = document.getElementById("projectStatus").value;
+            //                     var ongoingInput = document.getElementById("ongoingStatus");
 
-                                if (statusValue === "Ongoing") {
-                                    var percentage = ongoingInput.value.trim();
-                                    var date = document.getElementById("ongoingDate").value;
+            //                     if (statusValue === "Ongoing") {
+            //                         var percentage = ongoingInput.value.trim();
+            //                         var date = document.getElementById("ongoingDate").value;
 
-                                    if (percentage && date) {
-                                        // Prevent duplicate concatenation
-                                        if (!ongoingInput.value.includes(" - ")) {
-                                            ongoingInput.value = percentage + " - " + date;
-                                        }
-                                    }
-                                }
-                            let formData = new FormData(this);
+            //                         if (percentage && date) {
+            //                             // Prevent duplicate concatenation
+            //                             if (!ongoingInput.value.includes(" - ")) {
+            //                                 ongoingInput.value = percentage + " - " + date;
+            //                             }
+            //                         }
+            //                     }
+            //                 let formData = new FormData(this);
 
-                            fetch("{{ route('projects.addProject') }}", {
-                                method: "POST",
-                                body: formData,
-                                headers: {
-                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                                    "Accept": "application/json"
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.status === "success") {
-                                    Swal.fire({
-                                        title: "Success!",
-                                        text: data.message,
-                                        icon: "success",
-                                        confirmButtonText: "OK"
-                                    }).then(() => {
-                                        $("#addNewProjectModal").modal("hide"); // Hide modal
-                                        document.getElementById("addProjectForm").reset(); // Reset form
-                                        loadProjects(); // Reload projects without refreshing page
-                                    });
-                                } else {
-                                    let errorMsg = data.message;
+            //                 fetch("add-project", {
+            //                     method: "POST",
+            //                     body: formData,
+            //                     headers: {
+            //                         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            //                         "Accept": "application/json"
+            //                     }
+            //                 })
+            //                 .then(response => response.json())
+            //                 .then(data => {
+            //                     if (data.status === "success") {
+            //                         Swal.fire({
+            //                             title: "Success!",
+            //                             text: data.message,
+            //                             icon: "success",
+            //                             confirmButtonText: "OK"
+            //                         }).then(() => {
+            //                             $("#addNewProjectModal").modal("hide"); // Hide modal
+            //                             document.getElementById("addProjectForm").reset(); // Reset form
+            //                             loadProjects(); // Reload projects without refreshing page
+            //                         });
+            //                     } else {
+            //                         let errorMsg = data.message;
                                     
-                                    if (data.errors) {
-                                        errorMsg += "<ul>";
-                                        for (const [field, errors] of Object.entries(data.errors)) {
-                                            errorMsg += `<li>${errors.join(", ")}</li>`;
-                                        }
-                                        errorMsg += "</ul>";
-                                    }
+            //                         if (data.errors) {
+            //                             errorMsg += "<ul>";
+            //                             for (const [field, errors] of Object.entries(data.errors)) {
+            //                                 errorMsg += `<li>${errors.join(", ")}</li>`;
+            //                             }
+            //                             errorMsg += "</ul>";
+            //                         }
 
-                                    Swal.fire({
-                                        title: "Error!",
-                                        html: errorMsg,
-                                        icon: "error",
-                                        confirmButtonText: "OK"
-                                    });
-                                }
-                            })
-                            .catch(error => {
-                                Swal.fire({
-                                    title: "Error!",
-                                    text: "An unexpected error occurred. Please try again.",
-                                    icon: "error",
-                                    confirmButtonText: "OK"
-                                });
-                                console.error("Error:", error);
-                            });
-                        });
+            //                         Swal.fire({
+            //                             title: "Error!",
+            //                             html: errorMsg,
+            //                             icon: "error",
+            //                             confirmButtonText: "OK"
+            //                         });
+            //                     }
+            //                 })
+            //                 .catch(error => {
+            //                     Swal.fire({
+            //                         title: "Error!",
+            //                         text: "An unexpected error occurred. Please try again.",
+            //                         icon: "error",
+            //                         confirmButtonText: "OK"
+            //                     });
+            //                     console.error("Error:", error);
+            //                 });
+            //             });
 
                         document.addEventListener("DOMContentLoaded", function () {
                             loadProjects(); // Load projects on page load
@@ -598,5 +535,42 @@ document.addEventListener("click", function (e) {
     });
 
 </script>
+<script>
+    // Ensure functions are defined after the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle "Other Fund" Selection Toggle
+        function toggleOtherFund() {
+            var sourceOfFunds = document.getElementById("sourceOfFunds").value;
+            var otherFundContainer = document.getElementById("otherFundContainer");
+
+            if (sourceOfFunds === "Others") {
+                otherFundContainer.style.display = "block";
+            } else {
+                otherFundContainer.style.display = "none";
+            }
+        }
+
+        // Handle "Ongoing Status" Selection Toggle
+        function toggleOngoingStatus() {
+            var projectStatus = document.getElementById("projectStatus").value;
+            var ongoingStatusContainer = document.getElementById("ongoingStatusContainer");
+
+            if (projectStatus === "Ongoing") {
+                ongoingStatusContainer.style.display = "block";
+            } else {
+                ongoingStatusContainer.style.display = "none";
+            }
+        }
+
+        // Add Event Listener for Project Status Dropdown
+        document.getElementById("projectStatus").addEventListener("change", function () {
+            toggleOngoingStatus();
+        });
+
+        // Handle "Other Fund" Dropdown Change
+        $('#sourceOfFunds').on('change', function() {
+            toggleOtherFund();
+        });
+    });
 
 @endsection

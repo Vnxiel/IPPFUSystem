@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\addProject;
+use App\Models\Project;
 use App\Models\showDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectManager extends Controller
 {
     public function addProject(Request $request)
     {
         // Validate the form data
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'projectTitle' => 'required|string|max:255',
             'projectLoc' => 'required|string|max:255',
             'projectID' => 'required|string|max:50|unique:projects_tbl,projectID',
@@ -36,7 +37,7 @@ class ProjectManager extends Controller
             'resumeOrderNo' => 'nullable|date',
             'timeExtension' => 'nullable|string|max:50',
             'revisedTargetCompletion' => 'nullable|string|max:50',
-            'CompletionDate' => 'nullable|string|max:50',
+            'completionDate' => 'nullable|string|max:50',
             'abc' => 'nullable|numeric',
             'contractAmount' => 'nullable|numeric',
             'engineering' => 'nullable|numeric',
@@ -46,46 +47,49 @@ class ProjectManager extends Controller
             'appropriate' => 'nullable|numeric',
         ]);
     
-        // If validation fails, return errors
+        // If validation fails, return 2 (Validation Error)
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'status' => 2,
                 'message' => 'Validation failed!',
                 'errors' => $validator->errors()
             ], 422);
         }
-    
-        try {
-            // Insert into the database
-            $project = addProject::create($request->all());
 
-            if ($project) {
-                return response()->json(['status' => 'success', 'message' => 'Project added successfully!']);
-            } else {
-                return response()->json(['status' => 'error', 'message' => 'Failed to add project.']);
-            }
-        } catch (\Exception $e) {
-            Log::error('Error adding project: ' . $e->getMessage());
-            return response()->json(['status' => 'error', 'message' => 'Error adding project. ' . $e->getMessage()]);
+        // Check if a project with the same projectID already exists
+        if (Project::where('projectID', $request->input('projectID'))->exists()) {
+            return response()->json(4); // 4: Duplicate entry
         }
-    }
 
-    public function showDetails()
+        // Attempt to insert into the database
+        $project = Project::create($request->all());
+
+        // Check if the project was successfully created
+        if ($project) {
+            return response()->json([
+                'status' => 1, // Changed to numeric 1 for success
+                'message' => 'Project added successfully!',
+                'project' => $project
+            ]);
+        }
+
+        // Return an error response if the creation failed
+        return response()->json([
+            'status' => 0, // Changed to numeric 0 for failure
+            'message' => 'Failed to add project.'
+        ]);
+    }
+    
+
+    public function showDetails(Request $request)
     {
-    try {
+        // Fetch projects ordered by creation date
         $projects = showDetails::orderBy('created_at', 'desc')->get();
 
+        // Return data in a format compatible with DataTables
         return response()->json([
-            'status' => 'success',
-            'projects' => $projects
+            'data' => $projects // DataTables expects a 'data' key
         ]);
-    } catch (\Exception $e) {
-        \Log::error('Error fetching projects: ' . $e->getMessage());
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Error fetching projects. Please try again.'
-        ], 500);
-    }
     }
 
     public function getProject($projectID)

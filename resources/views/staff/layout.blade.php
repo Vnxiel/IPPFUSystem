@@ -35,7 +35,7 @@
                     </button>
 
                     <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('systemAdmin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                        <a href="{{ route('main.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
                             <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid d-inline-block align-text-top me-2">
                             <div>
                                 <h5 class="mb-0">Provincial Engineering Office</h5>
@@ -45,19 +45,19 @@
 
                         <ul class="navbar-nav col-lg-6 justify-content-lg-center">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{{ route('systemAdmin.index') }}">Dashboard</a>
+                                <a class="nav-link active" aria-current="page" href="{{ route('main.index') }}">Dashboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('systemAdmin.projects') }}">Projects</a>
+                                <a class="nav-link" href="{{ route('main.projects') }}">Projects</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('systemAdmin.userManagement') }}">User Management</a>
+                                <a class="nav-link" href="{{ route('main.userManagement') }}">User Management</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('systemAdmin.trash') }}">Trash</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('systemAdmin.activityLogs') }}">Activity Logs</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('main.trash') }}">Trash</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('main.activityLogs') }}">Activity Logs</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -106,7 +106,6 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <!-- Your Custom Scripts -->
-        <script src="{{ asset('js/Project/projects.js') }}"></script>
         <script src="{{ asset('js/Project/add-project.js') }}"></script>
         <script src="{{ asset('js/register-user.js') }}"></script>
         <script src="{{ asset('js/getData.js') }}"></script>

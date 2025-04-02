@@ -15,7 +15,6 @@
                                         <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="totalProjects">10</p>
                                     </div>
                                 </div>
-                            </div>
 
                                 <!-- On-going Projects -->
                                 <div class="card m-1" style="width: 12rem; height: 8rem;">
@@ -24,7 +23,6 @@
                                         <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="ongoingProjects">0</p>
                                     </div>
                                 </div>
-                            </div>
 
                                 <!-- Completed Projects -->
                                 <div class="card m-1" style="width: 12rem; height: 8rem;">
@@ -33,7 +31,6 @@
                                         <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="completedProjects">0</p>
                                     </div>
                                 </div>
-                            </div>
 
                                 <!-- Discontinued Projects -->
                                 <!-- <div class="card m-1" style="width: 12rem; height: 8rem;">
@@ -50,7 +47,6 @@
                                         <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="totalBudget">₱1,000,000,000</p>
                                     </div>
                                 </div>
-                            </div>
 
                                 <!-- Total Budget Used -->
                                 <div class="card m-1" style="width: 16rem; height: 8rem;">
@@ -59,7 +55,6 @@
                                         <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="totalUsed">₱500,000,000</p>
                                     </div>
                                 </div>
-                            </div>
 
                                 <!-- Remaining Balance -->
                                 <div class="card m-1" style="width: 16rem; height: 8rem;">
