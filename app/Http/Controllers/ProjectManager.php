@@ -8,6 +8,10 @@ use App\Models\showDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use App\Models\ActLogs;
+use App\Http\Controllers\ActivityLogs;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProjectManager extends Controller
@@ -55,12 +59,44 @@ class ProjectManager extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
+
+         //  Get username from session
+         if (session()->has('loggedIn')) {
+            $sessionData = session()->get('loggedIn');
+            $username = $sessionData['performedBy'];  // Assuming this is the username
+        } else {
+            Log::error("Session not found");
+            return response()->json(['status' => 'error', 'message' => 'Session not found'], 401);
+        }
+
+         // Fetch session data properly
+            $ofmis_id = $sessionData['ofmis_id'] ?? null;
+            $role = $sessionData['role'] ?? 'Unknown';
+            $username = $sessionData['username'] ?? 'Unknown';
+            $projectTitle = $request->input('projectTitle');
+
     
         try {
             // Insert into the database
             $project = addProject::create($request->all());
-
+            
             if ($project) {
+                // Logging user action
+                $action = "Added new project: $projectTitle.";
+    
+                // Store in session
+                $request->session()->put('AddedNewProject', [
+                    'ofmis_id' => $ofmis_id,
+                    'performedBy' => $username,
+                    'role' => $role,
+                    'action' => $action,
+                ]);
+    
+                Log::info("User action logged: " . json_encode($request->session()->get('AddedNewProject')));
+    
+                // Store in activity logs
+                (new ActivityLogs)->userAction($ofmis_id, $username, $role, $action);
+    
                 return response()->json(['status' => 'success', 'message' => 'Project added successfully!']);
             } else {
                 return response()->json(['status' => 'error', 'message' => 'Failed to add project.']);
@@ -217,7 +253,7 @@ class ProjectManager extends Controller
         $validator = \Validator::make($request->all(), [
             'projectTitle' => 'required|string|max:255',
             'projectLoc' => 'required|string|max:255',
-            'projectID' => 'required|string|max:50|unique:projects_tbl,projectID,' . $projectID . ',projectID',
+            'projectID' => 'required|string|max:50|',
             'projectContractor' => 'nullable|string|max:255',
             'sourceOfFunds' => 'nullable|string|max:255',
             'otherFund' => 'nullable|string|max:255',
@@ -282,7 +318,7 @@ class ProjectManager extends Controller
         ]);
 
     } catch (\Exception $e) {
-        Log::error("Error updating project ID $id: " . $e->getMessage());
+        Log::error("Error updating project ID $projectID: " . $e->getMessage());
         return response()->json([
             'status' => 'error',
             'message' => 'Failed to update project.',
@@ -305,21 +341,6 @@ public function trashProject(Request $request, $projectID)
     return response()->json(["status" => "success", "message" => "Project successfully archived."]);
 }
 
-public function generateProjectPDF($projectID)
-{
-    try {
-        // Fetch project details
-        $project = showDetails::where('projectID', $projectID)->first();
-        // Load a Blade view into PDF
-        $pdf = Pdf::loadView('pdf.project', compact('project'));
-
-        // Return the generated PDF as a download
-        return $pdf->download("Project_{$project->projectTitle}.pdf");
-    } catch (\Exception $e) {
-        \Log::error("PDF Generation Error: " . $e->getMessage());
-        return back()->with('error', 'Failed to generate project PDF.');
-    }
-}
 
 
 

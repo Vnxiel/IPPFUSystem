@@ -7,6 +7,8 @@ use App\Http\Controllers\ActivityLogs; // Import the ActivityLogs controller
 use App\Http\Controllers\ProjectManager;
 use App\Http\Controllers\FileManager;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\GenerateProjectReport;
+
 
 Route::get('/', function() {
     return view('index');
@@ -56,8 +58,10 @@ Route::controller(ActivityLogs::class)->group(function () {
     Route::put('/projects/trash/{projectID}', [ProjectManager::class, 'trashProject'])->name('projects.trash');
     Route::get('/projects/fetch-trash', [ProjectManager::class, 'fetchTrashedProjects'])->name('projects.fetchTrash');
     Route::put('/projects/restore/{projectID}', [ProjectManager::class, 'restoreProject'])->name('projects.restore');
-    Route::get('/projects/generate-pdf/{projectID}', [ProjectManager::class, 'generateProjectPDF'])->name('projects.generatePDF');
-});
+   });
+
+    // Generate Project Routes
+     
 
  // Session Handling Routes
  Route::post('/store-project-id', [SessionController::class, 'storeProjectID'])->name('store.project.id');

@@ -1,10 +1,10 @@
 @extends('main.layout')
 
-@section('title', 'Dashboard Page')
+@section('title', 'Overview Page')
 
 @section('content') 
                 
-               <!-- Project Overview -->
+<!-- Project Overview -->
 <hr class="mx-2">
 <div class="container-fluid">
     <div class="row">
@@ -179,6 +179,7 @@
             <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#generateProjectModal">
                 <i class="fa fa-download"></i>
             </button>
+
             <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#trashModal">
                 <i class="fa fa-trash"></i>
             </button>
@@ -253,7 +254,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <form id="updateProjectForm">
+            <form id="updateProjectForm" name="updateProjectForm">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-1">
@@ -272,7 +273,7 @@
                         <div class="col-md-6">
                             <div class="mb-1">
                                 <label for="projectID" class="form-label">Project ID</label>
-                                <input type="text" class="form-control" id="projectID">
+                                <input type="text" class="form-control" id="projectID" disabled >
                             </div>
                         </div>
                     </div>
@@ -440,7 +441,23 @@
     </div>
 </div>
 
-
-
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="generateProjectModal" tabindex="-1" aria-labelledby="generateProjectLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generateProjectLabel">Generate Project Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to generate the project report?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmGenerateBtn" class="btn btn-primary">Generate</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection

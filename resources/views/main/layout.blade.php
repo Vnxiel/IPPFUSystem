@@ -20,7 +20,8 @@
         <!-- DataTables CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
-
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.5.0/css/colReorder.dataTables.min.css">
+    
         <link href="{{ asset('css/ippfu-css.css') }}" rel="stylesheet">
 
     </head>
@@ -64,14 +65,14 @@
                         <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
                             <div class="dropdown">
                              <?php
-// ✅ Get username from session
-$username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
-?>
+                                //  Get username from session
+                                $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
+                                ?>
 
-<a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-   data-bs-toggle="dropdown" aria-expanded="false" role="button">
-   <span class="fa fa-user me-1"></span> <?php echo htmlspecialchars($username); ?>
-</a>
+                                <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                                <span class="fa fa-user me-1"></span> <?php echo htmlspecialchars($username); ?>
+                                </a>
                                 <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownMenuButton">
                                     <li><a class="dropdown-item" href="javascript:void(0);" onclick="logout()">Sign out</a></li>
                                 </ul>
@@ -97,6 +98,7 @@ $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+       
         <!-- DataTables JS -->
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
@@ -112,7 +114,16 @@ $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
         <script src="{{ asset('js/load-data.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
         <script src="{{ asset('js/projects.js') }}"></script>
+        <script src="{{ asset('js/addProject.js') }}"></script>
+        <script src="{{ asset('js/fetchProjects.js') }}"></script>
+        <script src="{{ asset('js/trashProjects.js') }}"></script>
+        <script src="{{ asset('js/updateProjects.js') }}"></script>
+        <script src="{{ asset('js/restoreProjects.js') }}"></script>
+        <script src="{{ asset('js/uploadFiles.js') }}"></script>
+        <script src="{{ asset('js/downloadFile.js') }}"></script>
+        <script src="{{ asset('js/generateProject.js') }}"></script>
         <script src="{{ asset('js/logout.js') }}"></script>
+        
         
     </body>
 </html>
