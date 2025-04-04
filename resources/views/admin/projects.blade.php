@@ -1,11 +1,11 @@
-@extends('main.layout')
+@extends('admin.layout')
 
 @section('title', 'Dashboard Page')
 
 @section('content') 
                 <hr class="mx-2">
                 <div class="container-fluid px-3">
-                <div class="col-md-12 m-2">
+                    <div class="col-md-12 m-2">
                         <div class="row align-items-center">
                             <div class="col">
                                 <h5 class="m-0">Projects</h5>
@@ -18,17 +18,17 @@
                             <hr class="mt-2">
                         </div>
                         <div class="row">
-                        <div class="table-container table-responsive">
-                            <table id="projects" class="table table-striped table-hover table-bordered" style="width:100%;">
+                            <div class="table-container table-responsive">
+                            <table id="projects" class="table table-striped table-hover table-bordered display nowrap" style="width:100%;">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width:10%;">Project Title</th>
-                                        <th style="width:15%;">Location</th>
-                                        <th style="width:10%;">Status</th>
-                                        <th style="width:10%;">Contract Amount</th>
-                                        <th style="width:15%;">Contractor</th>
-                                        <th style="width:15%;">Duration</th>
-                                        <th style="width:15%;">Action</th>
+                                        <th>Project Title</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Contract Amount</th>
+                                        <th>Contractor</th>
+                                        <th>Duration</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -38,7 +38,6 @@
                                 </tbody>
                             </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -46,36 +45,22 @@
 
 
              <!-- Add Project Modal -->
-             <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
-            <div class="modal-dialog  modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="appNewProjectLabel">Add Project</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                    <form action="{{ route('projects.addProject') }}" id="addProjectForm" method="POST">
-                             @csrf
-                            <div class="row">
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="mb-1">
-                                                <label for="projectTitle" class="form-label">Project Title</label>
-                                                <input type="text" class="form-control" id="projectTitle" name="projectTitle" required placeholder="Enter project title">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="mb-1">
-                                                <label for="projectID" class="form-label">Project ID</label>
-                                                <input type="text" class="form-control" id="projectID" name="projectID" required placeholder="Enter project id">
-                                            </div>
-                                        </div>
-                                    </div>
+            <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
+                <div class="modal-dialog  modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="appNewProjectLabel">Add Project</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addProjectForm">
+                                @csrf
+                                <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-1">
-                                        <label for="projectDescription" class="form-label">Project Description</label>
-                                        <textarea class="form-control" id="projectDescription" name="projectDescription" rows="3" placeholder="Enter project description"></textarea>
-                                  </div>
+                                        <label for="projectTitle" class="form-label">Project Title</label>
+                                        <input type="text" class="form-control" id="projectTitle" name="projectTitle" required placeholder="Enter project title">
+                                   </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -85,13 +70,18 @@
                                         <input type="text" class="form-control" id="projectLoc" name="projectLoc" required placeholder="Enter location">
                                     </div>
                                 </div>
-                               
+                                <div class="col-md-6">
+                                    <div class="mb-1">
+                                        <label for="projectID" class="form-label">Project ID</label>
+                                        <input type="text" class="form-control" id="projectID" name="projectID" required placeholder="Enter project ID">
+                                    </div>  
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="projectContractor" class="form-label">Contractor</label>
-                                        <input type="text" class="form-control" id="projectContractor" name="projectContractor" placeholder="Enter project contractor">
+                                        <input type="text" class="form-control" id="projectContractor" name="projectContractor" placeholder="Enter projectContractor">
                                      </div>
                                 </div>
                                 <div class="col-md-6">
@@ -120,7 +110,7 @@
                                     <div class="mb-1">
                                         <label for="modeOfImplementation" class="form-label">Mode of Implementation</label>
                                         <input type="text" class="form-control" id="modeOfImplementation" name="modeOfImplementation" placeholder="Enter mode of implementation.">
-                                     </div>
+                            </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
@@ -146,7 +136,12 @@
                                 </div>
                             </div>
                             <div class="row">
-                                
+                                <div class="col-md-12">
+                                    <div class="mb-1">
+                                        <label for="projectDescription" class="form-label">Project Description</label>
+                                        <textarea class="form-control" id="projectDescription" name="projectDescription" rows="3" placeholder="Enter project description"></textarea>
+                                  </div>
+                                </div>
                             </div>
                             <div class="row text-center">
                                 <div class="row">
@@ -232,8 +227,8 @@
                                         <input type="text" class="form-control currency-input" id="bid" name="bid">
                                     </div>
                                     <div class="mb-1">
-                                        <label for="appropriation" class="form-label">Appropriation</label>
-                                        <input type="text" class="form-control currency-input" id="appropriation" name="appropriation">
+                                        <label for="appropriate" class="form-label">Appropriation</label>
+                                        <input type="text" class="form-control currency-input" id="appropriate" name="appropriate">
                                     </div>
                                 </div>
                             </div>
@@ -241,17 +236,18 @@
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Add Project</button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
    
 
+      <!-- DataTable & Fetching Script -->
         <script>    
             document.addEventListener("DOMContentLoaded", function () {
-              
+                loadProjects(); // Load projects on page load
                 // Select all input fields with the "currency-input" class
                 let currencyInputs = document.querySelectorAll(".currency-input");
 
@@ -302,56 +298,44 @@
                 }
             });
 
-            // Handle "Other Fund" Selection Toggle
-            function toggleOtherFund() {
-                var sourceOfFunds = document.getElementById("sourceOfFunds").value;
-                var otherFundContainer = document.getElementById("otherFundContainer");
+    // Handle "Other Fund" Selection Toggle
+    function toggleOtherFund() {
+        var sourceOfFunds = document.getElementById("sourceOfFunds").value;
+        var otherFundContainer = document.getElementById("otherFundContainer");
 
-                if (sourceOfFunds === "Others") {
-                    otherFundContainer.style.display = "block";
-                } else {
-                    otherFundContainer.style.display = "none";
-                }
+        if (sourceOfFunds === "Others") {
+            otherFundContainer.style.display = "block";
+        } else {
+            otherFundContainer.style.display = "none";
+        }
+    }
+
+    // Handle "Ongoing Status" Selection Toggle
+    function toggleOngoingStatus() {
+        var projectStatus = document.getElementById("projectStatus").value;
+        var ongoingStatusContainer = document.getElementById("ongoingStatusContainer");
+
+        if (projectStatus === "Ongoing") {
+            ongoingStatusContainer.style.display = "block";
+        } else {
+            ongoingStatusContainer.style.display = "none";
+        }
+    }
+
+    // Add Event Listener for Project Status Dropdown
+    document.getElementById("projectStatus").addEventListener("change", function () {
+        toggleOngoingStatus();
+    });
+
+
+        // Handle "Other Fund" Dropdown Change
+        $('#sourceOfFunds').on('change', function() {
+            if ($(this).val() === 'Others') {
+                $('#otherFundContainer').slideDown(); // Show input with animation
+            } else {
+                $('#otherFundContainer').slideUp(); // Hide input with animation
             }
-
-            // Handle "Ongoing Status" Selection Toggle
-            function toggleOngoingStatus() {
-                let statusSelect = document.getElementById("projectStatus");
-                let ongoingContainer = document.getElementById("ongoingStatusContainer");
-                let ongoingDate = document.getElementById("ongoingDate");
-
-                if (statusSelect.value === "Ongoing") {
-                    ongoingContainer.style.display = "block";
-
-                    // Set the ongoingDate to today's date
-                    let today = new Date().toISOString().split('T')[0];
-                    ongoingDate.value = today;
-                } else {
-                    ongoingContainer.style.display = "none";
-                    ongoingDate.value = ""; // Clear the date when status is not "Ongoing"
-                }
-            }
-
-
-            // Add Event Listener for Project Status Dropdown
-            document.getElementById("projectStatus").addEventListener("change", function () {
-                toggleOngoingStatus();
-            });
-
-
-            $(document).ready(function() {
-                $('#sourceOfFunds').on('change', function() {
-                    if ($(this).val() === 'Others') {
-                        $('#otherFundContainer').slideDown();
-                    } else {
-                        $('#otherFundContainer').slideUp();
-                    }
-                });
-            });
-
-          
-    
-
-</script>
+        });
+    });
 
 @endsection

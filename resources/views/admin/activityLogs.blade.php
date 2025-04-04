@@ -1,6 +1,6 @@
-@extends('main.layout')
+@extends('admin.layout')
 
-@section('title', 'Dashboard Page')
+@section('title', 'Activity Logs Page')
 
 @section('content') 
                 <hr class="mx-2">

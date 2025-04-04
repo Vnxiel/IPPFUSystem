@@ -215,7 +215,7 @@ class ProjectManager extends Controller
             $projects = showDetails::all();
             $totalBudget = $projects->sum(fn ($p) => (float) preg_replace('/[^0-9.]/', '', $p->abc ?? '0'));
             $totalUsed = $projects->sum(fn ($p) => (float) preg_replace('/[^0-9.]/', '', $p->contractAmount ?? '0'));
-            $remainingBalance = max($totalBudget - $totalUsed, 0);
+            $resystemAdminingBalance = max($totalBudget - $totalUsed, 0);
 
             $recentProjects = showDetails::orderBy('created_at', 'desc')->limit(5)->get();
 
@@ -230,7 +230,7 @@ class ProjectManager extends Controller
                     'discontinuedProjects' => $discontinuedProjects,
                     'totalBudget' => number_format($totalBudget, 2),
                     'totalUsed' => number_format($totalUsed, 2),
-                    'remainingBalance' => number_format($remainingBalance, 2),
+                    'resystemAdminingBalance' => number_format($resystemAdminingBalance, 2),
                     'recentProjects' => $recentProjects
                 ]
             ]);

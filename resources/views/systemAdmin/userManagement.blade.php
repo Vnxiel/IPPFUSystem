@@ -1,4 +1,4 @@
-@extends('main.layout')
+@extends('systemAdmin.layout')
 
 @section('title', 'User Management Page')
 

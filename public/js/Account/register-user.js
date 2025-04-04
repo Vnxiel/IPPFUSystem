@@ -19,7 +19,7 @@ $(document).ready(function() {
                         timer: 2000
                     }).then(() => {
                         $("#registerUserForm")[0].reset(); // Clear textboxes
-                        window.location.href = '/main/userManagement'; // Redirect to user management
+                        window.location.href = '/systemAdmin/userManagement'; // Redirect to user management
 
 
                     });
@@ -57,8 +57,8 @@ const timeLimitContainer = document.getElementById('timeLimitContainer');
 
 // Event listener for user role selection
 userRoleSelect.addEventListener('change', function() {
-    // Check if "Admin" or "Staff" is selected
-    if (userRoleSelect.value === 'System Admin' || userRoleSelect.value === 'Admin' || userRoleSelect.value === 'Staff') {
+    // Check if "Admin" or "systemAdmin" is selected
+    if (userRoleSelect.value === 'System Admin' || userRoleSelect.value === 'Admin' || userRoleSelect.value === 'systemAdmin') {
         // Show Time Frame Select
         timeFrameLabel.style.display = 'block';
         timeFrameSelect.style.display = 'block';
@@ -148,7 +148,7 @@ $(document).ready(function () {
                     }).then(() => {
                         $("#roleModal").modal("hide");
                         // Refresh the user list
-                        window.location.href = '/main/userManagement'; // Redirect to user management
+                        window.location.href = '/systemAdmin/userManagement'; // Redirect to user management
                     });
                 } else {
                     Swal.fire({ 

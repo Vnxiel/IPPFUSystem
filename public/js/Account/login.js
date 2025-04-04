@@ -10,7 +10,7 @@ $(document).ready(function() {
             data: $(this).serialize(),
             success: function(response) {
                 if(response == 1){
-                    console.log("Redirecting to:", "/main/index"); // Debugging
+                    console.log("Redirecting to:", "/systemAdmin/index"); // Debugging
 
                     Swal.fire({
                         icon: "success",
@@ -18,7 +18,7 @@ $(document).ready(function() {
                         showConfirmButton: false,
                         timer: 2000,
                     }).then(function(){
-                        window.location = "/main/index";
+                        window.location = "/systemAdmin/index";
                     });
                 }else if(response.message){
                     var errorMessages = Object.values(response.message).join('<br>');

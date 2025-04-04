@@ -15,20 +15,20 @@ Route::get('/', function() {
 });
 
 Route::controller(UserManager::class)->group(function () {
-    Route::get('/systemAdmin/register', 'goToRegister')->name('systemAdmin.register');
+    Route::get('/FirstUserRegistration/register', 'goToRegister')->name('FirstUserRegistration.register');
     Route::post('/registerSystemAdmin', 'registerSystemAdmin')->name(name: 'registerSystemAdmin');
     Route::get('/', 'index');
     Route::post('/login', 'userLogin')->name('login');
 
-    Route::get('/main/projects', 'projects')->name('main.projects');
-    Route::get('/main/overview', 'overview')->name('main.overview');
-    Route::get('/main/reports', 'funds')->name('main.funds');
-    Route::get('/main/trash', 'trash')->name('main.trash');
+    Route::get('/systemAdmin/projects', 'projects')->name('systemAdmin.projects');
+    Route::get('/systemAdmin/overview', 'overview')->name('systemAdmin.overview');
+    Route::get('/systemAdmin/reports', 'funds')->name('systemAdmin.funds');
+    Route::get('/systemAdmin/trash', 'trash')->name('systemAdmin.trash');
 });
 
 Route::controller(SystemAdminManager::class)->group(function () {
-    Route::get('/main/index', 'index')->name(name: 'main.index');
-    Route::get('/main/userManagement', 'viewUserManagement')->name('main.userManagement');
+    Route::get('/systemAdmin/index', 'index')->name(name: 'systemAdmin.index');
+    Route::get('/systemAdmin/userManagement', 'viewUserManagement')->name('systemAdmin.userManagement');
 
     Route::post('/userRegistration', 'registerUser')->name('userRegistration');
     Route::get('/getUsers', 'viewUserManagement')->name('getUsers');
@@ -36,7 +36,7 @@ Route::controller(SystemAdminManager::class)->group(function () {
     Route::get('/getUserRole', 'getUserRole');
     Route::post('/changeRole', 'changeRole');
 
-    Route::get('/main/activityLogs', 'viewActivityLogs')->name('main.activityLogs');
+    Route::get('/systemAdmin/activityLogs', 'viewActivityLogs')->name('systemAdmin.activityLogs');
 
 });
 

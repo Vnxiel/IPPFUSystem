@@ -1,4 +1,4 @@
-@extends('main.layout')
+@extends('systemAdmin.layout')
 
 @section('title', 'Dashboard Page')
 
@@ -48,11 +48,11 @@
                                 </div>
                             </div>
 
-                            <!-- Remaining Balance -->
+                            <!-- ResystemAdmining Balance -->
                             <div class="card m-1" style="width: 16rem; height: 8rem;">
                                 <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Remaining Balance</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="remainingBalance">₱0</p>
+                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">ResystemAdmining Balance</h6>
+                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="resystemAdminingBalance">₱0</p>
                                 </div>
                             </div>
 
@@ -298,7 +298,7 @@ function fetchProjectSummary() {
                 //  Update budget values
                 document.getElementById("totalBudget").textContent = `₱${summary.totalBudget}`;
                 document.getElementById("totalUsed").textContent = `₱${summary.totalUsed}`;
-                document.getElementById("remainingBalance").textContent = `₱${summary.remainingBalance}`;
+                document.getElementById("resystemAdminingBalance").textContent = `₱${summary.resystemAdminingBalance}`;
             } else {
                 console.error("Invalid summary data received.");
             }
@@ -328,8 +328,8 @@ document.addEventListener("click", function (e) {
             if (data.success) {
                 console.log("Project ID stored successfully, redirecting...");
 
-                //  Redirect to main.overview (correct Laravel route)
-                window.location.href = "/main/overview";
+                //  Redirect to systemAdmin.overview (correct Laravel route)
+                window.location.href = "/systemAdmin/overview";
             } else {
                 console.error("Failed to store project ID:", data);
             }

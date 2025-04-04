@@ -17,7 +17,7 @@ class UserManager extends Controller
     public function index(){
         $userExists = User::count() > 0;
         if (!$userExists) {
-            return redirect()->route('systemAdmin.register');
+            return redirect()->route('FirstUserRegistration.register');
         }
     
         return view('index');  
@@ -28,7 +28,7 @@ class UserManager extends Controller
         if ($userExists) {
             return redirect()->route('index');
         }
-        return view('systemAdmin.register');  
+        return view('FirstUserRegistration.register');  
     }
 
     public function registerSystemAdmin(Request $request)
@@ -241,19 +241,19 @@ class UserManager extends Controller
     public function getUserAction(Request $request) {}
 
     public function projects() {
-        return view('main.projects');  // Returns the 'projects.blade.php' view
+        return view('systemAdmin.projects');  // Returns the 'projects.blade.php' view
     }
 
     public function overview() {
-        return view('main.overview');  // Returns the 'overview.blade.php' view
+        return view('systemAdmin.overview');  // Returns the 'overview.blade.php' view
     }
 
     public function trash() {
-        return view('main.trash');  // Returns the 'trash.blade.php' view
+        return view('systemAdmin.trash');  // Returns the 'trash.blade.php' view
     }
 
     public function activityLogs() {
-        return view('main.activityLogs');  // Returns the 'activityLogs.blade.php' view
+        return view('systemAdmin.activityLogs');  // Returns the 'activityLogs.blade.php' view
     }
 
     //When logging out it will check if the session variable exists then

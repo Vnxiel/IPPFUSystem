@@ -1,20 +1,19 @@
 function logout() {
     Swal.fire({
         title: 'Logging Out...',
-        text: 'Are you sure you want to Signout?',
+        text: 'You will be logged out of the system.',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#1abc02',
-        cancelButtonColor: 'red',
-        confirmButtonText: 'Yes, Signout!',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, log out!'
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire({
                 icon: "success",
                 title: "Successfully logged out!",
-                text: "You will now be redirected to landing page",
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 1000,
             })
             setTimeout(function () {
                 window.location = "/";

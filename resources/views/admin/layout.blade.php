@@ -20,8 +20,7 @@
         <!-- DataTables CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.5.0/css/colReorder.dataTables.min.css">
-    
+
         <link href="{{ asset('css/ippfu-css.css') }}" rel="stylesheet">
 
     </head>
@@ -36,7 +35,7 @@
                     </button>
 
                     <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('main.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                        <a href="{{ route('admin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
                             <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid d-inline-block align-text-top me-2">
                             <div>
                                 <h5 class="mb-0">Provincial Engineering Office</h5>
@@ -46,19 +45,19 @@
 
                         <ul class="navbar-nav col-lg-6 justify-content-lg-center">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{{ route('main.index') }}">Dashboard</a>
+                                <a class="nav-link active" aria-current="page" href="{{ route('admin.index') }}">Dashboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('main.projects') }}">Projects</a>
+                                <a class="nav-link" href="{{ route('admin.projects') }}">Projects</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('main.userManagement') }}">User Management</a>
+                                <a class="nav-link" href="{{ route('admin.userManagement') }}">User Management</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('main.trash') }}">Trash</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('main.activityLogs') }}">Activity Logs</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('admin.trash') }}">Trash</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('admin.activityLogs') }}">Activity Logs</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -98,7 +97,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-       
         <!-- DataTables JS -->
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
@@ -120,8 +118,6 @@
         <script src="{{ asset('js/updateProjects.js') }}"></script>
         <script src="{{ asset('js/restoreProjects.js') }}"></script>
         <script src="{{ asset('js/uploadFiles.js') }}"></script>
-        <script src="{{ asset('js/downloadFile.js') }}"></script>
-        <script src="{{ asset('js/generateProject.js') }}"></script>
         <script src="{{ asset('js/logout.js') }}"></script>
         
         

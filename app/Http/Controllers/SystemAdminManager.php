@@ -11,11 +11,11 @@ use App\Models\ActLogs;
 class SystemAdminManager extends Controller
 {
     public function index(){
-        return view('main.index');
+        return view('systemAdmin.index');
     }
 
     public function userManagement(){
-        return view('main.userManagement'); 
+        return view('systemAdmin.userManagement'); 
     }
 
     public function registerUser(Request $request){
@@ -56,7 +56,7 @@ class SystemAdminManager extends Controller
     public function viewActivityLogs(Request $request){
         $activityLogs = ActLogs::all();
 
-        return view('main.activityLogs', [
+        return view('systemAdmin.activityLogs', [
             'activityLogs' => $activityLogs,
         ]);
     }
@@ -64,7 +64,7 @@ class SystemAdminManager extends Controller
     public function viewUserManagement(Request $request)
     {
         $users = User::all(); 
-        return view('main.userManagement', [
+        return view('systemAdmin.userManagement', [
             'users'=> $users
         ]);
     }

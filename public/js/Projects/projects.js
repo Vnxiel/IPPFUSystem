@@ -111,5 +111,39 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Kapag pinindot ang "Generate PDF" button, hihingi ng Project ID at gagawa ng PDF file
+$(document).ready(function() {
+    $('#generateProjectBtn').click(function() {
+        let projectID = prompt("Enter Project ID to generate PDF:"); // Hihingi ng Project ID mula sa user
+        if (projectID) {
+            window.open(`/projects/generate-pdf/${projectID}`, '_blank'); // Bubuksan ang PDF sa bagong tab
+        }
+    });
+});
 
 
+// Attach event listener for overview button clicks (event delegation)
+$(document).on("click", ".overview-btn", function () {
+    let projectID = $(this).data("id");
+
+    // Store projectID in session via AJAX
+    $.ajax({
+        url: "/store-project-id",
+        type: "POST",
+        data: { projectID: projectID },
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") // Laravel CSRF token
+        },
+        success: function (data) {
+            if (data.success) {
+                console.log("Project ID stored successfully, redirecting...");
+                window.location.href = "{{ route('main.overview') }}"; // Redirect without ID in URL
+            } else {
+                console.error("Failed to store project ID:", data);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error storing project ID:", error);
+        }
+    });
+});
