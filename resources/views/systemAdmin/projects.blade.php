@@ -287,10 +287,13 @@
                             <div class="container">
                                 <div class="row align-items-center">
                                     <!-- Buttons above the order fields -->
-                                    <div class="col-12 text-end mb-0">
+                                     <div class="col-md-10">
+                                        <hr>
+                                     </div>
+                                    <div class="col-2 text-center mb-0">
                                         <button type="button" class="btn btn-outline-primary btn-sm mr-1" onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Suspension and Resumption Order">
                                             <span class="fa-solid fa-square-plus"></span>                                        </button>
-                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top" title=" Suspension and Resumption Order">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top" title="Suspension and Resumption Order">
                                             <span class="fa-solid fa-circle-minus"></span>
                                         </button>
                                     </div>
@@ -311,7 +314,6 @@
                                 </div>
                             </div>
 
-
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
@@ -330,57 +332,16 @@
                                             <input type="text" class="form-control" id="completionDate" name="completionDate" value="">
                                         </div>  
                                     </div>
-                                </div>
-
-    
-                            
-                            <!-- <div class="row text-center">
-                                <h6 class="m-1 4fw-bold">Financial Details</h6>
-                            </div> -->
-                                <!-- Financial Details -->
-                            <!-- <div class="row">
-                            <div class="col-md-6 border-bottom">
-                                    <div class="mb-1">
-                                        <label for="abc" class="form-label">ABC</label>
-                                        <input type="text" class="form-control currency-input" id="abc" name="abc">
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="contractAmount" class="form-label">Contract Amount</label>
-                                        <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount">
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="engineering" class="form-label">Engineering</label>
-                                        <input type="text" class="form-control currency-input" id="engineering" name="engineering">
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="mqc" class="form-label">MQC</label>
-                                        <input type="text" class="form-control currency-input" id="mqc" name="mqc">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-1">
-                                        <label for="contingency" class="form-label">Contingency</label>
-                                        <input type="text" class="form-control currency-input" id="contingency" name="contingency">
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="bid" class="form-label">Bid Difference</label>
-                                        <input type="text" class="form-control currency-input" id="bid" name="bid">
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="appropriation" class="form-label">Appropriation</label>
-                                        <input type="text" class="form-control currency-input" id="appropriation" name="appropriation">
-                                    </div>
-                                </div>
-                            </div> -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Project</button>
+                                </div>                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Add Project</button>
+                                </div>                            
+                            </form>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
-    </div>
 
    
 
@@ -567,7 +528,7 @@ function showSuggestions(query) {
 const municipalities = [
     'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
     'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano', 
-    'Villaverde', 'Ambaguio', 'Nueva Vizcaya', 'Santa Fe', 'Lamut'
+    'Villaverde', 'Ambaguio', 'Santa Fe', 'Lamut'
 ];
 
 function showMunicipalitySuggestions(query) {
