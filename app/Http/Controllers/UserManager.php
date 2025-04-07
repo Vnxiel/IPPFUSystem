@@ -42,8 +42,11 @@ class UserManager extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(0); 
-        } 
+            return response()->json([
+                'status' => 0,
+                'errors' => $validator->errors()->all()
+            ]); 
+        }
     
             // Check if this is the first user
             $isFirstUser = User::count() === 0;
@@ -58,10 +61,14 @@ class UserManager extends Controller
             'time_frame' => 'Permanent',
         ]);
 
-        return response()->json([
-            'status' => 1,
-            'message' => $isFirstUser ? 'System Admin' : 'Staff',
-        ]);
+            return response()->json([
+                'status' => 1,
+                'message' => $isFirstUser ? 'System Admin' : 'Staff',
+                'user' => [
+                    'id' => $user->id,
+                    'username' => $user->username
+                ]
+            ]);
     }
 
     public function changeRole(Request $request)

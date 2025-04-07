@@ -8,7 +8,15 @@ $(document).ready(function() {
             },
             url: "/userRegistration",
             method: "POST",
-            data: $(this).serialize(),
+            data: {
+                ofmis_id: $('#ofmis_id').val(),
+                fullname: $('#fullname').val(),
+                position: $('#position').val(),
+                username: $('#username').val(),
+                password: $('#password').val(),
+                password_confirmation: $('#password_confirmation').val(),
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
             success: function(response) {
                 if (response.status == 1) {
                     Swal.fire({
@@ -20,15 +28,42 @@ $(document).ready(function() {
                     }).then(() => {
                         $("#registerUserForm")[0].reset(); // Clear textboxes
                         window.location.href = '/systemAdmin/userManagement'; // Redirect to user management
-
-
                     });
                 } else if (response.status == 0) {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Warning!",
-                        text: "Please try again."
-                    });
+                    // Check for duplicate username or OFMIS ID errors
+                    const usernameError = response.errors.find(err => 
+                        err.toLowerCase().includes('username') && err.toLowerCase().includes('taken')
+                    );
+                    const ofmisIdError = response.errors.find(err => 
+                        err.toLowerCase().includes('ofmis_id') && err.toLowerCase().includes('taken')
+                    );
+                    
+                    if (usernameError) {
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Username Taken",
+                            text: "This username is already registered. Please choose a different one.",
+                        });
+                    } else if (ofmisIdError) {
+                        Swal.fire({
+                            icon: "warning",
+                            title: "OFMIS ID Registered",
+                            text: "This OFMIS ID is already registered in the system.",
+                        });
+                    } else {
+                        // Show other validation errors
+                        let errorMessage = "Please fix the following:<br><ul>";
+                        response.errors.forEach(error => {
+                            errorMessage += `<li>${error}</li>`;
+                        });
+                        errorMessage += "</ul>";
+                        
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Validation Errors",
+                            html: errorMessage
+                        });
+                    }
                 } else if (response.status == 2) {
                     Swal.fire({
                         icon: "error",

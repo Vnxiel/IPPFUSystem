@@ -8,17 +8,35 @@
 <hr class="mx-2">
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12 d-flex align-items-center gap-2">
-            <a href="{{ route('systemAdmin.projects') }}" class="btn btn-danger btn-sm">
-                <span class="fa fa-arrow-left"></span>
-            </a>
-            <h5 class="m-0">Project Overview</h5>
+        <div class="col-md-12 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <a href="{{ route('systemAdmin.projects') }}" class="btn btn-danger btn-sm">
+                    <span class="fa fa-arrow-left"></span>
+                </a>
+                <h5 class="m-0">Project Overview</h5>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
+                    <i class="fa fa-upload"></i>
+                </button>
+                <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#projectModal" title="Edit Project Details">
+                    <i class="fa fa-edit"></i>
+                </button>   
+                <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#generateProjectModal" title="Generate/Download Report">
+                    <i class="fa fa-download"></i>
+                </button>
+                <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#trashModal" title="Temporary Delete Project">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
         </div>
         <hr class="mt-2">
     </div>
 
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="card bg-light mb-1">
                 <div class="card-header">
                     <h5><strong id="projectTitleDisplay">Loading...</strong></h5>
@@ -163,8 +181,12 @@
                                 </div>
                              </div>
 
-                            <!-- Project Details -->
-                            <div class="card">
+                      
+                        </div>
+                    </div>
+                        <div class="col-md-6">
+                                                       <!-- Project Details -->
+                                                       <div class="card">
                                 <div class="card-header">
                                     <h6 class="fw-bold">Fund Utilization</h6>
                                 </div>
@@ -245,83 +267,57 @@
                                             Loading...
                                         </div>
                                     </div>
-                                    <div class="row p-1"></div>
+                                    <div class="row p-1">
                                         <div class="col-md-5 text-end"><strong>Total Expenditure:</strong></div>
                                         <div class="col-md-7 d-flex align-items-center currency-input" id="totalExpenditureOriginalDisplay">
                                             Loading...
                                         </div>
                                     </div>
                                 </div>
+                                <!--Implemetation Details-->
+                                <div class="card mt-1">
+                                    <div class="card-header">
+                                        <h6 class="fw-bold">Implementation Details</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row p-1 border-bottom">
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                <strong>Suspension Order No. 1:</strong>
+                                            </div>
+                                            <div class="col-md-8 d-flex align-items-center" id="suspensionOrderNoDisplay">Loading...
+                                            </div>
+                                        </div>
+                                        <div class="row p-1 border-bottom">
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                <strong>Resume Order No. 1:</strong>
+                                            </div>
+                                            <div class="col-md-8 d-flex align-items-center" id="resumeOrderNoDisplay">Loading...</div>
+                                        </div>
+                                        <div class="row p-1 border-bottom">
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                <strong>Time Extension:</strong>
+                                            </div>
+                                            <div class="col-md-8 d-flex align-items-center" id="timeExtensionDisplay">Loading...</div>
+                                        </div>
+                                        <div class="row p-1 border-bottom">
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                <strong>Revised Target Completion:</strong>
+                                            </div>
+                                            <div class="col-md-8 d-flex align-items-center" id="revisedTargetCompletionDisplay">Loading...</div>
+                                        </div>
+                                        <div class="row p-1 border-bottom">
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                <strong>Completion Date:</strong>
+                                            </div>
+                                            <div class="col-md-8 d-flex align-items-center" id="completionDateDisplay">Loading...</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <!--Implemetation Details-->
-                            <div class="card mt-1">
-                                <div class="card-header">
-                                    <h6 class="fw-bold">Implementation Details</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row p-1 border-bottom">
-                                        <div class="col-md-4 d-flex align-items-center">
-                                            <strong>Suspension Order No. 1:</strong>
-                                        </div>
-                                        <div class="col-md-8 d-flex align-items-center" id="suspensionOrderNoDisplay">Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1 border-bottom">
-                                        <div class="col-md-4 d-flex align-items-center">
-                                            <strong>Resume Order No. 1:</strong>
-                                        </div>
-                                        <div class="col-md-8 d-flex align-items-center" id="resumeOrderNoDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1 border-bottom">
-                                        <div class="col-md-4 d-flex align-items-center">
-                                            <strong>Time Extension:</strong>
-                                        </div>
-                                        <div class="col-md-8 d-flex align-items-center" id="timeExtensionDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1 border-bottom">
-                                        <div class="col-md-4 d-flex align-items-center">
-                                            <strong>Revised Target Completion:</strong>
-                                        </div>
-                                        <div class="col-md-8 d-flex align-items-center" id="revisedTargetCompletionDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1 border-bottom">
-                                        <div class="col-md-4 d-flex align-items-center">
-                                            <strong>Completion Date:</strong>
-                                        </div>
-                                        <div class="col-md-8 d-flex align-items-center" id="completionDateDisplay">Loading...</div>
-                                    </div>
-                                </div>
-                            </div>                     
                         </div>
-                        <div class="col-md-6">
-                            
-                        </div>
-
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-
-        <!-- Action Buttons -->
-        <div class="col-md-2 d-flex flex-column align-items-center">
-            <button type="button" class="btn btn-success btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                <i class="fa fa-upload"></i>
-            </button>
-            <button type="button" class="btn btn-info btn-sm mb-2 w-100">
-                <i class="fa fa-file"></i>
-            </button>
-            <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#projectModal">
-                <i class="fa fa-edit"></i>
-            </button>
-            <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#generateProjectModal">
-                <i class="fa fa-download"></i>
-            </button>
-
-            <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#trashModal">
-                <i class="fa fa-trash"></i>
-            </button>
         </div>
     </div>
 </div>

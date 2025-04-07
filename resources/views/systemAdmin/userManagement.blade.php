@@ -72,6 +72,12 @@
                                                 <div class="col-md-8">
                                                     <div class="row">
                                                         <div class="col-md-12">
+                                                            <label for="ofmis_id" class="form-label fw-bolder">OFMIS ID:</label>
+                                                            <input type="text" class="form-control" name="ofmis_id" id="ofmis_id" placeholder="OFMIS ID" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
                                                             <div class="mb-3">
                                                                 <label for="fullname" class="form-label fw-bolder">Full Name:</label>
                                                                 <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Full Name">
