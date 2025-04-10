@@ -19,16 +19,16 @@
                         </div>
                         <div class="row">
                             <div class="table-container table-responsive">
-                            <table id="projects" class="table table-striped table-hover table-bordered display nowrap" style="width:100%;">
+                            <table id="projects" class="table table-striped table-hover table-bordered" style="width:100%;">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Project Title</th>
-                                        <th>Location</th>
-                                        <th>Status</th>
-                                        <th>Contract Amount</th>
-                                        <th>Contractor</th>
-                                        <th>Duration</th>
-                                        <th>Action</th>
+                                        <th style="width:35%">Project Title</th>
+                                        <th style="width:5%">Location</th>
+                                        <th style="width:5%">Status</th>
+                                        <th style="width:5%">Contract Amount</th>
+                                        <th style="width:5%">Contractor</th>
+                                        <th style="width:5%">Duration</th>
+                                        <th style="width:5%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -275,6 +275,12 @@
                                 <div class="col-md-12">
                                     <label for="totalExpenditure" class="form-label">Total Expenditure</label>
                                     <input type="number" class="form-control currency-input" id="totalExpenditure" name="totalExpenditure">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="totalSavings" class="form-label">Total Savings</label>
+                                    <input type="number" class="form-control currency-input" id="totalSavings" name="totalSavings">
                                 </div>
                             </div>
 

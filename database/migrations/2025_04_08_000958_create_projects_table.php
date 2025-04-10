@@ -28,7 +28,7 @@ return new class extends Migration
             $table->date('targetCompletion')->nullable();
             $table->date('suspensionOrderNo')->nullable();
             $table->date('resumeOrderNo')->nullable();
-            $table->string('timeExtension')->default(0);
+            $table->string('timeExtension')->nullable();
             $table->string('revisedTargetCompletion')->nullable();
             $table->string('completionDate')->nullable();
             $table->string('abc', 15, 2)->nullable();
@@ -46,7 +46,7 @@ return new class extends Migration
             $table->date('noaReceivedDate')->nullable();
             $table->date('ntpIssuedDate')->nullable();
             $table->date('ntpReceivedDate')->nullable();
-            $table->string('sprojectSlippage')->nullable();
+            $table->string('projectSlippage')->nullable();
             $table->string('totalExpenditure')->nullable();
             $table->string('ea')->nullable();
             $table->string('contractCost')->nullable();

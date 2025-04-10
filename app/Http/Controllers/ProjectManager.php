@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\ActivityLogs;
+use Illuminate\Support\Facades\Validator;
 use App\Models\ActLogs;
 use App\Models\addProject;
 use App\Models\showDetails;
@@ -74,20 +74,7 @@ class ProjectManager extends Controller
             ], 422);
         }
 
-         //  Get username from session
-         if (session()->has('loggedIn')) {
-            $sessionData = session()->get('loggedIn');
-            $username = $sessionData['performedBy'];  // Assuming this is the username
-        } else {
-            Log::error("Session not found");
-            return response()->json(['status' => 'error', 'message' => 'Session not found'], 401);
-        }
-
-         // Fetch session data properly
-            $ofmis_id = $sessionData['ofmis_id'] ?? null;
-            $role = $sessionData['role'] ?? 'Unknown';
-            $username = $sessionData['username'] ?? 'Unknown';
-            $projectTitle = $request->input('projectTitle');
+       
 
             $dynamicFields = collect($request->all())->filter(function ($_, $key) {
                 return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d+$/', $key);
@@ -108,9 +95,20 @@ class ProjectManager extends Controller
             
             if ($project) {
                 // Logging user action
-                $action = "Added new project: $projectTitle.";
-    
-                // Store in session
+                //  Get username from session
+            if (session()->has('loggedIn')) {
+                $sessionData = session()->get('loggedIn');
+                $username = $sessionData['performedBy'];  // Assuming this is the username
+            } else {
+                Log::error("Session not found");
+                return response()->json(['status' => 'error', 'message' => 'Session not found'], 401);
+            }
+            // Fetch session data properly
+                $ofmis_id = $sessionData['ofmis_id'];
+                $role = $sessionData['role'];
+                $projectTitle = $request->input('projectTitle');
+                $action = "Added a new project: $projectTitle.";
+             // Store in session
                 $request->session()->put('AddedNewProject', [
                     'ofmis_id' => $ofmis_id,
                     'performedBy' => $username,

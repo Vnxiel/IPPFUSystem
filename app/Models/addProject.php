@@ -23,12 +23,5 @@ class addProject extends Model
         'ntpReceivedDate', 'projectSlippage', 'totalExpenditure', 'ea', 'contractCost'
     ];
 
-    protected $casts = [
-        'awardDate' => 'datetime',
-        'noticeToProceed' => 'datetime',
-        'officialStart' => 'datetime',
-        'targetCompletion' => 'datetime',
-        'suspensionOrderNo' => 'datetime',
-        'resumeOrderNo' => 'datetime',
-    ];
+ 
 }

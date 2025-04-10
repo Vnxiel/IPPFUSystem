@@ -33,6 +33,9 @@
                 <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#trashModal" title="Temporary Delete Project">
                     <i class="fa fa-trash"></i>
                 </button>
+                <button type="button" id="checkStatusBtn" class="btn btn-secondary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#checkStatusModal">
+                Check Status
+            </button>
             </div>
         </div>
         <hr class="mt-2">
@@ -372,7 +375,7 @@
                                     <div class="col-md-12">
                                         <div class="mb-1">
                                             <label for="projectTitle" class="form-label">Project Title</label>
-                                            <textarea class="form-control" id="projectTitle" name="projectTitle" rows="2" placeholder="Enter project title." required></textarea>
+                                            <textarea class="form-control" id="orig_projectTitle" name="orig_projectTitle" rows="2" placeholder="Enter project title." required></textarea>
                                     </div>
                                     </div>
                                     <div class="col-md-12">
@@ -688,8 +691,8 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="mb-1">
-                                            <label for="projectTitle" class="form-label">Project Title</label>
-                                            <textarea class="form-control" id="projectTitle" name="projectTitle" rows="2" placeholder="Enter project title." required></textarea>
+                                            <label for="projectTitleFU" class="form-label">Project Title</label>
+                                            <textarea class="form-control" id="projectTitleFU" name="projectTitleFU" rows="2" placeholder="Enter project title." required></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -717,22 +720,19 @@
                                             <input type="text" class="form-control currency-input" id="orig_mqc" name="orig_mqc">
                                         </div>
                                     </div>
+                                    <div class="mb-1">
+                                            <label for="orig_contingency" class="form-label">Contingency</label>
+                                            <input type="text" class="form-control" id="orig_contingency" name="orig_contingency" value="">
+                                        </div> 
                                     <div class="col-md-6">
                                         <div class="mb-1">
                                             <label for="orig_bid" class="form-label">Bid Difference</label>
                                             <input type="text" class="form-control currency-input" id="orig_bid" name="orig_bid">
                                         </div>
+                                 
                                         <div class="mb-1">
-                                            <label for="completionDate" class="form-label">Completion Date</label>
-                                            <input type="text" class="form-control" id="completionDate" name="completionDate" value="">
-                                        </div> 
-                                        <div class="mb-1">
-                                            <label for="orig_bid" class="form-label">Bid Difference</label>
-                                            <input type="text" class="form-control currency-input" id="orig_bid" name="orig_bid">
-                                        </div>
-                                        <div class="mb-1">
-                                            <label for="appropriation" class="form-label">Appropriation</label>
-                                            <input type="text" class="form-control currency-input" id="appropriation" name="appropriation">
+                                            <label for="orig_appropriation" class="form-label">Appropriation</label>
+                                            <input type="text" class="form-control currency-input" id="orig_appropriation" name="orig_appropriation">
                                         </div>
                                     </div>
                                 </div>
@@ -780,7 +780,7 @@
                                                     <div class="col-md-6">
                                                         <div class="mb-1">
                                                             <label for="bid" class="form-label">Contingency</label>
-                                                            <input type="text" class="form-control currency-input" id="contingency" name="v0_contingency">
+                                                            <input type="text" class="form-control currency-input" id="contingency" name="vow_contingency">
                                                         </div>
                                                         <div class="mb-1">
                                                             <label for="bid" class="form-label">Bid Difference</label>

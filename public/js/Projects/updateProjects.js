@@ -113,7 +113,7 @@ function updateProjectForm(project) {
     form.querySelector("#contractAmount").value = project.contractAmount ?? "";
     form.querySelector("#engineering").value = project.engineering ?? "";
     form.querySelector("#mqc").value = project.mqc ?? "";
-    form.querySelector("#contingency").value = project.contingency ?? "ksjh";
+    form.querySelector("#contingency").value = project.contingency ?? "";
     form.querySelector("#bid").value = project.bid ?? "";
     form.querySelector("#appropriation").value = project.appropriation ?? "";
     form.querySelector("#projectSlippage").value = project.projectSlippage ?? "";

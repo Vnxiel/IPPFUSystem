@@ -128,16 +128,18 @@ class UserManager extends Controller
                             'action' => "Logged in into the system.",
                         ]);
                         
-                        if (session()->has('loggedIn')) {
-                            $ofmis_id = session()->get('loggedIn')['ofmis_id'];
-                            $performedBy = session()->get('loggedIn')['performedBy'];
-                            $role = session()->get('loggedIn')['role'];
-                            $action = session()->get('loggedIn')['action'];
+                        if ($request->session()->has('loggedIn')) {
+                            $loggedIn = $request->session()->get('loggedIn');
+                            $ofmis_id = $loggedIn['ofmis_id'];
+                            $performedBy = $loggedIn['performedBy'];
+                            $role = $loggedIn['role'];
+                            $action = $loggedIn['action'];
+                        
                             (new ActivityLogs)->userAction($ofmis_id, $performedBy, $role, $action);
                         } else {
-                        return response()->json(['error' => 'Session not found'], 401);
+                            return response()->json(['error' => 'Session not found'], 401);
                         }
-
+                        
                         // Return values based on user role
                          return $user->role === 'System Admin' ? 1 : ($user->role === 'Admin' ? 2 : 0);
                     }
