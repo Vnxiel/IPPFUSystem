@@ -11,8 +11,10 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\ActLogs;
+use App\Models\Contractor;
 use App\Http\Controllers\ActivityLogs;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Municipalities;
 
 class ProjectManager extends Controller
 {
@@ -152,33 +154,66 @@ class ProjectManager extends Controller
     }
     
     public function restoreProject($projectID)
-{
-    try {
-        // Find the project by ID
-        $project = showDetails::where('projectID', $projectID)->first();
+    {
+        try {
+            // Find the project by ID
+            $project = showDetails::where('projectID', $projectID)->first();
 
-        if (!$project) {
-            return response()->json(["status" => "error", "message" => "Project not found."], 404);
+            if (!$project) {
+                return response()->json(["status" => "error", "message" => "Project not found."], 404);
+            }
+
+            // Set is_hidden to 0 to restore the project
+            $project->is_hidden = 0;
+            $project->save();
+
+            return response()->json(["status" => "success", "message" => "Project successfully restored."]);
+        } catch (\Exception $e) {
+            \Log::error('Error restoring project: ' . $e->getMessage());
+            
+            return response()->json([
+                "status" => "error",
+                "message" => "Error restoring project. Please try again."
+            ], 500);
         }
-
-        // Set is_hidden to 0 to restore the project
-        $project->is_hidden = 0;
-        $project->save();
-
-        return response()->json(["status" => "success", "message" => "Project successfully restored."]);
-    } catch (\Exception $e) {
-        \Log::error('Error restoring project: ' . $e->getMessage());
-        
-        return response()->json([
-            "status" => "error",
-            "message" => "Error restoring project. Please try again."
-        ], 500);
     }
-}
 
-    
+    // Fetch the list of contractors for the filter dropdown
+    public function getContractors()
+    {
+        $contractors = Contractor::all();  // Fetch all contractors from the database
+        
+        return response()->json($contractors);
+    }
 
-    
+    // Get the projects data
+    public function getProjectsData(Request $request)
+    {
+        try {
+            // Start the query for fetching projects
+            $query = showDetails::query();
+
+            // Apply filters if they exist
+            if ($request->has('status') && $request->status != '') {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->has('contractor') && $request->contractor != '') {
+                $query->where('contractor', $request->contractor);
+            }
+
+            // Return the data as a DataTables response
+            return DataTables::of($query)
+                ->addColumn('action', function ($row) {
+                    return '<a href="/projects/'.$row->id.'" class="btn btn-sm btn-primary">View</a>';
+                })
+                ->make(true);  // Ensure DataTables JSON format
+        } catch (\Exception $e) {
+            // Handle error gracefully
+            return response()->json(['status' => 'error', 'message' => 'Internal Server Error.'], 500);
+        }
+    }
+   
 
     public function getProject($projectID)
     {
@@ -341,7 +376,31 @@ public function trashProject(Request $request, $projectID)
     return response()->json(["status" => "success", "message" => "Project successfully archived."]);
 }
 
+public function getDropdownOptions(Request $request) {
+    // Fetch contractors and municipalities
+    $contractors = Contractor::orderBy('fullname', 'asc')->get();
+    $municipalities = Municipalities::orderBy('municipalityOf', 'asc')->get();
 
+    // Check if the request is for the overview page
+    if ($request->has('overview') && $request->overview == true) {
+        return response()->json([
+            'contractors' => $contractors,
+            'municipalities' => $municipalities
+        ]);
+    }
 
+    // Pass both to the view for the system admin projects page
+    return view('systemAdmin.projects', [
+        'contractors' => $contractors,
+        'municipalities' => $municipalities
+    ]);
+}
 
+public function viewProjects() {
+    return view('systemAdmin.projects');  // Returns the 'projects.blade.php' view
+}
+
+public function overview() {
+    return view('systemAdmin.overview');  // Returns the 'overview.blade.php' view
+}
 }

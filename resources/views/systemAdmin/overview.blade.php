@@ -10,9 +10,11 @@
     <div class="row">
         <div class="col-md-12 d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
-                <a href="{{ route('systemAdmin.projects') }}" class="btn btn-danger btn-sm">
-                    <span class="fa fa-arrow-left"></span>
-                </a>
+           <a class="{{ Request::is('systemAdmin/projects') ? 'bg-light-green text-dark-white' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/projects') }}"><span class="fa fa-arrow-left"></span></a>
+
+            <!-- <a href="{{ route('systemAdmin.projects') }}" class="btn btn-danger btn-sm">
+                <span class="fa fa-arrow-left"></span>
+                </a> -->
                 <h5 class="m-0">Project Overview</h5>
             </div>
 
@@ -403,10 +405,9 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="mb-1">
-                                                <label for="projectLoc" class="form-label">Location</label>
-                                                <input type="text" class="form-control" id="projectLoc" name="projectLoc" required placeholder="Enter municipality, Nueva Vizcaya" onkeyup="showMunicipalitySuggestions(this.value)">
-                                            <div id="suggestionsBox" class="list-group" style="display:none;"></div>
-                                        </div>
+                                                <label for="projectID" class="form-label">Project ID</label>
+                                                <input type="text" class="form-control" id="projectID" name="projectID" required placeholder="Enter project ID">
+                                        </div> 
                                     </div>
                                 </div>
                                 <div class="row">
@@ -420,9 +421,14 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-1">
-                                            <label for="projectID" class="form-label">Project ID</label>
-                                            <input type="text" class="form-control" id="projectID" name="projectID" required placeholder="Enter project ID">
-                                        </div> 
+                                            <label for="location_filter">Location:</label>
+                                            <select id="location_filter" class="form-select">
+                                                <option value="">All Location</option>
+                                                @foreach($municipalities as $municipalityOf)
+                                                <option value="{{ $municipalityOf->municipalityOf }}">{{ $municipalityOf->municipalityOf }}</option>
+                                            @endforeach
+                                            </select>
+                                        </div>
                                         <div class="mb-1">
                                             <label for="projectContractor" class="form-label">Contractor</label>
                                             <input type="text" class="form-control" id="projectContractor" name="projectContractor" placeholder="Enter contractor name" onkeyup="showSuggestionsContractor(this.value)">

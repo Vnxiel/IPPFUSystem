@@ -247,13 +247,9 @@ class UserManager extends Controller
 
     public function getUserAction(Request $request) {}
 
-    public function projects() {
-        return view('systemAdmin.projects');  // Returns the 'projects.blade.php' view
-    }
+    
 
-    public function overview() {
-        return view('systemAdmin.overview');  // Returns the 'overview.blade.php' view
-    }
+  
 
     public function trash() {
         return view('systemAdmin.trash');  // Returns the 'trash.blade.php' view

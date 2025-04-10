@@ -46,19 +46,18 @@
 
                         <ul class="navbar-nav col-lg-6 justify-content-lg-center">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{{ route('systemAdmin.index') }}">Dashboard</a>
+                                <a class="nav-link active {{ Request::is('systemAdmin/index') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/index') }}">Dashboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('systemAdmin.projects') }}">Projects</a>
+                                <a class="nav-link active {{ Request::is('systemAdmin/projects') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/projects') }}">Projects</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('systemAdmin.userManagement') }}">User Management</a>
-                            </li>
+                                <a class="nav-link active {{ Request::is('systemAdmin/userManagement') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/userManagement') }}">User Management</a>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
+                                <a class="nav-link dropdown-toggle {{ Request::is('systemAdmin/trash') || Request::is('systemAdmin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('systemAdmin.trash') }}">Trash</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('systemAdmin.activityLogs') }}">Activity Logs</a></li>
+                                    <li><a class="dropdown-item {{ Request::is('systemAdmin/trash') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/trash') }}">Trash</li>
+                                    <li><a class="dropdown-item {{ Request::is('systemAdmin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/activityLogs') }}">Activity Logs</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -111,7 +110,8 @@
       
         <script src="{{ asset('js/Account/register-user.js') }}"></script>
         <script src="{{ asset('js/Datatables/getData.js') }}"></script>
-        <script src="{{ asset('js/Datatablesload-data.js') }}"></script>
+        <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
+        <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
         <script src="{{ asset('js/Projects/projects.js') }}"></script>
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>
