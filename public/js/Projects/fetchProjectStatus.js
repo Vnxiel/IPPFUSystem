@@ -1,23 +1,23 @@
 $(document).ready(function () {
-    $.ajax({
-        url: "/get-project-id",
-        method: "GET",
-        dataType: "json",
-        success: function (response) {
-            if (!response.projectID) {
-                console.error("No project ID found. Redirecting...");
-                window.location.href = "/main/index";
-                return;
-            }
+    // Bind to modal show event
+    $(document).on('show.bs.modal', '#checkStatusModal', function () {
+        $.ajax({
+            url: "/get-project-id",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (!response.projectID) {
+                    console.error("No project ID found. Redirecting...");
+                    window.location.href = "/main/index";
+                    return;
+                }
 
-            const projectID = response.projectID;
-            $("#checkStatusBtn").on("click", function () {
-                fetchProjectStatus(projectID);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error("Error fetching Project ID:", error);
-        }
+                fetchProjectStatus(response.projectID);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching Project ID:", error);
+            }
+        });
     });
 
     function fetchProjectStatus(projectID) {
@@ -35,7 +35,6 @@ $(document).ready(function () {
                 const rightCol = document.createElement("div");
                 rightCol.className = "col-lg-6";
 
-                // Determine if Add Status button should show
                 const showAddButton =
                     !(data.projectStatus === "Completed" ||
                       data.projectStatus === "Cancelled" ||
@@ -49,8 +48,8 @@ $(document).ready(function () {
                                 <span class="badge bg-primary">${data.projectStatus}</span>
                             </p>
                             <p class="text-muted mb-3"><i class="bi bi-calendar-event"></i> Updated on: ${data.updatedAt || 'N/A'}</p>
-                            ${showAddButton ? `
-                                <button id="addStatusBtnInside" class="btn btn-outline-primary btn-sm">
+                            ${showAddButton ? 
+                                `<button id="addStatusBtnInside" class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-plus-circle me-1"></i> Add Status
                                 </button>` : ''}
                         </div>
@@ -59,7 +58,6 @@ $(document).ready(function () {
 
                 leftCol.innerHTML += mainCard;
 
-                // Cancelled Card
                 if (data.projectStatus === "Cancelled") {
                     leftCol.innerHTML += `
                         <div class="card border-danger mb-3 shadow-sm">
@@ -71,17 +69,15 @@ $(document).ready(function () {
                     `;
                 }
 
-                // Progress table logic
                 let progressRows = "";
                 if (Array.isArray(data.ongoingStatus) && data.ongoingStatus.length > 0) {
                     data.ongoingStatus.forEach(item => {
-                        // Split the progress string into progress, percentage, and date
                         const parts = item.split(" - ");
                         const name = parts[0] || "Unknown Phase";
                         const percentDate = parts[1] || "N/A";
                         const percentParts = percentDate.split(" ");
-                        const percent = percentParts[1] || "N/A";  // Extract only percentage
-                        const date = percentParts[0] || "Unknown Date";  // Extract only date
+                        const percent = percentParts[1] || "N/A";
+                        const date = percentParts[0] || "Unknown Date";
 
                         progressRows += `
                             <tr>

@@ -23,7 +23,6 @@ function fetchProjectDetails() {
                         console.log("Fetched Project Data:", data.project);
                         updateProjectUI(data.project); // Populate UI
                         updateProjectForm(data.project); // Populate form in modal
-                        addFundUtilization(data.project); //Populate Funds Utilization Form
                     } else {
                         console.error("Error fetching project details:", data.message);
                     }

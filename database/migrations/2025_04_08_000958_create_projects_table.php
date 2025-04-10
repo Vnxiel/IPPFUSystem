@@ -14,20 +14,17 @@ return new class extends Migration
         Schema::create('projects_tbl', function (Blueprint $table) {
             $table->id(); 
             $table->string('projectID')->unique();
+            $table->primary('projectID');
             $table->string('projectTitle');
             $table->string('projectLoc');
             $table->string('projectContractor');
             $table->string('sourceOfFunds');
             $table->string('otherFund')->nullable(); 
             $table->string('modeOfImplementation');
-            $table->string('projectStatus');
-            $table->string('ongoingStatus')->nullable();
             $table->text('projectDescription');
             $table->string('projectContractDays');
             $table->date('officialStart')->nullable();
             $table->date('targetCompletion')->nullable();
-            $table->date('suspensionOrderNo')->nullable();
-            $table->date('resumeOrderNo')->nullable();
             $table->string('timeExtension')->nullable();
             $table->string('revisedTargetCompletion')->nullable();
             $table->string('completionDate')->nullable();

@@ -15,7 +15,7 @@ class showDetails extends Model
 
     protected $fillable = [
         'projectTitle', 'projectLoc', 'projectID', 'projectContractor', 'sourceOfFunds', 'otherFund',
-        'modeOfImplementation', 'projectStatus', 'ongoingStatus', 'projectDescription',
+        'modeOfImplementation', 'projectDescription',
         'projectContractDays', 'officialStart', 'targetCompletion',
         'suspensionOrderNo', 'resumeOrderNo', 'timeExtension', 'revisedTargetCompletion', 'completionDate',
         'abc', 'contractAmount', 'engineering', 'mqc', 'contingency', 'bid', 'appropriation', 'noaIssuedDate',

@@ -245,42 +245,42 @@
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="abc" class="form-label">ABC</label>
-                                        <input type="number" class="form-control currency-input" id="abc" name="abc">
+                                        <input type="text" class="form-control currency-input" id="abc" name="abc">
                                     </div>
                                     <div class="mb-1">
                                         <label for="contractAmount" class="form-label">Contract Amount</label>
-                                        <input type="number" class="form-control currency-input" id="contractAmount" name="contractAmount">
+                                        <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="engineering" class="form-label">Engineering</label>
-                                        <input type="number" class="form-control currency-input" id="engineering" name="engineering">
+                                        <input type="text" class="form-control currency-input" id="engineering" name="engineering">
                                     </div>                                        
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="mqc" class="form-label">MQC</label>
-                                        <input type="number" class="form-control currency-input" id="mqc" name="mqc">
+                                        <input type="text" class="form-control currency-input" id="mqc" name="mqc">
                                     </div>
                                     <div class="mb-1">
                                         <label for="bid" class="form-label">Contingency</label>
-                                        <input type="number" class="form-control currency-input" id="contingency" name="contingency">
+                                        <input type="text" class="form-control currency-input" id="contingency" name="contingency">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="bid" class="form-label">Bid Difference</label>
-                                        <input type="number" class="form-control currency-input" id="bid" name="bid">
+                                        <input type="text" class="form-control currency-input" id="bid" name="bid">
                                     </div>                                    
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <label for="totalExpenditure" class="form-label">Total Expenditure</label>
-                                    <input type="number" class="form-control currency-input" id="totalExpenditure" name="totalExpenditure">
+                                    <input type="text" class="form-control currency-input" id="totalExpenditure" name="totalExpenditure">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <label for="totalSavings" class="form-label">Total Savings</label>
-                                    <input type="number" class="form-control currency-input" id="totalSavings" name="totalSavings">
+                                    <input type="text" class="form-control currency-input" id="totalSavings" name="totalSavings">
                                 </div>
                             </div>
 
@@ -357,46 +357,71 @@
         <script>    
             document.addEventListener("DOMContentLoaded", function () {
                 loadProjects(); // Load projects on page load
-                    document.addEventListener("DOMContentLoaded", function () {
-                        const currencyInputs = document.querySelectorAll(".currency-input");
+               
+                let currencyInputs = document.querySelectorAll(".currency-input");
 
-                        currencyInputs.forEach((input) => {
-                        input.addEventListener("input", function (e) {
-                            let value = e.target.value.replace(/[^0-9]/g, ""); // remove non-numeric
-                            if (value) {
-                            value = parseInt(value).toLocaleString("en-PH", {
-                                style: "currency",
-                                currency: "PHP",
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 0
-                            });
-                            e.target.value = value;
-                            } else {
-                            e.target.value = "";
+                    currencyInputs.forEach(input => {
+                        input.addEventListener("keydown", function (event) {
+                            if (!isValidKey(event)) {
+                                event.preventDefault();
                             }
                         });
 
-                        input.addEventListener("blur", function (e) {
-                            // Optionally force format on blur
-                            let value = e.target.value.replace(/[^0-9]/g, "");
-                            if (value) {
-                            e.target.value = parseInt(value).toLocaleString("en-PH", {
-                                style: "currency",
-                                currency: "PHP",
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 0
-                            });
-                            }
+                        input.addEventListener("input", function () {
+                            formatCurrencyInput(this);
                         });
 
-                        // Optional: Remove formatting on focus to make editing easier
-                        input.addEventListener("focus", function (e) {
-                            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                        input.addEventListener("blur", function () {
+                            formatCurrencyOnBlur(this);
                         });
+
+                        input.addEventListener("focus", function () {
+                            restoreNumericValue(this);
                         });
+
+                        if (input.value.trim() === "" || input.value.trim() === "Loading...") {
+                            input.value = "₱ 0.00";
+                        }
                     });
-   
             });
+
+// Function para i-format ang currency habang nagta-type ang user
+function formatCurrencyInput(element) {
+    let value = element.textContent.replace(/[^\d.]/g, ''); // Tatanggalin ang hindi numerong characters
+    let formattedValue = parseFloat(value).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+
+    if (!isNaN(formattedValue)) {
+        element.textContent = "₱ " + formattedValue;
+    } else {
+        element.textContent = "₱ 0.00"; // Kapag walang valid na input, default na ₱ 0.00
+    }
+}
+
+// Function para i-format ang currency kapag nawala ang focus sa input
+function formatCurrencyOnBlur(element) {
+    let value = element.textContent.replace(/[^\d.]/g, ''); // Tatanggalin ang hindi numerong characters
+    
+    if (value === "" || isNaN(parseFloat(value))) {
+        element.textContent = "₱ 0.00"; // Kapag walang valid na input, ibabalik sa ₱ 0.00
+    } else {
+        element.textContent = "₱ " + parseFloat(value).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+    }
+}
+
+// Function para ipakita ang raw numeric value kapag nag-focus sa input field
+function restoreNumericValue(element) {
+    let value = element.textContent.replace(/[^\d.]/g, ''); // Tatanggalin ang hindi numerong characters
+    element.textContent = value; // Ipapakita lang ang numero para madaling i-edit
+}
+
+// Function na nagpapahintulot lang ng tamang key inputs (mga numero, decimal, at control keys)
+function isValidKey(event) {
+    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab"];
+    const isNumber = /^[0-9.]$/.test(event.key); // Titignan kung numero o decimal ang pinindot
+
+    return isNumber || allowedKeys.includes(event.key); // Papayagan lang kung valid key
+}
+
 
             // Handle "Other Fund" Selection Toggle
             function toggleOtherFund() {

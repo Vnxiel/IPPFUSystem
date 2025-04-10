@@ -101,7 +101,6 @@ class UserManager extends Controller
 
         return response()->json(1); 
     }
-
     public function userLogin(Request $request){
         $validator = Validator::make($request->all(), 
         [
@@ -109,49 +108,48 @@ class UserManager extends Controller
             'password' => 'required|min:6|max:20',
         ]);
         if ($validator->fails()) {
-            return response()->json([ 
-            'message' => $validator->getMessageBag()
-            ]);
+            return redirect()->back()->withErrors($validator)->withInput();
         } else { 
             $username = $request->input('username');
             $user = User::where('username', $username)->first();
             if (!$user) {
-            return 404;
+                return redirect()->back()->with('error', 'User not found')->withInput();
             } else {
-            if ($user) {
-                if (Hash::check($request->password, $user->password)) {
-                    if ($user->role === 'System Admin' || $user->role === 'Admin' || $user->role === 'Staff') {
-                        $request->session()->put('loggedIn', [
-                            'ofmis_id' => $user->ofmis_id,
-                            'performedBy' => $user->username,
-                            'role' => $user->role,
-                            'action' => "Logged in into the system.",
-                        ]);
-                        
-                        if ($request->session()->has('loggedIn')) {
-                            $loggedIn = $request->session()->get('loggedIn');
-                            $ofmis_id = $loggedIn['ofmis_id'];
-                            $performedBy = $loggedIn['performedBy'];
-                            $role = $loggedIn['role'];
-                            $action = $loggedIn['action'];
-                        
-                            (new ActivityLogs)->userAction($ofmis_id, $performedBy, $role, $action);
-                        } else {
-                            return response()->json(['error' => 'Session not found'], 401);
+                if ($user) {
+                    if (Hash::check($request->password, $user->password)) {
+                        if ($user->role === 'System Admin' || $user->role === 'Admin' || $user->role === 'Staff') {
+                            $request->session()->put('loggedIn', [
+                                'ofmis_id' => $user->ofmis_id,
+                                'performedBy' => $user->username,
+                                'role' => $user->role,
+                                'action' => "Logged in into the system.",
+                            ]);
+                            
+                            if ($request->session()->has('loggedIn')) {
+                                $loggedIn = $request->session()->get('loggedIn');
+                                $ofmis_id = $loggedIn['ofmis_id'];
+                                $performedBy = $loggedIn['performedBy'];
+                                $role = $loggedIn['role'];
+                                $action = $loggedIn['action'];
+                            
+                                (new ActivityLogs)->userAction($ofmis_id, $performedBy, $role, $action);
+                            } else {
+                                return redirect()->back()->with('error', 'Session not set. Please try again.')->withInput();
+                            }
+                            
+                            // Return values based on user role
+                            return $user->role === 'System Admin' ? 1 : ($user->role === 'Admin' ? 2 : 0);
                         }
-                        
-                        // Return values based on user role
-                         return $user->role === 'System Admin' ? 1 : ($user->role === 'Admin' ? 2 : 0);
+                    } else {
+                        return redirect()->back()->with('error', 'Incorrect password')->withInput();
                     }
                 } else {
-                return 401;
+                    return redirect()->back()->with('error', 'User not found')->withInput();
                 }
-            } else {
-                return 404;
-            }
             }
         }
     }
+    
 
     public function validateUser(Request $request) {}
 
@@ -268,25 +266,30 @@ class UserManager extends Controller
     //When logging out it will check if the session variable exists then
     // it will retrieve the user's information, log the the activity before clearing the session data. 
     public function logout(Request $request) {
-        $user = auth()->user(); 
-
-        if (!$user) {
+        // Check if custom session data exists
+        if (!$request->session()->has('loggedIn')) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        $loggedIn = $request->session()->get('loggedIn');
+
+        if (!$loggedIn) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        
         // Log the logout action
         (new ActivityLogs)->userAction(
-            $user->ofmis_id, 
-            $user->username, 
-            $user->role, 
+            $loggedIn['ofmis_id'], 
+            $loggedIn['performedBy'], 
+            $loggedIn['role'], 
             "Logged out from the system."
         );
-
-        // Perform logout
-        auth()->logout();
+        
+        // Clear session
+        $request->session()->forget('loggedIn');
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect()->route('/');
+    
+          return redirect('/');
     }
 }

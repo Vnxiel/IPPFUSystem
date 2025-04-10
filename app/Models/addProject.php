@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,11 +16,33 @@ class addProject extends Model
         'projectTitle', 'projectLoc', 'projectID', 'projectContractor', 'sourceOfFunds', 'otherFund',
         'modeOfImplementation', 'projectStatus', 'ongoingStatus', 'projectDescription',
         'projectContractDays', 'awardDate', 'noticeToProceed', 'officialStart', 'targetCompletion',
-        'suspensionOrderNo1',  'suspensionOrderNo2',  'suspensionOrderNo3', 'resumeOrderNo1', 'resumeOrderNo2', 'resumeOrderNo3','timeExtension', 'revisedTargetCompletion', 'completionDate',
+        'timeExtension', 'revisedTargetCompletion', 'completionDate',
         'abc', 'contractAmount', 'engineering', 'mqc', 'contingency', 'bid', 'appropriation', 'directOrIndirectCost',
         'revisedContractCost', 'originalExpiryDate','revisedExpiryDate', 'noaIssuedDate', 'noaReceivedDate', 'ntpIssuedDate',
-        'ntpReceivedDate', 'projectSlippage', 'totalExpenditure', 'ea', 'contractCost'
+        'ntpReceivedDate', 'projectSlippage', 'totalExpenditure', 'ea', 'contractCost',
     ];
 
- 
+    // Define a mutator to allow dynamic fields for suspension and resumption orders
+    public function setSuspensionOrderNoAttribute($value)
+    {
+        // Handle dynamic fields, e.g. suspensionOrderNo1, suspensionOrderNo2, etc.
+        $this->attributes['suspensionOrderNo'] = json_encode($value); // Store as JSON if needed
+    }
+
+    public function setResumeOrderNoAttribute($value)
+    {
+        // Handle dynamic fields, e.g. resumeOrderNo1, resumeOrderNo2, etc.
+        $this->attributes['resumeOrderNo'] = json_encode($value); // Store as JSON if needed
+    }
+
+    // If you store as JSON, you can access it as an array when needed:
+    public function getSuspensionOrderNoAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    public function getResumeOrderNoAttribute($value)
+    {
+        return json_decode($value, true);
+    }
 }

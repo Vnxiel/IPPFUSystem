@@ -369,13 +369,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <form id="updateProjectForm" name="updateProjectForm" enctype="multipart/form-data">
+            <form id="updateProjectForm" name="updateProjectForm">
                     @csrf
                     <div class="row">
                                     <div class="col-md-12">
                                         <div class="mb-1">
                                             <label for="projectTitle" class="form-label">Project Title</label>
-                                            <textarea class="form-control" id="orig_projectTitle" name="orig_projectTitle" rows="2" placeholder="Enter project title." required></textarea>
+                                            <textarea class="form-control" id="projectTitle" name="projectTitle" rows="2" placeholder="Enter project title." required></textarea>
                                     </div>
                                     </div>
                                     <div class="col-md-12">
@@ -429,25 +429,7 @@
                                         </div>
                                         </div>
                                     
-                                        <div class="mb-1">
-                                            <label for="projectStatus" class="form-label">Status</label>
-                                            <select id="projectStatus" name="projectStatus" class="form-select" onchange="toggleOngoingStatus()">
-                                                <option value="---">---</option>
-                                                <option value="Ongoing">Ongoing</option>
-                                                <option value="Completed">Completed</option>
-                                                <option value="Cancelled">Discontinued</option>
-                                            </select>
-
-                                            <!-- Hidden text input for 'Ongoing' -->
-                                            <div id="ongoingStatusContainer" class="mt-2" style="display: none;">
-                                                <label for="ongoingStatus" class="form-label">Please specify percentage completion:</label>
-                                                
-                                                <div class="d-flex gap-2"> 
-                                                    <input type="text" id="ongoingStatus" name="ongoingStatus" class="form-control w-50" placeholder="Enter percentage">
-                                                    <input type="date" id="ongoingDate" class="form-control w-50">
-                                                </div>
-                                            </div>
-                                        </div>
+                                       
                                         <div class="mb-1">
                                             <label for="projectSlippage" class="form-label">Slippage</label>
                                             <input type="text" class="form-control" id="projectSlippage" name="projectSlippage" placeholder="Enter slippage">
@@ -557,36 +539,36 @@
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="abc" class="form-label">ABC</label>
-                                        <input type="number" class="form-control currency-input" id="abc" name="abc">
+                                        <input type="text" class="form-control currency-input" id="abc" name="abc">
                                     </div>
                                     <div class="mb-1">
                                         <label for="contractAmount" class="form-label">Contract Amount</label>
-                                        <input type="number" class="form-control currency-input" id="contractAmount" name="contractAmount">
+                                        <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="engineering" class="form-label">Engineering</label>
-                                        <input type="number" class="form-control currency-input" id="engineering" name="engineering">
+                                        <input type="text" class="form-control currency-input" id="engineering" name="engineering">
                                     </div>                                        
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="mqc" class="form-label">MQC</label>
-                                        <input type="number" class="form-control currency-input" id="mqc" name="mqc">
+                                        <input type="text" class="form-control currency-input" id="mqc" name="mqc">
                                     </div>
                                     <div class="mb-1">
                                         <label for="bid" class="form-label">Contingency</label>
-                                        <input type="number" class="form-control currency-input" id="contingency" name="contingency">
+                                        <input type="text" class="form-control currency-input" id="contingency" name="contingency">
                                     </div> 
                                     <div class="mb-1">
                                         <label for="bid" class="form-label">Bid Difference</label>
-                                        <input type="number" class="form-control currency-input" id="bid" name="bid">
+                                        <input type="text" class="form-control currency-input" id="bid" name="bid">
                                     </div>                                    
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <label for="totalExpenditure" class="form-label">Total Expenditure</label>
-                                    <input type="number" class="form-control currency-input" id="totalExpenditure" name="totalExpenditure">
+                                    <input type="text" class="form-control currency-input" id="totalExpenditure" name="totalExpenditure">
                                 </div>
                             </div>
 
@@ -1146,5 +1128,94 @@
         }
     }
 </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    function validateDates(issuedId, receivedId, label) {
+      const issued = document.getElementById(issuedId);
+      const received = document.getElementById(receivedId);
+
+      function checkDate() {
+        const issuedDate = new Date(issued.value);
+        const receivedDate = new Date(received.value);
+
+        if (issued.value && received.value && receivedDate <= issuedDate) {
+          Swal.fire({
+            icon: 'error',
+            title: `${label} Error`,
+            text: 'Received date must be after the issued date.',
+            confirmButtonColor: '#3085d6',
+          });
+          received.value = ""; // Clear invalid input
+        }
+      }
+
+      issued.addEventListener("change", checkDate);
+      received.addEventListener("change", checkDate);
+    }
+
+    validateDates("noaIssuedDate", "noaReceivedDate", "Notice of Award");
+    validateDates("ntpIssuedDate", "ntpReceivedDate", "Notice to Proceed");
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const contractDaysInput = document.getElementById("projectContractDays");
+    const startDateInput = document.getElementById("officialStart");
+    const completionDateInput = document.getElementById("targetCompletion");
+
+    function calculateCompletionDate() {
+      const startDateValue = startDateInput.value;
+      const contractDays = parseInt(contractDaysInput.value);
+
+      if (startDateValue && contractDays > 0) {
+        const startDate = new Date(startDateValue);
+        const completionDate = new Date(startDate);
+        completionDate.setDate(startDate.getDate() + contractDays - 1); // minus 1 here
+        const formatted = completionDate.toISOString().split('T')[0];
+        completionDateInput.value = formatted;
+      }
+    }
+
+    contractDaysInput.addEventListener("input", calculateCompletionDate);
+    startDateInput.addEventListener("change", calculateCompletionDate);
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const targetCompletionInput = document.getElementById("targetCompletion");
+    const timeExtensionInput = document.getElementById("timeExtension");
+    const revisedTargetInput = document.getElementById("revisedTargetCompletion");
+    const completionDateInput = document.getElementById("completionDate");
+
+    function updateDates() {
+      const targetDateValue = targetCompletionInput.value;
+      const timeExtension = parseInt(timeExtensionInput.value);
+
+      if (targetDateValue && !isNaN(timeExtension) && timeExtension > 0) {
+        const targetDate = new Date(targetDateValue);
+        const revisedDate = new Date(targetDate);
+        revisedDate.setDate(targetDate.getDate() + timeExtension);
+
+        const formatted = revisedDate.toISOString().split('T')[0];
+
+        revisedTargetInput.value = formatted;
+        completionDateInput.value = formatted;
+
+        revisedTargetInput.readOnly = true;
+        completionDateInput.readOnly = true;
+      } else {
+        revisedTargetInput.readOnly = false;
+        completionDateInput.readOnly = false;
+      }
+    }
+
+    targetCompletionInput.addEventListener("change", updateDates);
+    timeExtensionInput.addEventListener("input", updateDates);
+  });
+</script>
+
 
 @endsection

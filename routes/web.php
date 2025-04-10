@@ -19,11 +19,24 @@ Route::controller(UserManager::class)->group(function () {
     Route::post('/registerSystemAdmin', 'registerSystemAdmin')->name(name: 'registerSystemAdmin');
     Route::get('/', 'index');
     Route::post('/login', 'userLogin')->name('login');
+    Route::post('/logout', 'logout')->name('logout');
+    
+  
 
     Route::get('/systemAdmin/projects', 'projects')->name('systemAdmin.projects');
     Route::get('/systemAdmin/overview', 'overview')->name('systemAdmin.overview');
     Route::get('/systemAdmin/reports', 'funds')->name('systemAdmin.funds');
     Route::get('/systemAdmin/trash', 'trash')->name('systemAdmin.trash');
+
+    //staff
+    Route::get('/staff/index', 'index')->name(name: 'staff.index');
+    Route::get('/staff/overview', 'overview')->name(name: 'staff.overview');
+    Route::get('/staff/projects', 'projects')->name(name: 'staff.projects');
+
+    //admin
+    Route::get('/admin/index', 'index')->name(name: 'admin.index');
+    Route::get('/admin/projects', 'projects')->name(name: 'admin.projects');
+    Route::get('/admin/overview', 'overview')->name(name: 'admin.overview');
 });
 
 Route::controller(SystemAdminManager::class)->group(function () {

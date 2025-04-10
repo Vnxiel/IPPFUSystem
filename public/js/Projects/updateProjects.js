@@ -101,7 +101,6 @@ function updateProjectForm(project) {
     form.querySelector("#projectContractor").value = project.projectContractor ?? "";
     form.querySelector("#sourceOfFunds").value = project.sourceOfFunds ?? "";
     form.querySelector("#modeOfImplementation").value = project.modeOfImplementation ?? "";
-    form.querySelector("#projectStatus").value = project.projectStatus ?? "";
     form.querySelector("#projectDescription").value = project.projectDescription ?? "";
     form.querySelector("#projectContractDays").value = project.projectContractDays ?? "";
     form.querySelector("#officialStart").value = formatDateForInput(project.officialStart);
@@ -172,15 +171,15 @@ function setDropdownValue(dropdownID, value) {
 
 
 
-$(document).ready(function() {
-    $("#updateProjectForm").on("submit", function(event) {
+$(document).ready(function () {
+    $("#updateProjectForm").on("submit", function (event) {
         event.preventDefault();
 
         $.ajax({
             url: "/get-project-id",
             method: "GET",
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 if (!data.projectID) {
                     console.error("No project ID found in session.");
                     return;
@@ -188,25 +187,30 @@ $(document).ready(function() {
 
                 let updatedData = {};
                 let fieldIDs = [
-                    "projectTitle", "projectLoc", "projectID", "projectContractor", "sourceOfFunds", "modeOfImplementation", 
-                    "projectStatus", "ongoingStatus", "projectDescription", "projectContractDays", "noticeOfAward", 
-                    "noticeToProceed", "officialStart", "targetCompletion", "suspensionOrderNo", "resumeOrderNo", 
-                    "timeExtension", "revisedTargetCompletion", "completionDate", "abc", "contractAmount", "engineering", 
-                    "mqc", "contingency", "bid", "appropriation", "noaIssuedDate", "noaReceivedDate", "ntpIssuedDate", 
-                    "ntpReceivedDate", "totalExpenditure", "projectSlippage"
-        
+                    "projectTitle", "projectLoc", "projectID", "projectContractor", "sourceOfFunds", "modeOfImplementation",
+                    "projectStatus", "ongoingStatus", "projectDescription", "projectContractDays", "noticeOfAward",
+                    "noticeToProceed", "officialStart", "targetCompletion", "timeExtension", "revisedTargetCompletion",
+                    "completionDate", "abc", "contractAmount", "engineering", "mqc", "contingency", "bid", "appropriation",
+                    "noaIssuedDate", "noaReceivedDate", "ntpIssuedDate", "ntpReceivedDate", "totalExpenditure", "projectSlippage"
                 ];
 
+                // Collect fixed fields
                 fieldIDs.forEach(id => {
                     let input = $("#" + id);
                     updatedData[id] = input.length ? input.val() : null;
                 });
 
-                // Handle "Ongoing" status fields
+                // Add dynamic fields (suspensionOrderNo* and resumeOrderNo*)
+                $("[id^=suspensionOrderNo], [id^=resumeOrderNo]").each(function () {
+                    let fieldID = $(this).attr("id");
+                    updatedData[fieldID] = $(this).val();
+                });
+
+                // Handle "Ongoing" status formatting
                 if (updatedData.projectStatus === "Ongoing") {
                     let ongoingStatus = $("#ongoingStatus").val();
                     let ongoingDate = $("#ongoingDate").val();
-                    
+
                     if (ongoingStatus && ongoingDate) {
                         if (!ongoingStatus.includes(" - ")) {
                             updatedData.ongoingStatus = `${ongoingStatus} - ${ongoingDate}`;
@@ -227,7 +231,7 @@ $(document).ready(function() {
                     },
                     contentType: "application/json",
                     data: JSON.stringify(updatedData),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.status === "success") {
                             Swal.fire({
                                 title: "Updated Successfully!",
@@ -244,7 +248,7 @@ $(document).ready(function() {
                             });
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.error("Error updating project:", xhr.responseText);
                         Swal.fire({
                             title: "Error!",
@@ -255,7 +259,7 @@ $(document).ready(function() {
                     }
                 });
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error("Error fetching project ID:", xhr.responseText);
                 Swal.fire({
                     title: "Error!",

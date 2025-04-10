@@ -9,6 +9,7 @@ return new class extends Migration {
         Schema::create('project_status', function (Blueprint $table) {
             $table->increments('id');  // Auto-incrementing id
             $table->string('projectID');
+            $table->primary('projectID');
             $table->date('date');
             $table->string('percentage');
             $table->string('progress'); // 0-100%
