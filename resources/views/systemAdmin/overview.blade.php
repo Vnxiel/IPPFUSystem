@@ -12,9 +12,6 @@
             <div class="d-flex align-items-center gap-2">
            <a class="{{ Request::is('systemAdmin/projects') ? 'bg-light-green text-dark-white' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/projects') }}"><span class="fa fa-arrow-left"></span></a>
 
-            <!-- <a href="{{ route('systemAdmin.projects') }}" class="btn btn-danger btn-sm">
-                <span class="fa fa-arrow-left"></span>
-                </a> -->
                 <h5 class="m-0">Project Overview</h5>
             </div>
 
