@@ -91,7 +91,13 @@ class ProjectManager extends Controller
     
         try {
             // Exclude dynamic fields from mass assignment
-            $standardFields = $request->except($dynamicFields->keys()->toArray());
+            $excludeFromProject = array_merge(
+                $dynamicFields->keys()->toArray(),
+                ['projectStatus', 'ongoingStatus', 'ongoingDate'] // explicitly exclude status fields
+            );
+            
+            $standardFields = $request->except($excludeFromProject);
+            
     
             $project = new addProject($standardFields);
     
@@ -101,6 +107,25 @@ class ProjectManager extends Controller
             }
     
             $project->save();
+                // Check if the 'projectDescription' field is filled
+                if ($request->filled('projectDescription')) {
+                    // Split the text by new lines (handles \n, \r\n, or \r depending on OS)
+                    $lines = preg_split('/\r\n|\r|\n/', trim($request->input('projectDescription')));
+
+                    // Loop through each line and insert it
+                    foreach ($lines as $line) {
+                        // Remove extra spaces and ensure the line is not empty
+                        $line = trim($line);
+                        if (!empty($line)) {
+                            // Insert this line as a new row in the project_description_tbl
+                            ProjectDescription::create([
+                                'projectID' => $project->projectID,        // Foreign key
+                                'ProjectDescription' => $line              // Actual description text
+                            ]);
+                        }
+                    }
+                }
+
     
             // Insert initial fund utilization data
             FundsUtilization::create([
@@ -232,29 +257,41 @@ class ProjectManager extends Controller
 public function getProject($projectID)
 {
     try {
-        // Fetch project details based on projectID
-        $project = showDetails::where('projectID', $projectID)->first();
+        // Fetch all columns for the given projectID
+        $projectData = DB::table('projects_tbl')->where('projectID', $projectID)->first();
 
-        if (!$project) {
+        if (!$projectData) {
             return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
         }
 
-        // Fetch project status related to the project
+        // Convert to array for easier manipulation
+        $project = (array) $projectData;
+
+        // Fetch project status
         $projectStatus = ProjectStatus::where('projectID', $projectID)->first();
 
-        if ($projectStatus) {
-            // Adding ongoingStatus to project details
-            $project->projectStatus = $projectStatus->progress;
-            $project->ongoingStatus = $projectStatus->ongoingStatus; // Accessor format
-        } else {
-            $project->projectStatus = 'Not Available';
-            $project->ongoingStatus = 'Not Available';
+        $project['projectStatus'] = $projectStatus->progress ?? 'Not Available';
+        $project['ongoingStatus'] = $projectStatus->ongoingStatus ?? 'Not Available';
+
+        // Get matching dynamic order fields
+        $columns = DB::getSchemaBuilder()->getColumnListing('projects_tbl');
+        $matchingColumns = collect($columns)->filter(function ($column) {
+            return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d+$/', $column);
+        });
+
+        // Collect matching field values
+        $orderDetails = [];
+        foreach ($matchingColumns as $col) {
+            $orderDetails[$col] = $project[$col] ?? null;
         }
+
+        $project['orderDetails'] = $orderDetails;
 
         return response()->json([
             'status' => 'success',
             'project' => $project
         ]);
+
     } catch (\Exception $e) {
         Log::error('Error fetching project details: ' . $e->getMessage());
         return response()->json([
@@ -263,6 +300,7 @@ public function getProject($projectID)
         ]);
     }
 }
+
 
     
 
@@ -365,17 +403,7 @@ public function getProject($projectID)
                 return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d*$/', $key);
             });
     
-            // Optional: Check specific dynamic fields are not empty
-            if ($dynamicFields->isNotEmpty()) {
-                foreach ($dynamicFields as $field => $value) {
-                    if (empty($value)) {
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => "Missing or invalid value for $field."
-                        ], 422);
-                    }
-                }
-            }
+           
     
             // Start transaction
             \DB::transaction(function () use ($request, $projectID, $newProjectID, $dynamicFields) {
@@ -474,11 +502,11 @@ public function fetchStatus($projectID)
         return response()->json(['error' => 'No status updates found for this project'], 404);
     }
 
-    // 🔹 Step 3: Set the latest status as the project status (from the most recent entry)
+    // 🔹 Set the latest status as the project status (from the most recent entry)
     $latestStatus = $statuses->first();
     $formattedStatuses['projectStatus'] = $latestStatus->progress; // Assuming the latest progress is the project status
 
-    // 🔹 Step 4: Format the `ongoingStatus` by correctly separating the percentage and date
+    // 🔹 Format the `ongoingStatus` by correctly separating the percentage and date
     $formattedStatuses['ongoingStatus'] = $statuses->map(function ($status) {
         // Extract the progress, percentage, and date properly
         $progress = $status->progress;

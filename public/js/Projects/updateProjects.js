@@ -94,6 +94,39 @@ function updateProjectForm(project) {
         return;
     }
 
+
+      // ✅ Populate dynamic orderDetails fields (like suspensionOrderNo1, resumeOrderNo2, etc.)
+      if (project.orderDetails && typeof project.orderDetails === 'object') {
+        for (const [field, value] of Object.entries(project.orderDetails)) {
+            let input = form.querySelector(`#${field}`);
+            
+            // If the input doesn't exist, create it dynamically
+            if (!input) {
+                console.warn(`Input with id '${field}' not found. Creating it.`);
+                
+                input = document.createElement('input');
+                input.type = 'date'; // assuming date fields
+                input.id = field;
+                input.name = field;
+                input.className = 'form-control'; // adjust class as needed
+                
+                // Optional: wrap in a div or label for styling/layout
+                const wrapper = document.createElement('div');
+                wrapper.className = 'form-group';
+                const label = document.createElement('label');
+                label.htmlFor = field;
+                label.innerText = field;
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                form.appendChild(wrapper); // Add to the form
+            }
+
+            input.value = value ?? "";
+        }
+    }
+
+
     // Set values for form fields within the specific form
     form.querySelector("#projectTitle").value = project.projectTitle ?? "";
     form.querySelector("#projectLoc").value = project.projectLoc ?? "";

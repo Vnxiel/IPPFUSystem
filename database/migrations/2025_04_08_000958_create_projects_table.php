@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('sourceOfFunds');
             $table->string('otherFund')->nullable(); 
             $table->string('modeOfImplementation');
-            $table->text('projectDescription');
             $table->string('projectContractDays');
             $table->date('officialStart')->nullable();
             $table->date('targetCompletion')->nullable();

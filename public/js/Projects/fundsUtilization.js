@@ -1,32 +1,51 @@
-function addFundUtilization(project) {
-    if (!project) {
-        console.error("Error: Project data is undefined or null.");
-        return;
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    const fundModal = document.getElementById('addProjectFundUtilization');
 
-    console.log("Populating funds utilization form with project data:", project);
+    fundModal.addEventListener('show.bs.modal', function () {
+        fetch('/get-project-id')
+            .then(response => response.json())
+            .then(data => {
+                if (data.projectID) {
+                    loadFundUtilization(data.projectID);
+                } else {
+                    console.warn('Project ID not found in session.');
+                }
+            })
+            .catch(error => {
+                console.error('Error getting project ID from session:', error);
+            });
+    });
+});
 
-    const form = document.getElementById("addFundUtilization");
-    if (!form) {
-        console.error("Error: Form with ID 'addFundUtilization' not found.");
-        return;
-    }
+function loadFundUtilization(projectID) {
+    fetch(`/fund-utilization/${projectID}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const fu = data.data || {};
+                document.getElementById('projectTitleFU').value = data.projectTitle ?? '';
 
-    const setValue = (selector, value) => {
-        const input = form.querySelector(selector);
-        if (input) {
-            input.value = value ?? "";
-        } else {
-            console.warn(`Input with selector '${selector}' not found`);
-        }
-    };
+                // Fill original values
+                document.getElementById('orig_abc').value = fu.orig_abc ?? '';
+                document.getElementById('orig_contractAmount').value = fu.orig_contract_amount ?? '';
+                document.getElementById('orig_engineering').value = fu.orig_engineering ?? '';
+                document.getElementById('orig_mqc').value = fu.orig_mqc ?? '';
+                document.getElementById('orig_bid').value = fu.orig_bid ?? '';
+                document.getElementById('completionDate').value = fu.completionDate ?? '';
+                document.getElementById('orig_appropriation').value = fu.orig_appropriation ?? '';
 
-    setValue("#projectTitleFU", project.projectTitle);
-    setValue("#orig_abc", project.abc);
-    setValue("#orig_contractAmount", project.contractAmount);
-    setValue("#orig_engineering", project.engineering);
-    setValue("#orig_mqc", project.mqc);
-    setValue("#orig_contingency", project.contingency); // double-check this ID spelling
-    setValue("#orig_bid", project.bid);
-    setValue("#orig_appropriation", project.appropriation);
+                // Fill actual values
+                document.getElementById('actual_abc').value = fu.actual_abc ?? '';
+                document.getElementById('actual_contractAmount').value = fu.actual_contractAmount ?? '';
+                document.getElementById('actual_engineering').value = fu.actual_engineering ?? '';
+                document.getElementById('actual_mqc').value = fu.actual_mqc ?? '';
+                document.getElementById('actual_bid').value = fu.actual_bid ?? '';
+                document.getElementById('actual_completionDate').value = fu.actual_completionDate ?? '';
+                document.getElementById('actual_contingency').value = fu.actual_contingency ?? '';
+                document.getElementById('actual_appropriation').value = fu.actual_appropriation ?? '';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading fund utilization:', error);
+        });
 }

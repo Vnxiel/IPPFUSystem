@@ -121,6 +121,7 @@
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
+        <script src="{{ asset('js/Projects/fundsUtilization.js') }}"></script>
         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>

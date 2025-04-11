@@ -659,8 +659,8 @@
             </div>
 
 
-            <!-- Fund Utilization -->
-            <div class="modal fade" id="addProjectFundUtilization" tabindex="-1" aria-labelledby="addProjectFundUtilizationLabel" aria-hidden="true">
+             <!-- Fund Utilization -->
+             <div class="modal fade" id="addProjectFundUtilization" tabindex="-1" aria-labelledby="addProjectFundUtilizationLabel" aria-hidden="true">
                 <div class="modal-dialog  modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -702,18 +702,21 @@
                                             <input type="text" class="form-control currency-input" id="orig_mqc" name="orig_mqc">
                                         </div>
                                     </div>
-                                    <div class="mb-1">
-                                            <label for="orig_contingency" class="form-label">Contingency</label>
-                                            <input type="text" class="form-control" id="orig_contingency" name="orig_contingency" value="">
-                                        </div> 
                                     <div class="col-md-6">
                                         <div class="mb-1">
                                             <label for="orig_bid" class="form-label">Bid Difference</label>
                                             <input type="text" class="form-control currency-input" id="orig_bid" name="orig_bid">
                                         </div>
-                                 
                                         <div class="mb-1">
-                                            <label for="orig_appropriation" class="form-label">Appropriation</label>
+                                            <label for="completionDate" class="form-label">Completion Date</label>
+                                            <input type="text" class="form-control" id="completionDate" name="completionDate" value="">
+                                        </div> 
+                                        <div class="mb-1">
+                                            <label for="orig_bid" class="form-label">Bid Difference</label>
+                                            <input type="text" class="form-control currency-input" id="orig_bid" name="orig_bid">
+                                        </div>
+                                        <div class="mb-1">
+                                            <label for="appropriation" class="form-label">Appropriation</label>
                                             <input type="text" class="form-control currency-input" id="orig_appropriation" name="orig_appropriation">
                                         </div>
                                     </div>
@@ -732,7 +735,6 @@
                                                     <span class="fa-solid fa-circle-minus"></span>
                                                 </button>
                                             </div>
-
                                             <!-- Order pair container -->
                                             <div id="voContainer" class="col-12">
                                                 <div class="row text-center">
@@ -833,109 +835,6 @@
                     </div>
                 </div>
 
-
-
-<script>    
-    document.addEventListener("DOMContentLoaded", function () {
-        loadProjects(); // Load projects on page load
-        // Select all input fields with the "currency-input" class
-        let currencyInputs = document.querySelectorAll(".currency-input");
-
-        currencyInputs.forEach(input => {
-            input.addEventListener("input", function () {
-                formatCurrencyInput(this);
-            });
-
-            input.addEventListener("blur", function () {
-                formatCurrencyOnBlur(this);
-            });
-
-            //  Format existing values on page load
-            if (input.value.trim() !== "") {
-                formatCurrencyOnBlur(input);
-            }
-        });
-
-        function formatCurrencyInput(input) {
-            // Remove non-numeric characters except decimal
-            let value = input.value.replace(/[^0-9.]/g, "");
-
-            // Ensure there's only one decimal point
-            let parts = value.split(".");
-            if (parts.length > 2) {
-                value = parts[0] + "." + parts.slice(1).join("");
-            }
-
-            input.value = value;
-        }
-
-        function formatCurrencyOnBlur(input) {
-            let value = input.value.trim();
-
-            if (value === "" || isNaN(value)) {
-                input.value = "";
-                return;
-            }
-
-            let formattedValue = parseFloat(value).toLocaleString("en-PH", {
-                style: "currency",
-                currency: "PHP",
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-
-            input.value = formattedValue;
-        }
-    });
-
-    // Handle "Other Fund" Selection Toggle
-    function toggleOtherFund() {
-        var sourceOfFunds = document.getElementById("sourceOfFunds").value;
-        var otherFundContainer = document.getElementById("otherFundContainer");
-
-        if (sourceOfFunds === "Others") {
-            otherFundContainer.style.display = "block";
-        } else {
-            otherFundContainer.style.display = "none";
-        }
-    }
-
-    // Handle "Ongoing Status" Selection Toggle
-    function toggleOngoingStatus() {
-        let statusSelect = document.getElementById("projectStatus");
-        let ongoingContainer = document.getElementById("ongoingStatusContainer");
-        let ongoingDate = document.getElementById("ongoingDate");
-
-        if (statusSelect.value === "Ongoing") {
-            ongoingContainer.style.display = "block";
-
-            // Set the ongoingDate to today's date
-            let today = new Date().toISOString().split('T')[0];
-            ongoingDate.value = today;
-        } else {
-            ongoingContainer.style.display = "none";
-            ongoingDate.value = ""; // Clear the date when status is not "Ongoing"
-        }
-    }
-
-
-    // Add Event Listener for Project Status Dropdown
-    document.getElementById("projectStatus").addEventListener("change", function () {
-        toggleOngoingStatus();
-    });
-
-
-    // Handle "Other Fund" Dropdown Change
-    $('#sourceOfFunds').on('change', function() {
-        if ($(this).val() === 'Others') {
-            $('#otherFundContainer').slideDown(); // Show input with animation
-        } else {
-            $('#otherFundContainer').slideUp(); // Hide input with animation
-        }
-    });
-    
-
-</script>
 
 
 <script>
@@ -1127,94 +1026,6 @@
             suggestionsBox.style.display = 'none';
         }
     }
-</script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    function validateDates(issuedId, receivedId, label) {
-      const issued = document.getElementById(issuedId);
-      const received = document.getElementById(receivedId);
-
-      function checkDate() {
-        const issuedDate = new Date(issued.value);
-        const receivedDate = new Date(received.value);
-
-        if (issued.value && received.value && receivedDate <= issuedDate) {
-          Swal.fire({
-            icon: 'error',
-            title: `${label} Error`,
-            text: 'Received date must be after the issued date.',
-            confirmButtonColor: '#3085d6',
-          });
-          received.value = ""; // Clear invalid input
-        }
-      }
-
-      issued.addEventListener("change", checkDate);
-      received.addEventListener("change", checkDate);
-    }
-
-    validateDates("noaIssuedDate", "noaReceivedDate", "Notice of Award");
-    validateDates("ntpIssuedDate", "ntpReceivedDate", "Notice to Proceed");
-  });
-</script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const contractDaysInput = document.getElementById("projectContractDays");
-    const startDateInput = document.getElementById("officialStart");
-    const completionDateInput = document.getElementById("targetCompletion");
-
-    function calculateCompletionDate() {
-      const startDateValue = startDateInput.value;
-      const contractDays = parseInt(contractDaysInput.value);
-
-      if (startDateValue && contractDays > 0) {
-        const startDate = new Date(startDateValue);
-        const completionDate = new Date(startDate);
-        completionDate.setDate(startDate.getDate() + contractDays - 1); // minus 1 here
-        const formatted = completionDate.toISOString().split('T')[0];
-        completionDateInput.value = formatted;
-      }
-    }
-
-    contractDaysInput.addEventListener("input", calculateCompletionDate);
-    startDateInput.addEventListener("change", calculateCompletionDate);
-  });
-</script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const targetCompletionInput = document.getElementById("targetCompletion");
-    const timeExtensionInput = document.getElementById("timeExtension");
-    const revisedTargetInput = document.getElementById("revisedTargetCompletion");
-    const completionDateInput = document.getElementById("completionDate");
-
-    function updateDates() {
-      const targetDateValue = targetCompletionInput.value;
-      const timeExtension = parseInt(timeExtensionInput.value);
-
-      if (targetDateValue && !isNaN(timeExtension) && timeExtension > 0) {
-        const targetDate = new Date(targetDateValue);
-        const revisedDate = new Date(targetDate);
-        revisedDate.setDate(targetDate.getDate() + timeExtension);
-
-        const formatted = revisedDate.toISOString().split('T')[0];
-
-        revisedTargetInput.value = formatted;
-        completionDateInput.value = formatted;
-
-        revisedTargetInput.readOnly = true;
-        completionDateInput.readOnly = true;
-      } else {
-        revisedTargetInput.readOnly = false;
-        completionDateInput.readOnly = false;
-      }
-    }
-
-    targetCompletionInput.addEventListener("change", updateDates);
-    timeExtensionInput.addEventListener("input", updateDates);
-  });
 </script>
 
 

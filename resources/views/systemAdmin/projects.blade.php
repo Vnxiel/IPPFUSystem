@@ -71,13 +71,15 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="mb-1">
-                                            <label for="projectDescription" class="form-label">Project Description</label>
-                                            <textarea class="form-control" id="projectDescription" name="projectDescription" rows="3" placeholder="Enter project description."></textarea>
-                                    </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                    <label for="projectDescription" class="form-label">Project Description</label>
+                                    <div id="projectDescription" class="form-control" contenteditable="true" style="min-height: 100px;" placeholder="Enter project description..."></div>
+                                    <small class="text-muted">Use bullets to separate project points. Press 'Enter' after each point.</small>
                                     </div>
                                 </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-1">

@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectManager;
 use App\Http\Controllers\FileManager;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\GenerateProjectReport;
+use App\Http\Controllers\FundsUtilization;
 
 
 Route::get('/', function() {
@@ -75,6 +76,11 @@ Route::controller(ActivityLogs::class)->group(function () {
     Route::post('/update-project-status', [ProjectManager::class, 'updateProjectStatus']);
 
 });
+
+// funds utilization
+Route::get('/fund-utilization/{projectID}', [FundsUtilization::class, 'getFundUtilization']);
+Route::post('/fund-utilization', [FundsUtilization::class, 'storeFundUtilization']);
+
 
 // Generate Project Routes
 Route::get('generateProject/{projectID}', [GenerateProjectReport::class, 'generateProjectPDF']);
