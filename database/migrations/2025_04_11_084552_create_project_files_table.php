@@ -14,8 +14,13 @@ return new class extends Migration {
                 $table->string('actionBy');
                 $table->timestamps();
 
-                $table->foreign('projectID')->references('projectID')->on('projects_tbl')->onDelete('cascade');
-            });
+                
+            $table->foreign('projectID')
+            ->references('projectID')
+            ->on('projects_tbl')
+            ->onDelete('cascade')
+            ->onUpdate('cascade');
+    });
     }
 
     public function down() {

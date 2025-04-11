@@ -30,11 +30,5 @@ class FundsUtilization extends Model
         'actual_completion_date',
     ];
 
-    // If your primary key is not "id"
-    public $incrementing = false;
-    protected $primaryKey = 'projectID';
-    protected $keyType = 'string';
 
-    // If you want timestamps (created_at, updated_at) to be auto-managed
-    public $timestamps = true;
 }

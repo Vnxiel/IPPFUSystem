@@ -109,8 +109,6 @@ class FileManager extends Controller
         ]);
     }
 
-  // FileManager Controller
-
 // Delete File
 public function delete($fileID)
 {
@@ -129,7 +127,6 @@ public function delete($fileID)
     return response()->json(['status' => 'success', 'message' => 'File deleted successfully.']);
 }
 
-    // FileManager Controller
 
 public function downloadFile($filename)
 {
