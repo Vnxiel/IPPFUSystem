@@ -10,25 +10,45 @@ $(document).ready(function() {
             data: $(this).serialize(),
             success: function(response) {
                 if(response == 1){
-                    console.log("Redirecting to:", "/main/index"); // Debugging
-
+                    console.log("Redirecting to:", "/systemAdmin/index"); // Debugging
                     Swal.fire({
                         icon: "success",
                         title: "Logging in!",
                         showConfirmButton: false,
                         timer: 2000,
                     }).then(function(){
-                        window.location = "/main/index";
+                        window.location = "/systemAdmin/index"; // Redirect to system admin
                     });
-                }else if(response.message){
+                } else if(response == 2){
+                    console.log("Redirecting to:", "/admin/index"); // Debugging
+                    Swal.fire({
+                        icon: "success",
+                        title: "Logging in!",
+                        showConfirmButton: false,
+                        timer: 2000,
+                    }).then(function(){
+                        window.location = "/admin/index"; // Redirect to admin
+                    });
+                } else if(response == 0){
+                    console.log("Redirecting to:", "/staff/index"); // Debugging
+                    Swal.fire({
+                        icon: "success",
+                        title: "Logging in!",
+                        showConfirmButton: false,
+                        timer: 2000,
+                    }).then(function(){
+                        window.location = "/staff/index"; // Redirect to staff
+                    });
+                } else if(response.message){
                     var errorMessages = Object.values(response.message).join('<br>');
                     Swal.fire({
                         icon: 'error',
                         title: 'Login validation failed!',
+                        text: errorMessages,
                         showConfirmButton: false,
                         timer: 3000,
                     });
-                }else if(response == 401){
+                } else if(response == 401){
                     Swal.fire({
                         icon: 'error',
                         title: 'Login failed!',
@@ -36,7 +56,7 @@ $(document).ready(function() {
                         showConfirmButton: false,
                         timer: 3000,
                     });
-                }else if(response == 404){
+                } else if(response == 404){
                     Swal.fire({
                         icon: 'error',
                         title: 'Login failed!',
@@ -44,15 +64,15 @@ $(document).ready(function() {
                         showConfirmButton: false,
                         timer: 3000,
                     });
-                }else if(response == 402){
+                } else if(response == 402){
                     Swal.fire({
                         icon: 'error',
                         title: 'Login failed!',
-                        text: 'Your account was deactivated, please contact the administrator thank you!',
+                        text: 'Your account was deactivated, please contact the administrator. Thank you!',
                         showConfirmButton: false,
                         timer: 3000,
                     });
-                }else{
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Something went wrong!',
@@ -65,7 +85,6 @@ $(document).ready(function() {
             error: function(xhr) {
                 console.log(xhr.responseJSON);
             }
-
         });
     });
 });

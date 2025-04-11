@@ -1,5 +1,5 @@
-function downloadFile(filePath, timestampedFilename) {
-    console.log("Downloading File:", filePath, "Saved as:", timestampedFilename); // Debugging
+function downloadFile(filePath) {
+    console.log("Original filePath:", filePath);
 
     if (!filePath) {
         Swal.fire({
@@ -11,13 +11,13 @@ function downloadFile(filePath, timestampedFilename) {
         return;
     }
 
-    let fileUrl = `/storage/app/public/project_files/${filePath}`; // Ensure correct URL for storage access
+    // Decode the path for accurate fetch and file name
+    let decodedPath = decodeURIComponent(filePath);
+    let cleanedFilename = decodedPath.split("/").pop(); // Get the clean filename
+    let fileUrl = `/download-file/${cleanedFilename}`; // The URL to trigger the file download
+    console.log("File URL for fetch:", fileUrl);
 
-    // Ensure filename is defined and replace %20 with spaces
-    if (timestampedFilename) {
-        timestampedFilename = timestampedFilename.replace(/%20/g, ' ');
-    }
-
+    // Send a GET request to download the file from the server
     fetch(fileUrl)
         .then(response => {
             if (!response.ok) {
@@ -28,7 +28,7 @@ function downloadFile(filePath, timestampedFilename) {
         .then(blob => {
             let a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
-            a.download = timestampedFilename; // Use cleaned filename
+            a.download = cleanedFilename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

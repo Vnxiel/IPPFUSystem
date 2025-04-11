@@ -1,4 +1,4 @@
-@extends('main.layout')
+@extends('admin.layout')
 
 @section('title', 'Dashboard Page')
 
@@ -8,54 +8,61 @@
                     <div class="container">
                         <div class="row mt-1">
                             <div class="col-12 d-flex flex-nowrap justify-content-center justify-content-md-between align-items-center overflow-auto">
-                             <!-- Total No. of Projects -->
-                            <div class="card m-1" style="width: 12rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total No. of Projects</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="totalProjects">0</p>
+                                <!-- Total No. of Projects -->
+                                <div class="card m-1" style="width: 12rem; height: 8rem;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                                        <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total No. of Projects</h6>
+                                        <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="totalProjects">10</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- On-going Projects -->
-                            <div class="card m-1" style="width: 12rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">On-going Projects</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="ongoingProjects">0</p>
+                                <!-- On-going Projects -->
+                                <div class="card m-1" style="width: 12rem; height: 8rem;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                                        <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">On-going Projects</h6>
+                                        <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="ongoingProjects">0</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Completed Projects -->
-                            <div class="card m-1" style="width: 12rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Completed Projects</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="completedProjects">0</p>
+                                <!-- Completed Projects -->
+                                <div class="card m-1" style="width: 12rem; height: 8rem;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                                        <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Completed Projects</h6>
+                                        <p class="card-text fs-5 fs-md-3 fw-bold pt-2" id="completedProjects">0</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Total Budget Allocated -->
-                            <div class="card m-1" style="width: 16rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total Budget Allocated</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="totalBudget">₱0</p>
+                                <!-- Discontinued Projects -->
+                                <!-- <div class="card m-1" style="width: 12rem; height: 8rem;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                                        <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Discontinued Projects</h6>
+                                        <p class="card-text fs-5 fs-md-3 fw-bold pt-2">0</p>
+                                    </div>
+                                </div> -->
+
+                                <!-- Total Budget Allocated -->
+                                <div class="card m-1" style="width: 16rem; height: 8rem;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                                        <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total Budget Allocated</h6>
+                                        <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="totalBudget">₱1,000,000,000</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Total Budget Used -->
-                            <div class="card m-1" style="width: 16rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total Budget Used</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="totalUsed">₱0</p>
+                                <!-- Total Budget Used -->
+                                <div class="card m-1" style="width: 16rem; height: 8rem;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                                        <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Total Budget Used</h6>
+                                        <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="totalUsed">₱500,000,000</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Remaining Balance -->
-                            <div class="card m-1" style="width: 16rem; height: 8rem;">
-                                <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Remaining Balance</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="remainingBalance">₱0</p>
+                                <!-- Readmining Balance -->
+                                <div class="card m-1" style="width: 16rem; height: 8rem;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                                        <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Readmining Balance</h6>
+                                        <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="readminingBalance">₱500,000,000</p>
+                                    </div>
                                 </div>
-                            </div>
-
                             </div>
                         </div>
                     </div>
@@ -279,7 +286,7 @@
         <script>    
          document.addEventListener("DOMContentLoaded", function () {
             fetchProjectSummary(); //  Fetch project summary stats
-            fetchRecentProjects(); //  Fetch projects table data
+    fetchRecentProjects(); //  Fetch projects table data
         });
 
 //  Fetch Project Summary (Total Projects, Ongoing, Completed, Budget)
@@ -298,7 +305,7 @@ function fetchProjectSummary() {
                 //  Update budget values
                 document.getElementById("totalBudget").textContent = `₱${summary.totalBudget}`;
                 document.getElementById("totalUsed").textContent = `₱${summary.totalUsed}`;
-                document.getElementById("remainingBalance").textContent = `₱${summary.remainingBalance}`;
+                document.getElementById("readminingBalance").textContent = `₱${summary.readminingBalance}`;
             } else {
                 console.error("Invalid summary data received.");
             }
@@ -328,8 +335,8 @@ document.addEventListener("click", function (e) {
             if (data.success) {
                 console.log("Project ID stored successfully, redirecting...");
 
-                //  Redirect to main.overview (correct Laravel route)
-                window.location.href = "/main/overview";
+                //  Redirect to admin.overview (correct Laravel route)
+                window.location.href = "/admin/overview";
             } else {
                 console.error("Failed to store project ID:", data);
             }

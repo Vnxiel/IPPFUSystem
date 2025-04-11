@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  // Call the function to fetch projects on page load
+   fetchTrashedProjects();
   // Function to Restore a Project
   $(document).on('click', '.restore-btn', function() {
     let projectID = $(this).data('id');

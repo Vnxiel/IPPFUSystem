@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectManager;
 use App\Http\Controllers\FileManager;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\GenerateProjectReport;
+use App\Http\Controllers\FundsUtilization;
 
 
 Route::get('/', function() {
@@ -15,20 +16,33 @@ Route::get('/', function() {
 });
 
 Route::controller(UserManager::class)->group(function () {
-    Route::get('/systemAdmin/register', 'goToRegister')->name('systemAdmin.register');
+    Route::get('/FirstUserRegistration/register', 'goToRegister')->name('FirstUserRegistration.register');
     Route::post('/registerSystemAdmin', 'registerSystemAdmin')->name(name: 'registerSystemAdmin');
     Route::get('/', 'index');
     Route::post('/login', 'userLogin')->name('login');
+    Route::post('/logout', 'logout')->name('logout');
+    
+  
 
-    Route::get('/main/projects', 'projects')->name('main.projects');
-    Route::get('/main/overview', 'overview')->name('main.overview');
-    Route::get('/main/reports', 'funds')->name('main.funds');
-    Route::get('/main/trash', 'trash')->name('main.trash');
+    Route::get('/systemAdmin/projects', 'projects')->name('systemAdmin.projects');
+    Route::get('/systemAdmin/overview', 'overview')->name('systemAdmin.overview');
+    Route::get('/systemAdmin/reports', 'funds')->name('systemAdmin.funds');
+    Route::get('/systemAdmin/trash', 'trash')->name('systemAdmin.trash');
+
+    //staff
+    Route::get('/staff/index', 'index')->name(name: 'staff.index');
+    Route::get('/staff/overview', 'overview')->name(name: 'staff.overview');
+    Route::get('/staff/projects', 'projects')->name(name: 'staff.projects');
+
+    //admin
+    Route::get('/admin/index', 'index')->name(name: 'admin.index');
+    Route::get('/admin/projects', 'projects')->name(name: 'admin.projects');
+    Route::get('/admin/overview', 'overview')->name(name: 'admin.overview');
 });
 
 Route::controller(SystemAdminManager::class)->group(function () {
-    Route::get('/main/index', 'index')->name(name: 'main.index');
-    Route::get('/main/userManagement', 'viewUserManagement')->name('main.userManagement');
+    Route::get('/systemAdmin/index', 'index')->name(name: 'systemAdmin.index');
+    Route::get('/systemAdmin/userManagement', 'viewUserManagement')->name('systemAdmin.userManagement');
 
     Route::post('/userRegistration', 'registerUser')->name('userRegistration');
     Route::get('/getUsers', 'viewUserManagement')->name('getUsers');
@@ -36,7 +50,7 @@ Route::controller(SystemAdminManager::class)->group(function () {
     Route::get('/getUserRole', 'getUserRole');
     Route::post('/changeRole', 'changeRole');
 
-    Route::get('/main/activityLogs', 'viewActivityLogs')->name('main.activityLogs');
+    Route::get('/systemAdmin/activityLogs', 'viewActivityLogs')->name('systemAdmin.activityLogs');
 
 });
 
@@ -47,7 +61,6 @@ Route::controller(ActivityLogs::class)->group(function () {
     Route::get('/getActivityLogs', 'index')->name(name:'getActivityLogs');
 });
 
-
    // Project Management Routes
    Route::controller(ProjectManager::class)->group(function () {
     Route::post('/projects/addProject', 'addProject')->name('projects.addProject');
@@ -55,21 +68,32 @@ Route::controller(ActivityLogs::class)->group(function () {
     Route::get('/projects/getProject/{projectID}', 'getProject')->name('projects.getProject');
     Route::get('/projects/summary', 'getProjectSummary')->name('projects.summary');
     Route::put('/projects/update/{projectID}', 'updateProject')->name('projects.update'); // Ensure ID consistency
-    Route::put('/projects/trash/{projectID}', [ProjectManager::class, 'trashProject'])->name('projects.trash');
-    Route::get('/projects/fetch-trash', [ProjectManager::class, 'fetchTrashedProjects'])->name('projects.fetchTrash');
-    Route::put('/projects/restore/{projectID}', [ProjectManager::class, 'restoreProject'])->name('projects.restore');
-   });
+    Route::put('/projects/trash/{projectID}', 'trashProject')->name('projects.trash');
+    Route::get('/projects/fetch-trash', 'fetchTrashedProjects')->name('projects.fetchTrash');
+    Route::put('/projects/restore/{projectID}', 'restoreProject')->name('projects.restore');
+    Route::get('/project-status/{projectID}', 'fetchStatus');
+    Route::post('/projects/insertProjectStatus',  'insertProjectStatus');
+    Route::post('/update-project-status', 'updateProjectStatus');
 
-    // Generate Project Routes
-     
+});
 
- // Session Handling Routes
- Route::post('/store-project-id', [SessionController::class, 'storeProjectID'])->name('store.project.id');
- Route::get('/get-project-id', [SessionController::class, 'getProjectID']);
- 
+// funds utilization
+Route::get('/fund-utilization/{projectID}', [FundsUtilization::class, 'getFundUtilization']);
+Route::post('/fund-utilization', [FundsUtilization::class, 'storeFundUtilization']);
+
+
+// Generate Project Routes
+Route::get('generateProject/{projectID}', [GenerateProjectReport::class, 'generateProjectPDF']);
+
+
+// Session Handling Routes
+Route::post('/store-project-id', [SessionController::class, 'storeProjectID'])->name('store.project.id');
+Route::get('/get-project-id', [SessionController::class, 'getProjectID']);
+
  // File Management Routes
  Route::controller(FileManager::class)->group(function () {
      Route::post('/uploadFile', 'uploadFile')->name('upload.file');
      Route::get('/files/{projectID}', 'getFiles')->name('get.files');
-     Route::delete('/delete/{fileID}', 'delete')->name('delete.file');
+     Route::delete('/delete/{fileID}',  'delete');
+    Route::get('/download-file/{filename}', 'downloadFile');
  });

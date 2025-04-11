@@ -112,4 +112,84 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    const targetCompletionInput = document.getElementById("targetCompletion");
+    const timeExtensionInput = document.getElementById("timeExtension");
+    const revisedTargetInput = document.getElementById("revisedTargetCompletion");
+    const completionDateInput = document.getElementById("completionDate");
 
+    function updateDates() {
+      const targetDateValue = targetCompletionInput.value;
+      const timeExtension = parseInt(timeExtensionInput.value);
+
+      if (targetDateValue && !isNaN(timeExtension) && timeExtension > 0) {
+        const targetDate = new Date(targetDateValue);
+        const revisedDate = new Date(targetDate);
+        revisedDate.setDate(targetDate.getDate() + timeExtension);
+
+        const formatted = revisedDate.toISOString().split('T')[0];
+
+        revisedTargetInput.value = formatted;
+        completionDateInput.value = formatted;
+
+        revisedTargetInput.readOnly = true;
+        completionDateInput.readOnly = true;
+      } else {
+        revisedTargetInput.readOnly = false;
+        completionDateInput.readOnly = false;
+      }
+    }
+
+    targetCompletionInput.addEventListener("change", updateDates);
+    timeExtensionInput.addEventListener("input", updateDates);
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const contractDaysInput = document.getElementById("projectContractDays");
+    const startDateInput = document.getElementById("officialStart");
+    const completionDateInput = document.getElementById("targetCompletion");
+
+    function calculateCompletionDate() {
+      const startDateValue = startDateInput.value;
+      const contractDays = parseInt(contractDaysInput.value);
+
+      if (startDateValue && contractDays > 0) {
+        const startDate = new Date(startDateValue);
+        const completionDate = new Date(startDate);
+        completionDate.setDate(startDate.getDate() + contractDays - 1); // minus 1 here
+        const formatted = completionDate.toISOString().split('T')[0];
+        completionDateInput.value = formatted;
+      }
+    }
+
+    contractDaysInput.addEventListener("input", calculateCompletionDate);
+    startDateInput.addEventListener("change", calculateCompletionDate);
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    function validateDates(issuedId, receivedId, label) {
+      const issued = document.getElementById(issuedId);
+      const received = document.getElementById(receivedId);
+
+      function checkDate() {
+        const issuedDate = new Date(issued.value);
+        const receivedDate = new Date(received.value);
+
+        if (issued.value && received.value && receivedDate <= issuedDate) {
+          Swal.fire({
+            icon: 'error',
+            title: `${label} Error`,
+            text: 'Received date must be after the issued date.',
+            confirmButtonColor: '#3085d6',
+          });
+          received.value = ""; // Clear invalid input
+        }
+      }
+
+      issued.addEventListener("change", checkDate);
+      received.addEventListener("change", checkDate);
+    }
+
+    validateDates("noaIssuedDate", "noaReceivedDate", "Notice of Award");
+    validateDates("ntpIssuedDate", "ntpReceivedDate", "Notice to Proceed");
+  });

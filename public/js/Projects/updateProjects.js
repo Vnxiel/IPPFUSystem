@@ -17,13 +17,21 @@ function updateProjectUI(project) {
         "timeExtensionDisplay": project.timeExtension,
         "revisedTargetCompletionDisplay": project.revisedTargetCompletion,
         "completionDateDisplay": project.completionDate,
-        "abcDisplay": project.abc,
-        "mqcDisplay": project.mqc,
-        "contractAmountDisplay": project.contractAmount,
-        "bidDisplay": project.bid,
-        "engineeringDisplay": project.engineering,
-        "contingencyDisplay": project.contingency,
-        "appropriationDisplay": project.appropriation
+        "abcOriginalDisplay": project.abc,
+        "mqcOriginalDisplay": project.mqc,
+        "contractAmountOriginalDisplay": project.contractAmount,
+        "bidDiffOriginalDisplay": project.bid,
+        "engineeringOriginalDisplay": project.engineering,
+        "contingencyOriginalDisplay": project.contingency,
+        "appropriationDisplay": project.appropriation,
+        "totalExpenditureOriginalDisplay": project.totalExpenditure,
+        "sourceOfFundsDisplay": project.sourceOfFunds,
+        "otherFundDisplay": project.otherFund,
+        "noaIssuedDateDisplay": project.noaIssuedDate,
+        "noaReceivedDateDisplay": project.noaReceivedDate,
+        "ntpIssuedDateDisplay": project.ntpIssuedDate,
+        "ntpReceivedDateDisplay": project.noaReceivedDate,
+        "projectSlippageDisplay": project.projectSlippage
     };
 
     for (let id in fields) {
@@ -39,6 +47,21 @@ function updateProjectUI(project) {
             }
         }
     }
+
+    let sourceOfFundsElem = document.getElementById("sourceOfFundsDisplay");
+
+    if (sourceOfFundsElem) {
+        let sourceOfFundsRaw = project.sourceOfFunds || "";
+        let sourceOfFunds = sourceOfFundsRaw.trim().toLowerCase();
+    
+        let displayValue = (sourceOfFunds === "others")
+            ? (project.otherFund?.trim() || "No other funds specified")
+            : (sourceOfFundsRaw || "No source of funds specified");
+    
+        sourceOfFundsElem.textContent = displayValue;
+    }
+    
+    
 
     //  Extract & display ongoing project status (if applicable)
     let ongoingStatusDisplay = project.ongoingStatus || "";
@@ -71,6 +94,39 @@ function updateProjectForm(project) {
         return;
     }
 
+
+      // ✅ Populate dynamic orderDetails fields (like suspensionOrderNo1, resumeOrderNo2, etc.)
+      if (project.orderDetails && typeof project.orderDetails === 'object') {
+        for (const [field, value] of Object.entries(project.orderDetails)) {
+            let input = form.querySelector(`#${field}`);
+            
+            // If the input doesn't exist, create it dynamically
+            if (!input) {
+                console.warn(`Input with id '${field}' not found. Creating it.`);
+                
+                input = document.createElement('input');
+                input.type = 'date'; // assuming date fields
+                input.id = field;
+                input.name = field;
+                input.className = 'form-control'; // adjust class as needed
+                
+                // Optional: wrap in a div or label for styling/layout
+                const wrapper = document.createElement('div');
+                wrapper.className = 'form-group';
+                const label = document.createElement('label');
+                label.htmlFor = field;
+                label.innerText = field;
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                form.appendChild(wrapper); // Add to the form
+            }
+
+            input.value = value ?? "";
+        }
+    }
+
+
     // Set values for form fields within the specific form
     form.querySelector("#projectTitle").value = project.projectTitle ?? "";
     form.querySelector("#projectLoc").value = project.projectLoc ?? "";
@@ -78,14 +134,10 @@ function updateProjectForm(project) {
     form.querySelector("#projectContractor").value = project.projectContractor ?? "";
     form.querySelector("#sourceOfFunds").value = project.sourceOfFunds ?? "";
     form.querySelector("#modeOfImplementation").value = project.modeOfImplementation ?? "";
-    form.querySelector("#projectStatus").value = project.projectStatus ?? "";
     form.querySelector("#projectDescription").value = project.projectDescription ?? "";
     form.querySelector("#projectContractDays").value = project.projectContractDays ?? "";
-    form.querySelector("#noticeToProceed").value = formatDateForInput(project.noticeToProceed);
     form.querySelector("#officialStart").value = formatDateForInput(project.officialStart);
     form.querySelector("#targetCompletion").value = formatDateForInput(project.targetCompletion);
-    form.querySelector("#suspensionOrderNo").value = project.suspensionOrderNo ?? "";
-    form.querySelector("#resumeOrderNo").value = project.resumeOrderNo ?? "";
     form.querySelector("#timeExtension").value = project.timeExtension ?? "";
     form.querySelector("#revisedTargetCompletion").value = formatDateForInput(project.revisedTargetCompletion);
     form.querySelector("#completionDate").value = formatDateForInput(project.completionDate);
@@ -96,6 +148,14 @@ function updateProjectForm(project) {
     form.querySelector("#contingency").value = project.contingency ?? "";
     form.querySelector("#bid").value = project.bid ?? "";
     form.querySelector("#appropriation").value = project.appropriation ?? "";
+    form.querySelector("#projectSlippage").value = project.projectSlippage ?? "";
+    form.querySelector("#ntpIssuedDate").value = project.ntpIssuedDate ?? "";
+    form.querySelector("#ntpReceivedDate").value = project.ntpReceivedDate ?? "";
+    form.querySelector("#noaIssuedDate").value = project.noaIssuedDate ?? "";
+    form.querySelector("#noaReceivedDate").value = project.noaReceivedDate ?? "";
+    form.querySelector("#totalExpenditure").value = project.totalExpenditure ?? "";
+    form.querySelector("#contractCost").value = project.contractCost ?? "";
+    
 
     // Handle dropdown values separately
     setDropdownValue(form.querySelector("#sourceOfFunds"), project.sourceOfFunds);
@@ -144,15 +204,15 @@ function setDropdownValue(dropdownID, value) {
 
 
 
-$(document).ready(function() {
-    $("#updateProjectForm").on("submit", function(event) {
+$(document).ready(function () {
+    $("#updateProjectForm").on("submit", function (event) {
         event.preventDefault();
 
         $.ajax({
             url: "/get-project-id",
             method: "GET",
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 if (!data.projectID) {
                     console.error("No project ID found in session.");
                     return;
@@ -160,23 +220,30 @@ $(document).ready(function() {
 
                 let updatedData = {};
                 let fieldIDs = [
-                    "projectTitle", "projectLoc", "projectID", "projectContractor", "sourceOfFunds", "modeOfImplementation", 
-                    "projectStatus", "ongoingStatus", "projectDescription", "projectContractDays", "noticeOfAward", 
-                    "noticeToProceed", "officialStart", "targetCompletion", "suspensionOrderNo", "resumeOrderNo", 
-                    "timeExtension", "revisedTargetCompletion", "completionDate", "abc", "contractAmount", "engineering", 
-                    "mqc", "contingency", "bid", "appropriation"
+                    "projectTitle", "projectLoc", "projectID", "projectContractor", "sourceOfFunds", "modeOfImplementation",
+                    "projectStatus", "ongoingStatus", "projectDescription", "projectContractDays", "noticeOfAward",
+                    "noticeToProceed", "officialStart", "targetCompletion", "timeExtension", "revisedTargetCompletion",
+                    "completionDate", "abc", "contractAmount", "engineering", "mqc", "contingency", "bid", "appropriation",
+                    "noaIssuedDate", "noaReceivedDate", "ntpIssuedDate", "ntpReceivedDate", "totalExpenditure", "projectSlippage"
                 ];
 
+                // Collect fixed fields
                 fieldIDs.forEach(id => {
                     let input = $("#" + id);
                     updatedData[id] = input.length ? input.val() : null;
                 });
 
-                // Handle "Ongoing" status fields
+                // Add dynamic fields (suspensionOrderNo* and resumeOrderNo*)
+                $("[id^=suspensionOrderNo], [id^=resumeOrderNo]").each(function () {
+                    let fieldID = $(this).attr("id");
+                    updatedData[fieldID] = $(this).val();
+                });
+
+                // Handle "Ongoing" status formatting
                 if (updatedData.projectStatus === "Ongoing") {
                     let ongoingStatus = $("#ongoingStatus").val();
                     let ongoingDate = $("#ongoingDate").val();
-                    
+
                     if (ongoingStatus && ongoingDate) {
                         if (!ongoingStatus.includes(" - ")) {
                             updatedData.ongoingStatus = `${ongoingStatus} - ${ongoingDate}`;
@@ -197,7 +264,7 @@ $(document).ready(function() {
                     },
                     contentType: "application/json",
                     data: JSON.stringify(updatedData),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.status === "success") {
                             Swal.fire({
                                 title: "Updated Successfully!",
@@ -214,7 +281,7 @@ $(document).ready(function() {
                             });
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.error("Error updating project:", xhr.responseText);
                         Swal.fire({
                             title: "Error!",
@@ -225,7 +292,7 @@ $(document).ready(function() {
                     }
                 });
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error("Error fetching project ID:", xhr.responseText);
                 Swal.fire({
                     title: "Error!",

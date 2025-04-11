@@ -62,13 +62,13 @@ class FileManager extends Controller
             }
     
             $timestampedFilename = date('Ymd_His') . '_' . $filename;
-            $filepath = $file->storeAs('project_files', $timestampedFilename, 'public');
+            $filepath = $file->storeAs('project_files', $filename, 'public');
     
             Log::info("File stored at: " . $filepath);
     
             $projectFile = FileUpload::create([
                 'projectID' => $projectID,
-                'fileName' => $timestampedFilename,
+                'fileName' => $filename,
                 'fileID' => uniqid(),
                 'file' => $filepath,
                 'actionBy' => $username, // Now assigning from session
@@ -109,36 +109,41 @@ class FileManager extends Controller
         ]);
     }
 
-    // Delete File
-    public function delete($fileID)
-    {
-        $file = FileUpload::where('fileID', $fileID)->first();
-        
-        if (!$file) {
-            return response()->json(['status' => 'error', 'message' => 'File not found.'], 404);
-        }
+  // FileManager Controller
 
-        Storage::delete('public/' . $file->file); // Delete from storage
-        $file->delete(); // Delete from database
-
-        return response()->json(['status' => 'success', 'message' => 'File deleted successfully.']);
+// Delete File
+public function delete($fileID)
+{
+    $file = FileUpload::where('fileID', $fileID)->first();
+    
+    if (!$file) {
+        return response()->json(['status' => 'error', 'message' => 'File not found.'], 404);
     }
 
-    // Generate Project PDF
-    public function generateProjectPDF($projectID)
-    {
-        try {
-            // Fetch project details
-            $project = showDetails::where('projectID', $projectID)->firstOrFail();
+    // Delete the file from the storage
+    Storage::delete('public/' . $file->file); 
 
-            // Load view into PDF
-            $pdf = Pdf::loadView('pdf.generateProject', compact('project'));
+    // Delete from the database
+    $file->delete();
 
-            // Return PDF download
-            return $pdf->download("Project_{$project->projectTitle}.pdf");
-        } catch (\Exception $e) {
-            \Log::error("PDF Generation Error: " . $e->getMessage());
-            return back()->with('error', 'Failed to generate project PDF.');
-        }
-    }
+    return response()->json(['status' => 'success', 'message' => 'File deleted successfully.']);
 }
+
+    // FileManager Controller
+
+public function downloadFile($filename)
+{
+    // Ensure the file exists in the storage
+    $filePath = storage_path('app/public/project_files/' . $filename);
+    
+    if (!file_exists($filePath)) {
+        return response()->json(['status' => 'error', 'message' => 'File not found or inaccessible.'], 404);
+    }
+    
+    // Return the file as a download response
+    return response()->download($filePath);
+}
+
+
+}
+

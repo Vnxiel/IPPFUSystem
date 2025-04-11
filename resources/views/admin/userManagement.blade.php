@@ -1,4 +1,4 @@
-@extends('main.layout')
+@extends('admin.layout')
 
 @section('title', 'User Management Page')
 

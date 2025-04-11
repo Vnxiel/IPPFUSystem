@@ -11,52 +11,57 @@ use App\Models\ActLogs;
 class SystemAdminManager extends Controller
 {
     public function index(){
-        return view('main.index');
+        return view('systemAdmin.index');
     }
 
     public function userManagement(){
-        return view('main.userManagement'); 
+        return view('systemAdmin.userManagement'); 
     }
 
     public function registerUser(Request $request){
         $validator = Validator::make($request->all(), [ 
+            'ofmis_id' => 'required|unique:users_tbl,ofmis_id',
             'fullname' => 'required|min:3',
             'position' => 'required',
-            'username' => 'required|unique:users,username',
+            'username' => 'required|unique:users_tbl,username',
             'password' => 'required|min:6|confirmed',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(0); 
+            return response()->json([
+                'status' => 0,
+                'errors' => $validator->errors()->all()
+            ]); 
         }
 
         try {
             $user = new User(); 
+            $user->ofmis_id = $request->ofmis_id; // Assign ofmis_id
             $user->role = $request->role; 
             $user->fullname = $request->fullname; 
             $user->position = $request->position;
             $user->username = $request->username;
             $user->password = Hash::make($request->password);
-            $user->role = $request->role; 
             $user->time_frame = 'Permanent';
             $user->save();
 
-        $user->save();
-
-        return response()->json([
-            'status' => 1,
-            'message' => $user->role, 
-        ]);
+            return response()->json([
+                'status' => 1,
+                'message' => $user->role, 
+            ]);
 
         } catch (\Exception $e) {
-            return response()->json(2); 
+            return response()->json([
+                'status' => 2,
+                'message' => 'Server error occurred'
+            ]); 
         }
     }
 
     public function viewActivityLogs(Request $request){
         $activityLogs = ActLogs::all();
 
-        return view('main.activityLogs', [
+        return view('systemAdmin.activityLogs', [
             'activityLogs' => $activityLogs,
         ]);
     }
@@ -64,7 +69,7 @@ class SystemAdminManager extends Controller
     public function viewUserManagement(Request $request)
     {
         $users = User::all(); 
-        return view('main.userManagement', [
+        return view('systemAdmin.userManagement', [
             'users'=> $users
         ]);
     }
