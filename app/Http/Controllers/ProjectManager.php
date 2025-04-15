@@ -547,7 +547,7 @@ class ProjectManager extends Controller
             return response()->json(['error' => 'Invalid project ID'], 400);
         }
     
-        // 🔹 Step 1: Retrieve the project using the primary key `id`
+        // Step 1: Retrieve the project using the primary key `id`
         $project = DB::table('projects')->where('id', $id)->first();
     
         if (!$project) {
@@ -556,69 +556,91 @@ class ProjectManager extends Controller
     
         $project_id = $project->id;
     
-        // 🔹 Step 2: Initialize response with default values
-        $formattedStatuses = [
-            'project_id' => $project_id,
-            'projectStatus' => null,
-            'ongoingStatus' => null
-        ];
-    
-        // 🔹 Step 3: Fetch progress updates
+        // Step 2: Fetch progress updates sorted by date descending
         $statuses = DB::table('project_statuses')
             ->where('project_id', $id)
             ->orderByDesc('date')
+            ->orderByDesc('percentage')
             ->get();
     
         if ($statuses->isEmpty()) {
             return response()->json(['error' => 'No status updates found for this project'], 404);
         }
     
-        // 🔹 Step 4: Set latest status and format ongoing status
+        // Step 3: Prepare response
         $latestStatus = $statuses->first();
-        $formattedStatuses['projectStatus'] = $latestStatus->progress;
     
-        $formattedStatuses['ongoingStatus'] = $statuses->map(function ($status) {
-            return "{$status->progress} - {$status->date} {$status->percentage}";
-        })->toArray();
+        $formattedStatuses = [
+            'project_id' => $project_id,
+            'projectStatus' => $latestStatus->progress,
+            'updatedAt' => $latestStatus->date,
+            'ongoingStatus' => $statuses->map(function ($status) {
+                return [
+                    'progress' => $status->progress,
+                    'percentage' => $status->percentage,
+                    'date' => $status->date,
+                ];
+            })->toArray()
+        ];
     
         return response()->json($formattedStatuses);
     }
-    
+     
     
 
-    public function addStatus(Request $request, $project_id)
-    {
-        $request->validate([
-            'project_id' => 'required|integer|exists:projects,id',
-            'progress' => 'required|string',
-            'percentage' => 'required|numeric|min:0|max:100',
-            'date' => 'required|date',
+    public function addStatus(Request $request)
+{
+    $request->validate([
+        'project_id' => 'required|integer|exists:projects,id',
+        'progress' => 'required|string',
+        'percentage' => 'required|numeric|min:0|max:100',
+        'date' => 'required|date',
+    ]);
+
+    try {
+        // Start transaction
+        DB::beginTransaction();
+
+        // Insert into project_statuses
+        DB::table('project_statuses')->insert([
+            'project_id' => $request->project_id,
+            'progress' => $request->progress,
+            'percentage' => $request->percentage,
+            'date' => $request->date,
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
-    
-        try {
-            DB::table('project_statuses')->insert([
-                'project_id' => $request->project_id,
-                'projectID' => $request->project_id,
-                'progress' => $request->progress,
-                'percentage' => $request->percentage,
-                'date' => $request->date,
-                'created_at' => now(),
+
+        // Build the ongoingStatus string
+        $ongoingStatus = $request->percentage . ' - ' . $request->date;
+
+        // Update the projects table
+        DB::table('projects')
+            ->where('id', $request->project_id)
+            ->update([
+                'projectStatus' => 'Ongoing',
+                'ongoingStatus' => $ongoingStatus,
                 'updated_at' => now()
             ]);
-    
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Project status successfully inserted.'
-            ]);
-        } catch (\Exception $e) {
-            \Log::error("Failed to insert project status: " . $e->getMessage());
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Something went wrong while inserting project status.'
-            ], 500);
-        }
+
+        // Commit transaction
+        DB::commit();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Project status successfully inserted and project updated.'
+        ]);
+    } catch (\Exception $e) {
+        DB::rollBack(); // Roll back transaction
+        \Log::error("Failed to insert project status or update project: " . $e->getMessage());
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Something went wrong while inserting project status or updating project.',
+            'error' => $e->getMessage() // optional, for debugging only
+        ], 500);
     }
-    
+}
+
 
 public function getDropdownOptions(Request $request) {
     // Fetch contractors and municipalities

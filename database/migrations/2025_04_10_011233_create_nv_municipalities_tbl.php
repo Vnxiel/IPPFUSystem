@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nv_municipalities_tbl', function (Blueprint $table) {
+        Schema::create('nv_municipalitie', function (Blueprint $table) {
             $table->id();
             $table->string('municipalityOf');
             $table->timestamps();

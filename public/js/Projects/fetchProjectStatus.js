@@ -36,7 +36,7 @@ $(document).ready(function () {
                 const showAddButton =
                     !(data.projectStatus === "Completed" ||
                       data.projectStatus === "Cancelled" ||
-                      (data.ongoingStatus && data.ongoingStatus[0]?.includes("100")));
+                      (data.ongoingStatus && data.ongoingStatus[0]?.percentage === 100));
 
                 const mainCard = `
                     <div class="card border-primary mb-3 shadow-sm">
@@ -56,6 +56,16 @@ $(document).ready(function () {
 
                 leftCol.innerHTML += mainCard;
 
+                if (showAddButton) {
+                    setTimeout(() => {
+                        document.getElementById("addStatusBtnInside")?.addEventListener("click", function () {
+                            const modalElement = document.getElementById("checkStatusModal");
+                            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                            modalInstance?.hide();
+                        });
+                    }, 0);
+                }
+
                 if (data.projectStatus === "Cancelled") {
                     leftCol.innerHTML += `
                         <div class="card border-danger mb-3 shadow-sm">
@@ -70,18 +80,11 @@ $(document).ready(function () {
                 let progressRows = "";
                 if (Array.isArray(data.ongoingStatus) && data.ongoingStatus.length > 0) {
                     data.ongoingStatus.forEach(item => {
-                        const parts = item.split(" - ");
-                        const name = parts[0] || "Unknown Phase";
-                        const percentDate = parts[1] || "N/A";
-                        const percentParts = percentDate.split(" ");
-                        const percent = percentParts[1] || "N/A";
-                        const date = percentParts[0] || "Unknown Date";
-
                         progressRows += `
                             <tr>
-                                <td>${name}</td>
-                                <td>${percent}%</td>
-                                <td>${date}</td>
+                                <td>${item.progress}</td>
+                                <td>${item.percentage}%</td>
+                                <td>${item.date}</td>
                             </tr>
                         `;
                     });

@@ -178,9 +178,9 @@
                                                     </select>
 
                                                     <!-- Temporary Position Input (Initially Hidden) -->
-                                                    <div id="timeLimitContainer" class="mt-2 fw-bolder" style="display: none;">
-                                                        <label for="timeLimit" class="form-label">End Date for Temporary Position:</label>
-                                                        <input type="datetime-local" id="timeLimit" name="timeLimit" class="form-control">
+                                                    <div id="time_limitContainer" class="mt-2 fw-bolder" style="display: none;">
+                                                        <label for="time_limit" class="form-label">End Date for Temporary Position:</label>
+                                                        <input type="datetime-local" id="time_limit" name="time_limit" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>

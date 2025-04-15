@@ -18,6 +18,6 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::dropIfExists('projectFiles_tbl');
+        Schema::dropIfExists('project_files');
     }
 };

@@ -84,7 +84,7 @@ class SystemAdminManager extends Controller
                 'user' => [
                     'role' => $user->role,
                     'time_frame' => $user->time_frame ?? '',
-                    'timeLimit' => $user->timeLimit ?? ''
+                    'time_limit' => $user->time_limit ?? ''
                 ]
             ]);
         }
@@ -98,7 +98,7 @@ class SystemAdminManager extends Controller
             'id' => 'required|exists:users,id',
             'userRole' => 'required|string',
             'time_frame' => 'string',
-            'timeLimit' => 'nullable|date',
+            'time_limit' => 'nullable|date',
         ]);
     
         if ($validator->fails()) {
@@ -116,9 +116,9 @@ class SystemAdminManager extends Controller
         // Handle time frame
         if ($request->userRole == 'System Admin' || 'Staff' || 'Admin' && $request->time_frame) {
             $user->time_frame = $request->time_frame;
-            $user->timeLimit = $request->time_frame === 'Temporary' ? $request->timeLimit : null;
+            $user->time_limit = $request->time_frame === 'Temporary' ? $request->time_limit : null;
         } else {
-            $user->timeLimit = null;
+            $user->time_limit = null;
         }
     
         $user->save();

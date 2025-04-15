@@ -15,7 +15,7 @@ $(document).ready(function () {
         }
 
         // Set modal fields
-        $("#projectTitleDisplay").text(projectDetails.title || "Untitled Project");
+        $("#projectTitleDisplay").text(projectDetails.projectTitle || "Untitled Project");
         $("#projectID").text(project_id);
 
         // Set default values
@@ -60,6 +60,9 @@ $(document).ready(function () {
 
         // You can send the data to your backend here
         $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
             url: `/project-status/addStatus`,
             method: "POST",
             data: {

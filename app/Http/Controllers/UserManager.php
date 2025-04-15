@@ -78,7 +78,7 @@ class UserManager extends Controller
             'ofmis_id' => 'required|exists:users,ofmis_id',
             'userRole' => 'required|string',
             'time_frame' => 'required|string',
-            'timeLimit' => 'nullable|date',
+            'time_limit' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {
@@ -88,8 +88,8 @@ class UserManager extends Controller
         $user = User::find($request->id);
         $user->role = $request->userRole;
         $user->time_frame = $request->time_frame;
-        if ($request->has('timeLimit')) {
-            $user->timeLimit = $request->timeLimit;
+        if ($request->has('time_limit')) {
+            $user->time_limit = $request->time_limit;
         }
         $user->save();
 

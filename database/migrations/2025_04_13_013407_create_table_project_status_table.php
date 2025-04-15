@@ -8,22 +8,16 @@ return new class extends Migration {
     public function up() {
         Schema::create('project_statuses', function (Blueprint $table) {
             $table->increments('id');  // Auto-incrementing id
-            $table->string('projectID')->unique();
-         
+            $table->string('project_id');
             $table->date('date');
             $table->string('percentage');
             $table->string('progress'); // 0-100%
             $table->timestamps();
 
-            $table->foreign('projectID')
-                ->references('projectID')
-                ->on('projects')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
         });
     }
 
     public function down(): void {
-        Schema::dropIfExists('project_status');
+        Schema::dropIfExists('project_statuses');
     }
 };

@@ -336,6 +336,7 @@
                 $('#otherFundContainer').slideUp(); // Hide input with animation
             }
         });
-    });
+  </script>
+  
 
 @endsection

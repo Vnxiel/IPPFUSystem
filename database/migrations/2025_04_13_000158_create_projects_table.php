@@ -48,7 +48,9 @@ return new class extends Migration
             $table->string('totalExpenditure')->nullable();
             $table->string('ea')->nullable();
             $table->string('contractCost')->nullable();
-            $table->string('otherContractor')->nullable();
+            $table->string('othersContractor')->nullable();
+            $table->string('projectStatus')->nullable();
+            $table->string('ongoingStatus')->nullable();
             $table->boolean('is_hidden')->default(false); // Better as boolean
 
             $table->timestamps();
@@ -57,6 +59,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('projects_tbl');
+        Schema::dropIfExists('projects');
     }
 };

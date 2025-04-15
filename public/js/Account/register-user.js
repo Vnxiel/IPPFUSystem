@@ -88,7 +88,7 @@ $(document).ready(function() {
 const userRoleSelect = document.getElementById('userRole');
 const timeFrameSelect = document.getElementById('time_frame');
 const timeFrameLabel = document.getElementById('timeFrameLabel');
-const timeLimitContainer = document.getElementById('timeLimitContainer');
+const time_limitContainer = document.getElementById('time_limitContainer');
 
 // Event listener for user role selection
 userRoleSelect.addEventListener('change', function() {
@@ -101,7 +101,7 @@ userRoleSelect.addEventListener('change', function() {
         // Hide Time Frame Select and Temporary Date input
         timeFrameLabel.style.display = 'none';
         timeFrameSelect.style.display = 'none';
-        timeLimitContainer.style.display = 'none';
+        time_limitContainer.style.display = 'none';
     }
 });
 
@@ -110,10 +110,10 @@ timeFrameSelect.addEventListener('change', function() {
     // Check if "Temporary" is selected
     if (timeFrameSelect.value === 'Temporary') {
         // Show the Temporary Date input field
-        timeLimitContainer.style.display = 'block';
+        time_limitContainer.style.display = 'block';
     } else {
         // Hide the Temporary Date input field
-        timeLimitContainer.style.display = 'none';
+        time_limitContainer.style.display = 'none';
     }
 });
 
@@ -133,7 +133,7 @@ $(document).ready(function () {
                 if (response.success === 1) {
                     $("#userRole").val(response.user.role);
                     $("#time_frame").val(response.user.time_frame);
-                    $("#timeLimit").val(response.user.timeLimit ? response.user.timeLimit : "");
+                    $("#time_limit").val(response.user.time_limit ? response.user.time_limit : "");
 
                     $("#roleModal").modal("show"); // Show modal
                 } else {
@@ -157,7 +157,7 @@ $(document).ready(function () {
     // Submit role change
     $(document).on("submit", "#userRoleForm", function (e) {
         e.preventDefault();
-        let timeLimitValue = $("#timeLimit").val();
+        let time_limitValue = $("#time_limit").val();
 
         let requestData = {
             id: selectedUserId, // Use the stored user ID
@@ -165,8 +165,8 @@ $(document).ready(function () {
             time_frame: $("#time_frame").val()
         };
 
-        if (timeLimitValue) {
-            requestData.timeLimit = timeLimitValue;
+        if (time_limitValue) {
+            requestData.time_limit = time_limitValue;
         }
 
         $.ajax({
