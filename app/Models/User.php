@@ -12,7 +12,7 @@ class User extends Authenticatable
 {
     
     use Notifiable;
-    protected $table = 'users_tbl'; 
+    protected $table = 'users'; 
     protected $fillable = [
         'ofmis_id', 'fullname', 'position', 'username', 'password', 'role', 'time_frame', 'timeLimit', 'temp_role',  'created_at',
     ];

@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $(document).on("click", "#trashProjectBtn", function() {
+$(document).ready(function () {
+    $(document).on("click", "#trashProjectBtn", function () {
         Swal.fire({
             title: "Are you sure?",
             text: "This project will be archived (hidden). You can restore it later.",
@@ -10,49 +10,39 @@ $(document).ready(function() {
             confirmButtonText: "Yes, archive it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                // Fetch project ID
+                // Get project ID from sessionStorage
+                const project_id = sessionStorage.getItem("project_id");
+
+                if (!project_id) {
+                    console.error("No project ID found in sessionStorage.");
+                    Swal.fire("Error!", "Project ID not found.", "error");
+                    return;
+                }
+
+                console.log("Retrieved Project ID from sessionStorage:", project_id);
+
+                // Archive the project
                 $.ajax({
-                    url: "/get-project-id",
-                    method: "GET",
-                    dataType: "json",
-                    success: function(response) {
-                        if (!response.projectID) {
-                            console.error("No project ID found in session.");
-                            Swal.fire("Error!", "Project ID not found.", "error");
-                            return;
-                        }
-
-                        let projectID = response.projectID;
-                        console.log("Retrieved Project ID:", projectID);
-
-                        // Archive the project
-                        $.ajax({
-                            url: `/projects/trash/${projectID}`,
-                            method: "PUT",
-                            contentType: "application/json",
-                            data: JSON.stringify({ is_hidden: 1 }),
-                            headers: {
-                                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                            },
-                            success: function(data) {
-                                if (data.status === "success") {
-                                    Swal.fire("Archived!", "The project has been hidden.", "success")
-                                        .then(() => {
-                                            window.location.href = "/main/trash"; // Ensure correct Laravel route
-                                        });
-                                } else {
-                                    Swal.fire("Error!", data.message || "Something went wrong!", "error");
-                                }
-                            },
-                            error: function(xhr) {
-                                console.error("Error hiding project:", xhr.responseText);
-                                Swal.fire("Error!", "Failed to archive the project. Please try again.", "error");
-                            }
-                        });
+                    url: `/projects/trash/${project_id}`,
+                    method: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify({ is_hidden: 1 }),
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                     },
-                    error: function(xhr) {
-                        console.error("Project ID Fetch Error:", xhr.responseText);
-                        Swal.fire("Error!", "Failed to retrieve project ID. Please try again.", "error");
+                    success: function (data) {
+                        if (data.status === "success") {
+                            Swal.fire("Archived!", "The project has been hidden.", "success")
+                                .then(() => {
+                                    window.location.href = "/main/trash";
+                                });
+                        } else {
+                            Swal.fire("Error!", data.message || "Something went wrong!", "error");
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("Error hiding project:", xhr.responseText);
+                        Swal.fire("Error!", "Failed to archive the project. Please try again.", "error");
                     }
                 });
             }

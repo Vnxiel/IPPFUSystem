@@ -5,22 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FileUpload extends Model
+class ProjectFile extends Model
 {
     use HasFactory;
 
-    protected $table = 'projectfiles_tbl'; // Ensure it matches your database table name
+    protected $table = 'project_files'; // Matches the table created in migration
 
     protected $fillable = [
-        'projectID',
+        'project_id',    // foreign key referencing projects
         'fileName',
         'fileID',
-       
         'actionBy',
     ];
 
     public function project()
     {
-        return $this->belongsTo(showDetails::class, 'projectID');
+        return $this->belongsTo(Project::class, 'project_id');
     }
 }

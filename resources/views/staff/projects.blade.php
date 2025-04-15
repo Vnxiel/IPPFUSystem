@@ -300,7 +300,7 @@
             });
 
             document.addEventListener("DOMContentLoaded", function () {
-                fetch("{{ route('projects.showDetails') }}")
+                fetch("{{ route('projects.ProjectDetails') }}")
                     .then(response => response.json())
                     .then(data => {
                         console.log("Projects Data:", data); // Debugging
@@ -389,75 +389,75 @@
                         });
 
                         function loadProjects() {
-    fetch("{{ route('projects.showDetails') }}")
-        .then(response => response.json())
-        .then(data => {
-            console.log("API Response:", data);
+                        fetch("{{ route('projects.ProjectDetails') }}")
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("API Response:", data);
 
-            if (!data || typeof data !== "object" || !Array.isArray(data.projects)) {
-                console.error("Invalid API Response Structure:", data);
-                showError("No valid projects found.");
-                return;
-            }
+                                if (!data || typeof data !== "object" || !Array.isArray(data.projects)) {
+                                    console.error("Invalid API Response Structure:", data);
+                                    showError("No valid projects found.");
+                                    return;
+                                }
 
-            let projects = data.projects.map(project => [
-                project.projectTitle || "N/A",
-                project.projectLoc || "N/A",
-                project.projectStatus || "N/A",
-                project.contractAmount
-                    ? `₱${parseFloat(project.contractAmount).toLocaleString()}`
-                    : "N/A",
-                project.projectContractor || "N/A",
-                project.projectContractDays
-                    ? `${project.projectContractDays} days`
-                    : "N/A",
-                `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.projectID}">Overview</button>`
-            ]);
+                                let projects = data.projects.map(project => [
+                                    project.projectTitle || "N/A",
+                                    project.projectLoc || "N/A",
+                                    project.projectStatus || "N/A",
+                                    project.contractAmount
+                                        ? `₱${parseFloat(project.contractAmount).toLocaleString()}`
+                                        : "N/A",
+                                    project.projectContractor || "N/A",
+                                    project.projectContractDays
+                                        ? `${project.projectContractDays} days`
+                                        : "N/A",
+                                    `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.projectID}">Overview</button>`
+                                ]);
 
-            console.log("Processed Data:", projects);
+                                console.log("Processed Data:", projects);
 
-            // Destroy existing DataTable before reloading
-            if ($.fn.DataTable.isDataTable("#projects")) {
-                $('#projects').DataTable().clear().destroy();
-                console.log("Existing DataTable destroyed.");
-            }
+                                // Destroy existing DataTable before reloading
+                                if ($.fn.DataTable.isDataTable("#projects")) {
+                                    $('#projects').DataTable().clear().destroy();
+                                    console.log("Existing DataTable destroyed.");
+                                }
 
-            // Initialize DataTable with updated settings
-            $('#projects').DataTable({
-                data: projects,
-                columns: [
-                    { title: "Project Title" },
-                    { title: "Location" },
-                    { title: "Status" },
-                    { title: "Contract Amount" },
-                    { title: "Contractor" },
-                    { title: "Duration" },
-                    { title: "Action", orderable: false }
-                ],
-                aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-                pageLength: 10,
-                order: [[3, 'desc']], // Sorting based on the 4th column (Contract Amount)
-                scrollX: true,  // Enables horizontal scrolling
-                responsive: true, // Ensures responsiveness
-                autoWidth: false,   // Disable auto width setting
-                columnDefs: [
-                    {
-                        targets: '_all',   // Apply this to all columns
-                        orderable: true     // Ensure columns can still be sorted
+                                // Initialize DataTable with updated settings
+                                $('#projects').DataTable({
+                                    data: projects,
+                                    columns: [
+                                        { title: "Project Title" },
+                                        { title: "Location" },
+                                        { title: "Status" },
+                                        { title: "Contract Amount" },
+                                        { title: "Contractor" },
+                                        { title: "Duration" },
+                                        { title: "Action", orderable: false }
+                                    ],
+                                    aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+                                    pageLength: 10,
+                                    order: [[3, 'desc']], // Sorting based on the 4th column (Contract Amount)
+                                    scrollX: true,  // Enables horizontal scrolling
+                                    responsive: true, // Ensures responsiveness
+                                    autoWidth: false,   // Disable auto width setting
+                                    columnDefs: [
+                                        {
+                                            targets: '_all',   // Apply this to all columns
+                                            orderable: true     // Ensure columns can still be sorted
+                                        }
+                                    ],
+                                    fixedColumns: {
+                                        leftColumns: 1  // Freezes the first column
+                                    }
+                                });
+
+                                console.log("DataTable Reloaded Successfully!");
+                            })
+                            .catch(error => {
+                                console.error("Fetch Error:", error);
+                                showError("Failed to load project data.");
+                            });
                     }
-                ],
-                fixedColumns: {
-                    leftColumns: 1  // Freezes the first column
-                }
-            });
-
-            console.log("DataTable Reloaded Successfully!");
-        })
-        .catch(error => {
-            console.error("Fetch Error:", error);
-            showError("Failed to load project data.");
-        });
-}
 
 
 // Show an error message inside the table if data fetching fails

@@ -312,7 +312,7 @@ function fetchProjectSummary() {
 //  Handle Overview Button Click
 document.addEventListener("click", function (e) {
     if (e.target.classList.contains("overview-btn")) {
-        let projectID = e.target.getAttribute("data-id");
+        let project_id = e.target.getAttribute("data-id");
 
         //  Store projectID in session via AJAX
         fetch("/store-project-id", {
@@ -321,7 +321,7 @@ document.addEventListener("click", function (e) {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") // Laravel CSRF token
             },
-            body: JSON.stringify({ projectID })
+            body: JSON.stringify({ project_id })
         })
         .then(response => response.json())
         .then(data => {

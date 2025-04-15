@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-use App\Models\ActLogs;
+use App\Models\ActivityLog;
 
 class SystemAdminManager extends Controller
 {
@@ -20,10 +20,10 @@ class SystemAdminManager extends Controller
 
     public function registerUser(Request $request){
         $validator = Validator::make($request->all(), [ 
-            'ofmis_id' => 'required|unique:users_tbl,ofmis_id',
+            'ofmis_id' => 'required|unique:users,ofmis_id',
             'fullname' => 'required|min:3',
             'position' => 'required',
-            'username' => 'required|unique:users_tbl,username',
+            'username' => 'required|unique:users,username',
             'password' => 'required|min:6|confirmed',
         ]);
 
@@ -59,7 +59,7 @@ class SystemAdminManager extends Controller
     }
 
     public function viewActivityLogs(Request $request){
-        $activityLogs = ActLogs::all();
+        $activityLogs = activityLog::all();
 
         return view('systemAdmin.activityLogs', [
             'activityLogs' => $activityLogs,
@@ -95,7 +95,7 @@ class SystemAdminManager extends Controller
     public function changeRole(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:users_tbl,id',
+            'id' => 'required|exists:users,id',
             'userRole' => 'required|string',
             'time_frame' => 'string',
             'timeLimit' => 'nullable|date',

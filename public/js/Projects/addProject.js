@@ -37,12 +37,15 @@ $(document).ready(function() {
                         text: response.message,
                         showConfirmButton: false,
                         timer: 2000,
-                    }).then(function() {
-                        $("#addNewProjectModal").modal("hide");
-                        $("#addProjectForm")[0].reset();
-                        loadProjects(); // Reload projects without refreshing
+                        didClose: function () {
+                            $("#addNewProjectModal").modal("hide");
+                            $("#ProjectForm")[0].reset();
+                            loadProjects(); // ✅ Reload projects here
+                        }
                     });
-                } else if (response.errors) {
+                }
+                
+                 else if (response.errors) {
                     let errorMessages = "<ul class='text-left'>";
                     $.each(response.errors, function(field, errors) {
                         errorMessages += `<li><strong>${field.replace(/_/g, " ")}:</strong> ${errors.join(", ")}</li>`;

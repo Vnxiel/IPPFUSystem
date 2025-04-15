@@ -40,7 +40,7 @@
                             <div style="color:#006400;"> Login to Access (DMSv2.1.0.0.413)</div>
                         </div>
                         <div class="card-body">
-                            <form id="loginForm">
+                            <form id="loginForm"  method="POST" action="{{ route('login') }}">
                                 @csrf
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
