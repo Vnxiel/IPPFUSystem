@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('action');
-            $table->string('username');
+            $table->string('ofmis_id')->nullable();
+            $table->foreign('ofmis_id')->references('ofmis_id')->on('users_tbl')->onDelete('set null'); // Fixed Reference
             $table->string('performedBy');
+            $table->string('role');
+            $table->string('action');
             $table->timestamps();
         });
     }

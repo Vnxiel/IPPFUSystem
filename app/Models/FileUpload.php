@@ -15,7 +15,7 @@ class FileUpload extends Model
         'projectID',
         'fileName',
         'fileID',
-        'file',
+       
         'actionBy',
     ];
 
