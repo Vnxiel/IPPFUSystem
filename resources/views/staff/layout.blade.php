@@ -56,21 +56,17 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('staff.trash') }}">Trash</a></li>
                                     <li><a class="dropdown-item" href="{{ route('staff.activityLogs') }}">Activity Logs</a></li>
                                 </ul>
                             </li>
                         </ul>
                         <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
                             <div class="dropdown">
-                                <?php
-                                    // ✅ Get username from session
-                                    $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
-                                    ?>
+                    
 
                                     <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                                     data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                    <span class="fa fa-user me-1"></span> <?php echo htmlspecialchars($username); ?>
+                                    <span class="fa fa-user me-1"></span>
                                     </a>
                                 <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownMenuButton">
                                     <li><a class="dropdown-item" href="javascript:void(0);" onclick="logout()">Sign out</a></li>

@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('ofmis_id')->nullable();
-            $table->foreign('ofmis_id')->references('ofmis_id')->on('users_tbl')->onDelete('set null'); // Fixed Reference
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('ofmis_id')->nullable(); // Optional OFMIS id reference
             $table->string('performedBy');
             $table->string('role');
             $table->string('action');
             $table->timestamps();
         });
+        
     }
 
     /**

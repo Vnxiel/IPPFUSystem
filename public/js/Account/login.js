@@ -9,9 +9,9 @@ $(document).ready(function() {
             method: "POST",
             data: $(this).serialize(),
             success: function(response) {
-                if(response == 1){
+                // Check the role in the response
+                if (response.role === 'System Admin') {
                     console.log("Redirecting to:", "/systemAdmin/index"); // Debugging
-
                     Swal.fire({
                         icon: "success",
                         title: "Logging in!",
@@ -20,43 +20,29 @@ $(document).ready(function() {
                     }).then(function(){
                         window.location = "/systemAdmin/index";
                     });
-                }else if(response.message){
-                    var errorMessages = Object.values(response.message).join('<br>');
+                } else if (response.role === 'Admin') {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Login validation failed!',
+                        icon: "success",
+                        title: "Logging in!",
                         showConfirmButton: false,
-                        timer: 3000,
+                        timer: 2000,
+                    }).then(function(){
+                        window.location = "/admin/index"; // Redirect to admin page
                     });
-                }else if(response == 401){
+                } else if (response.role === 'Staff') {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Logging in!",
+                        showConfirmButton: false,
+                        timer: 2000,
+                    }).then(function(){
+                        window.location = "/staff/index"; // Redirect to staff page
+                    });
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Login failed!',
-                        text: 'Invalid username or password!',
-                        showConfirmButton: false,
-                        timer: 3000,
-                    });
-                }else if(response == 404){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login failed!',
-                        text: 'Invalid username or password!',
-                        showConfirmButton: false,
-                        timer: 3000,
-                    });
-                }else if(response == 402){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login failed!',
-                        text: 'Your account was deactivated, please contact the administrator thank you!',
-                        showConfirmButton: false,
-                        timer: 3000,
-                    });
-                }else{
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Something went wrong!',
-                        text: 'Please try again later!',
+                        text: 'Unknown role or invalid credentials!',
                         showConfirmButton: false,
                         timer: 3000,
                     });
@@ -65,7 +51,6 @@ $(document).ready(function() {
             error: function(xhr) {
                 console.log(xhr.responseJSON);
             }
-
         });
     });
 });

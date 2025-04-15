@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\ActLogs; 
+use App\Models\ActivityLog; 
 use Illuminate\Http\Request;
 
 class ActivityLogs extends Controller
@@ -19,20 +19,21 @@ class ActivityLogs extends Controller
         ];
 
         // Store the activity log into the database
-        return ActLogs::create($activityLogData);
+        return activityLog::create($activityLogData);
     }
 
     public function index()
     {
         // Get all activity logs and return them as JSON
-        $logs = ActLogs::all();
+        $logs = activityLog::all();
         return response()->json($logs);
     }
 
-    public function userAction($ofmis_id, $performedBy, $role, $action)
+    public function userAction($user_id, $ofmis_id, $performedBy, $role, $action)
     {
         // Store activity log with the data passed into the method
         $logData = [
+            'user_id' => $user_id,
             'ofmis_id' => $ofmis_id,
             'performedBy' => $performedBy,
             'role' => $role,
@@ -40,6 +41,6 @@ class ActivityLogs extends Controller
         ];
 
         // Save the log entry in the ActivityLog model
-        return ActLogs::create($logData);
+        return ActivityLog::create($logData);
     }
 }

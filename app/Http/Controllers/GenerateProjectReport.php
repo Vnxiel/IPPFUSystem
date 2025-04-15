@@ -3,21 +3,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\showDetails; // Ensure you import the correct model
+use App\Models\Project; // Ensure you import the correct model
 use Illuminate\Support\Facades\Log;
 
 class GenerateProjectReport extends Controller
 {
-    public function generateProjectPDF($projectID)
+    public function generateProjectPDF($project_id)
 {
     try {
-        Log::info("Generating PDF for Project ID: " . $projectID);
+        Log::info("Generating PDF for Project ID: " . $project_id);
 
         // Fetch project details
-        $project = showDetails::where('projectID', $projectID)->first();
+        $project = Project::where('id', $project_id)->first();
 
         if (!$project) {
-            Log::error("Project not found with ID: " . $projectID);
+            Log::error("Project not found with ID: " . $project_id);
             return back()->with('error', 'Project not found.');
         }
 

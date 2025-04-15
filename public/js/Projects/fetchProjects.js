@@ -1,39 +1,38 @@
 function fetchProjectDetails() {
+    
+    const project_id = sessionStorage.getItem("project_id");
+
+    // Fetch project details directly using stored ID
     $.ajax({
-        url: "/get-project-id",
+        url: `/projects/getProject/${project_id}`,
         method: "GET",
         dataType: "json",
-        success: function(response) {
-            if (!response.projectID) {
-                console.error("No project ID found in session. Redirecting...");
-                window.location.href = "/main/index"; // Ensure correct Laravel route
-                return;
+        success: function(data) {
+            if (data.status === "success") {
+                // Store project details in sessionStorage
+                sessionStorage.setItem("projectDetails", JSON.stringify(data.project));
+                
+                // Optionally populate UI directly
+                updateProjectUI(data.project); 
+                updateProjectForm(data.project); 
+            } else {
+                console.error("Error fetching project details:", data.message);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to load project details. Please try again.",
+                    confirmButtonText: "OK"
+                });
             }
-
-            let projectID = response.projectID;
-            console.log("Project ID:", projectID);
-
-            // Fetch project details
-            $.ajax({
-                url: `/projects/getProject/${projectID}`,
-                method: "GET",
-                dataType: "json",
-                success: function(data) {
-                    if (data.status === "success") {
-                        console.log("Fetched Project Data:", data.project);
-                        updateProjectUI(data.project); // Populate UI
-                        updateProjectForm(data.project); // Populate form in modal
-                    } else {
-                        console.error("Error fetching project details:", data.message);
-                    }
-                },
-                error: function(xhr) {
-                    console.error("Error fetching project data:", xhr.responseText);
-                }
-            });
         },
         error: function(xhr) {
-            console.error("Error fetching project ID:", xhr.responseText);
+            console.error("Error fetching project data:", xhr.responseText);
+            Swal.fire({
+                icon: "error",
+                title: "Request Failed",
+                text: "Could not connect to the server. Please try again later.",
+                confirmButtonText: "OK"
+            });
         }
     });
 }

@@ -1,13 +1,10 @@
 
-document.addEventListener("DOMContentLoaded", function () {
-    fetchRecentProjects(); //  Fetch projects table data
-});
 
 
 $(document).ready(function () {
     function fetchRecentProjects() {
         $.ajax({
-            url: "/projects/showDetails",
+            url: "/projects/ProjectDetails",
             type: "GET",
             dataType: "json",
             success: function (data) {
@@ -22,15 +19,22 @@ $(document).ready(function () {
                         return;
                     }
 
-                    let projects = data.projects.map(project => [
-                        project.projectTitle || "N/A",
-                        project.projectLoc || "N/A",
-                        project.projectStatus || "N/A",
-                        `₱${parseFloat(project.contractAmount || 0).toLocaleString()}`,
-                        project.projectContractor || "N/A",
-                        project.projectContractDays ? `${project.projectContractDays} days` : "N/A",
-                        `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.projectID}">Overview</button>`
-                    ]);
+                    let projects = data.projects.map(project => {
+                        let contractor = (project.projectContractor && project.projectContractor.toLowerCase() === 'others')
+                            ? (project.othersContractor || "N/A")
+                            : (project.projectContractor || "N/A");
+                    
+                        return [
+                            project.projectTitle || "N/A",
+                            project.projectLoc || "N/A",
+                            project.projectStatus || "N/A",
+                            `₱${parseFloat(project.contractAmount || 0).toLocaleString()}`,
+                            contractor,
+                            project.projectContractDays ? `${project.projectContractDays} days` : "N/A",
+                            `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.id}">Overview</button>`
+                        ];
+                    });
+                    
 
                     console.log("Processed Data for Table:", projects);
 
@@ -87,92 +91,131 @@ $(document).ready(function () {
 });
 
 
-$(document).ready(function() {
-    // Initially hide the table
-    $("#projects-container").hide(); 
+// Initially hide the table
+$("#projects-container").hide(); 
 
-    // Load projects and initialize DataTable
-    loadProjects();
+// Load projects and initialize DataTable
+loadProjects();
+
+//  Handle Overview Button Click
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("overview-btn")) {
+        let project_id = e.target.getAttribute("data-id");
+
+        //  Store projectID in session via AJAX
+        fetch("/store-project-id", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") // Laravel CSRF token
+            },
+            body: JSON.stringify({id: project_id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Project ID stored successfully, redirecting...");
+
+                //  Redirect to main.overview (correct Laravel route)
+                window.location.href = "/systemAdmin/overview";
+            } else {
+                console.error("Failed to store project ID:", data);
+            }
+        })
+        .catch(error => console.error("Error storing project ID:", error));
+    }
 });
 
 function loadProjects() {
-    // Show loading message
     $("#loading-message").text("Fetching projects...").show();
     
     $.ajax({
-        url: "/projects/showDetails", // Matches Laravel route
+        url: "/projects/getAllProjects",
         method: "GET",
         dataType: "json",
         success: function(response) {
             console.log("API Response:", response);
             
-            // Validate response structure
             if (!response || typeof response !== "object" || !Array.isArray(response.projects) || response.projects.length === 0) {
                 console.error("Invalid API Response Structure:", response);
                 showError("No valid projects found.");
                 return;
             }
 
-            let projects = response.projects.map(project => [
-                project.projectTitle || "N/A",
-                project.projectLoc || "N/A",
-                project.projectStatus || "N/A",
-                project.contractAmount
-                    ? `₱${parseFloat(project.contractAmount).toLocaleString()}`
-                    : "N/A",
-                project.projectContractor || "N/A",
-                project.projectContractDays
-                    ? `${project.projectContractDays} days`
-                    : "N/A",
-                `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.projectID}">
-                    Overview
-                </button>`
-            ]);
+            let projects = response.projects.map(project => {
+                // Handle 'Others' contractor
+                let contractor = (project.projectContractor && project.projectContractor.toLowerCase() === 'others')
+                    ? (project.othersContractor || "N/A")
+                    : (project.projectContractor || "N/A");
 
-            console.log("Processed Data:", projects);
+                return [
+                    project.projectTitle || "N/A",
+                    project.projectLoc || "N/A",
+                    project.projectStatus || "N/A",
+                    project.contractAmount
+                        ? `₱${parseFloat(project.contractAmount).toLocaleString()}`
+                        : "N/A",
+                    contractor,
+                    project.projectContractDays
+                        ? `${project.projectContractDays} days`
+                        : "N/A",
+                    `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.id}">
+                        Overview
+                    </button>`
+                ];
+            });
 
-            // Destroy existing DataTable before reloading
             if ($.fn.DataTable.isDataTable("#projects")) {
                 $('#projects').DataTable().clear().destroy();
                 console.log("Existing DataTable destroyed.");
             }
 
-            // Initialize DataTable with updated settings
-            $('#projects').DataTable({
-                data: projects,
-                columns: [
-                    { title: "Project Title" },
-                    { title: "Location" },
-                    { title: "Status" },
-                    { title: "Contract Amount" },
-                    { title: "Contractor" },
-                    { title: "Duration" },
-                    { title: "Action", orderable: false }
-                ],
-                aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-                pageLength: 10,
-                order: [[3, 'desc']], // Sorting based on Contract Amount
-                scrollX: true,  // Enables horizontal scrolling
-                responsive: true, // Ensures responsiveness
-                autoWidth: false, // Disable auto width setting
-                columnDefs: [
-                    {
-                        targets: '_all',
-                        orderable: true // Allow sorting on all columns
+            $(document).ready(function () {
+                $('#projects').DataTable({
+                    data: projects,
+                    columns: [
+                        { title: "Project Title" },
+                        { title: "Location" },
+                        { title: "Status" },
+                        { title: "Contract Amount" },
+                        { title: "Contractor" },
+                        { title: "Duration" },
+                        { title: "Action", orderable: false }
+                    ],
+                    responsive: true,
+                    scrollX: true,
+                    paging: true,
+                    searching: true,
+                    autoWidth: false,
+                    aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+                    pageLength: 10,
+                    order: [[3, 'desc']],
+                    processing: true,
+                    columnDefs: [
+                        { targets: '_all', orderable: true }
+                    ],
+                    fixedColumns: {
+                        leftColumns: 1
                     }
-                ],
-                fixedColumns: {
-                    leftColumns: 1 // Freezes the first column
-                }
+                });
+
+                // Bind click event to Overview buttons
+                $(document).on('click', '.overview-btn', function () {
+                    const projectId = $(this).data('id');
+                    sessionStorage.setItem('project_id', projectId);
+                    console.log("Project ID set in sessionStorage:", projectId);
+
+                    // Optional: refresh files table when button is clicked
+                    if ($.fn.DataTable.isDataTable('#projectFiles')) {
+                        $('#projectFiles').DataTable().ajax.reload();
+                    }
+                });
             });
 
-            console.log("DataTable Reloaded Successfully!");
-
-            // Hide loading message and show table
             $("#loading-message").hide();
             $("#projects-container").show();
         },
-        error: function(xhr, status, error) {
+        error: function(xhr) {
             console.error("AJAX Error:", xhr.responseText);
             let errorMessage = "Failed to load project data.";
 
@@ -193,135 +236,123 @@ function showError(message) {
     $("#projects-container").hide(); // Ensure table remains hidden if there's an error
 }
 
-$(document).ready(function() {
-    $('#userList').DataTable({
-        "aLengthMenu": [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-        "pageLength": 10,
-        "order": [[3, 'desc']],  // Sorting based on the 4th column (Appropriation)
-        "scrollX": true,  // Enables horizontal scrolling
-        "responsive": true, // Ensures responsiveness
-        autoWidth: false,   // Disable the auto width setting to make it flexible
-        "columnDefs": [
-            {
-                targets: '_all',   // Apply this to all columns
-                orderable: true     // Ensure columns can still be ordered
-            }
-        ],
-        "fixedColumns": {
-            leftColumns: 1  // Freezes the first column
-        }
-    });
-});
+
+
 
 $(document).ready(function() {
-    let table = $('#trashList').DataTable();
-
-    // Function to Fetch Trashed Projects via AJAX
-    function fetchTrashedProjects() {
-        $.ajax({
-            url: "/projects/fetch-trash", // Update with your route
-            method: "GET",
-            dataType: "json",
-            success: function(response) {
-                if (response.status === "success") {
-                    let projects = response.projects;
-                    table.clear(); // Clear existing rows
-
-                    if (projects.length === 0) {
-                        table.row.add([
-                            'No trashed projects found.',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            ''
-                        ]).draw();
-                    } else {
-                        projects.forEach(function(project) {
-                            table.row.add([
-                                project.projectTitle,
-                                project.projectLoc,
-                                project.projectStatus,
-                                `₱${parseFloat(project.contractAmount).toLocaleString()}`,
-                                project.projectContractor,
-                                `${project.projectContractDays} calendar days`,
-                                `<td>
-                                    <button class="btn btn-primary btn-sm restore-btn" data-id="${project.projectID}">Restore</button>
-                                </td>`
-                            ]).draw();
-                        });
-                    }
-                } else {
-                    Swal.fire("Error!", response.message, "error");
-                }
-            },
-            error: function() {
-                Swal.fire("Error!", "Failed to fetch trashed projects. Please try again.", "error");
-            }
-        });
+$('#userList').DataTable({
+"aLengthMenu": [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+"pageLength": 10,
+"order": [[3, 'desc']],  // Sorting based on the 4th column (Appropriation)
+"scrollX": true,  // Enables horizontal scrolling
+"responsive": true, // Ensures responsiveness
+autoWidth: false,   // Disable the auto width setting to make it flexible
+"columnDefs": [
+    {
+        targets: '_all',   // Apply this to all columns
+        orderable: true     // Ensure columns can still be ordered
     }
-  
+],
+"fixedColumns": {
+    leftColumns: 1  // Freezes the first column
+}
+});
+});
+
+window.fetchTrashedProjects = function() {
+$.ajax({
+url: "/projects/fetch-trash",
+method: "GET",
+dataType: "json",
+success: function(response) {
+    let table = $('#trashList').DataTable();
+    if (response.status === "success") {
+        let projects = response.projects;
+        table.clear(); // Clear existing rows
+
+        if (projects.length === 0) {
+            table.row.add([
+                'No trashed projects found.', '', '', '', '', '', ''
+            ]).draw();
+        } else {
+            projects.forEach(function(project) {
+                table.row.add([
+                    project.projectTitle,
+                    project.projectLoc,
+                    project.projectStatus,
+                    `₱${parseFloat(project.contractAmount).toLocaleString()}`,
+                    project.projectContractor,
+                    `${project.projectContractDays} calendar days`,
+                    `<button class="btn btn-primary btn-sm restore-btn" data-id="${project.projectID}">Restore</button>`
+                ]).draw();
+            });
+        }
+    } else {
+        Swal.fire("Error!", response.message, "error");
+    }
+},
+error: function() {
+    Swal.fire("Error!", "Failed to fetch trashed projects. Please try again.", "error");
+}
+});
+};
+
+$(document).ready(function() {
+fetchTrashedProjects(); // Call it here if needed
 });
 
 
 
-
 $(document).ready(function() {
-    $('#activityLogs').DataTable({
-        "aLengthMenu": [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-        "pageLength": 10,
-        "order": [[3, 'desc']],  // Sorting based on the 4th column (Appropriation)
-        "scrollX": true,  // Enables horizontal scrolling
-        "responsive": true, // Ensures responsiveness
-        autoWidth: false,   // Disable the auto width setting to make it flexible
-        "columnDefs": [
-            {
-                targets: '_all',   // Apply this to all columns
-                orderable: true     // Ensure columns can still be ordered
-            }
-        ],
-        "fixedColumns": {
-            leftColumns: 1  // Freezes the first column
-        }
-    });
+$('#activityLogs').DataTable({
+"aLengthMenu": [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+"pageLength": 10,
+"order": [[3, 'desc']],  // Sorting based on the 4th column (Appropriation)
+"scrollX": true,  // Enables horizontal scrolling
+"responsive": true, // Ensures responsiveness
+autoWidth: false,   // Disable the auto width setting to make it flexible
+"columnDefs": [
+    {
+        targets: '_all',   // Apply this to all columns
+        orderable: true     // Ensure columns can still be ordered
+    }
+],
+"fixedColumns": {
+    leftColumns: 1  // Freezes the first column
+}
+});
 });
 
 $(document).ready(function () {
     let projectFilesTable = $('#projectFiles').DataTable({
         "aLengthMenu": [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
         "pageLength": 10,
-        "order": [[4, 'desc']],  // Sorting based on the 5th column (Upload Date)
-        "scrollX": true,  
-        "responsive": true, 
-        "autoWidth": false,  
-        "columnDefs": [
-            { targets: '_all', orderable: true }
-        ],
-        "fixedColumns": {
-            leftColumns: 1 
-        },
-        "processing": true,  // Show loading indicator
-        "serverSide": false, // Fetch data manually
+        "order": [[3, 'desc']], // Sorting based on upload date
+        "scrollX": true,
+        "responsive": true,
+        "autoWidth": false,
+        "columnDefs": [{ targets: '_all', orderable: true }],
+        "fixedColumns": { leftColumns: 1 },
+        "processing": true,
+        "serverSide": false,
         "ajax": function (data, callback, settings) {
-            fetch("/get-project-id", { method: "GET", headers: { "Accept": "application/json" } })
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.projectID) {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "No project ID was found in the session. Please try again.",
-                            confirmButtonColor: "#d33"
-                        });
-                        return;
-                    }
+            // Get project ID from sessionStorage
+            let project_id = sessionStorage.getItem("project_id");
 
-                    let projectID = data.projectID;
-                    console.log("Fetching files for Project ID:", projectID);
+            if (!project_id) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "No project ID was found in the session. Please select a project first.",
+                    confirmButtonColor: "#d33"
+                });
+                return;
+            }
 
-                    return fetch(`/files/${projectID}`);
-                })
+            console.log("Fetching files for Project ID:", project_id);
+
+            // Fetch the project files using the project ID
+            fetch(`/files/${project_id}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log("API Response:", data);
@@ -336,7 +367,6 @@ $(document).ready(function () {
                         return;
                     }
 
-                    // Convert fetched data into DataTables format
                     let filesData = data.files.map(file => {
                         let fileType = file.fileName.split('.').pop().toUpperCase();
                         let uploadDate = file.created_at ? new Date(file.created_at).toLocaleDateString() : "N/A";
@@ -346,16 +376,15 @@ $(document).ready(function () {
                             fileType,
                             file.actionBy || "Unknown",
                             uploadDate,
-                            `<a href="/storage/${file.fileID}" download class="btn btn-success btn-sm">
+                            `<button onclick="downloadFile('${file.fileName}')" class="btn btn-success btn-sm">
                                 <i class="fa fa-download"></i>
-                            </a>
-                            <button onclick="deleteFile('${file.id}')" class="btn btn-danger btn-sm">
+                            </button>
+                            <button onclick="deleteFile('${file.fileID}')" class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i>
                             </button>`
                         ];
                     });
 
-                    // Pass the formatted data to DataTables
                     callback({ data: filesData });
                 })
                 .catch(error => {

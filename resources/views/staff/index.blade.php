@@ -316,7 +316,7 @@ function fetchProjectSummary() {
 }
 
 function fetchProjects() {
-    fetch("/projects/showDetails")
+    fetch("/projects/ProjectDetails")
         .then(response => response.json())
         .then(data => {
             console.log("Fetched Projects:", data);

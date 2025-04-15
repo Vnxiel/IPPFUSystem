@@ -10,24 +10,25 @@ class SessionController extends Controller
     public function storeProjectID(Request $request)
     {
         $request->validate([
-            'projectID' => 'required'
+            'id' => 'required'
         ]);
 
-        Session::put('projectID', $request->projectID);
+        Session::put('project_id', $request->id);
 
-        return response()->json(['success' => true]); // Ensure response is JSON
+        return response()->json(['success' => true]);
     }
 
     public function getProjectID()
     {
-        $projectID = Session::get('projectID');
+        // Corrected key name here
+        $project_id = Session::get('project_id');
 
-        if (!$projectID) {
+        if (!$project_id) {
             return response()->json(['error' => 'No project ID found'], 404);
         }
 
-        return response()->json(['projectID' => $projectID]);
+        return response()->json(['project_id' => $project_id]);
     }
-
+    
 }
 

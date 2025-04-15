@@ -43,6 +43,30 @@
             </div>
             <hr class="mt-2">
         </div>
+            <!-- Action Buttons -->
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ProjectFundUtilization" title="Add Fund Utilization Details">
+                    <span class="fa fa-plus"></span>
+                </button>
+                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
+                    <i class="fa fa-upload"></i>
+                </button>
+                <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#projectModal" title="Edit Project Details">
+                    <i class="fa fa-edit"></i>
+                </button>   
+                <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#generateProjectModal" title="Generate/Download Report">
+                    <i class="fa fa-download"></i>
+                </button>
+                <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#trashModal" title="Temporary Delete Project">
+                    <i class="fa fa-trash"></i>
+                </button>
+                <button type="button" id="checkStatusBtn" class="btn btn-secondary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#checkStatusModal">
+                Check Status
+            </button>
+            </div>
+        </div>
+        <hr class="mt-2">
+    </div>
 
         <div class="row">
             <div class="col-md-12">

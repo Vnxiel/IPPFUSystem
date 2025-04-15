@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
-use App\Models\ActLogs;
+use App\Models\ActivityLog;
 use App\Http\Controllers\ActivityLogs;
+use App\Models\Contractor;
 
 class UserManager extends Controller
 {
@@ -37,7 +38,7 @@ class UserManager extends Controller
             'ofmis_id' => 'required', 
             'fullname' => 'required|min:3',
             'position' => 'required',
-            'username' => 'required|unique:users_tbl,username',
+            'username' => 'required|unique:users,username',
             'password' => 'required|min:6|confirmed',
         ]);
 
@@ -102,55 +103,61 @@ class UserManager extends Controller
         return response()->json(1); 
     }
 
-    public function userLogin(Request $request){
+    public function userLogin(Request $request) {
         $validator = Validator::make($request->all(), 
         [
             'username' => 'required|string|max:20',
             'password' => 'required|min:6|max:20',
         ]);
+    
         if ($validator->fails()) {
             return response()->json([ 
-            'message' => $validator->getMessageBag()
+                'message' => $validator->getMessageBag()
             ]);
-        } else { 
+        } else {
             $username = $request->input('username');
-            $user = User::where('username', $username)->first();
+            $user = User::where('username', $username)->first(); // Get user by username
+            
             if (!$user) {
-            return 404;
+                return response()->json(['error' => 'User not found'], 404);
             } else {
-            if ($user) {
-                if (Hash::check($request->password, $user->password)) {
+                if (Hash::check($request->password, $user->password)) { // Check password
                     if ($user->role === 'System Admin' || $user->role === 'Admin' || $user->role === 'Staff') {
+                        // Store user info in session
                         $request->session()->put('loggedIn', [
+                            'user_id' => $user->id, 
                             'ofmis_id' => $user->ofmis_id,
                             'performedBy' => $user->username,
                             'role' => $user->role,
                             'action' => "Logged in into the system.",
                         ]);
-                        
+    
+                        // Log user action
                         if (session()->has('loggedIn')) {
                             $ofmis_id = session()->get('loggedIn')['ofmis_id'];
                             $performedBy = session()->get('loggedIn')['performedBy'];
                             $role = session()->get('loggedIn')['role'];
                             $action = session()->get('loggedIn')['action'];
-                            (new ActivityLogs)->userAction($ofmis_id, $performedBy, $role, $action);
+                            $user_id = session()->get('loggedIn')['user_id'];  // Add user_id here
+    
+                            (new ActivityLogs)->userAction($user_id, $ofmis_id, $performedBy, $role, $action);
                         } else {
-                        return response()->json(['error' => 'Session not found'], 401);
+                            return response()->json(['error' => 'Session not found'], 401);
                         }
-
-                        // Return values based on user role
-                         return $user->role === 'System Admin' ? 1 : ($user->role === 'Admin' ? 2 : 0);
+    
+                        // Return JSON response based on user role
+                        return response()->json([
+                            'role' => $user->role
+                        ]);
                     }
                 } else {
-                return 401;
+                    return response()->json(['error' => 'Invalid credentials'], 401);
                 }
-            } else {
-                return 404;
-            }
             }
         }
     }
-
+    
+    
     public function validateUser(Request $request) {}
 
     public function pointToSystemAccount(Request $request)
@@ -243,20 +250,46 @@ class UserManager extends Controller
 
         return $response->json(); // Ibalik ang response mula sa API (kasama ang user details kung successful)
     }
-
-
-    public function getUserAction(Request $request) {}
-
     
-
-  
+    
 
     public function trash() {
         return view('systemAdmin.trash');  // Returns the 'trash.blade.php' view
     }
 
+    public function staffIndex() {
+        return view('staff.index');  // Returns the 'trash.blade.php' view
+    }
+
+    public function userManagement() {
+        return view('staff.userManagement');  // Returns the 'trash.blade.php' view
+    }
+
+  
+    public function projects()
+{
+    // You need to fetch the contractors here
+    $contractors = Contractor::orderBy('name')->get();
+
+    return view('systemAdmin.projects', compact('contractors'));
+
+    return view('staff.projects');  
+}
+
+public function overview()
+{
+    // You need to fetch the contractors here
+    $contractors = Contractor::orderBy('name')->get();
+
+    return view('systemAdmin.overview', compact('contractors'));
+    return view('staff.overview');  
+}
+
+
+
     public function activityLogs() {
         return view('systemAdmin.activityLogs');  // Returns the 'activityLogs.blade.php' view
+        return view('staff.activityLogs'); 
     }
 
     //When logging out it will check if the session variable exists then
