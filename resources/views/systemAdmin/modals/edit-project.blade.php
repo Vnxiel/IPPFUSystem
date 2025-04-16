@@ -43,13 +43,21 @@
                                             placeholder="Enter project ID">
                                     </div>
                                     <div class="mb-1">
-                                        <label for="projectContractor" class="form-label">Contractor</label>
-                                        <input type="text" class="form-control" id="projectContractor"
-                                            name="projectContractor" placeholder="Enter contractor name"
-                                            onkeyup="showSuggestionsContractor(this.value)">
-                                        <div id="suggestionsBoxContractor" class="list-group" style="display:none;">
-                                        </div>
-                                    </div>
+                                                <label for="projectContractor" class="form-label">Contractor</label>
+                                                <select id="projectContractor" name="projectContractor" class="form-select">
+                                                    <option value="">--Select Contractor--</option>
+                                                    @foreach($contractors as $contractor)
+                                                        <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
+                                                    @endforeach
+                                                    <option value="Others">Others: (Specify)</option>
+                                                </select>
+                                            </div>
+                                             <!-- Hidden textbox for specifying 'Others' -->
+                                             <div class="mb-1" id="othersContractorDiv" style="display: none;">
+                                                <label for="othersContractor" class="form-label">Specify New Contractor</label>
+                                                <input type="text" class="form-control" id="othersContractor" name="othersContractor"
+                                                    placeholder="Enter new contractor">
+                                            </div>
                                     <div class="mb-1">
                                         <label for="modeOfImplementation" class="form-label">Mode of
                                             Implementation</label>

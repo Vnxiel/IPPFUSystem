@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () { 
-    const fundModal = document.getElementById('ProjectFundUtilization');
+    const fundModal = document.getElementById('addProjectFundUtilization');
 
     fundModal.addEventListener('show.bs.modal', function () {
         const project_id = sessionStorage.getItem("project_id");

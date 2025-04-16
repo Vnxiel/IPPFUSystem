@@ -31,9 +31,9 @@
                                 <input type="text" class="form-control currency-input" id="orig_abc" name="orig_abc">
                             </div>
                             <div class="mb-1">
-                                <label for="orig_contractAmount" class="form-label">Contract Amount</label>
-                                <input type="text" class="form-control currency-input" id="orig_contractAmount"
-                                    name="orig_contractAmount">
+                                <label for="orig_contract_amount" class="form-label">Contract Amount</label>
+                                <input type="text" class="form-control currency-input" id="orig_contract_amount"
+                                    name="orig_contract_amount">
                             </div>
                             <div class="mb-1">
                                 <label for="orig_engineering" class="form-label">Engineering</label>
@@ -51,14 +51,11 @@
                                 <input type="text" class="form-control currency-input" id="orig_bid" name="orig_bid">
                             </div>
                             <div class="mb-1">
-                                <label for="completionDate" class="form-label">Completion Date</label>
-                                <input type="text" class="form-control" id="completionDate" name="completionDate"
+                                <label for="orig_completion_date" class="form-label">Completion Date</label>
+                                <input type="text" class="form-control" id="orig_completion_date" name="orig_completion_date"
                                     value="">
                             </div>
-                            <div class="mb-1">
-                                <label for="orig_bid" class="form-label">Bid Difference</label>
-                                <input type="text" class="form-control currency-input" id="orig_bid" name="orig_bid">
-                            </div>
+                          
                             <div class="mb-1">
                                 <label for="appropriation" class="form-label">Appropriation</label>
                                 <input type="text" class="form-control currency-input" id="orig_appropriation"
@@ -94,42 +91,42 @@
                                     <div class="row mb-3 order-set" id="voSet1">
                                         <div class="col-md-6">
                                             <div class="mb-1">
-                                                <label for="abc" class="form-label">ABC</label>
-                                                <input type="text" class="form-control currency-input" id="abc"
+                                                <label for="vo_abc" class="form-label">ABC</label>
+                                                <input type="text" class="form-control currency-input" id="vo_abc"
                                                     name="vo_abc">
                                             </div>
                                             <div class="mb-1">
-                                                <label for="contractAmount" class="form-label">Contract
+                                                <label for="vo_contract_amount" class="form-label">Contract
                                                     Amount</label>
                                                 <input type="text" class="form-control currency-input"
-                                                    id="contractAmount" name="vo_contractAmount">
+                                                    id="vo_contract_amount" name="vo_contract_amount">
                                             </div>
                                             <div class="mb-1">
-                                                <label for="engineering" class="form-label">Engineering</label>
-                                                <input type="text" class="form-control currency-input" id="engineering"
+                                                <label for="vo_engineering" class="form-label">Engineering</label>
+                                                <input type="text" class="form-control currency-input" id="vo_engineering"
                                                     name="vo_engineering">
                                             </div>
                                             <div class="mb-1">
-                                                <label for="mqc" class="form-label">MQC</label>
-                                                <input type="text" class="form-control currency-input" id="mqc"
+                                                <label for="vo_mqc" class="form-label">MQC</label>
+                                                <input type="text" class="form-control currency-input" id="vo_mqc"
                                                     name="vo_mqc">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-1">
-                                                <label for="bid" class="form-label">Contingency</label>
-                                                <input type="text" class="form-control currency-input" id="contingency"
+                                                <label for="vow_contingency" class="form-label">Contingency</label>
+                                                <input type="text" class="form-control currency-input" id="vow_contingency"
                                                     name="vow_contingency">
                                             </div>
                                             <div class="mb-1">
-                                                <label for="bid" class="form-label">Bid Difference</label>
-                                                <input type="text" class="form-control currency-input" id="bid"
-                                                    name="vo_mqc">
+                                                <label for="vo_bid" class="form-label">Bid Difference</label>
+                                                <input type="text" class="form-control currency-input" id="vo_bid"
+                                                    name="vo_bid">
                                             </div>
                                             <div class="mb-1">
-                                                <label for="appropriation" class="form-label">Appropriation</label>
+                                                <label for="vo_appropriation" class="form-label">Appropriation</label>
                                                 <input type="text" class="form-control currency-input"
-                                                    id="appropriation" name="vo_appropriation">
+                                                    id="vo_appropriation" name="vo_appropriation">
                                             </div>
                                         </div>
                                     </div>
@@ -153,9 +150,9 @@
                                     name="actual_abc">
                             </div>
                             <div class="mb-1">
-                                <label for="actual_contractAmount" class="form-label">Contract Amount</label>
-                                <input type="text" class="form-control currency-input" id="actual_contractAmount"
-                                    name="actual_contractAmount">
+                                <label for="actual_contract_amount" class="form-label">Contract Amount</label>
+                                <input type="text" class="form-control currency-input" id="actual_contract_amount"
+                                    name="actual_contract_amount">
                             </div>
                             <div class="mb-1">
                                 <label for="actual_engineering" class="form-label">Engineering</label>
@@ -175,9 +172,9 @@
                                     name="actual_bid">
                             </div>
                             <div class="mb-1">
-                                <label for="actual_completionDate" class="form-label">Completion Date</label>
-                                <input type="text" class="form-control" id="actual_completionDate"
-                                    name="actual_completionDate" value="">
+                                <label for="actual_completion_date" class="form-label">Completion Date</label>
+                                <input type="text" class="form-control" id="actual_completion_date"
+                                    name="actual_completion_date" value="">
                             </div>
                             <div class="mb-1">
                                 <label for="actual_contingency" class="form-label">Contingency</label>
@@ -394,7 +391,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Add Fund Utilization</button>
+                                    <button type="buttton" id="submitFundsUtilization" class="btn btn-primary">Add Fund Utilization</button>
                                 </div>
                             </div>
                         </div>

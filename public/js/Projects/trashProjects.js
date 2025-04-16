@@ -34,7 +34,7 @@ $(document).ready(function () {
                         if (data.status === "success") {
                             Swal.fire("Archived!", "The project has been hidden.", "success")
                                 .then(() => {
-                                    window.location.href = "/main/trash";
+                                    window.location.href = "/systemAdmin/trash";
                                 });
                         } else {
                             Swal.fire("Error!", data.message || "Something went wrong!", "error");

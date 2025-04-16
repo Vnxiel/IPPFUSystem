@@ -283,7 +283,7 @@ success: function(response) {
                     `₱${parseFloat(project.contractAmount).toLocaleString()}`,
                     project.projectContractor,
                     `${project.projectContractDays} calendar days`,
-                    `<button class="btn btn-primary btn-sm restore-btn" data-id="${project.projectID}">Restore</button>`
+                    `<button class="btn btn-primary btn-sm restore-btn" data-id="${project.id}">Restore</button>`
                 ]).draw();
             });
         }

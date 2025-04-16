@@ -52,6 +52,7 @@ Route::controller(SystemAdminManager::class)->group(function () {
     Route::post('/changeRole', 'changeRole');
 
     Route::get('/systemAdmin/activityLogs', 'viewActivityLogs')->name('systemAdmin.activityLogs');
+    Route::get('/systemAdmin/modals/edit-project', 'editProject')->name('systemAdmin.editProject');
 
 });
 

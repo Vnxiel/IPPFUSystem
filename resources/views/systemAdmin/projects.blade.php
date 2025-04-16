@@ -369,7 +369,7 @@ function showMunicipalitySuggestions(query) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
             const contractorSelect = document.getElementById("projectContractor");
             const othersContractorDiv = document.getElementById("othersContractorDiv");
             const othersContractorInput = document.getElementById("othersContractor");
@@ -483,11 +483,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
-@include('systemAdmin.modals.add-fund')
-    @include('systemAdmin.modals.edit-project')
     @include('systemAdmin.modals.add-project')
-    @include('systemAdmin.modals.add-status')
-    @include('systemAdmin.modals.check-status')
-    @include('systemAdmin.modals.uploadFiles')
-    @include('systemAdmin.modals.generate-report')
+
 @endsection

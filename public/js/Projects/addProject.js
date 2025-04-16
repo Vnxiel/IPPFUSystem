@@ -14,7 +14,6 @@ $(document).ready(function() {
 
         // Handle "Ongoing" status properly
         if (statusValue === "Ongoing" && percentage && date) {
-            // Ensure it is not already formatted correctly
             if (!ongoingInput.val().includes(" - ")) {
                 ongoingInput.val(`${percentage} - ${date}`);
             }
@@ -24,7 +23,7 @@ $(document).ready(function() {
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
-            url: "/projects/addProject", // Matches Laravel route
+            url: "/projects/addProject",
             method: "POST",
             data: new FormData(this),
             processData: false,
@@ -40,12 +39,10 @@ $(document).ready(function() {
                         didClose: function () {
                             $("#addNewProjectModal").modal("hide");
                             $("#ProjectForm")[0].reset();
-                            loadProjects(); // ✅ Reload projects here
+                            loadProjects();
                         }
                     });
-                }
-                
-                 else if (response.errors) {
+                } else if (response.errors) {
                     let errorMessages = "<ul class='text-left'>";
                     $.each(response.errors, function(field, errors) {
                         errorMessages += `<li><strong>${field.replace(/_/g, " ")}:</strong> ${errors.join(", ")}</li>`;
@@ -62,12 +59,41 @@ $(document).ready(function() {
                     Swal.fire({
                         icon: "error",
                         title: "Unexpected Error",
-                        text: "Something went wrong while processing your request. Please try again. Some fields may have invalid input.",
+                        text: "Something went wrong while processing your request. Please try again.",
                         confirmButtonText: "OK"
                     });
                 }
             },
             error: function(xhr) {
+                if (xhr.status === 422) {
+                    const response = xhr.responseJSON;
+                    const projectIdErrors = response.errors && response.errors.project_id;
+
+                    if (projectIdErrors && projectIdErrors.includes("The project id has already been taken.")) {
+                        return Swal.fire({
+                            icon: "error",
+                            title: "Duplicate Project ID",
+                            text: "The Project ID already exists. Please use a unique one.",
+                            confirmButtonText: "OK"
+                        });
+                    }
+
+                    // Fallback for other 422 validation errors
+                    let errorMessages = "<ul class='text-left'>";
+                    $.each(response.errors, function(field, errors) {
+                        errorMessages += `<li><strong>${field.replace(/_/g, " ")}:</strong> ${errors.join(", ")}</li>`;
+                    });
+                    errorMessages += "</ul>";
+
+                    return Swal.fire({
+                        icon: "warning",
+                        title: "Validation Error",
+                        html: errorMessages,
+                        confirmButtonText: "OK"
+                    });
+                }
+
+                // Fallback for other errors
                 let errorMessage = "An unexpected error occurred. Adding the project failed.";
                 Swal.fire({
                     icon: "error",
