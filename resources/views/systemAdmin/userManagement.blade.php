@@ -161,8 +161,8 @@
                                             <div class="row">
                                                 <div class="mb-3">
                                                     <!-- User Role Select -->
-                                                    <label for="userRole" class="form-label fw-bolder">User Role</label>
-                                                    <select id="userRole" name="userRole" class="form-select">
+                                                    <label for="role" class="form-label fw-bolder">User Role</label>
+                                                    <select id="role" name="role" class="form-select">
                                                         <option value="">-- Choose Role --</option>
                                                         <option value="System Admin">System Admin</option>
                                                         <option value="Admin">Admin</option>
@@ -170,7 +170,7 @@
                                                     </select>
 
                                                     <!-- Time Frame Select (Initially Hidden) -->
-                                                    <label for="timeFrame" class="form-label fw-bolder" id="timeFrameLabel" style="display: none;">User Time Frame</label>
+                                                    <label for="time_frame" class="form-label fw-bolder" id="timeFrameLabel" style="display: none;">User Time Frame</label>
                                                     <select id="time_frame" name="time_frame" class="form-select" style="display: none;">
                                                         <option value="">-- Choose Time Frame--</option>
                                                         <option value="Permanent">Permanent</option>
@@ -179,8 +179,8 @@
 
                                                     <!-- Temporary Position Input (Initially Hidden) -->
                                                     <div id="timeLimitContainer" class="mt-2 fw-bolder" style="display: none;">
-                                                        <label for="timeLimit" class="form-label">End Date for Temporary Position:</label>
-                                                        <input type="datetime-local" id="timeLimit" name="timeLimit" class="form-control">
+                                                        <label for="time_limit" class="form-label">End Date for Temporary Position:</label>
+                                                        <input type="datetime-local" id="time_limit" name="time_limit" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -196,5 +196,7 @@
                     </div>
                 </div>
 
-
+<script>
+ 
+</script>
 @endsection

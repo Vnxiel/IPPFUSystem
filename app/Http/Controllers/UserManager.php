@@ -78,30 +78,32 @@ class UserManager extends Controller
             'ofmis_id' => 'required|exists:users,ofmis_id',
             'userRole' => 'required|string',
             'time_frame' => 'required|string',
-            'timeLimit' => 'nullable|date',
+            'time_limit' => 'nullable|date', // ensure the date format is validated
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(0); 
-        }
-
+    
         $user = User::find($request->id);
         $user->role = $request->userRole;
         $user->time_frame = $request->time_frame;
-        if ($request->has('timeLimit')) {
-            $user->timeLimit = $request->timeLimit;
+    
+        if ($request->filled('time_limit')) {
+            $user->time_limit = $request->time_limit; // Will now store as a proper DATE
+        } else {
+            $user->time_limit = null; // clear if not provided
         }
+    
         $user->save();
-
+    
+        // Logging the activity
         $activityLogData = [
             'performedBy' => auth()->user()->id,
             'role' => $user->role,
             'action' => "Changed role to {$user->role}",
         ];
         (new ActivityLogs())->store(new Request($activityLogData));
-
+    
         return response()->json(1); 
     }
+    
 
     public function userLogin(Request $request) {
         $validator = Validator::make($request->all(), 
@@ -121,33 +123,82 @@ class UserManager extends Controller
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             } else {
-                if (Hash::check($request->password, $user->password)) { // Check password
-                    if ($user->role === 'System Admin' || $user->role === 'Admin' || $user->role === 'Staff') {
+                if (Hash::check($request->password, $user->password)) {
+
+                    // Check if the user is System Admin
+                    if ($user->role === 'System Admin') {
                         // Store user info in session
                         $request->session()->put('loggedIn', [
                             'user_id' => $user->id, 
                             'ofmis_id' => $user->ofmis_id,
                             'performedBy' => $user->username,
                             'role' => $user->role,
-                            'action' => "Logged in into the system.",
+                            'action' => "Logged in as System Admin.",
                         ]);
     
-                        // Log user action
                         if (session()->has('loggedIn')) {
                             $ofmis_id = session()->get('loggedIn')['ofmis_id'];
                             $performedBy = session()->get('loggedIn')['performedBy'];
                             $role = session()->get('loggedIn')['role'];
                             $action = session()->get('loggedIn')['action'];
-                            $user_id = session()->get('loggedIn')['user_id'];  // Add user_id here
+                            $user_id = session()->get('loggedIn')['user_id'];
+    
+                            (new ActivityLogs)->userAction($user_id, $ofmis_id, $performedBy, $role, $action);
+                        } else {
+                            return response()->json(['error' => 'Session not found'], 401);
+                        }
+                        return response()->json([
+                            'role' => 'System Admin'
+                        ]);
+                        //Check if the user is Admin
+                    } elseif ($user->role === 'Admin') {
+                        $request->session()->put('loggedIn', [
+                            'user_id' => $user->id, 
+                            'ofmis_id' => $user->ofmis_id,
+                            'performedBy' => $user->username,
+                            'role' => $user->role,
+                            'action' => "Logged in as Admin.",
+                        ]);
+    
+                        if (session()->has('loggedIn')) {
+                            $ofmis_id = session()->get('loggedIn')['ofmis_id'];
+                            $performedBy = session()->get('loggedIn')['performedBy'];
+                            $role = session()->get('loggedIn')['role'];
+                            $action = session()->get('loggedIn')['action'];
+                            $user_id = session()->get('loggedIn')['user_id'];
     
                             (new ActivityLogs)->userAction($user_id, $ofmis_id, $performedBy, $role, $action);
                         } else {
                             return response()->json(['error' => 'Session not found'], 401);
                         }
     
-                        // Return JSON response based on user role
                         return response()->json([
-                            'role' => $user->role
+                            'role' => 'Admin'
+                        ]);
+                        // Check if the user is Staff
+                    } elseif ($user->role === 'Staff') {
+                        $request->session()->put('loggedIn', [
+                            'user_id' => $user->id, 
+                            'ofmis_id' => $user->ofmis_id,
+                            'performedBy' => $user->username,
+                            'role' => $user->role,
+                            'action' => "Logged in as Staff.",
+                        ]);
+    
+                        if (session()->has('loggedIn')) {
+                            $ofmis_id = session()->get('loggedIn')['ofmis_id'];
+                            $performedBy = session()->get('loggedIn')['performedBy'];
+                            $role = session()->get('loggedIn')['role'];
+                            $action = session()->get('loggedIn')['action'];
+                            $user_id = session()->get('loggedIn')['user_id'];
+    
+                            (new ActivityLogs)->userAction($user_id, $ofmis_id, $performedBy, $role, $action);
+                        } else {
+                            return response()->json(['error' => 'Session not found'], 401);
+                        }
+    
+                        return response()->json([
+                            'role' => 'Staff'
                         ]);
                     }
                 } else {
@@ -253,17 +304,6 @@ class UserManager extends Controller
     
     
 
-    public function trash() {
-        return view('systemAdmin.trash');  // Returns the 'trash.blade.php' view
-    }
-
-    public function staffIndex() {
-        return view('staff.index');  // Returns the 'trash.blade.php' view
-    }
-
-    public function userManagement() {
-        return view('staff.userManagement');  // Returns the 'trash.blade.php' view
-    }
 
   
     public function projects()
@@ -273,7 +313,6 @@ class UserManager extends Controller
 
     return view('systemAdmin.projects', compact('contractors'));
 
-    return view('staff.projects');  
 }
 
 public function overview()
@@ -282,14 +321,12 @@ public function overview()
     $contractors = Contractor::orderBy('name')->get();
 
     return view('systemAdmin.overview', compact('contractors'));
-    return view('staff.overview');  
 }
 
 
 
     public function activityLogs() {
         return view('systemAdmin.activityLogs');  // Returns the 'activityLogs.blade.php' view
-        return view('staff.activityLogs'); 
     }
 
     //When logging out it will check if the session variable exists then

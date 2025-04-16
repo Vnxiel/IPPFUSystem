@@ -405,47 +405,6 @@
         </div>
 
 
-    <script>
-
-        // Load the contractors' names (example only)
-        const contractors = ['Kristine Joy Briones', 'Janessa Guillermo', 'CJenalyn Jumawan', 'Arjay Ordinario', 'Jan Paolo Aduca', 'Janelle Mae Alarcon', 'Jasmine Mae Alarcon', 'Marc Justin Manzano', 'Marc Jay Madarra', 'Jaylord Alonzo'];
-
-        function showSuggestionsContractor(query) {
-            const suggestionsBox = document.getElementById('suggestionsBoxContractor');
-            suggestionsBox.innerHTML = ''; // Clear previous suggestions
-
-            if (query.length > 0) {
-                const filteredContractors = contractors.filter(contractor => contractor.toLowerCase().includes(query.toLowerCase()));
-
-                if (filteredContractors.length > 0) {
-                    suggestionsBox.style.display = 'block';
-                    suggestionsBox.style.position = 'absolute'; // Make the suggestions box float
-                    suggestionsBox.style.zIndex = '1000'; // Ensure it appears above other elements
-                    suggestionsBox.style.backgroundColor = '#fff'; // Add background color
-                    suggestionsBox.style.border = '1px solid #ccc'; // Add border
-                    suggestionsBox.style.width = document.getElementById('projectContractor').offsetWidth + 'px'; // Match the width of the input field
-
-                    filteredContractors.forEach(contractor => {
-                        const item = document.createElement('a');
-                        item.href = '#';
-                        item.className = 'list-group-item list-group-item-action';
-                        item.textContent = contractor;
-                        item.onclick = function () {
-                            document.getElementById('projectContractor').value = contractor; // Set the contractor name in the textbox
-                            suggestionsBox.style.display = 'none'; // Hide suggestions after selection
-                        };
-                        suggestionsBox.appendChild(item);
-                    });
-                } else {
-                    suggestionsBox.style.display = 'none';
-                }
-            } else {
-                suggestionsBox.style.display = 'none';
-            }
-        }
-
-</script>
-
     @include('systemAdmin.modals.add-fund')
     @include('systemAdmin.modals.edit-project')
     @include('systemAdmin.modals.uploadFiles')

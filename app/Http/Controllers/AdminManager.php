@@ -6,18 +6,19 @@ use Illuminate\Http\Request;
 
 class AdminManager extends Controller
 {
-    public function addProjects(Request $request){
-
+    public function index(){
+        return view('admin.index');
     }
-    public function viewProjects(Request $request){
-
+    public function projects(){
+        return view('admin.projects');
     }
-    public function searchProjects(Request $request){
+    public function userManagement(){
+        return view('admin.userManagement');
+    }    
+    public function overview(){
+        return view('admin.overview');
+    }    
 
-    }
-    public function generateReports(Request $request){
-
-    }
 
     public function temporaryDeleteProject(Request $request){
 

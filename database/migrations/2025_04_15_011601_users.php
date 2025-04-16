@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('role');
             $table->string('time_frame');
-            $table->string('time_limit')->nullable();
+            $table->date('time_limit')->nullable();
             $table->string('temp_role')->nullable();
             $table->timestamps();
         });

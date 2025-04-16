@@ -9,6 +9,8 @@ use App\Http\Controllers\FileManager;
 use App\Http\Controllers\FundsUtilizationController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\GenerateProjectReport;
+use App\Http\Controllers\AdminManager;
+use App\Http\Controllers\StaffManager;
 
 
 Route::get('/', function () {
@@ -99,4 +101,20 @@ Route::get('/get-project-id', [SessionController::class, 'getProjectID']);
      Route::get('/files/{projectID}', 'getFiles')->name('get.files');
      Route::delete('/delete/{fileID}',  'delete');
     Route::get('/download-file/{filename}', 'downloadFile');
+ });
+
+ // Admin Management Routes
+ Route::controller(AdminManager::class)->group(function () {
+    Route::get('/admin/index', 'index');
+    Route::get('/admin/projects', 'projects');
+    Route::get('/admin/userManagement', 'userManagement');
+    Route::get('/admin/overview', 'overview');
+ });
+
+ // Staff Management Routes
+ Route::controller(StaffManager::class)->group(function () {
+    Route::get('/staff/index', 'index');
+    Route::get('/staff/projects', 'projects');
+    Route::get('/staff/overview', 'overview');
+    Route::get('/staff/projects', 'contractorsList');
  });

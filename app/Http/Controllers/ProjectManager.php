@@ -18,7 +18,7 @@ use App\Models\ProjectFile;
 use App\Models\ProjectStatus;
 use App\Http\Controllers\ActivityLogs;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\Municipalities;
+use App\Models\Municipality;
 
 class ProjectManager extends Controller
 {
@@ -651,5 +651,7 @@ public function overview()
 
     return view('systemAdmin.overview', compact('contractors'));
 }
+
+
 
 }
