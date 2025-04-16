@@ -132,7 +132,7 @@ $(document).ready(function() {
              headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
              success: function (response) {
                  if (response.success === 1) {
-                     $("#userRole").val(response.user.role);
+                     $("#role").val(response.user.role);
                      $("#time_frame").val(response.user.time_frame);
                      $("#timeLimit").val(response.user.timeLimit ? response.user.timeLimit : "");
  
@@ -162,7 +162,7 @@ $(document).ready(function() {
  
          let requestData = {
              id: selectedUserId, // Use the stored user ID
-             userRole: $("#userRole").val(),
+             role: $("#role").val(),
              time_frame: $("#time_frame").val()
          };
  

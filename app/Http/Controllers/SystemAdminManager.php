@@ -74,7 +74,7 @@ class SystemAdminManager extends Controller
         ]);
     }
 
-    public function getUserRole(Request $request)
+    public function getrole(Request $request)
     {
         $user = User::find($request->id); 
     
@@ -96,9 +96,9 @@ class SystemAdminManager extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:users,id',
-            'userRole' => 'required|string',
+            'role' => 'required|string',
             'time_frame' => 'string',
-            'timeLimit' => 'nullable|date',
+            'time_limit' => 'nullable|date',
         ]);
     
         if ($validator->fails()) {
@@ -111,14 +111,14 @@ class SystemAdminManager extends Controller
             return response()->json(2); 
         }
     
-        $user->role = $request->userRole;
+        $user->role = $request->role;
     
         // Handle time frame
-        if ($request->userRole == 'System Admin' || 'Staff' || 'Admin' && $request->time_frame) {
+        if (($request->role == 'System Admin' || $request->role == 'Staff' || $request->role == 'Admin') && $request->time_frame) {
             $user->time_frame = $request->time_frame;
-            $user->timeLimit = $request->time_frame === 'Temporary' ? $request->timeLimit : null;
+            $user->time_limit = $request->time_frame === 'Temporary' ? $request->time_limit : null;
         } else {
-            $user->timeLimit = null;
+            $user->time_limit = null;
         }
     
         $user->save();

@@ -57,6 +57,22 @@ Route::controller(SystemAdminManager::class)->group(function () {
 
 });
 
+// Admin Management Routes
+Route::controller(AdminManager::class)->group(function () {
+    Route::get('/admin/index', 'index');
+    Route::get('/admin/projects', 'projects');
+    Route::get('/admin/userManagement', 'userManagement');
+    Route::get('/admin/overview', 'overview');
+ });
+
+ // Staff Management Routes
+ Route::controller(StaffManager::class)->group(function () {
+    Route::get('/staff/index', 'index');
+    Route::get('/staff/projects', 'projects');
+    Route::get('/staff/overview', 'overview');
+    Route::get('/staff/projects', 'contractorsList');
+ });
+
 Route::controller(ActivityLogs::class)->group(function () {
     // Activity Logs Routes
     Route::post('/activity-logs', 'store'); // Store a new log
@@ -95,26 +111,12 @@ Route::get('generateProject/{project_id}', [GenerateProjectReport::class, 'gener
 Route::post('/store-project-id', [SessionController::class, 'storeProjectID'])->name('store.project.id');
 Route::get('/get-project-id', [SessionController::class, 'getProjectID']);
 
- // File Management Routes
- Route::controller(FileManager::class)->group(function () {
-     Route::post('/upload-file/{project_id}', 'uploadFile');
-     Route::get('/files/{projectID}', 'getFiles')->name('get.files');
-     Route::delete('/delete/{fileID}',  'delete');
-    Route::get('/download-file/{filename}', 'downloadFile');
- });
+ 
 
- // Admin Management Routes
- Route::controller(AdminManager::class)->group(function () {
-    Route::get('/admin/index', 'index');
-    Route::get('/admin/projects', 'projects');
-    Route::get('/admin/userManagement', 'userManagement');
-    Route::get('/admin/overview', 'overview');
- });
-
- // Staff Management Routes
- Route::controller(StaffManager::class)->group(function () {
-    Route::get('/staff/index', 'index');
-    Route::get('/staff/projects', 'projects');
-    Route::get('/staff/overview', 'overview');
-    Route::get('/staff/projects', 'contractorsList');
- });
+  // File Management Routes
+  Route::controller(FileManager::class)->group(function () {
+    Route::post('/upload-file/{project_id}', 'uploadFile');
+    Route::get('/files/{projectID}', 'getFiles')->name('get.files');
+    Route::delete('/delete/{fileID}',  'delete');
+   Route::get('/download-file/{filename}', 'downloadFile');
+});
