@@ -63,6 +63,7 @@ Route::controller(AdminManager::class)->group(function () {
     Route::get('/admin/projects', 'projects');
     Route::get('/admin/userManagement', 'userManagement');
     Route::get('/admin/overview', 'overview');
+    Route::get('/admin/trash', 'trash');
  });
 
  // Staff Management Routes

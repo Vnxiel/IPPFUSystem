@@ -19,6 +19,10 @@ class AdminManager extends Controller
         return view('admin.overview');
     }    
 
+    public function trash(){
+        return view('admin.trash');
+    }    
+
 
     public function temporaryDeleteProject(Request $request){
 

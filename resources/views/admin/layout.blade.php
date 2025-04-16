@@ -36,13 +36,16 @@
                     </button>
 
                     <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('admin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
-                            <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid d-inline-block align-text-top me-2">
-                            <div>
-                                <h5 class="mb-0">Provincial Engineering Office</h5>
-                                <h6 class="mt-0">Province of Nueva Vizcaya</h6>
-                            </div>
-                        </a>
+                    <a href="{{ url('/admin/index') }}"
+                        class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                        <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40"
+                            class="img-fluid d-inline-block align-text-top me-2">
+                        <div>
+                            <h5 class="mb-0">Provincial Engineering Office</h5>
+                            <h6 class="mt-0">Province of Nueva Vizcaya</h6>
+                        </div>
+                    </a>
+
 
                         <ul class="navbar-nav col-lg-6 justify-content-lg-center">
                             <li class="nav-item">
@@ -51,8 +54,11 @@
                             <li class="nav-item">
                                 <a class="nav-link active {{ Request::is('admin/projects') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/projects') }}">Projects</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link active {{ Request::is('admin/userManagement') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/userManagement') }}">User Management</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ Request::is('admin/trash') ? 'fw-bold text-danger' : 'inactive' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item {{ Request::is('admin/trash') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/trash') }}">Trash</li>
+                                </ul>
                             </li>
                         </ul>
                         <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
