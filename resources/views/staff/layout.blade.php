@@ -57,14 +57,12 @@
                                 aria-current="page" href="{{ url('/staff/index') }}">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active {{ Request::is('staff/projects') ? 'fw-bold text-danger' : 'inactive' }}"
+                            <a class="nav-link active {{ Request::is('staff/projects') ? 'fw-bold text-danger' : 'inactive' }} || {{ Request::is('staff/overview') ? 'fw-bold text-danger' : 'inactive' }}"
                                 aria-current="page" href="{{ url('/staff/projects') }}">Projects</a>
                         </li>
                     </ul>
                     <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
                         <div class="dropdown">
-
-
                             <a href="#" id="dropdownMenuButton"
                                 class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                                 data-bs-toggle="dropdown" aria-expanded="false" role="button">
@@ -109,10 +107,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Your Custom Scripts -->
-    <script src="{{ asset('js/getData.js') }}"></script>
-    <script src="{{ asset('js/load-data.js') }}"></script>
-    <script src="{{ asset('js/projects.js') }}"></script>
-    <script src="{{ asset('js/logout.js') }}"></script>
+    <script src="{{ asset('js/Account/getData.js') }}"></script>
+    <script src="{{ asset('js/Account/load-data.js') }}"></script>
+    <script src="{{ asset('js/Account/projects.js') }}"></script>
+    <script src="{{ asset('js/Account/logout.js') }}"></script>
 
 </body>
 

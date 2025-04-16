@@ -23,7 +23,4 @@ class StaffManager extends Controller
         $contractors = Contractor::orderBy('name')->get(); // or any query you'd like
         return view('staff.projects', compact('contractors'));
     }
-    
-
-
 }

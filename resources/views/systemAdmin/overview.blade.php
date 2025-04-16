@@ -409,5 +409,6 @@
     @include('systemAdmin.modals.edit-project')
     @include('systemAdmin.modals.uploadFiles')
     @include('systemAdmin.modals.generate-report')
+    @include('systemAdmin.modals.check-status')
 
 @endsection

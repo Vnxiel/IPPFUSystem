@@ -13,7 +13,7 @@
                             <div class="col-md-3 mb-2">
                                 <label for="location_filter">Location:</label>
                                 <select id="location_filter" class="form-select">
-                                    <option value="">All Locations</option>
+                                    <option value="">--Select Location--</option>
                                     <option value="Alfonso Castañeda, Nueva Vizcaya">Alfonso Castañeda, Nueva Vizcaya</option>
                                     <option value="Ambaguio, Nueva Vizcaya">Ambaguio, Nueva Vizcaya</option>
                                     <option value="Aritao, Nueva Vizcaya">Aritao, Nueva Vizcaya</option>
@@ -67,11 +67,11 @@
                 <div class="col">
                     <h5 class="m-0">Projects</h5>
                 </div>
-                <div class="col-auto">
+                <!-- <div class="col-auto">
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNewProjectModal">
                         <span class="fa fa-plus"></span>&nbsp;Add New Project
                     </button>
-                </div>
+                </div> -->
                 <hr class="mt-2">
             </div>
             <div class="row">
