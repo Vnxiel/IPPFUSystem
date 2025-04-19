@@ -18,7 +18,7 @@ use App\Models\ProjectFile;
 use App\Models\ProjectStatus;
 use App\Http\Controllers\ActivityLogs;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\Municipality;
+use App\Models\ProjectLocation;
 
 class ProjectManager extends Controller
 {
@@ -621,22 +621,22 @@ class ProjectManager extends Controller
     
 
 public function getDropdownOptions(Request $request) {
-    // Fetch contractors and municipalities
+    // Fetch contractors and location
     $contractors = Contractor::orderBy('name', 'asc')->get();
-    $municipalities = Municipalities::orderBy('municipalityOf', 'asc')->get();
+    $location = ProjectLocation::orderBy('municipalityOf', 'asc')->get();
 
     // Check if the request is for the overview page
     if ($request->has('overview') && $request->overview == true) {
         return response()->json([
             'contractors' => $contractors,
-            'municipalities' => $municipalities
+            'location' => $location
         ]);
     }
 
     // Pass both to the view for the system admin projects page
     return view('systemAdmin.projects', [
         'contractors' => $contractors,
-        'municipalities' => $municipalities
+        'location' => $location
     ]);
 }
 

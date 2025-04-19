@@ -29,16 +29,17 @@ Route::controller(UserManager::class)->group(function () {
     Route::get('/systemAdmin/reports', 'funds')->name('systemAdmin.funds');
     Route::get('/systemAdmin/trash', 'trash')->name('systemAdmin.trash');
 
-    //staff
-    Route::get('/staff/index', 'staffIndex')->name('staff.index');
-    Route::get('/staff/overview', 'overview')->name('staff.overview');
-    Route::get('/staff/projects', 'projects')->name('staff.projects');
-    Route::get('/staff/userManagement', 'userManagemenr')->name('staff.userManagement');
-    Route::get('/staff/activityLogs', 'activityLogs')->name('staff.activityLogs');
-     //admin
-     Route::get('/admin/index', 'index');
-     Route::get('/admin/projects', 'projects');
-     Route::get('/admin/overview', 'overview');
+    // //staff
+    // Route::get('/staff/index', 'staffIndex')->name('staff.index');
+    // Route::get('/staff/overview', 'overview')->name('staff.overview');
+    // Route::get('/staff/projects', 'projects')->name('staff.projects');
+    // Route::get('/staff/userManagement', 'userManagemenr')->name('staff.userManagement');
+    // Route::get('/staff/activityLogs', 'activityLogs')->name('staff.activityLogs');
+    
+    //  //admin
+    //  Route::get('/admin/index', 'index');
+    //  Route::get('/admin/projects', 'projects');
+    //  Route::get('/admin/overview', 'overview');
 });
 
 

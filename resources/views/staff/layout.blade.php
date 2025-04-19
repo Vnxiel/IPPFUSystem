@@ -107,9 +107,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Your Custom Scripts -->
-    <script src="{{ asset('js/Account/getData.js') }}"></script>
-    <script src="{{ asset('js/Account/load-data.js') }}"></script>
-    <script src="{{ asset('js/Account/projects.js') }}"></script>
+    <script src="{{ asset('js/Datatables/getData.js') }}"></script>
+    <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
+    <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
+    <script src="{{ asset('js/Projects/fetchProjects.js') }}"></script>
+    <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
+    <script src="{{ asset('js/Projects/generateProjects.js') }}"></script>
+    <script src="{{ asset('js/Projects/projects.js') }}"></script>
     <script src="{{ asset('js/Account/logout.js') }}"></script>
 
 </body>
