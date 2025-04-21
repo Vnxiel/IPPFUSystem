@@ -1,45 +1,76 @@
 function downloadFile(filePath) {
-    console.log("Original filePath:", filePath);
+  console.log("Original filePath:", filePath);
 
-    if (!filePath) {
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "File path is missing. Cannot download.",
-            confirmButtonColor: "#d33"
-        });
-        return;
+  if (!filePath) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Missing File Path',
+      text: 'File path is missing. Cannot download.',
+      confirmButtonColor: '#e74c3c'
+    });
+    return;
+  }
+
+  const decodedPath = decodeURIComponent(filePath);
+  const cleanedFilename = decodedPath.split("/").pop();
+  const fileUrl = `/download-file/${cleanedFilename}`;
+  const fileExt = cleanedFilename.split('.').pop().toLowerCase();
+
+  const previewableTypes = ['jpg', 'jpeg', 'png', 'pdf'];
+
+  const triggerDownload = () => {
+    const downloadLink = document.createElement("a");
+    downloadLink.href = fileUrl;
+    downloadLink.download = cleanedFilename;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
+  if (previewableTypes.includes(fileExt)) {
+    let contentHtml = `
+      <div style="background: #f9f9f9; border-radius: 10px; padding: 10px;">
+        <div style="margin-bottom: 10px; font-weight: bold; color: #2c3e50;">File Name: ${cleanedFilename}</div>
+    `;
+
+    if (['jpg', 'jpeg', 'png'].includes(fileExt)) {
+      contentHtml += `
+        <img src="${fileUrl}" 
+             style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      `;
+    } else if (fileExt === 'pdf') {
+      contentHtml += `
+        <iframe src="${fileUrl}" 
+                style="width: 100%; height: 500px; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        </iframe>
+      `;
     }
 
-    // Decode the path for accurate fetch and file name
-    let decodedPath = decodeURIComponent(filePath);
-    let cleanedFilename = decodedPath.split("/").pop(); // Get the clean filename
-    let fileUrl = `/download-file/${cleanedFilename}`; // The URL to trigger the file download
-    console.log("File URL for fetch:", fileUrl);
+    contentHtml += `</div>`;
 
-    // Send a GET request to download the file from the server
-    fetch(fileUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("File not found or inaccessible.");
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            let a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = cleanedFilename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        })
-        .catch(error => {
-            console.error("Download Error:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Download Failed",
-                text: "File not found or inaccessible. Please contact support.",
-                confirmButtonColor: "#d33"
-            });
-        });
+    Swal.fire({
+      title: `<strong style="color:#34495e;">📄 Preview File</strong>`,
+      html: contentHtml,
+      width: '60%',
+      padding: '1.5em',
+      background: '#ffffff',
+      showCancelButton: true,
+      confirmButtonText: '<i class="fa fa-download"></i> Download',
+      cancelButtonText: 'Close',
+      confirmButtonColor: '#3498db',
+      cancelButtonColor: '#95a5a6',
+      customClass: {
+        popup: 'animated fadeIn',
+        confirmButton: 'swal2-confirm-custom',
+        cancelButton: 'swal2-cancel-custom'
+      }
+    }).then(result => {
+      if (result.isConfirmed) {
+        triggerDownload();
+      }
+    });
+  } else {
+    // Directly download for non-previewable types
+    triggerDownload();
+  }
 }

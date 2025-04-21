@@ -17,8 +17,10 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             // Variation Order Fields
+            $table->integer('vo_number')->default(1)->after('funds_utilization_id');
             $table->decimal('vo_abc', 15, 2)->nullable();
             $table->decimal('vo_contract_amount', 15, 2)->nullable();
+            $table->decimal('vo_bid', 15, 2)->nullable();
             $table->decimal('vo_engineering', 15, 2)->nullable();
             $table->decimal('vo_mqc', 15, 2)->nullable();
             $table->decimal('vo_contingency', 15, 2)->nullable();

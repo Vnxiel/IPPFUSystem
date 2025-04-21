@@ -51,7 +51,7 @@
                             <!-- ResystemAdmining Balance -->
                             <div class="card m-1" style="width: 16rem; height: 8rem;">
                                 <div class="card-body text-center d-flex flex-column justify-content-between">
-                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">ResystemAdmining Balance</h6>
+                                    <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Remaining Balance</h6>
                                     <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="resystemAdminingBalance">₱0</p>
                                 </div>
                             </div>

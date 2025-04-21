@@ -19,61 +19,68 @@ class FileManager extends Controller
 {
     // Upload File
     public function uploadFile(Request $request, $project_id)
-    {
-        Log::info("Upload Request Received", $request->all());
+{
+    Log::info("Upload Request Received", $request->all());
 
-        if (!$request->hasFile('file')) {
-            Log::error("No file found in request.");
-            return response()->json(['status' => 'error', 'message' => 'No file uploaded.'], 400);
-        }
+    if (!$request->hasFile('files')) {
+        return response()->json(['status' => 'error', 'message' => 'No files uploaded.'], 400);
+    }
 
-        $validator = Validator::make($request->all(), [
+    $files = $request->file('files');
+    if (!is_array($files)) {
+        $files = [$files]; // Ensure it's an array
+    }
+
+    $uploaded = [];
+    $errors = [];
+
+    // Session data
+    if (!session()->has('loggedIn')) {
+        return response()->json(['status' => 'error', 'message' => 'Session not found'], 401);
+    }
+
+    $sessionData = session()->get('loggedIn');
+    $username = $sessionData['performedBy'];
+    $ofmis_id = $sessionData['ofmis_id'];
+    $role = $sessionData['role'];
+    $user_id = $sessionData['user_id'] ?? null;
+
+    foreach ($files as $file) {
+        $filename = $file->getClientOriginalName();
+
+        $validator = Validator::make(['file' => $file], [
             'file' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf,docx,xlsx,zip'
         ]);
 
         if ($validator->fails()) {
-            Log::error("Validation Failed", $validator->errors()->toArray());
-            return response()->json(['status' => 'error', 'message' => 'Validation failed!', 'errors' => $validator->errors()], 422);
+            $errors[] = [
+                'file' => $filename,
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors()
+            ];
+            continue;
+        }
+
+        // Check for duplicate
+        if (ProjectFile::where('project_id', $project_id)->where('fileName', $filename)->exists()) {
+            $errors[] = [
+                'file' => $filename,
+                'message' => 'File already exists'
+            ];
+            continue;
         }
 
         try {
-            $file = $request->file('file');
-            $filename = $file->getClientOriginalName();
-
-            // Session data
-            if (session()->has('loggedIn')) {
-                $sessionData = session()->get('loggedIn');
-                $username = $sessionData['performedBy'];
-                $ofmis_id = $sessionData['ofmis_id'];
-                $role = $sessionData['role'];
-                $user_id = $sessionData['user_id'] ?? null;
-            } else {
-                Log::error("Session not found");
-                return response()->json(['status' => 'error', 'message' => 'Session not found'], 401);
-            }
-
-            // Check for duplicate file
-            $fileExists = ProjectFile::where('project_id', $project_id)
-                ->where('fileName', $filename)
-                ->exists();
-
-            if ($fileExists) {
-                Log::warning("Duplicate File Attempt: " . $filename);
-                return response()->json(['status' => 'error', 'message' => 'File already exists'], 409);
-            }
-
             $timestampedFilename = date('Ymd_His') . '_' . $filename;
-            $filepath = $file->storeAs('project_files', $timestampedFilename, 'public');
+            $filepath = $file->storeAs('project_files', $filename, 'public');
 
-            // Save record
             $projectFile = ProjectFile::create([
                 'project_id' => $project_id,
-                'fileName' => $timestampedFilename,
+                'fileName' => $filename,
                 'fileID' => uniqid(),
                 'actionBy' => $username,
             ]);
 
-            // Logging
             $action = "Uploaded file: $filename.";
             $request->session()->put('UploadedFile', [
                 'user_id' => $user_id,
@@ -85,14 +92,22 @@ class FileManager extends Controller
 
             (new ActivityLogs)->userAction($user_id, $ofmis_id, $username, $role, $action);
 
-            Log::info("File uploaded successfully: " . $filename);
-            return response()->json(['status' => 'success', 'message' => 'File uploaded successfully!', 'file' => $projectFile]);
-
+            $uploaded[] = $filename;
         } catch (\Exception $e) {
-            Log::error("Error uploading file: " . $e->getMessage());
-            return response()->json(['status' => 'error', 'message' => 'Internal Server Error.', 'error_details' => $e->getMessage()], 500);
+            $errors[] = [
+                'file' => $filename,
+                'message' => 'Upload failed: ' . $e->getMessage()
+            ];
         }
     }
+
+    return response()->json([
+        'status' => 'success',
+        'uploaded' => $uploaded,
+        'errors' => $errors
+    ]);
+}
+
 
     // Get Files by Project ID
     public function getFiles($project_id)
@@ -106,32 +121,47 @@ class FileManager extends Controller
     }
 
     // Delete File
-    public function delete($fileID)
+    public function delete($fileName)
     {
-        $file = ProjectFile::where('fileID', $fileID)->first();
-
+        $file = ProjectFile::where('fileName', $fileName)->first();
+    
         if (!$file) {
             return response()->json(['status' => 'error', 'message' => 'File not found.'], 404);
         }
-
-        Storage::delete('public/' . $file->file);
+    
+        // Delete the physical file
+        Storage::disk('public')->delete('project_files/' . $file->fileName);
+    
+        // Delete the DB record
         $file->delete();
-
+    
         return response()->json(['status' => 'success', 'message' => 'File deleted successfully.']);
     }
-
+    
     public function downloadFile($filename)
 {
-    // Ensure the file exists in the storage
-    $filePath = storage_path('app/public/project_files/' . $filename);
-    
+    $file = ProjectFile::where('fileName', $filename)->first();
+
+    if (!$file) {
+        return response()->json(['status' => 'error', 'message' => 'File record not found.'], 404);
+    }
+
+    // New correct path (if using storage:link)
+    $filePath = public_path('storage/project_files/' . $filename);
+
     if (!file_exists($filePath)) {
         return response()->json(['status' => 'error', 'message' => 'File not found or inaccessible.'], 404);
     }
-    
-    // Return the file as a download response
+
+    $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+
+    if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'pdf'])) {
+        return response()->file($filePath);
+    }
+
     return response()->download($filePath);
 }
 
+    
    
 }

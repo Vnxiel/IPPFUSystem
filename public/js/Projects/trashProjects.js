@@ -34,11 +34,22 @@ $(document).ready(function () {
                         if (data.status === "success") {
                             Swal.fire("Archived!", "The project has been hidden.", "success")
                                 .then(() => {
-                                    window.location.href = "/main/trash";
+                                    const role = sessionStorage.getItem('user_role');
+                        
+                                    if (role === 'System Admin') {
+                                        window.location.href = "/systemAdmin/trash";
+                                    } else if (role === 'Admin') {
+                                        window.location.href = "/admin/trash";
+                                    } else if (role === 'Staff') {
+                                        window.location.href = "/staff/trash";
+                                    } else {
+                                        Swal.fire("Error!", "Unknown role. Cannot redirect.", "error");
+                                    }
                                 });
                         } else {
                             Swal.fire("Error!", data.message || "Something went wrong!", "error");
                         }
+                        
                     },
                     error: function (xhr) {
                         console.error("Error hiding project:", xhr.responseText);

@@ -10,11 +10,7 @@
                             <div class="col">
                                 <h5 class="m-0">Projects</h5>
                             </div>
-                            <div class="col-auto">
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNewProjectModal">
-                                    <span class="fa fa-plus"></span>&nbsp;Add New Project
-                                </button>
-                            </div>
+
                             <hr class="mt-2">
                         </div>
                         <div class="row">
@@ -49,9 +45,7 @@
                 <div class="modal-dialog  modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="appNewProjectLabel">Add Project</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
+                                 </div>
                         <div class="modal-body">
                             <form id="addProjectForm">
                                 @csrf

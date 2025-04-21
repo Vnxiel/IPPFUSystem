@@ -20,9 +20,9 @@ return new class extends Migration
             $table->decimal('orig_engineering', 15, 2)->nullable();
             $table->decimal('orig_mqc', 15, 2)->nullable();
             $table->decimal('orig_bid', 15, 2)->nullable();
+            $table->decimal('orig_contingency', 15, 2)->nullable();
             $table->decimal('orig_appropriation', 15, 2)->nullable();
-            $table->date('orig_completion_date')->nullable();
-
+          
             // Actual Values
             $table->decimal('actual_abc', 15, 2)->nullable();
             $table->decimal('actual_contract_amount', 15, 2)->nullable();
@@ -31,7 +31,10 @@ return new class extends Migration
             $table->decimal('actual_bid', 15, 2)->nullable();
             $table->decimal('actual_contingency', 15, 2)->nullable();
             $table->decimal('actual_appropriation', 15, 2)->nullable();
-            $table->date('actual_completion_date')->nullable();
+         
+            // Summary and Partial Billings stored as JSON-like text
+            $table->longText('summary')->nullable();
+            $table->longText('partial_billings')->nullable();
 
             $table->timestamps();
         });

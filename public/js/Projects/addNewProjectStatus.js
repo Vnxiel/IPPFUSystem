@@ -1,34 +1,43 @@
 $(document).ready(function () {
-    // Delegate click event for dynamically added button
+    // Fetch status before showing modal
     $(document).on("click", "#addStatusBtnInside", function () {
         const project_id = sessionStorage.getItem("project_id");
         const projectDetails = JSON.parse(sessionStorage.getItem("projectDetails"));
 
         if (!project_id || !projectDetails) {
-            Swal.fire({
-                icon: "error",
-                title: "Missing Project Info",
-                text: "Cannot load project details. Please try again or reload the page.",
-                confirmButtonText: "OK"
-            });
-            return;
+            return Swal.fire({ icon: "error", title: "Missing Info", text: "Cannot load project." });
         }
 
-        // Set modal fields
-        $("#projectTitleDisplay").text(projectDetails.projectTitle || "Untitled Project");
-        $("#projectID").text(project_id);
+        // ✅ FIXED: Missing backtick added
+        $.get(`/project-status/${encodeURIComponent(project_id)}`, function (response) {
+            if (["Completed", "Discontinued"].includes(response.projectStatus)) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "Status Locked",
+                    text: "This project is already completed or discontinued.",
+                    confirmButtonText: "OK"
+                });
+            }
 
-        // Set default values
-        $("#progress").val("Ongoing");
-        $("#percentage").val("");
-        $("#autoDate").prop("checked", true);
-        $("#date").prop("disabled", true).val(new Date().toISOString().split("T")[0]);
+            // Store current latest status data in memory
+            sessionStorage.setItem("latestStatusData", JSON.stringify({
+                percentage: parseFloat(response.latestPercentage ?? 0),
+                date: response.updatedAt
+            }));
 
-        // Show modal
-        $("#addStatusModal").modal("show");
+            // Fill modal fields
+            $("#projectTitleDisplay").text(projectDetails.projectTitle || "Untitled Project");
+            $("#projectID").text(project_id);
+            $("#progress").val("Ongoing");
+            $("#percentage").val("");
+            $("#autoDate").prop("checked", true);
+            $("#date").prop("disabled", true).val(new Date().toISOString().split("T")[0]);
+
+            $("#addStatusModal").modal("show");
+        });
     });
 
-    // Handle checkbox to toggle date input
+    // Toggle auto/manual date input
     $("#autoDate").on("change", function () {
         if ($(this).is(":checked")) {
             $("#date").prop("disabled", true).val(new Date().toISOString().split("T")[0]);
@@ -43,52 +52,53 @@ $(document).ready(function () {
 
         const project_id = sessionStorage.getItem("project_id");
         const progress = $("#progress").val();
-        const percentage = $("#percentage").val();
-        const date = $("#autoDate").is(":checked") 
-            ? new Date().toISOString().split("T")[0] 
+        const percentage = parseFloat($("#percentage").val());
+        const date = $("#autoDate").is(":checked")
+            ? new Date().toISOString().split("T")[0]
             : $("#date").val();
 
-        if (!percentage || isNaN(percentage) || percentage < 0 || percentage > 100) {
-            Swal.fire({
+        // ✅ FIXED: Allow 0 and properly validate number
+        if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+            return Swal.fire({
                 icon: "warning",
                 title: "Invalid Percentage",
-                text: "Please enter a valid percentage between 0 and 100.",
-                confirmButtonText: "OK"
+                text: "Please enter a valid percentage between 0 and 100."
             });
-            return;
         }
 
-        // You can send the data to your backend here
+        const latestStatus = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
+
+        // ✅ ENFORCE strictly greater condition
+        if (latestStatus.percentage !== undefined && (
+            percentage <= latestStatus.percentage ||
+            new Date(date) <= new Date(latestStatus.date)
+        )) {
+            return Swal.fire({
+                icon: "error",
+                title: "Invalid Update",
+                text: "New percentage and date must be strictly greater than the latest entry.",
+                confirmButtonText: "OK"
+            });
+        }
+
         $.ajax({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
             url: `/project-status/addStatus`,
             method: "POST",
-            data: {
-                project_id,
-                progress,
-                percentage,
-                date
-            },
-            success: function (response) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Status Added",
-                    text: "Project status successfully updated.",
-                    confirmButtonText: "OK"
-                });
+            data: { project_id, progress, percentage, date },
+            success: function () {
+                Swal.fire({ icon: "success", title: "Status Added" });
                 $("#addStatusModal").modal("hide");
-                // Optionally, refresh status cards:
                 fetchProjectStatus(project_id);
             },
             error: function (xhr) {
-                console.error("Status update failed:", xhr.responseText);
+                console.error(xhr.responseText);
                 Swal.fire({
                     icon: "error",
-                    title: "Failed to Add Status",
-                    text: "An error occurred. Please try again later.",
-                    confirmButtonText: "OK"
+                    title: "Failed",
+                    text: "Could not update status. Please try again later."
                 });
             }
         });

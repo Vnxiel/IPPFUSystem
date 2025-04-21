@@ -177,7 +177,7 @@ $(document).ready(function () {
             success: function (response) {
                 if (response === 1) {
                     Swal.fire({ 
-                        icon: "success", 
+                         icon: "success", 
                         title: "Success!", 
                         text: "Role updated successfully!" 
                     }).then(() => {

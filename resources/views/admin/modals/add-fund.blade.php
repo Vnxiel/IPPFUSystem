@@ -12,10 +12,10 @@
 
           <fieldset class="border p-1 mb-1 rounded shadow-sm bg-light">
             <div class="mb-3">
-              <textarea class="form-control-plaintext border rounded p-3 bg-white text-dark fw-semibold"
-                        id="projectTitleFU"
-                        name="projectTitleFU"
-                        rows="2"
+              <textarea class="form-control-plaintext border rounded p-3 bg-white text-dark fw-semibold" 
+                        id="projectTitleFU" 
+                        name="projectTitleFU" 
+                        rows="2" 
                         readonly>Project Title</textarea>
             </div>
           </fieldset>
@@ -29,7 +29,7 @@
         <tr>
           <th>Category</th>
           <th>Original</th>
-          <th>V.O. 1</th>
+          <th>V.O.1</th>
           <th>Actual</th>
         </tr>
       </thead>
@@ -37,60 +37,61 @@
         <tr>
           <td>ABC</td>
           <td><input type="text" class="form-control" id="orig_abc" name="orig_abc" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_abc_1" name="vo_abc_1" placeholder="₱0.00"></td>
+          <td><input type="text" class="form-control" id="vo_abc" name="vo_abc" placeholder="₱0.00"></td>
           <td><input type="text" class="form-control" id="actual_abc" name="actual_abc" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Contract Amount</td>
           <td><input type="text" class="form-control" id="orig_contract_amount" name="orig_contract_amount" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_contract_amount_1" name="vo_contract_amount_1" placeholder="₱0.00"></td>
+          <td><input type="text" class="form-control" id="vo_contract_amount" name="vo_contract_amount" placeholder="₱0.00"></td>
           <td><input type="text" class="form-control" id="actual_contract_amount" name="actual_contract_amount" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Engineering</td>
           <td><input type="text" class="form-control" id="orig_engineering" name="orig_engineering" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_engineering_1" name="vo_engineering_1" placeholder="₱0.00"></td>
+          <td><input type="text" class="form-control" id="vo_engineering" name="vo_engineering" placeholder="₱0.00"></td>
           <td><input type="text" class="form-control" id="actual_engineering" name="actual_engineering" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>MQC</td>
           <td><input type="text" class="form-control" id="orig_mqc" name="orig_mqc" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_mqc_1" name="vo_mqc_1" placeholder="₱0.00"></td>
+          <td><input type="text" class="form-control" id="vo_mqc" name="vo_mqc" placeholder="₱0.00"></td>
           <td><input type="text" class="form-control" id="actual_mqc" name="actual_mqc" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Contingency</td>
           <td><input type="text" class="form-control" id="orig_contingency" name="orig_contingency" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_contingency_1" name="vo_contingency_1" placeholder="₱0.00"></td>
+          <td><input type="text" class="form-control" id="vo_contingency" name="vo_contingency" placeholder="₱0.00"></td>
           <td><input type="text" class="form-control" id="actual_contingency" name="actual_contingency" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Bid Difference</td>
           <td><input type="text" class="form-control" id="orig_bid" name="orig_bid" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_bid_1" name="vo_bid_1" placeholder="₱0.00"></td>
+          <td><input type="text" class="form-control" id="vo_bid" name="vo_bid" placeholder="₱0.00"></td>
           <td><input type="text" class="form-control" id="actual_bid" name="actual_bid" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Appropriation</td>
           <td><input type="text" class="form-control" id="orig_appropriation" name="orig_appropriation" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_appropriation_1" name="vo_appropriation_1" placeholder="₱0.00"></td>
+          <td><input type="text" class="form-control" id="vo_appropriation" name="vo_appropriation" placeholder="₱0.00"></td>
           <td><input type="text" class="form-control" id="actual_appropriation" name="actual_appropriation" placeholder="₱0.00"></td>
         </tr>
       </tbody>
     </table>
   </div>
+
+  <!-- VO Dynamic Controls -->
+  <div class="text-end mt-2">
+    <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addVOFields()" title="Add V.O.">
+      <i class="fa-solid fa-square-plus"></i> Add V.O.
+    </button>
+    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastVOFields()" title="Remove Last V.O.">
+      <i class="fa-solid fa-circle-minus"></i> Remove V.O.
+    </button>
+  </div>
 </fieldset>
 
 
-            <div class="text-end mt-2">
-              <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addVOFields()">
-                <i class="fa-solid fa-square-plus"></i> Add V.O.
-              </button>
-              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastVOFields()">
-                <i class="fa-solid fa-circle-minus"></i> Remove V.O.
-              </button>
-            </div>
-          </fieldset>
 
           <!-- Fund Utilization Summary Table -->
           <fieldset class="border p-3 mb-4 rounded">
@@ -98,7 +99,7 @@
 
             <div class="table-responsive">
               <table class="table table-bordered text-center align-middle">
-                <thead>
+                <thead >
                   <tr>
                     <th>Category</th>
                     <th>Date</th>
@@ -157,20 +158,17 @@
               </table>
             </div>
 
+            <!-- Billing Controls -->
             <div class="text-end mt-2">
-              <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addNextBilling()">
-                <i class="fa-solid fa-square-plus"></i> Add Billing
-              </button>
-              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastBilling()">
-                <i class="fa-solid fa-circle-minus"></i> Remove Billing
-              </button>
+              <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addNextBilling()"><i class="fa-solid fa-square-plus"></i> Add Billing</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastBilling()"><i class="fa-solid fa-circle-minus"></i> Remove Billing</button>
             </div>
           </fieldset>
 
           <!-- Modal Footer -->
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" id="submitFundsUtilization" class="btn btn-primary">Save Fund Utilization</button>
+            <button type="button" id="submitFundsUtilization" class="btn btn-primary">Add Fund Utilization</button>
           </div>
         </form>
       </div>
@@ -178,59 +176,3 @@
   </div>
 </div>
 
-<script>
-let voCount = 1;
-let billingCount = 1;
-
-function addVOFields() {
-  voCount++;
-  const container = document.getElementById('voFieldsContainer');
-
-  const row = document.createElement('tr');
-  row.id = `vo_row_${voCount}`;
-  row.innerHTML = `
-    <td>V.O. ${voCount}</td>
-    <td colspan="2">
-      <div class="row g-2">
-        <div class="col"><input type="text" class="form-control" id="vo_abc_${voCount}" name="vo_abc_${voCount}" placeholder="ABC"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_contract_amount_${voCount}" name="vo_contract_amount_${voCount}" placeholder="Contract Amount"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_engineering_${voCount}" name="vo_engineering_${voCount}" placeholder="Engineering"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_mqc_${voCount}" name="vo_mqc_${voCount}" placeholder="MQC"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_bid_${voCount}" name="vo_bid_${voCount}" placeholder="Bid Difference"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_contingency_${voCount}" name="vo_contingency_${voCount}" placeholder="Contingency"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_appropriation_${voCount}" name="vo_appropriation_${voCount}" placeholder="Appropriation"></div>
-      </div>
-    </td>
-  `;
-  container.appendChild(row);
-}
-
-function removeLastVOFields() {
-  if (voCount > 1) {
-    const row = document.getElementById(`vo_row_${voCount}`);
-    if (row) row.remove();
-    voCount--;
-  }
-}
-
-function addNextBilling() {
-  billingCount++;
-  const tbody = document.getElementById('billingsTableBody');
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>Partial Billing ${billingCount}</td>
-    <td><input type="date" class="form-control" name="datePart${billingCount}"></td>
-    <td><input type="text" class="form-control" name="amountPart${billingCount}" placeholder="₱0.00"></td>
-    <td><input type="text" class="form-control" name="remPart${billingCount}"></td>
-  `;
-  tbody.appendChild(row);
-}
-
-function removeLastBilling() {
-  if (billingCount > 1) {
-    const tbody = document.getElementById('billingsTableBody');
-    tbody.removeChild(tbody.lastElementChild);
-    billingCount--;
-  }
-}
-</script>

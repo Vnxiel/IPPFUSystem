@@ -7,7 +7,7 @@
         <title>IPPFU</title>
         <!-- Bootstrap CSS -->
         
-        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Google Fonts & FontAwesome -->
@@ -20,7 +20,8 @@
         <!-- DataTables CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
-
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.5.0/css/colReorder.dataTables.min.css">
+    
         <link href="{{ asset('css/ippfu-css.css') }}" rel="stylesheet">
 
     </head>
@@ -35,7 +36,7 @@
                     </button>
 
                     <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('admin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                        <a href="{{ route('systemAdmin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
                             <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid d-inline-block align-text-top me-2">
                             <div>
                                 <h5 class="mb-0">Provincial Engineering Office</h5>
@@ -45,32 +46,27 @@
 
                         <ul class="navbar-nav col-lg-6 justify-content-lg-center">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{{ route('admin.index') }}">Dashboard</a>
+                                <a class="nav-link active {{ Request::is('admin/index') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/index') }}">Dashboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.projects') }}">Projects</a>
+                                <a class="nav-link active {{ Request::is('admin/projects') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/projects') }}">Projects</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.userManagement') }}">User Management</a>
-                            </li>
+                                <a id="userManagementBtn" class="nav-link active {{ Request::is('admin/userManagement') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/userManagement') }}">User Management</a>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
+                                <a class="nav-link dropdown-toggle {{ Request::is('admin/trash') || Request::is('admin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('admin.trash') }}">Trash</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('admin.activityLogs') }}">Activity Logs</a></li>
+                                    <li><a class="dropdown-item {{ Request::is('admin/trash') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/trash') }}">Trash</li>
+                                    <li><a class="dropdown-item {{ Request::is('admin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/activityLogs') }}">Activity Logs</a></li>
                                 </ul>
                             </li>
                         </ul>
                         <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
                             <div class="dropdown">
-                             <?php
-                                //  Get username from session
-                                $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest';
-                                ?>
 
                                 <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                                 data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                <span class="fa fa-user me-1"></span> <?php echo htmlspecialchars($username); ?>
+                                <span class="fa fa-user me-1"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownMenuButton">
                                     <li><a class="dropdown-item" href="javascript:void(0);" onclick="logout()">Sign out</a></li>
@@ -97,6 +93,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+       
         <!-- DataTables JS -->
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
@@ -107,19 +104,25 @@
 
         <!-- Your Custom Scripts -->
       
-        <script src="{{ asset('js/register-user.js') }}"></script>
-        <script src="{{ asset('js/getData.js') }}"></script>
-        <script src="{{ asset('js/load-data.js') }}"></script>
+        <script src="{{ asset('js/Account/register-user.js') }}"></script>
+        <script src="{{ asset('js/Datatables/getData.js') }}"></script>
+        <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
+        <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
-        <script src="{{ asset('js/projects.js') }}"></script>
-        <script src="{{ asset('js/addProject.js') }}"></script>
-        <script src="{{ asset('js/fetchProjects.js') }}"></script>
-        <script src="{{ asset('js/trashProjects.js') }}"></script>
-        <script src="{{ asset('js/updateProjects.js') }}"></script>
-        <script src="{{ asset('js/restoreProjects.js') }}"></script>
-        <script src="{{ asset('js/uploadFiles.js') }}"></script>
-        <script src="{{ asset('js/logout.js') }}"></script>
-        
+        <script src="{{ asset('js/Projects/fetchProjects.js') }}"></script>
+        <script src="{{ asset('js/Projects/projects.js') }}"></script>
+        <script src="{{ asset('js/Projects/addProject.js') }}"></script>
+        <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
+        <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
+        <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
+        <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
+        <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
+        <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
+        <script src="{{ asset('js/Projects/add-set.js') }}"></script>
+        <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
+        <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
+        <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
+        <script src="{{ asset('js/Account/logout.js') }}"></script>
         
     </body>
 </html>

@@ -96,35 +96,11 @@ $("#projects-container").hide();
 
 // Load projects and initialize DataTable
 loadProjects();
-
-//  Handle Overview Button Click
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("overview-btn")) {
-        let project_id = e.target.getAttribute("data-id");
-
-        //  Store projectID in session via AJAX
-        fetch("/store-project-id", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") // Laravel CSRF token
-            },
-            body: JSON.stringify({id: project_id })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log("Project ID stored successfully, redirecting...");
-
-                //  Redirect to main.overview (correct Laravel route)
-                window.location.href = "/systemAdmin/overview";
-            } else {
-                console.error("Failed to store project ID:", data);
-            }
-        })
-        .catch(error => console.error("Error storing project ID:", error));
-    }
+$('#location_filter, #contractor_filter, #amount_filter, #status_filter').on('input change', function () {
+    filterProjects();
 });
+
+
 
 function loadProjects() {
     $("#loading-message").text("Fetching projects...").show();
@@ -200,16 +176,23 @@ function loadProjects() {
                 });
 
                 // Bind click event to Overview buttons
-                $(document).on('click', '.overview-btn', function () {
-                    const projectId = $(this).data('id');
-                    sessionStorage.setItem('project_id', projectId);
-                    console.log("Project ID set in sessionStorage:", projectId);
-
-                    // Optional: refresh files table when button is clicked
-                    if ($.fn.DataTable.isDataTable('#projectFiles')) {
-                        $('#projectFiles').DataTable().ajax.reload();
-                    }
-                });
+              // Event binding should be outside the AJAX callback to prevent rebinding on each call
+              $(document).on('click', '.overview-btn', function () {
+                const projectId = $(this).data('id');
+                sessionStorage.setItem('project_id', projectId);
+            
+                const role = sessionStorage.getItem('user_role');
+                if (role === 'Admin') {
+                    window.location.href = "/admin/overview";
+                } else if (role === 'System Admin') {
+                    window.location.href = "/systemAdmin/overview";
+                } else if (role === 'Staff') {
+                    window.location.href = "/staff/overview";
+                } else {
+                    alert("Unauthorized: Unknown role.");
+                }
+            });
+            
             });
 
             $("#loading-message").hide();
@@ -283,7 +266,7 @@ success: function(response) {
                     `₱${parseFloat(project.contractAmount).toLocaleString()}`,
                     project.projectContractor,
                     `${project.projectContractDays} calendar days`,
-                    `<button class="btn btn-primary btn-sm restore-btn" data-id="${project.projectID}">Restore</button>`
+                    `<button class="btn btn-primary btn-sm restore-btn" data-id="${project.id}">Restore</button>`
                 ]).draw();
             });
         }
@@ -297,9 +280,6 @@ error: function() {
 });
 };
 
-$(document).ready(function() {
-fetchTrashedProjects(); // Call it here if needed
-});
 
 
 
@@ -336,7 +316,6 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": false,
         "ajax": function (data, callback, settings) {
-            // Get project ID from sessionStorage
             let project_id = sessionStorage.getItem("project_id");
 
             if (!project_id) {
@@ -351,12 +330,10 @@ $(document).ready(function () {
 
             console.log("Fetching files for Project ID:", project_id);
 
-            // Fetch the project files using the project ID
+            // Fetch project files
             fetch(`/files/${project_id}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log("API Response:", data);
-
                     if (!data || !Array.isArray(data.files)) {
                         Swal.fire({
                             icon: "error",
@@ -376,10 +353,10 @@ $(document).ready(function () {
                             fileType,
                             file.actionBy || "Unknown",
                             uploadDate,
-                            `<button onclick="downloadFile('${file.fileName}')" class="btn btn-success btn-sm">
+                            `<button class="btn btn-success btn-sm" onclick="downloadFile('${file.fileName}')">
                                 <i class="fa fa-download"></i>
                             </button>
-                            <button onclick="deleteFile('${file.fileID}')" class="btn btn-danger btn-sm">
+                            <button class="btn btn-danger btn-sm delete-file-btn" data-file-id="${file.fileName}">
                                 <i class="fa fa-trash"></i>
                             </button>`
                         ];
@@ -397,5 +374,11 @@ $(document).ready(function () {
                     });
                 });
         }
+    });
+
+    // Event delegation for delete buttons
+    $('#projectFiles').on('click', '.delete-file-btn', function () {
+        const fileName = $(this).data('file-id');
+        deleteFile(fileName); // Call the deleteFile function from deleteFile.js
     });
 });

@@ -5,13 +5,15 @@ $(document).ready(function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: "/login", // Matches Laravel route
+            url: "/login",
             method: "POST",
             data: $(this).serialize(),
             success: function(response) {
-                // Check the role in the response
+                // Store role in sessionStorage
+                sessionStorage.setItem('user_role', response.role);
+
                 if (response.role === 'System Admin') {
-                    console.log("Redirecting to:", "/systemAdmin/index"); // Debugging
+                    console.log("Redirecting to:", "/systemAdmin/index");
                     Swal.fire({
                         icon: "success",
                         title: "Logging in!",
@@ -27,7 +29,7 @@ $(document).ready(function() {
                         showConfirmButton: false,
                         timer: 2000,
                     }).then(function(){
-                        window.location = "/admin/index"; // Redirect to admin page
+                        window.location = "/admin/index";
                     });
                 } else if (response.role === 'Staff') {
                     Swal.fire({
@@ -36,7 +38,7 @@ $(document).ready(function() {
                         showConfirmButton: false,
                         timer: 2000,
                     }).then(function(){
-                        window.location = "/staff/index"; // Redirect to staff page
+                        window.location = "/staff/index";
                     });
                 } else {
                     Swal.fire({

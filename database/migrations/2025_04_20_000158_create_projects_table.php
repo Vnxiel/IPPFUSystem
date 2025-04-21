@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id(); // Primary key
-            $table->string('projectID')->unique(); // External/public identifier
+            $table->string('projectID'); // External/public identifier
 
             $table->string('projectTitle');
             $table->string('projectLoc');

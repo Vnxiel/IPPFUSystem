@@ -44,7 +44,7 @@
                                     </div>
                                     <div class="mb-1">
                                                 <label for="projectContractor" class="form-label">Contractor</label>
-                                                <select id="projectContractor" name="projectContractor" class="form-select" onchange="toggleOtherContractor()">
+                                                <select id="projectContractor" name="projectContractor" class="form-select">
                                                     <option value="">--Select Contractor--</option>
                                                     @foreach($contractors as $contractor)
                                                         <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
@@ -69,7 +69,8 @@
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                         <label for="sourceOfFunds" class="form-label">Source of Fund</label>
-                                        <select id="sourceOfFunds" name="sourceOfFunds" class="form-select"  onchange="toggleOtherFund()">
+                                        <select id="sourceOfFunds" name="sourceOfFunds" class="form-select"
+                                            onchange="toggleOtherFund()">
                                             <option value="">-- --</option>
                                             <option value="Wages">Wages</option>
                                             <option value="% Mobilization">15% Mobilization</option>
@@ -327,35 +328,3 @@
                 </div>
             </div>
         </div>
-<script>
-    // Function to toggle the visibility of the 'otherFundContainer' when 'Others' is selected in 'Source of Fund'
-function toggleOtherFund() {
-    const sourceOfFunds = document.getElementById("sourceOfFunds").value;
-    const otherFundContainer = document.getElementById("otherFundContainer");
-    
-    if (sourceOfFunds === "Others") {
-        otherFundContainer.style.display = "block"; // Show the input field for specifying the fund
-    } else {
-        otherFundContainer.style.display = "none"; // Hide the input field if not selected
-    }
-}
-
-// Function to toggle the visibility of the 'othersContractorDiv' when 'Others' is selected in 'Contractor'
-function toggleOtherContractor() {
-    const projectContractor = document.getElementById("projectContractor").value;
-    const othersContractorDiv = document.getElementById("othersContractorDiv");
-    
-    if (projectContractor === "Others") {
-        othersContractorDiv.style.display = "block"; // Show the input field for specifying the contractor
-    } else {
-        othersContractorDiv.style.display = "none"; // Hide the input field if not selected
-    }
-}
-
-// Ensure the correct visibility when the page loads, in case the 'Others' option was already selected in any dropdown
-document.addEventListener("DOMContentLoaded", function() {
-    toggleOtherFund(); // Check if 'Others' was selected for Source of Fund
-    toggleOtherContractor(); // Check if 'Others' was selected for Contractor
-});
-
-    </script>

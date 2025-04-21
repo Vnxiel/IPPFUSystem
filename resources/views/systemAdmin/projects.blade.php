@@ -6,68 +6,79 @@
             <hr class="mx-2">
             <div class="container-fluid px-3">
         <div class="row">
-            <!-- Custom Filters -->
-            <div class="col-md-12">
-                <div class="filter-container">
-                    <div class="row">
-                    <div class="col-md-3 mb-2">
-                        <label for="location_filter">Location:</label>
-                        <select id="location_filter" class="form-select">
-                            <option value="">All Locations</option>
-                            <option value="Alfonso Castañeda, Nueva Vizcaya">Alfonso Castañeda, Nueva Vizcaya</option>
-                            <option value="Ambaguio, Nueva Vizcaya">Ambaguio, Nueva Vizcaya</option>
-                            <option value="Aritao, Nueva Vizcaya">Aritao, Nueva Vizcaya</option>
-                            <option value="Bagabag, Nueva Vizcaya">Bagabag, Nueva Vizcaya</option>
-                            <option value="Bambang, Nueva Vizcaya">Bambang, Nueva Vizcaya</option>
-                            <option value="Bayombong, Nueva Vizcaya">Bayombong, Nueva Vizcaya</option>
-                            <option value="Diadi, Nueva Vizcaya">Diadi, Nueva Vizcaya</option>
-                            <option value="Dupax del Norte, Nueva Vizcaya">Dupax del Norte, Nueva Vizcaya</option>
-                            <option value="Dupax del Sur, Nueva Vizcaya">Dupax del Sur, Nueva Vizcaya</option>
-                            <option value="Kasibu, Nueva Vizcaya">Kasibu, Nueva Vizcaya</option>
-                            <option value="Kayapa, Nueva Vizcaya">Kayapa, Nueva Vizcaya</option>
-                            <option value="Quezon, Nueva Vizcaya">Quezon, Nueva Vizcaya</option>
-                            <option value="Santa Fe, Nueva Vizcaya">Santa Fe, Nueva Vizcaya</option>
-                            <option value="Solano, Nueva Vizcaya">Solano, Nueva Vizcaya</option>
-                            <option value="Villaverde, Nueva Vizcaya">Villaverde, Nueva Vizcaya</option>
-                        </select>
-                    </div>
+   <!-- Custom Filters -->
+<div class="col-md-12">
+    <div class="filter-container">
+        <div class="row">
 
-                    <div class="col-md-3 mb-2">
-                        <label for="contractor_filter">Contractor:</label>
-                        <input 
-                            list="contractors_list" 
-                            id="contractor_filter" 
-                            name="contractor" 
-                            class="form-select" 
-                            placeholder="Select or type a contractor" 
-                            required
-                        >
-                        <datalist id="contractors_list">
-                            <option value="">All Contractors</option>
-                            @foreach($contractors as $contractor)
-                                <option value="{{ $contractor->name }}"></option>
-                            @endforeach
-                        </datalist>
-                    </div>
-
-                        <div class="col-md-3 mb-2">
-                            <label for="amount_filter">Amount:</label>
-                            <input type="text" class="form-control" id="amount_filter" name="amount_filter" required>
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <label for="status_filter">Status:</label>
-                            <select id="status_filter" class="form-select">
-                                <option value="">All Status</option>
-                                <option value="Active">Ongoing</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Pending">Discontinued</option>
-                            </select>
-                        </div>
-                    </div>
+            <!-- Location -->
+            <div class="col-md-3 mb-2">
+                <label for="location_filter">Location:</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-geo-alt"></i> <!-- Bootstrap icon -->
+                    </span>
+                    <input type="text" class="form-control" id="location_filter" name="location_filter"
+                        placeholder="Enter Location" onkeyup="filterSuggestions(this.value)" autocomplete="off">
+                </div>
+                <div id="suggestionsBox" class="list-group position-absolute w-100 shadow"
+                    style="display:none; max-height: 200px; overflow-y: auto; z-index: 10;">
+                    @foreach($locations as $location)
+                    <button type="button" class="list-group-item list-group-item-action suggestion-item">
+                        {{ $location->location }}
+                    </button>
+                    @endforeach
                 </div>
             </div>
+
+            <!-- Contractor -->
+            <div class="col-md-3 mb-2">
+                <label for="contractor_filter">Contractor:</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-person-workspace"></i>
+                    </span>
+                    <input list="contractors_list" id="contractor_filter" name="contractor" class="form-select"
+                        placeholder="Select or type a contractor" required>
+                    <datalist id="contractors_list">
+                        <option value="">All Contractors</option>
+                        @foreach($contractors as $contractor)
+                        <option value="{{ $contractor->name }}"></option>
+                        @endforeach
+                    </datalist>
+                </div>
+            </div>
+
+            <!-- Amount -->
+            <div class="col-md-3 mb-2">
+                <label for="amount_filter">Amount:</label>
+                <div class="input-group">
+                    <span class="input-group-text">₱</span>
+                    <input type="text" class="form-control" id="amount_filter" name="amount_filter"
+                        placeholder="Enter amount" required>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-3 mb-2">
+                <label for="status_filter">Status:</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-info-circle"></i>
+                    </span>
+                    <select id="status_filter" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Discontinued">Discontinued</option>
+                    </select>
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
+
                     <div class="col-md-12 m-2">
                         <div class="row align-items-center">
                             <div class="col">
@@ -105,7 +116,10 @@
                     </div>
                 </div>
 
+
+                
                 <script>
+                    
      document.addEventListener("DOMContentLoaded", function () {
         const currencyInputs = document.querySelectorAll(".currency-input");
 
@@ -212,7 +226,56 @@
                 $('#otherFundContainer').slideUp(); // Hide input with animation
             }
         });
+
+        
     </script>
+
+<script>
+  // 1) Define the function globally
+  function filterSuggestions(query) {
+    const box   = document.getElementById('suggestionsBox');
+    const items = box.getElementsByClassName('suggestion-item');
+    const q     = query.trim().toLowerCase();
+    let visible = false;
+
+    Array.from(items).forEach(item => {
+      const text = item.textContent.trim().toLowerCase();
+      if (q !== '' && text.includes(q)) {
+        item.style.display = 'block';
+        visible = true;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+    box.style.display = visible ? 'block' : 'none';
+  }
+
+  // 2) Wire up events once DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('projectLoc');
+    const box   = document.getElementById('suggestionsBox');
+    const items = box.getElementsByClassName('suggestion-item');
+
+    // Replace inline onkeyup with a JS listener
+    input.addEventListener('keyup', e => filterSuggestions(e.target.value));
+
+    // Click a suggestion → fill input + hide box
+    Array.from(items).forEach(item => {
+      item.addEventListener('click', () => {
+        input.value = item.textContent.trim();
+        box.style.display = 'none';
+      });
+    });
+
+    // Click outside → hide box
+    document.addEventListener('click', e => {
+      if (!box.contains(e.target) && e.target !== input) {
+        box.style.display = 'none';
+      }
+    });
+  });
+</script>
 
 <script>
 let orderCount = 1;
@@ -369,7 +432,7 @@ function showMunicipalitySuggestions(query) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
             const contractorSelect = document.getElementById("projectContractor");
             const othersContractorDiv = document.getElementById("othersContractorDiv");
             const othersContractorInput = document.getElementById("othersContractor");
@@ -423,6 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 </script>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -483,11 +547,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
-@include('systemAdmin.modals.add-fund')
-    @include('systemAdmin.modals.edit-project')
     @include('systemAdmin.modals.add-project')
-    @include('systemAdmin.modals.add-status')
-    @include('systemAdmin.modals.check-status')
-    @include('systemAdmin.modals.uploadFiles')
-    @include('systemAdmin.modals.generate-report')
+
 @endsection

@@ -102,13 +102,25 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <!-- Your Custom Scripts -->
-        <script src="{{ asset('js/Project/add-project.js') }}"></script>
-        <script src="{{ asset('js/register-user.js') }}"></script>
-        <script src="{{ asset('js/getData.js') }}"></script>
-        <script src="{{ asset('js/load-data.js') }}"></script>
+        <script src="{{ asset('js/Account/register-user.js') }}"></script>
+        <script src="{{ asset('js/Datatables/getData.js') }}"></script>
+        <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
+        <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
-        <script src="{{ asset('js/projects.js') }}"></script>
-        <script src="{{ asset('js/logout.js') }}"></script>
+        <script src="{{ asset('js/Projects/fetchProjects.js') }}"></script>
+        <script src="{{ asset('js/Projects/projects.js') }}"></script>
+        <script src="{{ asset('js/Projects/addProject.js') }}"></script>
+        <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
+        <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
+        <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
+        <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
+        <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
+        <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
+        <script src="{{ asset('js/Projects/add-set.js') }}"></script>
+        <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
+        <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
+        <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
+        <script src="{{ asset('js/Account/logout.js') }}"></script>
         
     </body>
 </html>

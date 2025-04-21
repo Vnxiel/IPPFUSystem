@@ -1,109 +1,103 @@
-$(document).ready(function() {
-    $(document).on("submit", "#uploadForm", function(event) {
-        event.preventDefault();
+$(document).ready(function () {
+  // Preview selected files
+  $("#file").on("change", function () {
+    const previewContainer = $("#imagePreviewContainer");
+    previewContainer.empty(); // Clear previous previews
 
-        // Fetch projectID from sessionStorage
-        let project_id = sessionStorage.getItem("project_id");
+    const files = this.files;
+    if (!files.length) {
+      previewContainer.hide();
+      return;
+    }
 
-        if (!project_id) {
-            Swal.fire({
-                title: "Error",
-                text: "No project ID found in session. Please select a project first.",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
-            return;
-        }
-
-        console.log("Retrieved Project ID:", project_id);
-
-        let fileInput = $("#file")[0];
-        if (!fileInput.files.length) {
-            Swal.fire({
-                title: "Warning",
-                text: "Please select a file to upload.",
-                icon: "warning",
-                confirmButtonText: "OK"
-            });
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append("project_id", project_id);
-        formData.append("file", fileInput.files[0]);
-
-        console.log("Uploading file:", fileInput.files[0].name);
-
-        // Upload file via AJAX
-        $.ajax({
-            url: `/upload-file/${project_id}`,
-            method: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
-            success: function(data) {
-                console.log("Upload Response:", data);
-
-                if (data.status === "error" && data.message === "File already exists") {
-                    Swal.fire({
-                        title: "Duplicate File",
-                        text: "A file with the same name already exists for this project. Please rename your file or choose a different one.",
-                        icon: "warning",
-                        confirmButtonText: "OK"
-                    });
-                    return;
-                }
-
-                if (data.status === "success") {
-                    Swal.fire({
-                        title: "Success!",
-                        text: "File uploaded successfully.",
-                        icon: "success",
-                        confirmButtonText: "OK"
-                    }).then(() => {
-                        location.reload(); // Reload the page after clicking "OK"
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Upload Failed",
-                        text: data.message || "Something went wrong!",
-                        icon: "error",
-                        confirmButtonText: "OK"
-                    });
-                }
-            },
-            error: function(xhr) {
-                console.error("Upload Error:", xhr.responseText);
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to upload file. File already exists.",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        });
+    Array.from(files).forEach(file => {
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = $('<img class="img-thumbnail me-2 mb-2" style="max-width: 100px;">');
+          img.attr("src", e.target.result);
+          previewContainer.append(img);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const icon = $(`<div class="text-start mb-1"><i class="bi bi-file-earmark me-1"></i> ${file.name}</div>`);
+        previewContainer.append(icon);
+      }
     });
-});
 
-// Show Image Preview Before Upload
-function setupUploadModal() {
-    document.getElementById("file").addEventListener("change", function (event) {
-        let file = event.target.files[0];
-        let previewContainer = document.getElementById("imagePreviewContainer");
-        let previewImage = document.getElementById("imagePreview");
+    previewContainer.show();
+  });
 
-        if (file && file.type.startsWith("image/")) {
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                previewImage.src = e.target.result;
-                previewContainer.style.display = "block";
-            };
-            reader.readAsDataURL(file);
+  // Handle form submission
+  $(document).on("submit", "#uploadForm", function (event) {
+    event.preventDefault();
+
+    let project_id = sessionStorage.getItem("project_id");
+    if (!project_id) {
+      Swal.fire("Error", "No project ID found in session.", "error");
+      return;
+    }
+
+    let files = $("#file")[0].files;
+    if (!files.length) {
+      Swal.fire("Warning", "Please select file(s) to upload.", "warning");
+      return;
+    }
+
+    let formData = new FormData();
+    formData.append("project_id", project_id);
+    Array.from(files).forEach(file => {
+      formData.append("files[]", file); // Note the array syntax
+    });
+
+    $.ajax({
+      url: `/upload-file/${project_id}`, // Controller should match this route
+      method: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      headers: {
+        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+      },
+      success: function (response) {
+        if (response.status === "success") {
+          let successMsg = response.uploaded.length
+            ? `${response.uploaded.length} file(s) uploaded successfully.`
+            : "No new files were uploaded.";
+
+          let duplicateFiles = response.errors.filter(err => err.message.includes("already exists"));
+          let otherErrors = response.errors.filter(err => !err.message.includes("already exists"));
+
+          let errorHtml = '';
+          if (duplicateFiles.length) {
+            errorHtml += `<br><b>Duplicates:</b><ul>`;
+            duplicateFiles.forEach(err => {
+              errorHtml += `<li>${err.file} already exists.</li>`;
+            });
+            errorHtml += `</ul>`;
+          }
+
+          if (otherErrors.length) {
+            errorHtml += `<br><b>Errors:</b><ul>`;
+            otherErrors.forEach(err => {
+              errorHtml += `<li>${err.file}: ${err.message}</li>`;
+            });
+            errorHtml += `</ul>`;
+          }
+
+          Swal.fire({
+            title: "Upload Result",
+            html: `<b>Success:</b> ${successMsg}${errorHtml}`,
+            icon: "info",
+          }).then(() => location.reload());
         } else {
-            previewContainer.style.display = "none";
+          Swal.fire("Error", response.message || "Upload failed.", "error");
         }
+      },
+      error: function (xhr) {
+        console.error("Upload Error:", xhr.responseText);
+        Swal.fire("Error", "An error occurred during upload.", "error");
+      }
     });
-}
+  });
+});

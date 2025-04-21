@@ -9,19 +9,17 @@ class FundsUtilization extends Model
 {
     use HasFactory;
 
-    // Define the exact table name in the database
     protected $table = 'funds_utilization';
 
-    // Allow mass assignment for these fields
     protected $fillable = [
         'project_id',
         'orig_abc',
         'orig_contract_amount',
         'orig_engineering',
         'orig_mqc',
+        'orig_contingency',
         'orig_bid',
         'orig_appropriation',
-        'orig_completion_date',
         'actual_abc',
         'actual_contract_amount',
         'actual_engineering',
@@ -29,13 +27,15 @@ class FundsUtilization extends Model
         'actual_bid',
         'actual_contingency',
         'actual_appropriation',
-        'actual_completion_date',
+        'summary',
+        'partial_billings',
     ];
 
-    /**
-     * Relationship to the Project model.
-     * Each FundsUtilization record is related to a single Project.
-     */
+    protected $casts = [
+        'summary' => 'array',
+        'partial_billings' => 'array',
+    ];
+
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');

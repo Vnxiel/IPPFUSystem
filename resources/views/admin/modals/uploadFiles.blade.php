@@ -12,15 +12,15 @@
 
                             <div class="mb-3">
                                 <label for="file" class="form-label">Choose File</label>
-                                <input type="file" id="file" class="form-control" multiple accept="image/*, .pdf, .docx, .xlsx, .zip">
-
+                                <input type="file" id="file" class="form-control"
+                                    accept="image/*, .pdf, .docx, .xlsx, .zip">
                                 <small class="text-muted">Accepted: Images, PDF, DOCX, XLSX, ZIP</small>
                             </div>
 
                             <!-- Image Preview -->
-                          <!-- File Previews -->
-                            <div id="imagePreviewContainer" class="row g-2 mt-3"></div>
-
+                            <div id="imagePreviewContainer" class="text-center" style="display: none;">
+                                <img id="imagePreview" src="" class="img-thumbnail" style="max-width: 100px;">
+                            </div>
 
                             <button type="submit" class="btn btn-primary w-100">Upload</button>
                         </form>

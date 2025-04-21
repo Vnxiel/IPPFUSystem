@@ -333,8 +333,41 @@
 </div>
         
 
+<script>
+   // Function to toggle the visibility of the 'otherFundContainer' when 'Others' is selected in 'Source of Fund'
+function toggleOtherFund() {
+    const sourceOfFunds = document.getElementById("sourceOfFunds").value;
+    const otherFundContainer = document.getElementById("otherFundContainer");
+    
+    if (sourceOfFunds === "Others") {
+        otherFundContainer.style.display = "block"; // Show the input field for specifying the fund
+    } else {
+        otherFundContainer.style.display = "none"; // Hide the input field if not selected
+    }
+}
+
+// Function to toggle the visibility of the 'othersContractorDiv' when 'Others' is selected in 'Contractor'
+function toggleOtherContractor() {
+    const projectContractor = document.getElementById("projectContractor").value;
+    const othersContractorDiv = document.getElementById("othersContractorDiv");
+    
+    if (projectContractor === "Others") {
+        othersContractorDiv.style.display = "block"; // Show the input field for specifying the contractor
+    } else {
+        othersContractorDiv.style.display = "none"; // Hide the input field if not selected
+    }
+}
+
+// Ensure the correct visibility when the page loads, in case the 'Others' option was already selected in any dropdown
+document.addEventListener("DOMContentLoaded", function() {
+    toggleOtherFund(); // Check if 'Others' was selected for Source of Fund
+    toggleOtherContractor(); // Check if 'Others' was selected for Contractor
+});
+
+    </script>
 
 <script>
+    
      document.addEventListener("DOMContentLoaded", function () {
         const currencyInputs = document.querySelectorAll(".currency-input");
 
@@ -395,53 +428,9 @@
         document.getElementById('contractAmount').addEventListener('input', updateBidDifference);
     });
 
-
-        // Handle "Other Fund" Selection Toggle
-        function toggleOtherFund() {
-            var sourceOfFunds = document.getElementById("sourceOfFunds").value;
-            var otherFundContainer = document.getElementById("otherFundContainer");
-
-            if (sourceOfFunds === "Others") {
-                otherFundContainer.style.display = "block";
-            } else {
-                otherFundContainer.style.display = "none";
-            }
-        }
-
-        // Handle "Ongoing Status" Selection Toggle
-        function toggleOngoingStatus() {
-            let statusSelect = document.getElementById("projectStatus");
-            let ongoingContainer = document.getElementById("ongoingStatusContainer");
-            let ongoingDate = document.getElementById("ongoingDate");
-
-            if (statusSelect.value === "Ongoing") {
-                ongoingContainer.style.display = "block";
-
-                // Set the ongoingDate to today's date
-                let today = new Date().toISOString().split('T')[0];
-                ongoingDate.value = today;
-            } else {
-                ongoingContainer.style.display = "none";
-                ongoingDate.value = ""; // Clear the date when status is not "Ongoing"
-            }
-        }
-
-
-        // Add Event Listener for Project Status Dropdown
-        document.getElementById("projectStatus").addEventListener("change", function () {
-            toggleOngoingStatus();
-        });
-
-
-        // Handle "Other Fund" Dropdown Change
-        $('#sourceOfFunds').on('change', function () {
-            if ($(this).val() === 'Others') {
-                $('#otherFundContainer').slideDown(); // Show input with animation
-            } else {
-                $('#otherFundContainer').slideUp(); // Hide input with animation
-            }
-        });
     </script>
+
+
 
 <script>
 let orderCount = 1;
@@ -598,22 +587,7 @@ function showMunicipalitySuggestions(query) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-            const contractorSelect = document.getElementById("projectContractor");
-            const othersContractorDiv = document.getElementById("othersContractorDiv");
-            const othersContractorInput = document.getElementById("othersContractor");
 
-            contractorSelect.addEventListener("change", function () {
-                if (this.value === "Others") {
-                    // Show the "Specify New Contractor" text box
-                    othersContractorDiv.style.display = "block";
-                } else {
-                    // Hide the "Specify New Contractor" text box if anything else is selected
-                    othersContractorDiv.style.display = "none";
-                    othersContractorInput.value = ""; // Clear input if not "Others"
-                }
-            });
-        });
 </script>
 
 <script>
@@ -705,9 +679,9 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
     
+    @include('systemAdmin.modals.add-fund')
     @include('systemAdmin.modals.add-status')
     @include('systemAdmin.modals.check-status')
-    @include('systemAdmin.modals.add-fund')
     @include('systemAdmin.modals.edit-project')
     @include('systemAdmin.modals.uploadFiles')
     @include('systemAdmin.modals.generate-report')

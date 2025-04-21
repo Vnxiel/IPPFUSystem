@@ -47,6 +47,12 @@ tbody tr:first-child td {
     border-top: none;
 }
 
+.empty-field {
+    border: 2px solid red !important;
+    background-color: #ffe6e6;
+}
+
+
 /* Freeze the first column*/
 /* td:first-child, th:first-child {
     position: sticky;

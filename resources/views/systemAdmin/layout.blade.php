@@ -7,7 +7,7 @@
         <title>IPPFU</title>
         <!-- Bootstrap CSS -->
         
-        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Google Fonts & FontAwesome -->
@@ -52,7 +52,7 @@
                                 <a class="nav-link active {{ Request::is('systemAdmin/projects') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/projects') }}">Projects</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active {{ Request::is('systemAdmin/userManagement') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/userManagement') }}">User Management</a>
+                                <a id="userManagementBtn" class="nav-link active {{ Request::is('systemAdmin/userManagement') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/userManagement') }}">User Management</a>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ Request::is('systemAdmin/trash') || Request::is('systemAdmin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
@@ -113,9 +113,9 @@
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
+        <script src="{{ asset('js/Projects/fetchProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/projects.js') }}"></script>
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>
-        <script src="{{ asset('js/Projects/fetchProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
@@ -126,6 +126,7 @@
         <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
+        <script src="{{ asset('js/Files/deleteFile.js') }}"></script>
         <script src="{{ asset('js/Account/logout.js') }}"></script>
         
     </body>

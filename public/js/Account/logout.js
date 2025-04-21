@@ -9,6 +9,9 @@ function logout() {
         confirmButtonText: 'Yes, log out!'
     }).then((result) => {
         if (result.isConfirmed) {
+             // Clear sessionStorage
+             sessionStorage.clear();
+
             Swal.fire({
                 icon: "success",
                 title: "Successfully logged out!",
