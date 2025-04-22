@@ -71,7 +71,6 @@ class FileManager extends Controller
         }
 
         try {
-            $timestampedFilename = date('Ymd_His') . '_' . $filename;
             $filepath = $file->storeAs('project_files', $filename, 'public');
 
             $projectFile = ProjectFile::create([
@@ -147,7 +146,8 @@ class FileManager extends Controller
     }
 
     // New correct path (if using storage:link)
-    $filePath = public_path('storage/project_files/' . $filename);
+    $filePath = storage_path('app/public/project_files/' . $filename);
+
 
     if (!file_exists($filePath)) {
         return response()->json(['status' => 'error', 'message' => 'File not found or inaccessible.'], 404);

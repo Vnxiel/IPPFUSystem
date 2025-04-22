@@ -1,20 +1,21 @@
 function fetchProjectDetails() {
-    
-    const project_id = sessionStorage.getItem("project_id");
+    const project_id = sessionStorage.getItem("project_id"); // You may still need this line if the ID is stored here
 
-    // Fetch project details directly using stored ID
+    if (!project_id) {
+        console.error("Project ID not found in sessionStorage.");
+        return;
+    }
+
     $.ajax({
         url: `/projects/getProject/${project_id}`,
         method: "GET",
         dataType: "json",
         success: function(data) {
             if (data.status === "success") {
-                // Store project details in sessionStorage
-                sessionStorage.setItem("projectDetails", JSON.stringify(data.project));
-                
-                // Optionally populate UI directly
-                updateProjectUI(data.project); 
-                updateProjectForm(data.project); 
+                const project = data.project;
+
+                updateProjectUI(project);
+                updateProjectForm(project);
             } else {
                 console.error("Error fetching project details:", data.message);
                 Swal.fire({

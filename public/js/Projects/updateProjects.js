@@ -1,7 +1,5 @@
 // Update UI with Project Data
-function updateProjectUI() {
-    const project = JSON.parse(sessionStorage.getItem("projectDetails"));
-
+function updateProjectUI(project) {
     if (!project) {
         console.error("No project data found in session.");
         return;
@@ -49,13 +47,14 @@ function updateProjectUI() {
         "projectContractorDisplay": contractorValue,
         "contractDaysDisplay": project.projectContractDays,
         "projectStatusDisplay": project.projectStatus,
+        "sourceOfFunds": project.sourceOfFunds,
         "noticeOfAwardDisplay": project.noticeOfAward,
         "modeOfImplementationDisplay": project.modeOfImplementation,
         "officialStartDisplay": project.officialStart,
         "targetCompletionDisplay": project.targetCompletion,
         "timeExtensionDisplay": project.timeExtension,
         "revisedTargetCompletionDisplay": project.revisedTargetCompletion,
-        "completionDateDisplay": project.completionDate,
+        "CompletionDateDisplay": project.completionDate,
         "abcOriginalDisplay": project.abc,
         "mqcOriginalDisplay": project.mqc,
         "contractAmountOriginalDisplay": project.contractAmount,
@@ -69,6 +68,7 @@ function updateProjectUI() {
         "noaIssuedDateDisplay": project.noaIssuedDate,
         "noaReceivedDateDisplay": project.noaReceivedDate,
         "ntpIssuedDateDisplay": project.ntpIssuedDate,
+        "ntpReceivedDateDisplay": project.ntpReceivedDate,
         "ntpReceivedDateDisplay": project.ntpReceivedDate,
         "projectSlippageDisplay": project.projectSlippage
     };
@@ -95,7 +95,7 @@ function updateProjectUI() {
         const contractorClean = contractorRaw.trim().toLowerCase();
 
         const displayVal = contractorClean === "others"
-            ? (project.otherContractor?.trim() || "No other project contractor specified")
+            ? (project.othersContractor?.trim() || "No other project contractor specified")
             : (contractorRaw || "No project contractor specified");
 
         contractorsElem.textContent = displayVal;
@@ -131,9 +131,7 @@ function updateProjectUI() {
 
 
 // Update Project Form
-function updateProjectForm() {
-    let project = JSON.parse(sessionStorage.getItem("projectDetails"));
-
+function updateProjectForm(project) {
     if (!project) {
         console.error("Error: Project data is undefined or null.");
         return;

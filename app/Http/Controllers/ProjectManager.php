@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\ActivityLog;
 use App\Http\Controllers\ActivityLogs;
 use App\Models\Contractor;
@@ -18,6 +19,7 @@ use App\Models\FundsUtilization;
 use App\Models\ProjectDescription;
 use App\Models\ProjectFile;
 use App\Models\ProjectStatus;
+use App\Models\VariationOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProjectManager extends Controller
@@ -207,29 +209,42 @@ class ProjectManager extends Controller
     
 
     public function ProjectDetails()
-    {
-        try {
-            // Siguraduhin na ang `is_hidden` ay `0` o `NULL`, kaya gumamit ng `whereNull` at `orWhere`
-            $projects = Project::where(function ($query) {
-                    $query->whereNull('is_hidden')  // Kapag walang value ang is_hidden
-                          ->orWhere('is_hidden', 0); // O kaya kapag `0` ang value
-                })
-                ->orderBy('created_at', 'desc')
-                ->get();
-    
-            return response()->json([
-                'status' => 'success',
-                'projects' => $projects
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Error fetching projects: ' . $e->getMessage());
-    
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error fetching projects. Please try again.'
-            ], 500);
-        }
+{
+    try {
+        $projects = Project::select('id', 'projectTitle', 'projectLoc', 'projectStatus', 'contractAmount', 'projectContractor', 'othersContractor', 'projectContractDays')
+            ->where(function ($query) {
+                $query->whereNull('is_hidden')->orWhere('is_hidden', 0);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($project) {
+                return [
+                    'title' => $project->projectTitle ?? 'N/A',
+                    'location' => $project->projectLoc ?? 'N/A',
+                    'status' => $project->projectStatus ?? 'N/A',
+                    'amount' => number_format($project->contractAmount ?? 0, 2),
+                    'contractor' => (strtolower($project->projectContractor) === 'others')
+                        ? ($project->othersContractor ?? 'N/A')
+                        : ($project->projectContractor ?? 'N/A'),
+                    'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
+                    'action' => '<button class="btn btn-primary btn-sm overview-btn" data-id="' . $project->id . '">Overview</button>',
+                ];
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'projects' => $projects
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Error fetching projects: ' . $e->getMessage());
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Error fetching projects. Please try again.'
+        ], 500);
     }
+}
+
 
     public function fetchTrashedProjects()
     {
@@ -237,7 +252,20 @@ class ProjectManager extends Controller
             // Kunin lang ang mga projects na may `is_hidden = 1`
             $projects = Project::where('is_hidden', 1)
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->get()
+                ->map(function ($project) {
+                    return [
+                        'title' => $project->projectTitle ?? 'N/A',
+                        'location' => $project->projectLoc ?? 'N/A',
+                        'status' => $project->projectStatus ?? 'N/A',
+                        'amount' => number_format($project->contractAmount ?? 0, 2),
+                        'contractor' => (strtolower($project->projectContractor) === 'others')
+                            ? ($project->othersContractor ?? 'N/A')
+                            : ($project->projectContractor ?? 'N/A'),
+                        'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
+                        'action' => '<button class="btn btn-primary btn-sm overview-btn" data-id="' . $project->id . '">Overview</button>',
+                    ];
+                });
     
             return response()->json(['status' => 'success', 'projects' => $projects]);
         } catch (\Exception $e) {
@@ -329,7 +357,6 @@ class ProjectManager extends Controller
         }
     }
     
-    
     public function getProjectSummary()
     {
         try {
@@ -379,27 +406,32 @@ class ProjectManager extends Controller
 
     public function getAllProjects()
     {
-    // Siguraduhin na ang `is_hidden` ay `0` o `NULL`
+        // Get only projects where `is_hidden` is NULL or 0
         $projects = Project::where(function ($query) {
             $query->whereNull('is_hidden')
                 ->orWhere('is_hidden', 0);
-        })->get(); // ✅ Fetch the results here
-
-        // Attach latest status
+        })->get();
+    
+        // Attach latest status only if it's "Ongoing", otherwise keep existing projectStatus
         $projects->transform(function ($project) {
-            $status = ProjectStatus::where('project_id', $project->id)
+            $latestStatus = ProjectStatus::where('project_id', $project->id)
                 ->latest('created_at')
                 ->first();
-
-            $project->projectStatus = $status ? $status->progress : null;
+    
+            if ($latestStatus && $latestStatus->progress === 'Ongoing') {
+                $project->projectStatus = $latestStatus->progress;
+            }
+            // Else retain the projectStatus from the project table
+    
             return $project;
         });
-
+    
         return response()->json([
             'status' => 'success',
             'projects' => $projects
         ]);
     }
+    
     
     
 

@@ -1,6 +1,6 @@
 <!-- Fund Utilization Modal -->
 <div class="modal fade" id="addProjectFundUtilization" tabindex="-1" aria-labelledby="addProjectFundUtilizationLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="addProjectFundUtilizationLabel">Fund Utilization</h1>
@@ -35,6 +35,8 @@
       </thead>
       <tbody>
         <tr>
+        <input type="hidden" id="voCount" name="voCount" value="1">
+
           <td>ABC</td>
           <td><input type="text" class="form-control" id="orig_abc" name="orig_abc" placeholder="₱0.00"></td>
           <td><input type="text" class="form-control" id="vo_abc_1" name="vo_abc_1" placeholder="₱0.00"></td>
@@ -182,43 +184,20 @@
 let voCount = 1;
 let billingCount = 1;
 
-function addVOFields() {
-  voCount++;
-  const container = document.getElementById('voFieldsContainer');
-
-  const row = document.createElement('tr');
-  row.id = `vo_row_${voCount}`;
-  row.innerHTML = `
-    <td>V.O. ${voCount}</td>
-    <td colspan="2">
-      <div class="row g-2">
-        <div class="col"><input type="text" class="form-control" id="vo_abc_${voCount}" name="vo_abc_${voCount}" placeholder="ABC"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_contract_amount_${voCount}" name="vo_contract_amount_${voCount}" placeholder="Contract Amount"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_engineering_${voCount}" name="vo_engineering_${voCount}" placeholder="Engineering"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_mqc_${voCount}" name="vo_mqc_${voCount}" placeholder="MQC"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_bid_${voCount}" name="vo_bid_${voCount}" placeholder="Bid Difference"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_contingency_${voCount}" name="vo_contingency_${voCount}" placeholder="Contingency"></div>
-        <div class="col"><input type="text" class="form-control" id="vo_appropriation_${voCount}" name="vo_appropriation_${voCount}" placeholder="Appropriation"></div>
-      </div>
-    </td>
-  `;
-  container.appendChild(row);
+function getOrdinalSuffix(n) {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
 }
 
-function removeLastVOFields() {
-  if (voCount > 1) {
-    const row = document.getElementById(`vo_row_${voCount}`);
-    if (row) row.remove();
-    voCount--;
-  }
-}
 
 function addNextBilling() {
   billingCount++;
+  const suffix = getOrdinalSuffix(billingCount);
   const tbody = document.getElementById('billingsTableBody');
   const row = document.createElement('tr');
   row.innerHTML = `
-    <td>Partial Billing ${billingCount}</td>
+    <td>${billingCount}${suffix} Partial Billing</td>
     <td><input type="date" class="form-control" name="datePart${billingCount}"></td>
     <td><input type="text" class="form-control" name="amountPart${billingCount}" placeholder="₱0.00"></td>
     <td><input type="text" class="form-control" name="remPart${billingCount}"></td>

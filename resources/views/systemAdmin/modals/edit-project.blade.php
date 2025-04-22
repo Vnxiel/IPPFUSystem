@@ -327,35 +327,4 @@
                 </div>
             </div>
         </div>
-<script>
-    // Function to toggle the visibility of the 'otherFundContainer' when 'Others' is selected in 'Source of Fund'
-function toggleOtherFund() {
-    const sourceOfFunds = document.getElementById("sourceOfFunds").value;
-    const otherFundContainer = document.getElementById("otherFundContainer");
-    
-    if (sourceOfFunds === "Others") {
-        otherFundContainer.style.display = "block"; // Show the input field for specifying the fund
-    } else {
-        otherFundContainer.style.display = "none"; // Hide the input field if not selected
-    }
-}
 
-// Function to toggle the visibility of the 'othersContractorDiv' when 'Others' is selected in 'Contractor'
-function toggleOtherContractor() {
-    const projectContractor = document.getElementById("projectContractor").value;
-    const othersContractorDiv = document.getElementById("othersContractorDiv");
-    
-    if (projectContractor === "Others") {
-        othersContractorDiv.style.display = "block"; // Show the input field for specifying the contractor
-    } else {
-        othersContractorDiv.style.display = "none"; // Hide the input field if not selected
-    }
-}
-
-// Ensure the correct visibility when the page loads, in case the 'Others' option was already selected in any dropdown
-document.addEventListener("DOMContentLoaded", function() {
-    toggleOtherFund(); // Check if 'Others' was selected for Source of Fund
-    toggleOtherContractor(); // Check if 'Others' was selected for Contractor
-});
-
-    </script>

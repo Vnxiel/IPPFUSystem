@@ -1,5 +1,4 @@
 
-
 document.addEventListener('DOMContentLoaded', function () {
   const fundModal = document.getElementById('addProjectFundUtilization');
 
@@ -10,12 +9,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  let voCount = 1; // initialize with default V.O. count (1 based on your table structure)
+  let voCount = parseInt(document.getElementById('voCount').value) || 1;
   let billingCount = 1;
 
   document.getElementById('submitFundsUtilization').addEventListener('click', function () {
     const project_id = sessionStorage.getItem("project_id");
     if (!project_id) return;
+
+    // Get latest VO count
+    voCount = parseInt(document.getElementById('voCount').value) || 1;
 
     const variation_orders = [];
     for (let i = 1; i <= voCount; i++) {
@@ -112,6 +114,49 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Add this global so it works outside the event listener
+function addVOFields() {
+  voCount++;
+  document.getElementById('voCount').value = voCount;
+
+  const table = document.querySelector('.table.table-bordered');
+  const headerRow = table.querySelector('thead tr');
+  const newHeader = document.createElement('th');
+  newHeader.textContent = `V.O. ${voCount}`;
+  headerRow.insertBefore(newHeader, headerRow.children[headerRow.children.length - 1]);
+
+  const rowNames = [
+    'abc', 'contract_amount', 'engineering',
+    'mqc', 'contingency', 'bid', 'appropriation'
+  ];
+
+  const rows = table.querySelectorAll('tbody tr');
+
+  rowNames.forEach((name, index) => {
+    const cell = document.createElement('td');
+    cell.innerHTML = `<input type="text" class="form-control" id="vo_${name}_${voCount}" name="vo_${name}_${voCount}" placeholder="₱0.00">`;
+    const cells = rows[index].querySelectorAll('td');
+    rows[index].insertBefore(cell, cells[cells.length - 1]);
+  });
+}
+
+function removeLastVOFields() {
+  if (voCount > 1) {
+    const table = document.querySelector('.table.table-bordered');
+    const headerRow = table.querySelector('thead tr');
+    headerRow.removeChild(headerRow.children[headerRow.children.length - 2]);
+
+    const rows = table.querySelectorAll('tbody tr');
+    for (let i = 0; i < 7; i++) {
+      const cells = rows[i].querySelectorAll('td');
+      rows[i].removeChild(cells[cells.length - 2]);
+    }
+
+    voCount--;
+    document.getElementById('voCount').value = voCount;
+  }
+}
+
 function loadFundUtilization(project_id) {
   fetch(`/fund-utilization/${project_id}`)
     .then(res => res.json())
@@ -137,26 +182,26 @@ function loadFundUtilization(project_id) {
         document.getElementById('actual_contingency').value = fu.actual_contingency ?? '';
         document.getElementById('actual_appropriation').value = fu.actual_appropriation ?? '';
 
+        let maxVO = 1;
         vos.forEach(vo => {
-          if (vo.vo_number > voCount) {
-            for (let i = voCount; i < vo.vo_number; i++) {
-              addVOFields();
-            }
-            voCount = vo.vo_number;
-          }
+          maxVO = Math.max(maxVO, vo.vo_number);
+        });
 
-          const abc = document.getElementById(`vo_abc_${vo.vo_number}`);
-          if (abc) {
-            abc.value = vo.vo_abc ?? '';
-            document.getElementById(`vo_contract_amount_${vo.vo_number}`).value = vo.vo_contract_amount ?? '';
-            document.getElementById(`vo_engineering_${vo.vo_number}`).value = vo.vo_engineering ?? '';
-            document.getElementById(`vo_mqc_${vo.vo_number}`).value = vo.vo_mqc ?? '';
-            document.getElementById(`vo_bid_${vo.vo_number}`).value = vo.vo_bid ?? '';
-            document.getElementById(`vo_contingency_${vo.vo_number}`).value = vo.vo_contingency ?? '';
-            document.getElementById(`vo_appropriation_${vo.vo_number}`).value = vo.vo_appropriation ?? '';
-          } else {
-            console.warn(`VO fields for vo_number ${vo.vo_number} not found.`);
-          }
+        for (let i = voCount + 1; i <= maxVO; i++) {
+          addVOFields();
+        }
+
+        voCount = maxVO;
+        document.getElementById('voCount').value = voCount;
+
+        vos.forEach(vo => {
+          document.getElementById(`vo_abc_${vo.vo_number}`).value = vo.vo_abc ?? '';
+          document.getElementById(`vo_contract_amount_${vo.vo_number}`).value = vo.vo_contract_amount ?? '';
+          document.getElementById(`vo_engineering_${vo.vo_number}`).value = vo.vo_engineering ?? '';
+          document.getElementById(`vo_mqc_${vo.vo_number}`).value = vo.vo_mqc ?? '';
+          document.getElementById(`vo_bid_${vo.vo_number}`).value = vo.vo_bid ?? '';
+          document.getElementById(`vo_contingency_${vo.vo_number}`).value = vo.vo_contingency ?? '';
+          document.getElementById(`vo_appropriation_${vo.vo_number}`).value = vo.vo_appropriation ?? '';
         });
 
         const summary = fu.summary || {};
@@ -183,11 +228,11 @@ function loadFundUtilization(project_id) {
         if (billings.length > 0) {
           billingsBody.innerHTML = '';
           billingCount = 0;
-          billings.forEach((billing, i) => {
+          billings.forEach((billing) => {
             billingCount++;
             const row = document.createElement('tr');
             row.innerHTML = `
-              <td>Partial Billing ${billingCount}</td>
+              <td>${billingCount} Partial Billing </td>
               <td><input type="date" class="form-control" name="datePart${billingCount}" value="${billing.date ?? ''}"></td>
               <td><input type="text" class="form-control" name="amountPart${billingCount}" value="${billing.amount ?? ''}" placeholder="₱0.00"></td>
               <td><input type="text" class="form-control" name="remPart${billingCount}" value="${billing.remarks ?? ''}"></td>

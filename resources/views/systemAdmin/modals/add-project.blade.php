@@ -44,9 +44,9 @@
                                     <label for="projectLoc" class="form-label">Location</label>
                                     <input type="text" class="form-control" id="projectLoc" name="projectLoc" required placeholder="Enter municipality, Nueva Vizcaya" onkeyup="filterSuggestions(this.value)" autocomplete="off">
                                     
-                                    <div id="suggestionsBox" class="list-group position-absolute w-100 shadow" style="display:none; max-height: 200px; overflow-y: auto; z-index: 10;">
+                                    <div id="suggestionsBoxs" class="list-group position-absolute w-100 shadow" style="display:none; max-height: 200px; overflow-y: auto; z-index: 10;">
                                         @foreach($locations as $location)
-                                            <button type="button" class="list-group-item list-group-item-action suggestion-item">
+                                            <button type="button" class="list-group-item list-group-item-action suggestion-items">
                                                 {{ $location->location }}
                                             </button>
                                         @endforeach
@@ -318,3 +318,50 @@
                     </div>
                 </div>
             </div>
+
+            <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("projectLoc");
+        const suggestionsBox = document.getElementById("suggestionsBoxs");
+        const suggestionItems = suggestionsBox.querySelectorAll(".suggestion-items");
+
+        // Show/hide and filter suggestions
+        input.addEventListener("keyup", function () {
+            const query = input.value.toLowerCase().trim();
+
+            if (query === "") {
+                suggestionsBox.style.display = "none";
+                return;
+            }
+
+            let hasMatch = false;
+
+            suggestionItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    item.style.display = "block";
+                    hasMatch = true;
+                } else {
+                    item.style.display = "none";
+                }
+            });
+
+            suggestionsBox.style.display = hasMatch ? "block" : "none";
+        });
+
+        // Set selected value in input
+        suggestionItems.forEach(item => {
+            item.addEventListener("click", function () {
+                input.value = this.textContent.trim();
+                suggestionsBox.style.display = "none";
+            });
+        });
+
+        // Optional: Hide suggestions when clicking outside
+        document.addEventListener("click", function (e) {
+            if (!suggestionsBox.contains(e.target) && e.target !== input) {
+                suggestionsBox.style.display = "none";
+            }
+        });
+    });
+</script>

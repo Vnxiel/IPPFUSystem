@@ -109,16 +109,9 @@
         <script src="{{ asset('js/activityLogs.js') }}"></script>
         <script src="{{ asset('js/Projects/fetchProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/projects.js') }}"></script>
-        <script src="{{ asset('js/Projects/addProject.js') }}"></script>
-        <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
-        <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
-        <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
-        <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
-        <script src="{{ asset('js/Projects/add-set.js') }}"></script>
-        <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
-        <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
+       
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Account/logout.js') }}"></script>
         

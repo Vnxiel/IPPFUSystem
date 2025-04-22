@@ -7,11 +7,7 @@
                 <h5 class="modal-title" id="addStatusModalLabel">Add Project Status</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <!-- Project Title and Project ID -->
-            <div class="text-center mb-4">
-                        <h4 id="projectTitleDisplay" class="text-primary">Project Title</h4>
-                    </div>
-
+           
             <form id="addStatusForm">
                 <div class="modal-body">
                     

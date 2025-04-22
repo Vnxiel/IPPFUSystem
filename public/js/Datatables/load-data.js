@@ -8,53 +8,22 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: function (data) {
-                console.log("Fetched Projects:", data);
-
                 if (data.status === "success" && Array.isArray(data.projects)) {
-                    let tbody = $("#projectTableBody");
-                    tbody.empty(); // Clear old data
-
-                    if (data.projects.length === 0) {
-                        tbody.html(`<tr><td colspan="7" class="text-center">No projects available.</td></tr>`);
-                        return;
-                    }
-
-                    let projects = data.projects.map(project => {
-                        let contractor = (project.projectContractor && project.projectContractor.toLowerCase() === 'others')
-                            ? (project.othersContractor || "N/A")
-                            : (project.projectContractor || "N/A");
-                    
-                        return [
-                            project.projectTitle || "N/A",
-                            project.projectLoc || "N/A",
-                            project.projectStatus || "N/A",
-                            `₱${parseFloat(project.contractAmount || 0).toLocaleString()}`,
-                            contractor,
-                            project.projectContractDays ? `${project.projectContractDays} days` : "N/A",
-                            `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.id}">Overview</button>`
-                        ];
-                    });
-                    
-
-                    console.log("Processed Data for Table:", projects);
-
-                    // Destroy existing DataTable before reloading
+                    // Destroy DataTable before reload
                     if ($.fn.DataTable.isDataTable("#recentProjects")) {
                         $('#recentProjects').DataTable().clear().destroy();
-                        console.log("Existing DataTable destroyed.");
                     }
 
-                    // Initialize DataTable with fetched projects
                     $('#recentProjects').DataTable({
-                        data: projects,
+                        data: data.projects,
                         columns: [
-                            { title: "Project Title" },
-                            { title: "Location" },
-                            { title: "Status" },
-                            { title: "Contract Amount" },
-                            { title: "Contractor" },
-                            { title: "Duration" },
-                            { title: "Action", orderable: false }
+                            { data: 'title', title: "Project Title" },
+                            { data: 'location', title: "Location" },
+                            { data: 'status', title: "Status" },
+                            { data: 'amount', title: "Contract Amount" },
+                            { data: 'contractor', title: "Contractor" },
+                            { data: 'duration', title: "Duration" },
+                            { data: 'action', title: "Action", orderable: false }
                         ],
                         responsive: true,
                         scrollX: true,
@@ -63,19 +32,16 @@ $(document).ready(function () {
                         autoWidth: false,
                         aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
                         pageLength: 10,
-                        order: [[3, 'desc']],  // Sorting based on the 4th column (Contract Amount)
-                        columnDefs: [
-                            {
-                                targets: '_all',   // Apply to all columns
-                                orderable: true     // Ensure columns can still be ordered
-                            }
-                        ],
+                        processing: true,
+                        order: [[3, 'desc']],
+                        columnDefs: [{
+                            targets: '_all',
+                            orderable: true
+                        }],
                         fixedColumns: {
-                            leftColumns: 1  // Freezes the first column
+                            leftColumns: 1
                         }
                     });
-
-                    console.log("DataTable Reloaded Successfully!");
                 } else {
                     console.error("Invalid project data received.");
                 }
@@ -86,7 +52,6 @@ $(document).ready(function () {
         });
     }
 
-    // Call fetchRecentProjects when the page is ready
     fetchRecentProjects();
 });
 
@@ -104,83 +69,68 @@ $('#location_filter, #contractor_filter, #amount_filter, #status_filter').on('in
 
 function loadProjects() {
     $("#loading-message").text("Fetching projects...").show();
-    
+
     $.ajax({
-        url: "/projects/getAllProjects",
+        url: "/projects/ProjectDetails", // 🔄 Using the cleaned-up endpoint
         method: "GET",
         dataType: "json",
-        success: function(response) {
+        success: function (response) {
             console.log("API Response:", response);
-            
+
             if (!response || typeof response !== "object" || !Array.isArray(response.projects) || response.projects.length === 0) {
                 console.error("Invalid API Response Structure:", response);
                 showError("No valid projects found.");
                 return;
             }
 
-            let projects = response.projects.map(project => {
-                // Handle 'Others' contractor
-                let contractor = (project.projectContractor && project.projectContractor.toLowerCase() === 'others')
-                    ? (project.othersContractor || "N/A")
-                    : (project.projectContractor || "N/A");
-
-                return [
-                    project.projectTitle || "N/A",
-                    project.projectLoc || "N/A",
-                    project.projectStatus || "N/A",
-                    project.contractAmount
-                        ? `₱${parseFloat(project.contractAmount).toLocaleString()}`
-                        : "N/A",
-                    contractor,
-                    project.projectContractDays
-                        ? `${project.projectContractDays} days`
-                        : "N/A",
-                    `<button class="btn btn-primary btn-sm overview-btn" data-id="${project.id}">
-                        Overview
-                    </button>`
-                ];
-            });
+            const projects = response.projects.map(project => [
+                project.title || "N/A",
+                project.location || "N/A",
+                project.status || "N/A",
+                `₱${project.amount || "0.00"}`,
+                project.contractor || "N/A",
+                project.duration || "N/A",
+                project.action
+            ]);
 
             if ($.fn.DataTable.isDataTable("#projects")) {
                 $('#projects').DataTable().clear().destroy();
                 console.log("Existing DataTable destroyed.");
             }
 
-            $(document).ready(function () {
-                $('#projects').DataTable({
-                    data: projects,
-                    columns: [
-                        { title: "Project Title" },
-                        { title: "Location" },
-                        { title: "Status" },
-                        { title: "Contract Amount" },
-                        { title: "Contractor" },
-                        { title: "Duration" },
-                        { title: "Action", orderable: false }
-                    ],
-                    responsive: true,
-                    scrollX: true,
-                    paging: true,
-                    searching: true,
-                    autoWidth: false,
-                    aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-                    pageLength: 10,
-                    order: [[3, 'desc']],
-                    processing: true,
-                    columnDefs: [
-                        { targets: '_all', orderable: true }
-                    ],
-                    fixedColumns: {
-                        leftColumns: 1
-                    }
-                });
+            $('#projects').DataTable({
+                data: projects,
+                columns: [
+                    { title: "Project Title" },
+                    { title: "Location" },
+                    { title: "Status" },
+                    { title: "Contract Amount" },
+                    { title: "Contractor" },
+                    { title: "Duration" },
+                    { title: "Action", orderable: false }
+                ],
+                responsive: true,
+                scrollX: true,
+                paging: true,
+                searching: true,
+                autoWidth: false,
+                aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+                pageLength: 10,
+                order: [[3, 'desc']],
+                processing: true,
+                columnDefs: [
+                    { targets: '_all', orderable: true }
+                ],
+                fixedColumns: {
+                    leftColumns: 1
+                }
+            });
 
-                // Bind click event to Overview buttons
-              // Event binding should be outside the AJAX callback to prevent rebinding on each call
-              $(document).on('click', '.overview-btn', function () {
+            // Only bind this once — leave it here, not inside AJAX success
+            $(document).off('click', '.overview-btn').on('click', '.overview-btn', function () {
                 const projectId = $(this).data('id');
                 sessionStorage.setItem('project_id', projectId);
-            
+
                 const role = sessionStorage.getItem('user_role');
                 if (role === 'Admin') {
                     window.location.href = "/admin/overview";
@@ -192,13 +142,11 @@ function loadProjects() {
                     alert("Unauthorized: Unknown role.");
                 }
             });
-            
-            });
 
             $("#loading-message").hide();
             $("#projects-container").show();
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error("AJAX Error:", xhr.responseText);
             let errorMessage = "Failed to load project data.";
 
@@ -243,41 +191,42 @@ autoWidth: false,   // Disable the auto width setting to make it flexible
 });
 
 window.fetchTrashedProjects = function() {
-$.ajax({
-url: "/projects/fetch-trash",
-method: "GET",
-dataType: "json",
-success: function(response) {
-    let table = $('#trashList').DataTable();
-    if (response.status === "success") {
-        let projects = response.projects;
-        table.clear(); // Clear existing rows
+    $.ajax({
+        url: "/projects/fetch-trash",
+        method: "GET",
+        dataType: "json",
+        success: function(response) {
+            let table = $('#trashList').DataTable();
+            table.clear(); // Clear existing rows
 
-        if (projects.length === 0) {
-            table.row.add([
-                'No trashed projects found.', '', '', '', '', '', ''
-            ]).draw();
-        } else {
-            projects.forEach(function(project) {
-                table.row.add([
-                    project.projectTitle,
-                    project.projectLoc,
-                    project.projectStatus,
-                    `₱${parseFloat(project.contractAmount).toLocaleString()}`,
-                    project.projectContractor,
-                    `${project.projectContractDays} calendar days`,
-                    `<button class="btn btn-primary btn-sm restore-btn" data-id="${project.id}">Restore</button>`
-                ]).draw();
-            });
+            if (response.status === "success") {
+                let projects = response.projects;
+
+                if (projects.length === 0) {
+                    table.row.add([
+                        'No trashed projects found.', '', '', '', '', '', ''
+                    ]).draw();
+                } else {
+                    projects.forEach(function(project) {
+                        table.row.add([
+                            project.title,
+                            project.location,
+                            project.status,
+                            `₱${project.amount}`,
+                            project.contractor,
+                            project.duration,
+                            project.action
+                        ]).draw();
+                    });
+                }
+            } else {
+                Swal.fire("Error!", response.message, "error");
+            }
+        },
+        error: function() {
+            Swal.fire("Error!", "Failed to fetch trashed projects. Please try again.", "error");
         }
-    } else {
-        Swal.fire("Error!", response.message, "error");
-    }
-},
-error: function() {
-    Swal.fire("Error!", "Failed to fetch trashed projects. Please try again.", "error");
-}
-});
+    });
 };
 
 

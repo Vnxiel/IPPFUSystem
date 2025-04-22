@@ -5,8 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (project_id) {
         fetchProjectDetails();
     }
-
-
     let currencyDivs = document.querySelectorAll(".currency-input"); // Hanapin ang lahat ng currency input fields
 
     currencyDivs.forEach(div => {
