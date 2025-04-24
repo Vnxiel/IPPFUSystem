@@ -26,8 +26,16 @@ return new class extends Migration
             $table->string('revisedTargetCompletion')->nullable();
             $table->string('completionDate')->nullable();
 
-            $table->string('directOrIndirectCost')->nullable();
-            $table->string('revisedContractCost')->nullable();
+            $table->decimal('abc', 15, 2)->nullable();
+            $table->decimal('contractAmount', 15, 2)->nullable();
+            $table->decimal('engineering', 15, 2)->nullable();
+            $table->decimal('mqc', 15, 2)->nullable();
+            $table->decimal('contingency', 15, 2)->nullable();
+            $table->decimal('bid', 15, 2)->nullable();
+            $table->decimal('appropriation', 15, 2)->nullable();
+            $table->decimal('directOrIndirectCost', 15, 2)->nullable();
+            $table->decimal('revisedContractCost', 15, 2)->nullable();
+            
 
             $table->date('originalExpiryDate')->nullable();
             $table->date('revisedExpiryDate')->nullable();

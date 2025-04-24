@@ -1,6 +1,3 @@
-
-
-
 $(document).ready(function () {
     function fetchRecentProjects() {
         $.ajax({
@@ -8,54 +5,67 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: function (data) {
-                if (data.status === "success" && Array.isArray(data.projects)) {
-                    // Destroy DataTable before reload
-                    if ($.fn.DataTable.isDataTable("#recentProjects")) {
-                        $('#recentProjects').DataTable().clear().destroy();
-                    }
-
-                    $('#recentProjects').DataTable({
-                        data: data.projects,
-                        columns: [
-                            { data: 'title', title: "Project Title" },
-                            { data: 'location', title: "Location" },
-                            { data: 'status', title: "Status" },
-                            { data: 'amount', title: "Contract Amount" },
-                            { data: 'contractor', title: "Contractor" },
-                            { data: 'duration', title: "Duration" },
-                            { data: 'action', title: "Action", orderable: false }
-                        ],
-                        responsive: true,
-                        scrollX: true,
-                        paging: true,
-                        searching: true,
-                        autoWidth: false,
-                        aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-                        pageLength: 10,
-                        processing: true,
-                        order: [[3, 'desc']],
-                        columnDefs: [{
-                            targets: '_all',
-                            orderable: true
-                        }],
-                        fixedColumns: {
-                            leftColumns: 1
-                        }
+                if (!data || typeof data !== 'object' || data.status !== "success") {
+                    return Swal.fire({
+                        icon: 'error',
+                        title: 'Data Error',
+                        text: data.message || 'Unexpected response from server.',
                     });
-                } else {
-                    console.error("Invalid project data received.");
                 }
+
+                if (Array.isArray(data.projects) && data.projects.length === 0) {
+                    return Swal.fire({
+                        icon: 'info',
+                        title: 'No Projects Found',
+                        text: data.message || 'There are no recently added projects.',
+                        timer: 10000,  // Close after 5 seconds
+                        showConfirmButton: false,  // Remove the OK button
+                    });
+                }
+
+                // Re-initialize DataTable if it already exists
+                if ($.fn.DataTable.isDataTable("#recentProjects")) {
+                    $('#recentProjects').DataTable().clear().destroy();
+                }
+
+                $('#recentProjects').DataTable({
+                    data: data.projects,
+                    columns: [
+                        { data: 'title', title: "Project Title" },
+                        { data: 'location', title: "Location" },
+                        { data: 'status', title: "Status" },
+                        { data: 'amount', title: "Contract Amount" },
+                        { data: 'contractor', title: "Contractor" },
+                        { data: 'duration', title: "Duration" },
+                        { data: 'action', title: "Action", orderable: false }
+                    ],
+                    responsive: true,
+                    scrollX: true,
+                    paging: true,
+                    searching: true,
+                    autoWidth: false,
+                    aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+                    pageLength: 10,
+                    processing: true,
+                    order: [[3, 'desc']],
+                    columnDefs: [{ targets: '_all', orderable: true }],
+                    fixedColumns: { leftColumns: 1 }
+                });
             },
             error: function (xhr, status, error) {
-                console.error("Error loading projects:", error);
+                console.error("AJAX Error:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Fetch Error',
+                    text: xhr.responseJSON?.message || 'An error occurred while fetching project data.',
+                });
             }
         });
     }
 
-    fetchRecentProjects();
 });
 
-
+$(document).ready(function () {
 // Initially hide the table
 $("#projects-container").hide(); 
 
@@ -79,11 +89,23 @@ function loadProjects() {
 
             console.log("API Response:", response);
 
-            if (!response || typeof response !== "object" || !Array.isArray(response.projects) || response.projects.length === 0) {
+            if (!response || typeof response !== "object" || !Array.isArray(response.projects)) {
                 console.error("Invalid API Response Structure:", response);
-                showError("No valid projects found.");
+                showError("Failed to fetch project data. Please try again.");
                 return;
             }
+            
+            if (response.projects.length === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Projects Found',
+                    text: 'There are no currently added projects. Please add one first.',
+                    timer: 10000,  // Close after 5 seconds
+                    showConfirmButton: false,  // Remove the OK button
+                });
+                return;
+            }
+            
 
             const projects = response.projects.map(project => [
                 project.title || "N/A",
@@ -162,12 +184,22 @@ function loadProjects() {
     });
 }
 
+
 // Function to show errors
 function showError(message) {
-    $("#loading-message").text(message).addClass("text-danger").show();
+    function showError(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: message,
+            timer: 10000,  // Close after 5 seconds
+            showConfirmButton: false,  // Remove the OK button
+        });
+    }
+    
     $("#projects-container").hide(); // Ensure table remains hidden if there's an error
 }
-
+});
 
 
 
@@ -191,6 +223,7 @@ autoWidth: false,   // Disable the auto width setting to make it flexible
 });
 });
 
+$(document).ready(function () {
 function fetchTrashedProjects() {
     $.ajax({
         url: "/projects/fetch-trash",
@@ -263,6 +296,7 @@ function fetchTrashedProjects() {
         }
     });
 }
+});
 
 
 
