@@ -45,12 +45,15 @@ class GenerateProjectReport extends Controller
                 ? 'pdf.generateProjectWithPic'
                 : 'pdf.generateProject';
 
+            $user = auth()->user();
+
             $pdf = Pdf::loadView($view, [
                 'project' => $project,
                 'projectDescriptions' => $projectDescriptions,
                 'projectFundsUtilization' => $projectFundsUtilization,
                 'projectVariationOrder' => $projectVariationOrder,
                 'projectFiles' => $projectFiles,
+                'userName' => $user ? $user->fullname : 'Unknown User',
             ])->setPaper('A4', 'portrait');
 
             $sanitizedTitle = preg_replace('/[\/\\\\]/', '_', $project->projectTitle);

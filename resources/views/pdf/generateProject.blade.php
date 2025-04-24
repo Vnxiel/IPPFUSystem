@@ -121,184 +121,192 @@
     <img src="{{ public_path('img/Picture2.gif') }}" alt="Footer Design">
   </div>
 
-  <!-- Project Information -->
-  <table class="project-info-table">
-    <tbody>
-      <tr class="fit-text-row">
-        <th>Project Title:</th>
-        <td colspan="3" style="font-size: 20px; font-weight: bold">{{ $project->projectTitle }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <th>Location:</th>
-        <td colspan="3">{{ $project->projectLoc }}</td>
-      </tr>
-      <tr class="fit-text-row"> 
-            <th style="text-align: right; vertical-align: middle;">Project Description:</th>
-            <td colspan="3">
-                <ul style="margin: 0; padding-left: 0; list-style: none;">
-                    @foreach ($projectDescriptions as $desc)
-                        <li>{{ $desc }}</li>
-                    @endforeach
-                </ul>
-            </td>
-        </tr>
+      <!-- Project Information -->
+      <table class="project-info-table">
+        <tbody>
+          <tr class="fit-text-row">
+            <th>Project Title:</th>
+            <td colspan="3" style="font-size: 20px; font-weight: bold">{{ $project->projectTitle }}</td>
+          </tr>
+          <tr class="fit-text-row">
+            <th>Location:</th>
+            <td colspan="3">{{ $project->projectLoc }}</td>
+          </tr>
+          <tr class="fit-text-row"> 
+                <th style="text-align: right; vertical-align: middle;">Project Description:</th>
+                <td colspan="3">
+                    <ul style="margin: 0; padding-left: 0; list-style: none;">
+                        @foreach ($projectDescriptions as $desc)
+                            <li>{{ $desc }}</li>
+                        @endforeach
+                    </ul>
+                </td>
+            </tr>
 
 
-        <tr class="fit-text-row">
-        <th>Contractor:</th>
-        <td colspan="3">{{ $project->projectContractor }}</td>
+            <tr class="fit-text-row">
+            <th>Contractor:</th>
+            <td colspan="3">{{ $project->projectContractor }}</td>
+          </tr>
+          <tr class="fit-text-row">
+            <th>Project ID:</th>
+            <td colspan="3">{{ $project->projectID }}</td>
+          </tr>
+          <tr class="fit-text-row">
+            <th>Source of Fund:</th>
+            <td colspan="3">{{ $project->sourceOfFunds }}</td>
+          </tr>
+          <tr class="fit-text-row">
+            <th>Appropriation:</th>
+            <td colspan="3">{{ number_format((float) $project->appropriation, 2) }}</td>
+
+          </tr>
+          <tr class="fit-text-row">
+            <th>Contract Days:</th>
+            <td colspan="3">{{ $project->projectContractDays }} Calendar Days</td>
+          </tr>
+            <tr class="fit-text-row">
+                <th rowspan="2">Notice of Award:</th>
+                <td style="border-right: none;">{{ $project->noaIssuedDate }}</td>
+                <td colspan="2" style="border-left: none;"><em>Issued Date</em></td>
+            </tr> 
+            <tr class="fit-text-row">
+                <td style="border-right: none;">{{ $project->noaReceivedDate }}</td>
+                <td colspan="2" style="border-left: none;"><em>Received Date</em></td>
+            </tr>
+            <tr class="fit-text-row">
+                <th rowspan="2">Notice to Proceed::</th>
+                <td style="border-right: none;">{{ $project->ntpIssuedDate }}</td>
+                <td colspan="2" style="border-left: none;"><em>Issued Date</em></td>
+            </tr>
+            <tr class="fit-text-row">
+                <td style="border-right: none;">{{ $project->ntpReceivedDate }}</td>
+                <td colspan="2" style="border-left: none;"><em>Received Date</em></td>
+            </tr>
+          <tr class="fit-text-row">
+            <th>Official Start:</th>
+            <td colspan="3">{{ $project->officialStart }}</td>
+          </tr>
+          <tr class="fit-text-row">
+            <th>Target Completion:</th>
+            <td colspan="3">{{ $project->targetCompletion }}</td>
+          </tr>
+          <tr class="fit-text-row">
+            <th>Completion Date:</th>
+            <td colspan="3">{{ $project->completionDate }}</td>
+          </tr>
+
+        <!-- ABC Section -->
+    <tr class="fit-text-row sub-header">
+      <td></td>
+      <td>ORIGINAL</td>
+      <td>V.O.1</td>
+      <td>ACTUAL</td>
+    </tr>
+    <tr class="fit-text-row">
+      <th>ABC:</th>
+      <td style="text-align: right;">{{ $projectFundsUtilization['orig_abc'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_abc'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['actual_abc'] ?? '' }}</td>
+    </tr>
+    <tr class="fit-text-row">
+      <th>Contract Amount:</th>
+      <td style="text-align: right;">{{ $projectFundsUtilization['orig_contract_amount'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contract_amount'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['actual_contract_amount'] ?? '' }}</td>
+    </tr>
+    <tr class="fit-text-row">
+      <th>Engineering:</th>
+      <td style="text-align: right;">{{ $projectFundsUtilization['orig_engineering'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_engineering'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['actual_engineering'] ?? '' }}</td>
+    </tr>
+    <tr class="fit-text-row">
+      <th>MQC:</th>
+      <td style="text-align: right;">{{ $projectFundsUtilization['orig_mqc'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_mqc'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['actual_mqc'] ?? '' }}</td>
+    </tr>
+      <tr class="fit-text-row">
+        <th>Contingency:</th>
+        <td style="text-align: right;">{{ $projectFundsUtilization['orig_contingency'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contingency'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $projectFundsUtilization['actual_contingency'] ?? '' }}</td>
       </tr>
       <tr class="fit-text-row">
-        <th>Project ID:</th>
-        <td colspan="3">{{ $project->projectID }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <th>Source of Fund:</th>
-        <td colspan="3">{{ $project->sourceOfFunds }}</td>
+        <th>Bid Difference:</th>
+        <td style="text-align: right;">{{ $projectFundsUtilization['orig_bid'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_bid'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $projectFundsUtilization['actual_bid'] ?? '' }}</td>
       </tr>
       <tr class="fit-text-row">
         <th>Appropriation:</th>
-        <td colspan="3">{{ number_format((float) $project->appropriation, 2) }}</td>
+        <td style="text-align: right;">{{ $projectFundsUtilization['orig_appropriation'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_appropriation'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $projectFundsUtilization['actual_appropriation'] ?? '' }}</td>
+      </tr>
 
+      <!-- Blank row for spacing -->
+      <tr><td colspan="4"></td></tr>
+
+      <!-- Billings Section -->
+      <tr class="fit-text-row sub-header">
+        <td>DATE COVERED</td>
+        <td>PARTICULARS</td>
+        <td>AMOUNT</td>
+        <td>REMARKS</td>
+      </tr>
+
+      @php
+        $summary = $projectFundsUtilization['summary'] ?? [];
+      @endphp
+
+      <tr class="fit-text-row">
+        <td style="text-align: right;">{{ $summary['mobilization']['date'] ?? '' }}</td>
+        <td>15% Mobilization</td>
+        <td style="text-align: right;">{{ $summary['mobilization']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['mobilization']['remarks'] ?? '' }}</td>
       </tr>
       <tr class="fit-text-row">
-        <th>Contract Days:</th>
-        <td colspan="3">{{ $project->projectContractDays }} Calendar Days</td>
-      </tr>
-        <tr class="fit-text-row">
-            <th rowspan="2">Notice of Award:</th>
-            <td style="border-right: none;">{{ $project->noaIssuedDate }}</td>
-            <td colspan="2" style="border-left: none;"><em>Issued Date</em></td>
-        </tr> 
-        <tr class="fit-text-row">
-            <td style="border-right: none;">{{ $project->noaReceivedDate }}</td>
-            <td colspan="2" style="border-left: none;"><em>Received Date</em></td>
-        </tr>
-        <tr class="fit-text-row">
-            <th rowspan="2">Notice to Proceed::</th>
-            <td style="border-right: none;">{{ $project->ntpIssuedDate }}</td>
-            <td colspan="2" style="border-left: none;"><em>Issued Date</em></td>
-        </tr>
-        <tr class="fit-text-row">
-            <td style="border-right: none;">{{ $project->ntpReceivedDate }}</td>
-            <td colspan="2" style="border-left: none;"><em>Received Date</em></td>
-        </tr>
-      <tr class="fit-text-row">
-        <th>Official Start:</th>
-        <td colspan="3">{{ $project->officialStart }}</td>
+        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
+        <td>First and Final Billing</td>
+        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
       </tr>
       <tr class="fit-text-row">
-        <th>Target Completion:</th>
-        <td colspan="3">{{ $project->targetCompletion }}</td>
+        <td style="text-align: right;">{{ $summary['engineering']['date'] ?? '' }}</td>
+        <td>Engineering</td>
+        <td style="text-align: right;">{{ $summary['engineering']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['engineering']['remarks'] ?? '' }}</td>
       </tr>
       <tr class="fit-text-row">
-        <th>Completion Date:</th>
-        <td colspan="3">{{ $project->completionDate }}</td>
+        <td style="text-align: right;">{{ $summary['mqc']['date'] ?? '' }}</td>
+        <td>MQC</td>
+        <td style="text-align: right;">{{ $summary['mqc']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['mqc']['remarks'] ?? '' }}</td>
       </tr>
 
-     <!-- ABC Section -->
-<tr class="fit-text-row sub-header">
-  <td></td>
-  <td>ORIGINAL</td>
-  <td>V.O.1</td>
-  <td>ACTUAL</td>
-</tr>
-<tr class="fit-text-row">
-  <th>ABC:</th>
-  <td style="text-align: right;">{{ $projectFundsUtilization['orig_abc'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_abc'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectFundsUtilization['actual_abc'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <th>Contract Amount:</th>
-  <td style="text-align: right;">{{ $projectFundsUtilization['orig_contract_amount'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contract_amount'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectFundsUtilization['actual_contract_amount'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <th>Engineering:</th>
-  <td style="text-align: right;">{{ $projectFundsUtilization['orig_engineering'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_engineering'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectFundsUtilization['actual_engineering'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <th>MQC:</th>
-  <td style="text-align: right;">{{ $projectFundsUtilization['orig_mqc'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_mqc'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectFundsUtilization['actual_mqc'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <th>Contingency:</th>
-  <td style="text-align: right;">{{ $projectFundsUtilization['orig_contingency'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contingency'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectFundsUtilization['actual_contingency'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <th>Bid Difference:</th>
-  <td style="text-align: right;">{{ $projectFundsUtilization['orig_bid'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_bid'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectFundsUtilization['actual_bid'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <th>Appropriation:</th>
-  <td style="text-align: right;">{{ $projectFundsUtilization['orig_appropriation'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_appropriation'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $projectFundsUtilization['actual_appropriation'] ?? '' }}</td>
-</tr>
-
-<!-- Blank row for spacing -->
-<tr><td colspan="4"></td></tr>
-
-<!-- Billings Section -->
-<tr class="fit-text-row sub-header">
-  <td>DATE COVERED</td>
-  <td>PARTICULARS</td>
-  <td>AMOUNT</td>
-  <td>REMARKS</td>
-</tr>
-
-@php
-  $summary = $projectFundsUtilization['summary'] ?? [];
-@endphp
-
-<tr class="fit-text-row">
-  <td style="text-align: right;">{{ $summary['mobilization']['date'] ?? '' }}</td>
-  <td>15% Mobilization</td>
-  <td style="text-align: right;">{{ $summary['mobilization']['amount'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $summary['mobilization']['remarks'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
-  <td>First and Final Billing</td>
-  <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <td style="text-align: right;">{{ $summary['engineering']['date'] ?? '' }}</td>
-  <td>Engineering</td>
-  <td style="text-align: right;">{{ $summary['engineering']['amount'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $summary['engineering']['remarks'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <td style="text-align: right;">{{ $summary['mqc']['date'] ?? '' }}</td>
-  <td>MQC</td>
-  <td style="text-align: right;">{{ $summary['mqc']['amount'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $summary['mqc']['remarks'] ?? '' }}</td>
-</tr>
-
-<tr class="fit-text-row">
-  <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL EXPENDITURES</td>
-  <td style="text-align: right;">{{ $summary['totalExpenditures']['amount'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $summary['totalExpenditures']['remarks'] ?? '' }}</td>
-</tr>
-<tr class="fit-text-row">
-  <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL SAVINGS</td>
-  <td style="text-align: right;">{{ $summary['totalSavings']['amount'] ?? '' }}</td>
-  <td style="text-align: right;">{{ $summary['totalSavings']['remarks'] ?? '' }}</td>
-</tr>
+      <tr class="fit-text-row">
+        <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL EXPENDITURES</td>
+        <td style="text-align: right;">{{ $summary['totalExpenditures']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['totalExpenditures']['remarks'] ?? '' }}</td>
+      </tr>
+      <tr class="fit-text-row">
+        <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL SAVINGS</td>
+        <td style="text-align: right;">{{ $summary['totalSavings']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['totalSavings']['remarks'] ?? '' }}</td>
+      </tr>
     </tbody>
   </table>
 </div>
+<footer style="width: 100%; margin-top: 150px;">
+  <div style="display: flex; justify-content: center; width: 100%;">
+    <div style="text-align: center; font-size: 14px;">
+      <u>{{ $userName }}</u><br>
+      Printed by
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
