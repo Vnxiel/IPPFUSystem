@@ -201,56 +201,56 @@
                     <!-- RIGHT COLUMN -->
                     <div class="col-md-6"><!-- Fund Utilization Summary Table Without Variation Orders -->
                     <div class="card mb-3">
-    <div class="card-header">
-        <h6 class="fw-bold">Fund Utilization Summary</h6>
-    </div>
-    <div class="card-body">
+                            <div class="card-header">
+                                <h6 class="fw-bold">Fund Utilization Summary</h6>
+                            </div>
+                            <div class="card-body">
 
-        @php
-            $labels = [
-                'ABC' => ['orig_abc', 'actual_abc', 'vo_abc'],
-                'Contract Amount' => ['orig_contract_amount', 'actual_contract_amount', 'vo_contract_amount'],
-                'Engineering' => ['orig_engineering', 'actual_engineering', 'vo_engineering'],
-                'MQC' => ['orig_mqc', 'actual_mqc', 'vo_mqc'],
-                'Contingency' => ['orig_contingency', 'actual_contingency', 'vo_contingency'],
-                'Bid Difference' => ['orig_bid', 'actual_bid', 'vo_bid'],
-                'Appropriation' => ['orig_appropriation', 'actual_appropriation', 'vo_appropriation'],
-            ];
-            $funds = $project['funds'] ?? [];
-            $variationOrders = $project['variation_orders'] ?? [];
-            $voHeaders = collect($variationOrders)->pluck('vo_number');
-        @endphp
+                                @php
+                                    $labels = [
+                                        'ABC' => ['orig_abc', 'actual_abc', 'vo_abc'],
+                                        'Contract Amount' => ['orig_contract_amount', 'actual_contract_amount', 'vo_contract_amount'],
+                                        'Engineering' => ['orig_engineering', 'actual_engineering', 'vo_engineering'],
+                                        'MQC' => ['orig_mqc', 'actual_mqc', 'vo_mqc'],
+                                        'Contingency' => ['orig_contingency', 'actual_contingency', 'vo_contingency'],
+                                        'Bid Difference' => ['orig_bid', 'actual_bid', 'vo_bid'],
+                                        'Appropriation' => ['orig_appropriation', 'actual_appropriation', 'vo_appropriation'],
+                                    ];
+                                    $funds = $project['funds'] ?? [];
+                                    $variationOrders = $project['variation_orders'] ?? [];
+                                    $voHeaders = collect($variationOrders)->pluck('vo_number');
+                                @endphp
 
-        <!-- Header Row -->
-        <div class="d-flex fw-bold border-bottom mb-2 pb-1">
-            <div class="flex-grow-1" style="min-width: 150px;">Category</div>
-            <div class="text-center" style="width: 120px;">Original</div>
-            @foreach ($voHeaders as $voNum)
-                <div class="text-center" style="width: 120px;">VO {{ $voNum }}</div>
-            @endforeach
-            <div class="text-center" style="width: 120px;">Actual</div>
-        </div>
+                                <!-- Header Row -->
+                                <div class="d-flex fw-bold border-bottom mb-2 pb-1">
+                                    <div class="flex-grow-1" style="min-width: 150px;">Category</div>
+                                    <div class="text-center" style="width: 120px;">Original</div>
+                                    @foreach ($voHeaders as $voNum)
+                                        <div class="text-center" style="width: 120px;">VO {{ $voNum }}</div>
+                                    @endforeach
+                                    <div class="text-center" style="width: 120px;">Actual</div>
+                                </div>
 
-        <!-- Data Rows -->
-        @foreach ($labels as $label => [$origKey, $actualKey, $voKey])
-            <div class="d-flex mb-2">
-                <div class="flex-grow-1" style="min-width: 150px;">{{ $label }}</div>
-                <div class="text-center" style="width: 120px;">
-                    ₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}
-                </div>
-                @foreach ($variationOrders as $vo)
-                    <div class="text-center" style="width: 120px;">
-                        ₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}
-                    </div>
-                @endforeach
-                <div class="text-center" style="width: 120px;">
-                    ₱{{ number_format((float)($funds[$actualKey] ?? 0), 2) }}
-                </div>
-            </div>
-        @endforeach
+                                <!-- Data Rows -->
+                                @foreach ($labels as $label => [$origKey, $actualKey, $voKey])
+                                    <div class="d-flex mb-2">
+                                        <div class="flex-grow-1" style="min-width: 150px;">{{ $label }}</div>
+                                        <div class="text-center" style="width: 120px;">
+                                            ₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}
+                                        </div>
+                                        @foreach ($variationOrders as $vo)
+                                            <div class="text-center" style="width: 120px;">
+                                                ₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}
+                                            </div>
+                                        @endforeach
+                                        <div class="text-center" style="width: 120px;">
+                                            ₱{{ number_format((float)($funds[$actualKey] ?? 0), 2) }}
+                                        </div>
+                                    </div>
+                                @endforeach
 
-    </div>
-</div>
+                            </div>
+                        </div>
 
                     
                        <!-- Implementation Details -->

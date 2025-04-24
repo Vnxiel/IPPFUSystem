@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    fetchRecentProjects();
     function fetchRecentProjects() {
         $.ajax({
             url: "/projects/ProjectDetails",

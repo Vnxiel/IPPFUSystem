@@ -129,15 +129,15 @@
                                         <div class="mb-1">
                                             <label for="contractCost" class="form-label">Contract Cost</label>
                                             <input type="text" class="form-control currency-input" id="contractCost"
-                                                name="contractCost">
+                                            value="{{ old('contractCost', $project['contractCost'] ?? '') }}">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="mb-1">
                                             <label for="revisedConstractCost" class="form-label">Revised Contract
                                                 Cost</label>
-                                            <input type="number" class="form-control currency-input"
-                                                id="revisedConstractCost" name="revisedConstractCost" min="0">
+                                            <input type="text" class="form-control currency-input"
+                                                id="revisedConstractCost" value="{{ old('revisedContractCost', $project['revisedContractCost'] ?? '') }}"min="0">
                                         </div>
                                     </div>
                                 </div>

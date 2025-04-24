@@ -143,8 +143,7 @@ class ProjectManager extends Controller
         // Ongoing Status
         if (strtolower($request->input('projectStatus')) === 'ongoing') {
             ProjectStatus::create([
-                'project_id' => $project->id,
-                'projectID' => $request->input('projectID'),
+                'project_id' => $project->id, 
                 'progress' => $request->input('projectStatus'),
                 'percentage' => (explode(' - ', $request->input('ongoingStatus'))[0] ?? '0'),
                 'date' => $request->input('ongoingDate') ?? now(),
@@ -524,8 +523,15 @@ public function getProjectSummary()
     
                 // Update other fields (excluding dynamic + projectID manually handled)
                 $project->fill($request->except(['projectID'] + $dynamicFields->keys()->toArray()));
-    
-               
+                $project['contractCost'] = $this->cleanMoney($request->input('contractCost'));
+                $project['revisedContractCost'] = $this->cleanMoney($request->input('revisedContractCost'));
+                $project['abc'] = $this->cleanMoney($request->input('abc'));
+                $project['contractAmount'] = $this->cleanMoney($request->input('contractAmount'));
+                $project['bid'] = $this->cleanMoney($request->input('bid'));
+                $project['engineering'] = $this->cleanMoney($request->input('engineering'));
+                $project['mqc'] = $this->cleanMoney($request->input('mqc'));
+                $project['appropriation'] = $this->cleanMoney($request->input('appropriation'));
+                $project['contingency'] = $this->cleanMoney($request->input('contingency'));
     
                 $project->save();
     

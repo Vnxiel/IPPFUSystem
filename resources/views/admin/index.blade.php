@@ -279,8 +279,7 @@
         <script>    
          document.addEventListener("DOMContentLoaded", function () {
             fetchProjectSummary(); //  Fetch project summary stats
-            fetchRecentProjects(); //  Fetch projects table data
-        });
+                 });
 
 //  Fetch Project Summary (Total Projects, Ongoing, Completed, Budget)
 function fetchProjectSummary() {
