@@ -48,8 +48,12 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-                                    <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password"id="password" required>
+                                    <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" id="password" required>
+                                    <span class="input-group-text" style="cursor:pointer;">
+                                        <i class="fa fa-eye toggle-password" id="toggleLoginPassword"></i>
+                                    </span>
                                 </div>
+
                                 <button type="submit" class="btn w-100" style="background-color:#006400; color:white;">Login</button>
                             </form>
                         </div>

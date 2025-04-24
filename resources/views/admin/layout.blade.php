@@ -109,7 +109,6 @@
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
-        <script src="{{ asset('js/Projects/fetchProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/projects.js') }}"></script>
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>

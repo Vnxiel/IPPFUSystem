@@ -26,14 +26,6 @@ return new class extends Migration
             $table->string('revisedTargetCompletion')->nullable();
             $table->string('completionDate')->nullable();
 
-           
-            $table->string('abc')->nullable();
-            $table->string('contractAmount')->nullable();
-            $table->string('engineering')->nullable();
-            $table->string('mqc')->nullable();
-            $table->string('contingency')->nullable();
-            $table->string('bid')->nullable();
-            $table->string('appropriation')->nullable();
             $table->string('directOrIndirectCost')->nullable();
             $table->string('revisedContractCost')->nullable();
 

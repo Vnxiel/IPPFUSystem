@@ -119,66 +119,71 @@
 
                 
                 <script>
-                    
-     document.addEventListener("DOMContentLoaded", function () {
-        const currencyInputs = document.querySelectorAll(".currency-input");
+document.addEventListener("DOMContentLoaded", function () {
+    const currencyInputs = document.querySelectorAll(".currency-input");
 
-        currencyInputs.forEach(input => {
-            // On focus: strip formatting for easier editing
-            input.addEventListener("focus", function () {
-                const raw = parseCurrency(input.value);
-                input.value = raw ? raw : ''; // Keep blank if zero
-            });
-
-            // On blur: format unless it's empty
-            input.addEventListener("blur", function () {
-                if (input.id !== 'bid') {
-                    const raw = parseCurrency(input.value);
-                    input.value = raw ? formatCurrency(raw) : '';
-                }
-                updateBidDifference();
-            });
-
-            // Format pre-filled values
-            if (input.value.trim() !== "") {
-                input.dispatchEvent(new Event("blur"));
-            }
+    currencyInputs.forEach(input => {
+        // On focus: strip formatting for easier editing
+        input.addEventListener("focus", function () {
+            const raw = parseCurrency(input.value);
+            input.value = raw ? raw : ''; // Keep blank if zero
         });
 
-        function parseCurrency(value) {
-            return parseFloat(value.replace(/[^0-9.]/g, "")) || 0;
-        }
-
-        function formatCurrency(value) {
-            return value.toLocaleString("en-PH", {
-                style: "currency",
-                currency: "PHP",
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
-
-        function updateBidDifference() {
-            const abcInput = document.getElementById('abc');
-            const contractInput = document.getElementById('contractAmount');
-            const bidInput = document.getElementById('bid');
-
-            const abc = parseCurrency(abcInput.value);
-            const contractAmount = parseCurrency(contractInput.value);
-
-            // Only calculate if both fields are filled
-            if (abcInput.value.trim() !== '' && contractInput.value.trim() !== '') {
-                const bidDifference = abc - contractAmount;
-                bidInput.value = bidDifference !== 0 ? formatCurrency(bidDifference) : formatCurrency(0);
-            } else {
-                bidInput.value = '';
+        // On blur: format unless it's empty
+        input.addEventListener("blur", function () {
+            if (input.id !== 'bid') {
+                const raw = parseCurrency(input.value);
+                input.value = raw ? formatCurrency(raw) : '';
             }
-        }
+            updateBidDifference();
+        });
 
-        // Trigger calculation while typing
-        document.getElementById('abc').addEventListener('input', updateBidDifference);
-        document.getElementById('contractAmount').addEventListener('input', updateBidDifference);
+        // Restrict invalid characters while typing
+        input.addEventListener("input", function () {
+            input.value = input.value.replace(/[^\d₱.,]/g, '');
+        });
+
+        // Format pre-filled values
+        if (input.value.trim() !== "") {
+            input.dispatchEvent(new Event("blur"));
+        }
     });
+
+    function parseCurrency(value) {
+        return parseFloat(value.replace(/[^0-9.]/g, "")) || 0;
+    }
+
+    function formatCurrency(value) {
+        return value.toLocaleString("en-PH", {
+            style: "currency",
+            currency: "PHP",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function updateBidDifference() {
+        const abcInput = document.getElementById('abc');
+        const contractInput = document.getElementById('contractAmount');
+        const bidInput = document.getElementById('bid');
+
+        const abc = parseCurrency(abcInput.value);
+        const contractAmount = parseCurrency(contractInput.value);
+
+        // Only calculate if both fields are filled
+        if (abcInput.value.trim() !== '' && contractInput.value.trim() !== '') {
+            const bidDifference = abc - contractAmount;
+            bidInput.value = bidDifference !== 0 ? formatCurrency(bidDifference) : formatCurrency(0);
+        } else {
+            bidInput.value = '';
+        }
+    }
+
+    // Trigger calculation while typing
+    document.getElementById('abc').addEventListener('input', updateBidDifference);
+    document.getElementById('contractAmount').addEventListener('input', updateBidDifference);
+});
+
 
 
         // Handle "Other Fund" Selection Toggle
@@ -450,43 +455,6 @@ function showMunicipalitySuggestions(query) {
         });
 </script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  function validateDates(issuedId, receivedId, label) {
-    const issued = document.getElementById(issuedId);
-    const received = document.getElementById(receivedId);
-
-    function checkDate() {
-      if (issued.value && received.value) {
-        const issuedDate = new Date(issued.value);
-        const receivedDate = new Date(received.value);
-
-        // Only validate if both dates are valid
-        if (!isNaN(issuedDate) && !isNaN(receivedDate)) {
-          if (receivedDate <= issuedDate) {
-            Swal.fire({
-              icon: 'error',
-              title: `${label} Error`,
-              text: 'Received date must be after the issued date.',
-              confirmButtonColor: '#3085d6',
-            });
-            received.value = ""; // Clear invalid input
-          }
-        }
-      }
-    }
-
-    // Use blur instead of change so it fires after typing and moving away
-    issued.addEventListener("blur", checkDate);
-    received.addEventListener("blur", checkDate);
-  }
-
-  validateDates("noaIssuedDate", "noaReceivedDate", "Notice of Award");
-  validateDates("ntpIssuedDate", "ntpReceivedDate", "Notice to Proceed");
-});
-
-</script>
-
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -546,6 +514,43 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  function validateDates(issuedId, receivedId, label) {
+    const issued = document.getElementById(issuedId);
+    const received = document.getElementById(receivedId);
+
+    function checkDate() {
+      if (issued.value && received.value) {
+        const issuedDate = new Date(issued.value);
+        const receivedDate = new Date(received.value);
+
+        // Only validate if both dates are valid
+        if (!isNaN(issuedDate) && !isNaN(receivedDate)) {
+          if (receivedDate <= issuedDate) {
+            Swal.fire({
+              icon: 'error',
+              title: `${label} Error`,
+              text: 'Received date must be after the issued date.',
+              confirmButtonColor: '#3085d6',
+            });
+            received.value = ""; // Clear invalid input
+          }
+        }
+      }
+    }
+
+    // Use blur instead of change so it fires after typing and moving away
+    issued.addEventListener("blur", checkDate);
+    received.addEventListener("blur", checkDate);
+  }
+
+  validateDates("noaIssuedDate", "noaReceivedDate", "Notice of Award");
+  validateDates("ntpIssuedDate", "ntpReceivedDate", "Notice to Proceed");
+});
+
+</script>
 
     @include('systemAdmin.modals.add-project')
 

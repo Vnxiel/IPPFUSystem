@@ -148,7 +148,7 @@
                                     <div class="row">
                                         <div class="mb-1">
                                             <label for="revisedContractCost" class="form-label">Revised Contract Cost</label>
-                                            <input type="number" class="form-control currency-input" id="revisedContractCost" name="revisedConstractCost" min="0">
+                                            <input type="text" class="form-control currency-input" id="revisedContractCost" name="revisedConstractCost" min="0">
                                         </div>
                                     </div>                                    
                                 </div>
@@ -299,14 +299,14 @@
                                     </div> 
                                     <div class="mb-1">
                                         <label for="revisedTargetCompletion" class="form-label">Revised Target Completion</label>
-                                        <input type="date" class="form-control" id="revisedTargetCompletion" name="revisedTargetCompletion">
+                                        <input type="date" class="form-control" style="background-color: lightgray;" id="revisedTargetCompletion" name="revisedTargetCompletion">
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="mb-1">
                                             <label for="completionDate" class="form-label">Completion Date</label>
-                                            <input type="date" class="form-control" id="completionDate" name="completionDate">
+                                            <input type="date"  style="background-color: lightgray;" class="form-control" id="completionDate" name="completionDate">
                                         </div>
                                 </div>                
                                 <div class="modal-footer">
@@ -319,7 +319,7 @@
                 </div>
             </div>
 
-            <script>
+<script>
     document.addEventListener("DOMContentLoaded", function () {
         const input = document.getElementById("projectLoc");
         const suggestionsBox = document.getElementById("suggestionsBoxs");

@@ -2,9 +2,8 @@ $(document).ready(function () {
     // Fetch status before showing modal
     $(document).on("click", "#addStatusBtnInside", function () {
         const project_id = sessionStorage.getItem("project_id");
-        const projectDetails = JSON.parse(sessionStorage.getItem("projectDetails"));
-
-        if (!project_id || !projectDetails) {
+      
+        if (!project_id) {
             return Swal.fire({ icon: "error", title: "Missing Info", text: "Cannot load project." });
         }
 
@@ -26,7 +25,6 @@ $(document).ready(function () {
             }));
 
             // Fill modal fields
-            $("#projectTitleDisplay").text(projectDetails.projectTitle || "Untitled Project");
             $("#projectID").text(project_id);
             $("#progress").val("Ongoing");
             $("#percentage").val("");

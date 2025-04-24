@@ -25,8 +25,10 @@
                             </tr>   
                         </thead>
                         <tbody>
-                           
-                        </tbody>
+                                    <tr>
+                                        <td colspan="7" class="text-center">Loading projects...</td>
+                                    </tr>
+                                </tbody>
                     </table>
                 </div>
             </div>

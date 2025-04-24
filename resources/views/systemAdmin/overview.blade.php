@@ -43,266 +43,275 @@
         <hr class="mt-2">
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card bg-light mb-1">
-                <div class="card-header">
-                    <h5><strong id="projectTitleDisplay">Loading...</strong></h5>
-                    <div class="row p-1 ">
-                        <div class="d-flex align-items-center">
-                            <strong class="me-2">Project ID:</strong>
-                        <div id="projectIDDisplay">Loading...</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card bg-light mb-1">
+            <div class="card-header">
+                <h5><strong>{{ $project['projectTitle'] ?? 'N/A' }}</strong></h5>
+                <div class="row p-1">
+                    <div class="d-flex align-items-center">
+                        <strong class="me-2">Project ID:</strong>
+                        <div>{{ $project['projectID'] ?? 'N/A' }}</div>
                     </div>
                 </div>
-                <div class="card-body" style="font-size: 14px;">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- Project Details -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="fw-bold">Project Details</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row p-1">
-                                        <div class="col-md-5  text-end"><strong>Project Description:</strong></div>
-                                        <div class="col-md-7" id="projectDescriptionDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end"><strong>Location:</strong></div>
-                                        <div class="col-md-7" id="projectLocDisplay">Loading...</div>
-                                    </div>                                    
-                                    <div class="row p-1">
-                                        <div class="col-md-5  text-end"><strong>Contractor:</strong></div>
-                                        <div class="col-md-7" id="projectContractorDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1"> <!-- Just added-->
-                                        <div class="col-md-5  text-end"><strong>Mode of Implementation:</strong></div>
-                                        <div class="col-md-7" id="modeOfImplementationDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1"> <!-- Just added-->
-                                        <div class="col-md-5  text-end"><strong>Source of Fund:</strong></div>
-                                        <div class="col-md-7" id="sourceOfFundsDisplay" name="sourceOfFundDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end"><strong>Status:</strong></div>
-                                        <div class="col-md-7">
-                                            <span class="badge bg-success" id="projectStatusDisplay">Loading...</span>
-                                            <span id="ongoingStatusDisplay" style="margin-left: 10px;">Loading...</span>
-                                        </div>
-                                    </div>
-                                    <div class="row p-1"><!--Just Added-->
-                                        <div class="col-md-5 text-end"><strong>Slippage:</strong></div>
-                                        <div class="col-md-7">
-                                            <span class="badge bg-success" id="projectSlippageDisplay">Loading...</span>
-                                        </div>
+            </div>
+            <div class="card-body" style="font-size: 14px;">
+                <div class="row">
+                    <!-- LEFT COLUMN -->
+                    <div class="col-md-6">
+                        <!-- Project Details -->
+                        <div class="card mb-2">
+                            <div class="card-header">
+                                <h6 class="fw-bold">Project Details</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Project Description:</strong></div>
+                                    <div class="col-md-7">
+                                        @foreach ($project['projectDescriptions'] ?? [] as $desc)
+                                            <li>{{ $desc }}</li>
+                                        @endforeach
                                     </div>
                                 </div>
-                             </div>
-                            <!--Contract Details-->
-                             <div class="card mt-1">
-                                <div class="card-header">
-                                    <h6 class="fw-bold">Contract Details</h6>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Location:</strong></div>
+                                    <div class="col-md-7">{{ $project['projectLoc'] ?? 'N/A' }}</div>
                                 </div>
-                                <div class="card-body">
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end">
-                                            <strong>Appropriation:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center currency-input" id="appropriationDisplay">
-                                        Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1"> <!-- Just added-->
-                                        <div class="col-md-5 text-end"><strong>Contract Cost:</strong></div>
-                                        <div class="col-md-7" id="contractCostDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1"> <!-- Just added-->
-                                        <div class="col-md-5 text-end"><strong>Revised Contract Cost:</strong></div>
-                                        <div class="col-md-7" id="contractRevContractCostDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1"> <!-- Just added-->
-                                        <div class="col-md-5 text-end"><strong>Contract Days:</strong></div>
-                                        <div class="col-md-7" id="contractDaysDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1 ">
-                                        <div class="col-md-5 text-end">
-                                            <strong>Official Start:</strong>
-                                        </div>
-                                        <div class="col-md-7" id="officialStartDisplay">Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1 ">
-                                        <div class="col-md-5 text-end">
-                                            <strong>Target Completion Date:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center" id="completionDateDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row text-center">
-                                        <div class="fw-bold">Notice of Award (NOA)</div>
-                                    </div>
-                                    <div class="row p-1 "><!-- Just added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>Issued Date:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center" id="noaIssuedDateDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1 "><!-- Just added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>Received Date:</strong>
-                                        </div>
-                                        <div class="col-md-7" id="noaReceivedDateDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row text-center">
-                                        <div class="fw-bold">Notice to Proceed (NTP)</div>
-                                    </div>
-                                    <div class="row p-1 "><!-- Just added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>Issued Date:</strong>
-                                        </div>
-                                        <div class="col-md-7" id="ntpIssuedDateDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1 "><!-- Just added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>Received Date:</strong>
-                                        </div>
-                                        <div class="col-md-7" id="ntpReceivedDateDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1"><!-- Just added-->
-                                        <div class="col-md-5 text-end"><strong>Original Expiry Date:</strong></div>
-                                        <div class="col-md-7" id="originalExpiryDateDisplay">Loading...</div>
-                                    </div>
-                                    <div class="row p-1"><!-- Just added-->
-                                        <div class="col-md-5 text-end"><strong>Revised Expiry Date:</strong></div>
-                                        <div class="col-md-7" id="revisedExpiryDateDisplay">Loading...                                            
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Contractor:</strong></div>
+                                    <div class="col-md-7">
+                                        {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
                                     </div>
                                 </div>
-                             </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Mode of Implementation:</strong></div>
+                                    <div class="col-md-7">{{ $project['modeOfImplementation'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Source of Fund:</strong></div>
+                                    <div class="col-md-7">
+                                        {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
+                                    </div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Status:</strong></div>
+                                    <div class="col-md-7">
+                                        <span class="badge bg-success">{{ $project['projectStatus'] ?? 'N/A' }}</span>
+                                        <span style="margin-left: 10px;">{{ $project['ongoingStatus'] ?? '' }}</span>
+                                    </div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Slippage:</strong></div>
+                                    <div class="col-md-7">
+                                        <span class="badge bg-danger">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                      
-                        </div>
-                    </div>
-                        <div class="col-md-6">
-                            <!-- Project Details -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="fw-bold">Fund Utilization</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12 text-center"><strong>ORIGINAL</strong></div>
-                                    </div>
-                                    <div class="row p-1"> <!--Just Added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>ABC:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center currency-input" id="abcOriginalDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end">
-                                            <strong>Contract Amount:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center currency-input" id="contractAmountOriginalDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end">
-                                            <strong>Engineering:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center currency-input" id="engineeringOriginalDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end">
-                                            <strong>MQC:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center currency-input" id="mqcOriginalDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end">
-                                            <strong>Contingency:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center currency-input" id="contingencyOriginalDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end"><strong>Bid Difference:</strong></div>
-                                        <div class="col-md-7 d-flex align-items-center currency-input" id="bidDiffOriginalDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                    <div class="row p-1">
-                                        <div class="col-md-5 text-end"><strong>Total Expenditure:</strong></div>
-                                        <div class="col-md-7 d-flex align-items-center currency-input" id="totalExpenditureOriginalDisplay">
-                                            Loading...
-                                        </div>
-                                    </div>
-                                </div>
+                       <!-- Contract Details -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="fw-bold mb-0">Contract Details</h6>
                             </div>
-                                
-                                <!--Implemetation Details-->
-                                <div class="card mt-1">
-                                    <div class="card-header">
-                                        <h6 class="fw-bold">Implementation Details</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row p-1 border-bottom">
-                                            <div class="col-md-4 d-flex align-items-center">
-                                                <strong>Suspension Order No. 1:</strong>
-                                            </div>
-                                            <div class="col-md-8 d-flex align-items-center" id="suspensionOrderNoDisplay">Loading...
-                                            </div>
-                                        </div>
-                                        <div class="row p-1 border-bottom">
-                                            <div class="col-md-4 d-flex align-items-center">
-                                                <strong>Resume Order No. 1:</strong>
-                                            </div>
-                                            <div class="col-md-8 d-flex align-items-center" id="resumeOrderNoDisplay">Loading...</div>
-                                        </div>
-                                        <div class="row p-1 border-bottom">
-                                            <div class="col-md-4 d-flex align-items-center">
-                                                <strong>Time Extension:</strong>
-                                            </div>
-                                            <div class="col-md-8 d-flex align-items-center" id="timeExtensionDisplay">Loading...</div>
-                                        </div>
-                                        <div class="row p-1 border-bottom">
-                                            <div class="col-md-4 d-flex align-items-center">
-                                                <strong>Revised Target Completion:</strong>
-                                            </div>
-                                            <div class="col-md-8 d-flex align-items-center" id="revisedTargetCompletionDisplay">Loading...</div>
-                                        </div>
-                                        <div class="row p-1 border-bottom">
-                                            <div class="col-md-4 d-flex align-items-center">
-                                                <strong>Completion Date:</strong>
-                                            </div>
-                                            <div class="col-md-8 d-flex align-items-center" id="completionDateDisplay">Loading...</div>
-                                        </div>
-                                    </div>
+                            <div class="card-body">
+                                <!-- General Information -->
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Appropriation:</strong></div>
+                                    <div class="col-md-7">₱{{ number_format((float) preg_replace('/[^\d.]/', '', $project['appropriation'] ?? 0), 2) }}</div>
                                 </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Contract Cost:</strong></div>
+                                    <div class="col-md-7">₱{{ number_format((float)($project['contractCost'] ?? 0), 2) }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Revised Contract Cost:</strong></div>
+                                    <div class="col-md-7">₱{{ number_format((float)($project['revisedContractCost'] ?? 0), 2) }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Contract Duration:</strong></div>
+                                    <div class="col-md-7">{{ $project['projectContractDays'] ?? 'N/A' }} days</div>
+                                </div>
+
+                                <!-- Project Dates -->
+                                <hr>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Official Start:</strong></div>
+                                    <div class="col-md-7">{{ $project['officialStart'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Target Completion Date:</strong></div>
+                                    <div class="col-md-7">{{ $project['targetCompletion'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Original Expiry Date:</strong></div>
+                                    <div class="col-md-7">{{ $project['originalExpiryDate'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Revised Expiry Date:</strong></div>
+                                    <div class="col-md-7">{{ $project['revisedExpiryDate'] ?? 'N/A' }}</div>
+                                </div>
+
+                                <!-- Notices -->
+                                <hr>
+                                <div class="row text-center">
+                                    <div class="fw-bold">Notice of Award (NOA)</div>
+                                </div>
+                                <div class="row p-1 "><!-- Just added-->
+                                        <div class="col-md-5 text-end">
+                                            <strong>Issued Date:</strong>
+                                        </div>
+                                        <div class="col-md-7 d-flex align-items-center">
+                                        {{ $project['noaIssuedDate'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                    <div class="row p-1 "><!-- Just added-->
+                                        <div class="col-md-5 text-end">
+                                            <strong>Received Date:</strong>
+                                        </div>
+                                        <div class="col-md-7">
+                                        {{ $project['noaReceivedDate'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                    
+                                <div class="row text-center">
+                                    <div class="fw-bold">Notice to Proceed (NTP)</div>
+                                </div>
+                                <div class="row p-1 "><!-- Just added-->
+                                        <div class="col-md-5 text-end">
+                                            <strong>Issued Date:</strong>
+                                        </div>
+                                        <div class="col-md-7 d-flex align-items-center">
+                                        {{ $project['ntpIssuedDate'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                    <div class="row p-1 "><!-- Just added-->
+                                        <div class="col-md-5 text-end">
+                                            <strong>Received Date:</strong>
+                                        </div>
+                                        <div class="col-md-7">
+                                        {{ $project['ntpReceivedDate'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
                             </div>
                         </div>
+
                     </div>
+
+                    <!-- RIGHT COLUMN -->
+                    <div class="col-md-6"><!-- Fund Utilization Summary Table Without Variation Orders -->
+                    <div class="card mb-3">
+    <div class="card-header">
+        <h6 class="fw-bold">Fund Utilization Summary</h6>
+    </div>
+    <div class="card-body">
+
+        @php
+            $labels = [
+                'ABC' => ['orig_abc', 'actual_abc', 'vo_abc'],
+                'Contract Amount' => ['orig_contract_amount', 'actual_contract_amount', 'vo_contract_amount'],
+                'Engineering' => ['orig_engineering', 'actual_engineering', 'vo_engineering'],
+                'MQC' => ['orig_mqc', 'actual_mqc', 'vo_mqc'],
+                'Contingency' => ['orig_contingency', 'actual_contingency', 'vo_contingency'],
+                'Bid Difference' => ['orig_bid', 'actual_bid', 'vo_bid'],
+                'Appropriation' => ['orig_appropriation', 'actual_appropriation', 'vo_appropriation'],
+            ];
+            $funds = $project['funds'] ?? [];
+            $variationOrders = $project['variation_orders'] ?? [];
+            $voHeaders = collect($variationOrders)->pluck('vo_number');
+        @endphp
+
+        <!-- Header Row -->
+        <div class="d-flex fw-bold border-bottom mb-2 pb-1">
+            <div class="flex-grow-1" style="min-width: 150px;">Category</div>
+            <div class="text-center" style="width: 120px;">Original</div>
+            @foreach ($voHeaders as $voNum)
+                <div class="text-center" style="width: 120px;">VO {{ $voNum }}</div>
+            @endforeach
+            <div class="text-center" style="width: 120px;">Actual</div>
+        </div>
+
+        <!-- Data Rows -->
+        @foreach ($labels as $label => [$origKey, $actualKey, $voKey])
+            <div class="d-flex mb-2">
+                <div class="flex-grow-1" style="min-width: 150px;">{{ $label }}</div>
+                <div class="text-center" style="width: 120px;">
+                    ₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}
+                </div>
+                @foreach ($variationOrders as $vo)
+                    <div class="text-center" style="width: 120px;">
+                        ₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}
+                    </div>
+                @endforeach
+                <div class="text-center" style="width: 120px;">
+                    ₱{{ number_format((float)($funds[$actualKey] ?? 0), 2) }}
+                </div>
+            </div>
+        @endforeach
+
+    </div>
+</div>
+
+                    
+                       <!-- Implementation Details -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="fw-bold">Implementation Details</h6>
+                            </div>
+                            <div class="card-body">
+                            @foreach ($project['orderDetails'] as $field => $value)
+                            @php
+                                // Match fields like suspensionOrderNo2, resumeOrderNo3, etc.
+                                preg_match('/(suspensionOrderNo|resumeOrderNo)(\d+)/', $field, $matches);
+                                $type = $matches[1] ?? null;
+                                $index = isset($matches[2]) ? (int)$matches[2] : null;
+
+                                // Get both suspension and resume values for this index
+                                $suspKey = 'suspensionOrderNo' . $index;
+                                $resumeKey = 'resumeOrderNo' . $index;
+
+                                $suspensionValue = $project['orderDetails'][$suspKey] ?? null;
+                                $resumeValue = $project['orderDetails'][$resumeKey] ?? null;
+
+                                $shouldShow = $index === 1 || !empty($suspensionValue) || !empty($resumeValue);
+                            @endphp
+
+                            @if (!$type || $shouldShow)
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end">
+                                        <strong>{{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:</strong>
+                                    </div>
+                                    <div class="col-md-7">
+                                        {{ $value ?? 'N/A' }}
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+
+                                @foreach ([
+                                    'Time Extension' => 'timeExtension',
+                                    'Revised Target Completion' => 'revisedTargetCompletion',
+                                    'Completion Date' => 'completionDate'
+                                ] as $label => $key)
+                                    <div class="row p-1">
+                                        <div class="col-md-5 text-end">
+                                            <strong>{{ $label }}:</strong>
+                                        </div>
+                                        <div class="col-md-7">
+                                            {{ $project[$key] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                    </div> <!-- END RIGHT COLUMN -->
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 
 <!-- Project Files Table -->

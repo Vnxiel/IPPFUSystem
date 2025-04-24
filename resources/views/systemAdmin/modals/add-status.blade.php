@@ -16,8 +16,9 @@
                         <label for="progress" class="form-label">Progress</label>
                         <select class="form-select" id="progress" aria-label="Select project progress">
                             <option value="Ongoing">Ongoing</option>
-                            <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
+                            <option value="Cancelled">Discontinued</option>
+                          
                         </select>
                     </div>
 

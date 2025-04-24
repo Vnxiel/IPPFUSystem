@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
             div.textContent = "₱ 0.00";
         }
     });
+    
 });
 
 // Function para i-format ang currency habang nagta-type ang user

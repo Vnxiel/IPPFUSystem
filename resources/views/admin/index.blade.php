@@ -52,7 +52,7 @@
                             <div class="card m-1" style="width: 16rem; height: 8rem;">
                                 <div class="card-body text-center d-flex flex-column justify-content-between">
                                     <h6 class="card-title border-bottom fw-bolder fs-6 fs-md-5">Remaining Balance</h6>
-                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="resystemAdminingBalance">₱0</p>
+                                    <p class="card-text fs-5 fs-md-3 fw-bold pt-2 text-break" id="remainingBalance">₱0</p>
                                 </div>
                             </div>
 
@@ -298,7 +298,7 @@ function fetchProjectSummary() {
                 //  Update budget values
                 document.getElementById("totalBudget").textContent = `₱${summary.totalBudget}`;
                 document.getElementById("totalUsed").textContent = `₱${summary.totalUsed}`;
-                document.getElementById("resystemAdminingBalance").textContent = `₱${summary.resystemAdminingBalance}`;
+                document.getElementById("remainingBalance").textContent = `₱${summary.remainingBalance}`;
             } else {
                 console.error("Invalid summary data received.");
             }

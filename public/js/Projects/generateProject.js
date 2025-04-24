@@ -23,4 +23,23 @@ $(document).ready(function () {
         // Redirect to the PDF generation route
         window.location.href = "/generateProject/" + projectID;
     });
+
+    $("#generatePdfWithPicsBtn").click(function (event) {
+        event.preventDefault();
+        let projectID = sessionStorage.getItem("project_id");
+    
+        if (!projectID) {
+            Swal.fire({
+                title: "Error",
+                text: "No project ID found. Please select a project first.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+            return;
+        }
+    
+        $("#generateProjectModal").modal("hide");
+        window.location.href = "/generateProject/" + projectID + "?with_pictures=true";
+    });
+    
 });

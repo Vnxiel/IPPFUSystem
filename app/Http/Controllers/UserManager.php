@@ -170,15 +170,6 @@ public function userLogin(Request $request)
 
     return response()->json(['error' => 'Unauthorized role'], 403);
 }
-
-public function showLoginForm()
-{
-    return view('login'); // Display the login form view
-}
-
-
-
-    
     
     public function validateUser(Request $request) {}
 
@@ -279,13 +270,6 @@ public function showLoginForm()
         return view('systemAdmin.trash');  // Returns the 'trash.blade.php' view
     }
 
-    public function staffIndex() {
-        return view('staff.index');  // Returns the 'trash.blade.php' view
-    }
-
-    public function userManagement() {
-        return view('staff.userManagement');  // Returns the 'trash.blade.php' view
-    }
 
   
     public function projects()
@@ -318,26 +302,31 @@ public function showLoginForm()
 
     //When logging out it will check if the session variable exists then
     // it will retrieve the user's information, log the the activity before clearing the session data. 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $user = auth()->user(); 
-
+    
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        // Log the logout action
-        (new ActivityLogs)->userAction(
-            $user->ofmis_id, 
-            $user->username, 
-            $user->role, 
-            "Logged out from the system."
-        );
-
-        // Perform logout
+    
+        try {
+            (new ActivityLogs)->userAction(
+                $user->id,
+                $user->ofmis_id,
+                $user->username,
+                $user->role,
+                'Logged out from the system.'
+            );
+        } catch (\Exception $e) {
+            Log::error('Logout logging failed: ' . $e->getMessage());
+        }
+    
         auth()->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
+    
         return redirect()->route('/');
     }
-}
+    
+    }

@@ -2,6 +2,20 @@ $(document).ready(function() {
     $(document).on("submit", "#registerUserForm", function(e) {
         e.preventDefault();
 
+        // Get password and confirmation values
+    const password = $('#password').val();
+    const passwordConfirmation = $('#password_confirmation').val();
+
+    // Check if passwords match
+    if (password !== passwordConfirmation) {
+        Swal.fire({
+            icon: "warning",
+            title: "Password Mismatch",
+            text: "Password and Confirm Password do not match. Please try again.",
+        });
+        return; // Stop the form submission
+    }
+
         $.ajax({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")

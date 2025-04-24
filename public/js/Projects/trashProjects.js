@@ -1,4 +1,11 @@
 $(document).ready(function () {
+    // Fetch trashed projects only if you're on the Trash page
+    if (window.location.pathname === '/systemAdmin/trash' || 
+        window.location.pathname === '/admin/trash' || 
+        window.location.pathname === '/staff/trash') {
+        fetchTrashedProjects();
+    }
+
     $(document).on("click", "#trashProjectBtn", function () {
         Swal.fire({
             title: "Are you sure?",
@@ -10,7 +17,6 @@ $(document).ready(function () {
             confirmButtonText: "Yes, archive it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                // Get project ID from sessionStorage
                 const project_id = sessionStorage.getItem("project_id");
 
                 if (!project_id) {
@@ -19,9 +25,6 @@ $(document).ready(function () {
                     return;
                 }
 
-                console.log("Retrieved Project ID from sessionStorage:", project_id);
-
-                // Archive the project
                 $.ajax({
                     url: `/projects/trash/${project_id}`,
                     method: "PUT",
@@ -35,7 +38,7 @@ $(document).ready(function () {
                             Swal.fire("Archived!", "The project has been hidden.", "success")
                                 .then(() => {
                                     const role = sessionStorage.getItem('user_role');
-                        
+
                                     if (role === 'System Admin') {
                                         window.location.href = "/systemAdmin/trash";
                                     } else if (role === 'Admin') {
@@ -49,7 +52,6 @@ $(document).ready(function () {
                         } else {
                             Swal.fire("Error!", data.message || "Something went wrong!", "error");
                         }
-                        
                     },
                     error: function (xhr) {
                         console.error("Error hiding project:", xhr.responseText);

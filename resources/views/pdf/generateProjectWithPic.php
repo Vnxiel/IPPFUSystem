@@ -298,7 +298,38 @@
 </tr>
     </tbody>
   </table>
+
+
+  
 </div>
+@if (!empty($projectFiles))
+  <div style="page-break-before: always;"></div>
+  <div class="container mt-5">
+    <h5 class="text-center mb-4" style="text-decoration: underline; font-weight: bold;">
+      Project File Attachments (Images Only)
+    </h5>
+
+    @foreach ($projectFiles as $fileName)
+      @php
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $isImage = in_array($extension, ['jpg', 'jpeg', 'png']);
+        $imagePath = public_path('storage/project_files/' . $fileName);
+      @endphp
+
+      @if ($isImage && file_exists($imagePath))
+        <div class="text-center mb-5">
+          <img src="{{ $imagePath }}"
+               alt="Attachment: {{ $fileName }}"
+               style="max-width: 90%; max-height: 600px; border: 1px solid #666; padding: 6px;">
+          <div style="font-size: 12px; margin-top: 6px;">
+            Attachment: <strong>{{ $fileName }}</strong>
+          </div>
+        </div>
+      @endif
+    @endforeach
+  </div>
+@endif
+
 
 </body>
 </html>

@@ -1,287 +1,307 @@
 @extends('staff.layout')
 
-@section('title', 'Dashboard Page')
+@section('title', 'Overview Page')
 
 @section('content') 
                 
-               <!-- Project Overview -->
+<!-- Project Overview -->
 <hr class="mx-2">
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12 d-flex align-items-center gap-2">
-            <a href="{{ route('staff.projects') }}" class="btn btn-danger btn-sm">
-                <span class="fa fa-arrow-left"></span>
-            </a>
-            <h5 class="m-0">Project Overview</h5>
+        <div class="col-md-12 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+                    <a class="{{ Request::is('staff/projects') ? 'bg-light-green text-dark-white' : 'inactive' }}"
+                        aria-current="page" href="{{ url('/staff/projects') }}"><span
+                            class="fa fa-arrow-left"></span></a>
+
+                <h5 class="m-0">Project Overview</h5>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex align-items-center gap-2">
+        
+                <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#generateProjectModal" title="Generate/Download Report">
+                    <i class="fa fa-download"></i>
+                </button>
+
+                <button type="button" id="checkStatusBtn" class="btn btn-secondary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#checkStatusModal">
+                Check Status
+                 </button>
+            </div>
         </div>
         <hr class="mt-2">
     </div>
 
-    <div class="row">
-        <div class="col-md-11">
-            <div class="card bg-light mb-1">
-                <div class="card-header">
-                    <strong id="projectTitleDisplay">Loading...</strong>
-                </div>
-                <div class="card-body" style="font-size: 14px;">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- Project Details -->
-                            <div class="row p-1 border-bottom">
-                                <div class="col-md-4"><strong>Location:</strong></div>
-                                <div class="col-md-8" id="projectLocDisplay">Loading...</div>
-                            </div>
-                            <div class="row p-1 border-bottom">
-                                <div class="col-md-4"><strong>Project Description:</strong></div>
-                                <div class="col-md-8" id="projectDescriptionDisplay">Loading...</div>
-                            </div>
-                            <div class="row p-1 border-bottom">
-                                <div class="col-md-4"><strong>Contractor:</strong></div>
-                                <div class="col-md-8" id="projectContractorDisplay">Loading...</div>
-                            </div>
-                            <div class="row p-1 border-bottom">
-                                <div class="col-md-4"><strong>Project ID:</strong></div>
-                                <div class="col-md-8" id="projectIDDisplay">Loading...</div>
-                            </div>
-                            <div class="row p-1 border-bottom">
-                                <div class="col-md-4"><strong>Status:</strong></div>
-                                <div class="col-md-8">
-                                    <span class="badge bg-success" id="projectStatusDisplay">Loading...</span>
-                                    <span id="ongoingStatusDisplay" style="margin-left: 10px;">Loading...</span>
-                                </div>
-                            </div>
-                            <div class="row p-1 border-bottom">
-                <hr class="mx-2">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12 d-flex align-items-center gap-2">
-                            <a href="{{ route('staff.projects') }}" type="button" class="btn btn-danger btn-sm"><span class="fa fa-arrow-left"></span></a>
-                            <h5 class="m-0">Project Overview</h5>
-                        </div>
-                        <hr class="mt-2">
+<div class="row">
+    <div class="col-md-12">
+        <div class="card bg-light mb-1">
+            <div class="card-header">
+                <h5><strong>{{ $project['projectTitle'] ?? 'N/A' }}</strong></h5>
+                <div class="row p-1">
+                    <div class="d-flex align-items-center">
+                        <strong class="me-2">Project ID:</strong>
+                        <div>{{ $project['projectID'] ?? 'N/A' }}</div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-11">
-                            <div class="card bg-light mb-1">
-                                <div class="card-header">
-                                    <strong id="projectTitle">Construction of Barangay Multi-Purpose Hall</strong>
+                </div>
+            </div>
+            <div class="card-body" style="font-size: 14px;">
+                <div class="row">
+                    <!-- LEFT COLUMN -->
+                    <div class="col-md-6">
+                        <!-- Project Details -->
+                        <div class="card mb-2">
+                            <div class="card-header">
+                                <h6 class="fw-bold">Project Details</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Project Description:</strong></div>
+                                    <div class="col-md-7">
+                                        @foreach ($project['projectDescriptions'] ?? [] as $desc)
+                                            <li>{{ $desc }}</li>
+                                        @endforeach
+                                    </div>
                                 </div>
-                                <div class="card-body" style="font-size: 14px;">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <!-- Project Details -->
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong id="projectLoc">Location:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center">
-                                                    Barangay San Isidro, Quezon City
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong id="projectDescription">Project Description:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center">
-                                                    Expansion of a 4-lane road to 6 lanes
-                                                </div>                                                 
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong id="projectContractor">Contractor:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center">
-                                                    JKL Builders & Co.
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong id="projectID">Project ID:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center">
-                                                    003102025-01
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong id="modeOfImplementation">Mode of Implementation:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center">
-                                                    Public Bidding
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong id="projectStatus">Status:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center">
-                                                    <span class="badge bg-success" id="ongoingStatus">On-going</span>&nbsp;50% as of January 31, 2025
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Notice of Award:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center" id="noticeOfAwardDisplay">Loading...
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Official Start:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center" id="officialStartDisplay">Loading...
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Target Completion:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center" id="targetCompletionDisplay">Loading...
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Suspension Order No. 1:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center" id="suspensionOrderNoDisplay">Loading...
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Resume Order No. 1:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center" id="resumeOrderNoDisplay">Loading...
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Time Extension:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center" id="timeExtensionDisplay">Loading...
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Revised Target Completion:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center" id="revisedTargetCompletionDisplay">Loading...
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Completion Date:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center" id="completionDateDisplay">Loading...
-                                                </div>
-                                            </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Location:</strong></div>
+                                    <div class="col-md-7">{{ $project['projectLoc'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Contractor:</strong></div>
+                                    <div class="col-md-7">
+                                        {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
+                                    </div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Mode of Implementation:</strong></div>
+                                    <div class="col-md-7">{{ $project['modeOfImplementation'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Source of Fund:</strong></div>
+                                    <div class="col-md-7">
+                                        {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
+                                    </div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Status:</strong></div>
+                                    <div class="col-md-7">
+                                        <span class="badge bg-success">{{ $project['projectStatus'] ?? 'N/A' }}</span>
+                                        <span style="margin-left: 10px;">{{ $project['ongoingStatus'] ?? '' }}</span>
+                                    </div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Slippage:</strong></div>
+                                    <div class="col-md-7">
+                                        <span class="badge bg-danger">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       <!-- Contract Details -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="fw-bold mb-0">Contract Details</h6>
+                            </div>
+                            <div class="card-body">
+                                <!-- General Information -->
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Appropriation:</strong></div>
+                                    <div class="col-md-7">₱{{ number_format((float)($project['appropriation'] ?? 0), 2) }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Contract Cost:</strong></div>
+                                    <div class="col-md-7">₱{{ number_format((float)($project['contractCost'] ?? 0), 2) }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Revised Contract Cost:</strong></div>
+                                    <div class="col-md-7">₱{{ number_format((float)($project['revisedContractCost'] ?? 0), 2) }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Contract Duration:</strong></div>
+                                    <div class="col-md-7">{{ $project['projectContractDays'] ?? 'N/A' }} days</div>
+                                </div>
+
+                                <!-- Project Dates -->
+                                <hr>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Official Start:</strong></div>
+                                    <div class="col-md-7">{{ $project['officialStart'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Target Completion Date:</strong></div>
+                                    <div class="col-md-7">{{ $project['targetCompletion'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Original Expiry Date:</strong></div>
+                                    <div class="col-md-7">{{ $project['originalExpiryDate'] ?? 'N/A' }}</div>
+                                </div>
+                                <div class="row p-1">
+                                    <div class="col-md-5 text-end"><strong>Revised Expiry Date:</strong></div>
+                                    <div class="col-md-7">{{ $project['revisedExpiryDate'] ?? 'N/A' }}</div>
+                                </div>
+
+                                <!-- Notices -->
+                                <hr>
+                                <div class="row text-center">
+                                    <div class="fw-bold">Notice of Award (NOA)</div>
+                                </div>
+                                <div class="row p-1 "><!-- Just added-->
+                                        <div class="col-md-5 text-end">
+                                            <strong>Issued Date:</strong>
                                         </div>
-
-
-                                        <div class="col-md-6">
-                                            <!-- Financial Details -->
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4"><strong>ABC:</strong></div>
-                                                <div class="col-md-8 currency-input" id="abcDisplay">Loading...</div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4"><strong>Contract Amount:</strong></div>
-                                                <div class="col-md-8 currency-input" id="contractAmountDisplay">Loading...</div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Engineering:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center currency-input" id="engineeringDisplay">
-                                                    Loading...
-                                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>MQC:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center currency-input" id="mqcDisplay">
-                                    Loading...
+                                        <div class="col-md-7 d-flex align-items-center">
+                                        {{ $project['noaIssuedDate'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                    <div class="row p-1 "><!-- Just added-->
+                                        <div class="col-md-5 text-end">
+                                            <strong>Received Date:</strong>
+                                        </div>
+                                        <div class="col-md-7">
+                                        {{ $project['noaReceivedDate'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                    
+                                <div class="row text-center">
+                                    <div class="fw-bold">Notice to Proceed (NTP)</div>
                                 </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Contingency:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center currency-input" id="contingencyDisplay">
-                                    Loading...
-                                </div>
-                                            </div>
-                                            <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Bid Difference:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center currency-input" id="bidDisplay">
-                                    Loading...
-                                </div>
-                                </div>
-                                <div class="row p-1 border-bottom">
-                                                <div class="col-md-4 d-flex align-items-center">
-                                                    <strong>Appropriation:</strong>
-                                                </div>
-                                                <div class="col-md-8 d-flex align-items-center currency-input" id="appropriationDisplay">
-                                    Loading...
-                                </div>
-                                </div>
+                                <div class="row p-1 "><!-- Just added-->
+                                        <div class="col-md-5 text-end">
+                                            <strong>Issued Date:</strong>
+                                        </div>
+                                        <div class="col-md-7 d-flex align-items-center">
+                                        {{ $project['ntpIssuedDate'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                    <div class="row p-1 "><!-- Just added-->
+                                        <div class="col-md-5 text-end">
+                                            <strong>Received Date:</strong>
+                                        </div>
+                                        <div class="col-md-7">
+                                        {{ $project['ntpReceivedDate'] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                            </div>
                         </div>
+
                     </div>
+
+                    <!-- RIGHT COLUMN -->
+                    <div class="col-md-6"><!-- Fund Utilization Summary Table Without Variation Orders -->
+                    <div class="card mb-3">
+    <div class="card-header">
+        <h6 class="fw-bold">Fund Utilization Summary</h6>
+    </div>
+    <div class="card-body">
+
+        @php
+            $labels = [
+                'ABC' => ['orig_abc', 'actual_abc', 'vo_abc'],
+                'Contract Amount' => ['orig_contract_amount', 'actual_contract_amount', 'vo_contract_amount'],
+                'Engineering' => ['orig_engineering', 'actual_engineering', 'vo_engineering'],
+                'MQC' => ['orig_mqc', 'actual_mqc', 'vo_mqc'],
+                'Contingency' => ['orig_contingency', 'actual_contingency', 'vo_contingency'],
+                'Bid Difference' => ['orig_bid', 'actual_bid', 'vo_bid'],
+                'Appropriation' => ['orig_appropriation', 'actual_appropriation', 'vo_appropriation'],
+            ];
+            $funds = $project['funds'] ?? [];
+            $variationOrders = $project['variation_orders'] ?? [];
+            $voHeaders = collect($variationOrders)->pluck('vo_number');
+        @endphp
+
+        <!-- Header Row -->
+        <div class="d-flex fw-bold border-bottom mb-2 pb-1">
+            <div class="flex-grow-1" style="min-width: 150px;">Category</div>
+            <div class="text-center" style="width: 120px;">Original</div>
+            @foreach ($voHeaders as $voNum)
+                <div class="text-center" style="width: 120px;">VO {{ $voNum }}</div>
+            @endforeach
+            <div class="text-center" style="width: 120px;">Actual</div>
+        </div>
+
+        <!-- Data Rows -->
+        @foreach ($labels as $label => [$origKey, $actualKey, $voKey])
+            <div class="d-flex mb-2">
+                <div class="flex-grow-1" style="min-width: 150px;">{{ $label }}</div>
+                <div class="text-center" style="width: 120px;">
+                    ₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}
+                </div>
+                @foreach ($variationOrders as $vo)
+                    <div class="text-center" style="width: 120px;">
+                        ₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}
+                    </div>
+                @endforeach
+                <div class="text-center" style="width: 120px;">
+                    ₱{{ number_format((float)($funds[$actualKey] ?? 0), 2) }}
+                </div>
+            </div>
+        @endforeach
+
+    </div>
+</div>
+
+                    
+                       <!-- Implementation Details -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="fw-bold">Implementation Details</h6>
+                            </div>
+                            <div class="card-body">
+                            @foreach ($project['orderDetails'] as $field => $value)
+                            @php
+                                // Match fields like suspensionOrderNo2, resumeOrderNo3, etc.
+                                preg_match('/(suspensionOrderNo|resumeOrderNo)(\d+)/', $field, $matches);
+                                $type = $matches[1] ?? null;
+                                $index = isset($matches[2]) ? (int)$matches[2] : null;
+
+                                // Get both suspension and resume values for this index
+                                $suspKey = 'suspensionOrderNo' . $index;
+                                $resumeKey = 'resumeOrderNo' . $index;
+
+                                $suspensionValue = $project['orderDetails'][$suspKey] ?? null;
+                                $resumeValue = $project['orderDetails'][$resumeKey] ?? null;
+
+                                $shouldShow = $index === 1 || !empty($suspensionValue) || !empty($resumeValue);
+                            @endphp
+
+                            @if (!$type || $shouldShow)
+                                <div class="row p-1 border-bottom">
+                                    <div class="col-md-5 text-end">
+                                        <strong>{{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:</strong>
+                                    </div>
+                                    <div class="col-md-7">
+                                        {{ $value ?? 'N/A' }}
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+
+                                @foreach ([
+                                    'Time Extension' => 'timeExtension',
+                                    'Revised Target Completion' => 'revisedTargetCompletion',
+                                    'Completion Date' => 'completionDate'
+                                ] as $label => $key)
+                                    <div class="row p-1 border-bottom">
+                                        <div class="col-md-5 text-end">
+                                            <strong>{{ $label }}:</strong>
+                                        </div>
+                                        <div class="col-md-7">
+                                            {{ $project[$key] ?? 'N/A' }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                    </div> <!-- END RIGHT COLUMN -->
                 </div>
             </div>
         </div>
-
-        <!-- Action Buttons -->
-        <div class="col-md-1 d-flex flex-column align-items-center">
-            <button type="button" class="btn btn-success btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                <i class="fa fa-upload"></i>
-            </button>
-            <button type="button" class="btn btn-info btn-sm mb-2 w-100">
-                <i class="fa fa-file"></i>
-            </button>
-            <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#projectModal">
-                <i class="fa fa-edit"></i>
-            </button>
-            <button class="btn btn-primary btn-sm mb-2 w-100">
-                <i class="fa fa-download"></i>
-            </button>
-            <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#trashModal">
-                <i class="fa fa-trash"></i>
-            </button>
-        </div>
     </div>
 </div>
 
-<!-- Upload Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel"> 
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Upload File</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="uploadForm" enctype="multipart/form-data">
-                   
-                    <div class="mb-3">
-                        <label for="file" class="form-label">Choose File</label>
-                        <input type="file" id="file" class="form-control" accept="image/*, .pdf, .docx, .xlsx, .zip">
-                        <small class="text-muted">Accepted: Images, PDF, DOCX, XLSX, ZIP</small>
-                    </div>
 
-                    <!-- Image Preview -->
-                    <div id="imagePreviewContainer" class="text-center" style="display: none;">
-                        <img id="imagePreview" src="" class="img-thumbnail" style="max-width: 100px;">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">Upload</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Project Files Table -->
 <div class="container-fluid px-3">
@@ -309,703 +329,355 @@
         </div>
     </div>
 </div>
+        
 
+<script>
+   // Function to toggle the visibility of the 'otherFundContainer' when 'Others' is selected in 'Source of Fund'
+function toggleOtherFund() {
+    const sourceOfFunds = document.getElementById("sourceOfFunds").value;
+    const otherFundContainer = document.getElementById("otherFundContainer");
+    
+    if (sourceOfFunds === "Others") {
+        otherFundContainer.style.display = "block"; // Show the input field for specifying the fund
+    } else {
+        otherFundContainer.style.display = "none"; // Hide the input field if not selected
+    }
+}
 
+// Function to toggle the visibility of the 'othersContractorDiv' when 'Others' is selected in 'Contractor'
+function toggleOtherContractor() {
+    const projectContractor = document.getElementById("projectContractor").value;
+    const othersContractorDiv = document.getElementById("othersContractorDiv");
+    
+    if (projectContractor === "Others") {
+        othersContractorDiv.style.display = "block"; // Show the input field for specifying the contractor
+    } else {
+        othersContractorDiv.style.display = "none"; // Hide the input field if not selected
+    }
+}
 
+// Ensure the correct visibility when the page loads, in case the 'Others' option was already selected in any dropdown
+document.addEventListener("DOMContentLoaded", function() {
+    toggleOtherFund(); // Check if 'Others' was selected for Source of Fund
+    toggleOtherContractor(); // Check if 'Others' was selected for Contractor
+});
 
-<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="projectModalLabel">Edit Project Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <form id="updateProjectForm">
-                <form id="updateProjectForm">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-1">
-                                <label for="projectTitle" class="form-label">Project Title</label>
-                                <input type="text" class="form-control" id="projectTitle">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="projectLoc" class="form-label">Location</label>
-                                <input type="text" class="form-control" id="projectLoc">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="projectID" class="form-label">Project ID</label>
-                                <input type="text" class="form-control" id="projectID">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="projectContractor" class="form-label">Contractor</label>
-                                <input type="text" class="form-control" id="projectContractor">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="sourceOfFunds" class="form-label fw-bolder">Select Fund Source</label>
-                                <select id="sourceOfFunds" class="form-select" alt="source">
-                                <label for="sourceOfFunds" class="form-label fw-bolder">Select Fund Source</label>
-                                <select id="sourceOfFunds" class="form-select" alt="source">
-                                    <option value="">-- --</option>
-                                    <option value="Wages">Wages</option>
-                                    <option value="% Mobilization">% Mobilization</option>
-                                    <option value="1st Partial Billing">1st Partial Billing</option>
-                                    <option value="Trust Fund">Trust Fund</option>
-                                    <option value="Final Billing">Final Billing</option>
-                                    <option value="Others" id="otherFundContainer">Others</option>
-                                </select>
+    </script>
 
-                                <!-- Hidden text input for 'Others' -->
-                                <div id="otherFundContainer" class="mt-2 fw-bolder" style="display: none;">
-                                    <label for="otherFund" class="form-label">Please specify:</label>
-                                    <input type="text" id="otherFund" class="form-control" placeholder="Enter fund source">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="contractor" class="form-label">Mode of Implementation</label>
-                                <input type="text" class="form-control" id="modeOfImplementation">
-                                <input type="text" class="form-control" id="modeOfImplementation" value="JKL Builders & Co.">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="projectStatus" class="form-label fw-bolder">Status</label>
-                                <select id="projectStatus" name="projectStatus" class="form-select">
-                                    <option value="---">---</option>
-                                    <option value="Ongoing">Ongoing</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Cancelled">Discontinued</option>
-                                </select>
+<script>
+    
+     document.addEventListener("DOMContentLoaded", function () {
+        const currencyInputs = document.querySelectorAll(".currency-input");
 
-                                <!-- Hidden text input for 'Ongoing' status -->
-                                <div id="ongoingStatusContainer" class="mt-2 fw-bolder" style="display: none;">
-                                    <label for="ongoingStatus" class="form-label">Please specify percentage completion:</label>
-                                    <div class="d-flex gap-2"> 
-                                        <input type="text" id="ongoingStatus" name="ongoingStatus" class="form-control w-50" placeholder="Enter percentage">
-                                        <input type="date" id="ongoingDate" class="form-control w-50">
-                                    </div>
-                                </div>
-                            </div>
+        currencyInputs.forEach(input => {
+            // On focus: strip formatting for easier editing
+            input.addEventListener("focus", function () {
+                const raw = parseCurrency(input.value);
+                input.value = raw ? raw : ''; // Keep blank if zero
+            });
 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-1">
-                                <label for="projectDescription" class="form-label">Project Description</label>
-                                <textarea class="form-control" id="projectDescription" rows="3" style="width:100%"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row text-center">
-                        <div class="row">
-                            <h6 class=" m-1 fw-bold">Contract Details</h6>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="projectContractDays" class="form-label">Contract Days</label>
-                                <input type="text" class="form-control" id="projectContractDays">
-                            </div>   
-                            <div class="mb-1">
-                                <label for="noticeOfAward" class="form-label">Notice of Award</label>
-                                <input type="date" class="form-control" id="noticeOfAward">
-                            </div>  
-                            <div class="mb-1">
-                                <label for="noticeToProceed" class="form-label">Notice to Proceed</label>
-                                <input type="date" class="form-control" id="noticeToProceed">
-                            </div>  
-                            <div class="mb-1">
-                                <label for="officialStart" class="form-label">Official Start</label>
-                                <input type="date" class="form-control" id="officialStart">
-                            </div> 
-                            <div class="mb-1">
-                                <label for="targetCompletion" class="form-label">Target Completion</label>
-                                <input type="date" class="form-control" id="targetCompletion">
-                            </div> 
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="SuspeOrder" class="form-label">Suspension Order No.1</label>
-                                <input type="date" class="form-control" id="suspensionOrderNo">
-                            </div> 
-                            <div class="mb-1">
-                                <label for="resumeOrder" class="form-label">Resume Order No.1</label>
-                                <input type="date" class="form-control" id="resumeOrderNo">
-                            </div> 
-                            <div class="mb-1">
-                                <label for="timeExtension" class="form-label">Time Extension</label>
-                                <input type="text" class="form-control" id="timeExtension">
-                            </div> 
-                            <div class="mb-1">
-                                <label for="revisedTargetCompletion" class="form-label">Revised Target Completion</label>
-                                <input type="text" class="form-control" id="revisedTargetCompletion">
-                            </div> 
-                            <div class="mb-1">
-                                <label for="CompletionDate" class="form-label">Completion Date</label>
-                                <input type="text" class="form-control" id="completionDate">
-                            </div> 
-                        </div>
-                    </div>
-                    <div class="row text-center">
-                         <h6 class="m-1 fw-bold">Financial Details</h6>
-                    </div>
-                        <!-- Financial Details -->
-                    <div class="row">
-                        <div class="col-md-6 border-bottom">
-                            <div class="mb-1">
-                                <label for="abc" class="form-label">ABC</label>
-                                <input type="text" class="form-control" id="abc">
-                            </div>
-                            <div class="mb-1">
-                                <label for="contractAmount" class="form-label">Contract Amount</label>
-                                <input type="text" class="form-control" id="contractAmount">
-                            </div>
-                            <div class="mb-1">
-                                <label for="engineering" class="form-label">Engineering</label>
-                                <input type="text" class="form-control" id="engineering">
-                            </div>
-                            <div class="mb-1">
-                                <label for="mqc" class="form-label">MQC</label>
-                                <input type="text" class="form-control" id="mqc">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-1">
-                                <label for="contingency" class="form-label">Contingency</label>
-                                <input type="text" class="form-control" id="contingency">
-                            </div>
-                            <div class="mb-1">
-                                <label for="bid" class="form-label">Bid Difference</label>
-                                <input type="text" class="form-control" id="bid">
-                            </div>
-                            <div class="mb-1">
-                                <label for="appropriation" class="form-label">Appropriation</label>
-                                <input type="text" class="form-control" id="appropriation">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Close</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
-                                <label for="appropriate" class="form-label">Appropriation</label>
-                                <input type="text" class="form-control" id="appropriate" value="PHP 2,500,000.00">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+            // On blur: format unless it's empty
+            input.addEventListener("blur", function () {
+                if (input.id !== 'bid') {
+                    const raw = parseCurrency(input.value);
+                    input.value = raw ? formatCurrency(raw) : '';
+                }
+                updateBidDifference();
+            });
+
+            // Format pre-filled values
+            if (input.value.trim() !== "") {
+                input.dispatchEvent(new Event("blur"));
+            }
+        });
+
+        function parseCurrency(value) {
+            return parseFloat(value.replace(/[^0-9.]/g, "")) || 0;
+        }
+
+        function formatCurrency(value) {
+            return value.toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function updateBidDifference() {
+            const abcInput = document.getElementById('abc');
+            const contractInput = document.getElementById('contractAmount');
+            const bidInput = document.getElementById('bid');
+
+            const abc = parseCurrency(abcInput.value);
+            const contractAmount = parseCurrency(contractInput.value);
+
+            // Only calculate if both fields are filled
+            if (abcInput.value.trim() !== '' && contractInput.value.trim() !== '') {
+                const bidDifference = abc - contractAmount;
+                bidInput.value = bidDifference !== 0 ? formatCurrency(bidDifference) : formatCurrency(0);
+            } else {
+                bidInput.value = '';
+            }
+        }
+
+        // Trigger calculation while typing
+        document.getElementById('abc').addEventListener('input', updateBidDifference);
+        document.getElementById('contractAmount').addEventListener('input', updateBidDifference);
+    });
+
+    </script>
+
 
 
 <script>
-        $(document).ready(function() {
-            $('#editStatus').on('change', function() {
-                if ($(this).val() === 'Ongoing') {
-                    $('#ongoingStatusContainer').stop(true, true).slideDown();
-                } else {
-                    $('#ongoingStatusContainer').stop(true, true).slideUp();
-                }
-            });
+let orderCount = 1;
+
+// Function to add order fields dynamically
+function addOrderFields() {
+    orderCount++;
+    const container = document.getElementById('orderContainer');
+
+    const newSet = document.createElement('div');
+    newSet.classList.add('row', 'order-set');
+    newSet.id = `orderSet${orderCount}`;
+    newSet.innerHTML = `
+        <div class="col-md-6">
+            <div class="mb-1">
+                <label for="suspensionOrderNo${orderCount}" class="form-label">Suspension Order No. ${orderCount}</label>
+                <input type="date" class="form-control" id="suspensionOrderNo${orderCount}" name="suspensionOrderNo${orderCount}">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-1">
+                <label for="resumeOrderNo${orderCount}" class="form-label">Resumption Order No. ${orderCount}</label>
+                <input type="date" class="form-control" id="resumeOrderNo${orderCount}" name="resumeOrderNo${orderCount}">
+            </div>
+        </div>
+    `;
+
+    container.appendChild(newSet);
+
+    // Attach event listeners to the new input fields
+    const suspensionOrderNo = document.getElementById(`suspensionOrderNo${orderCount}`);
+    const resumeOrderNo = document.getElementById(`resumeOrderNo${orderCount}`);
+
+    suspensionOrderNo.addEventListener('change', function() {
+        validateOrderDates(orderCount);
+    });
+    
+    resumeOrderNo.addEventListener('change', function() {
+        validateOrderDates(orderCount);
+    });
+}
+
+// Function to remove last order fields dynamically
+function removeLastOrderFields() {
+    if (orderCount > 1) {
+        const lastSet = document.getElementById(`orderSet${orderCount}`);
+        lastSet.remove();
+        orderCount--;
+    } else {
+        Swal.fire({
+            icon: "warning",
+            title: "Oops...",
+            text: "You must keep at least one order pair. If none leave it blank.",
         });
-        $(document).ready(function() {
-                $('#fundSource').on('change', function() {
-                    if ($(this).val() === 'Others') {
-                        $('#otherFundContainer').slideDown(); // Show input with animation
-                    } else {
-                        $('#otherFundContainer').slideUp(); // Hide input with animation
-                    }
-                });
-            });   
-            
-            
-            //...
+    }
+}
 
-            // Show Image Preview Before Upload
-                function setupUploadModal() {
-                    document.getElementById("file").addEventListener("change", function (event) {
-                        let file = event.target.files[0];
-                        let previewContainer = document.getElementById("imagePreviewContainer");
-                        let previewImage = document.getElementById("imagePreview");
+// Function to validate that resumeOrderNo is not earlier than or equal to suspensionOrderNo
+function validateOrderDates(orderId) {
+    const suspensionOrderNo = document.getElementById(`suspensionOrderNo${orderId}`);
+    const resumeOrderNo = document.getElementById(`resumeOrderNo${orderId}`);
+    
+    const suspensionDate = new Date(suspensionOrderNo.value);
+    const resumeDate = new Date(resumeOrderNo.value);
 
-                        if (file && file.type.startsWith("image/")) {
-                            let reader = new FileReader();
-                            reader.onload = function (e) {
-                                previewImage.src = e.target.result;
-                                previewContainer.style.display = "block";
-                            };
-                            reader.readAsDataURL(file);
-                        } else {
-                            previewContainer.style.display = "none";
-                        }
-                    });
-                }
+    if (resumeDate <= suspensionDate && resumeOrderNo.value !== '') {
+        Swal.fire({
+            icon: "error",
+            title: "Invalid Date",
+            text: "The resumption order date must be later than the suspension order date.",
+        });
+        resumeOrderNo.value = ''; // Clear the resume order field
+    }
+}
 
-                document.getElementById("uploadForm").addEventListener("submit", function (e) {
-                    e.preventDefault();
-
-                    // Fetch `projectID` first
-                    fetch("/get-project-id", {
-                        method: "GET",
-                        headers: { "Accept": "application/json" }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.projectID) {
-                            Swal.fire({
-                                title: "Error",
-                                text: "No project ID found in session. Please select a project first.",
-                                icon: "error",
-                                confirmButtonText: "OK"
-                            });
-                            return;
-                        }
-
-                        let projectID = data.projectID;
-                        console.log("Retrieved Project ID:", projectID); // Debugging
-
-                        let fileInput = document.getElementById("file");
-                        if (!fileInput.files.length) {
-                            Swal.fire({
-                                title: "Warning",
-                                text: "Please select a file to upload.",
-                                icon: "warning",
-                                confirmButtonText: "OK"
-                            });
-                            return;
-                        }
-
-                        let formData = new FormData();
-                        formData.append("projectID", projectID);
-                        formData.append("file", fileInput.files[0]);
-
-                        console.log("Uploading file with formData:", formData); // Debugging
-
-                        fetch("/uploadFile", {
-                                method: "POST",
-                                headers: { 
-                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                                },
-                                body: formData
-                            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Upload Response:", data);
-                    if (data.status === "success") {
-                        Swal.fire({
-                            title: "Success!",
-                            text: "File uploaded successfully.",
-                            icon: "success",
-                            confirmButtonText: "OK"
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "Upload Failed",
-                            text: data.message || "Something went wrong!",
-                            icon: "error",
-                            confirmButtonText: "OK"
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("Upload Error:", error);
-                    Swal.fire({
-                        title: "Error",
-                        text: "Failed to upload file. Please check Laravel logs.",
-                        icon: "error",
-                        confirmButtonText: "OK"
-                    });
-                });
-
-                    })
-                    .catch(error => {
-                        console.error("Error fetching project ID:", error);
-                        Swal.fire({
-                            title: "Error",
-                            text: "Failed to get project ID. Please try again.",
-                            icon: "error",
-                            confirmButtonText: "OK"
-                        });
-                    });
-                });
-
-
-                function loadFiles(projectID) {
-                    console.log("Fetching files for Project ID:", projectID);
-
-                    fetch(`/files/${projectID}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP Error! Status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log("API Response:", data);
-
-                            if (!data || typeof data !== "object" || !Array.isArray(data.files)) {
-                                console.error("Invalid API response:", data);
-                                alert("Invalid file data received.");
-                                return;
-                            }
-
-                            let tbody = document.querySelector(" #projectFiles tbody");
-                            tbody.innerHTML = ""; // Clear old data
-                            
-                            if (data.files.length === 0) {
-                                console.warn("No files found for project:", projectID);
-                                tbody.innerHTML = `<tr><td colspan="6" class="text-center">No files uploaded yet.</td></tr>`;
-                                return;
-                            }
-
-                            data.files.forEach(file => {
-                                let fileSizeKB = (file.file_size / 1024).toFixed(2); // Convert to KB
-
-                                let row = `<tr>
-                                    <td>${file.file_name}</td>
-                                    <td>${file.file_type ? file.file_type.toUpperCase() : "Unknown"}</td>
-                                    <td>${fileSizeKB} KB</td>
-                                    <td>${file.uploaded_by || "Unknown"}</td>
-                                    <td>${file.created_at ? new Date(file.created_at).toLocaleDateString() : "N/A"}</td>
-                                    <td>
-                                        <a href="/storage/${file.file_path}" download class="btn btn-success btn-sm">
-                                            <i class="fa fa-download"></i>
-                                        </a>
-                                        <button onclick="deleteFile('${file.id}')" class="btn btn-danger btn-sm">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>`;
-
-                                tbody.innerHTML += row;
-                            });
-                        })
-                        .catch(error => {
-                            console.error("Fetch Error:", error);
-                            alert("Error loading project files: " + error.message);
-                        });
-                }
-
-
-                // Delete File
-                function deleteFile(fileID) {
-                    fetch(`/delete/${fileID}`, { 
-                        method: "DELETE",
-                        headers: { "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                        loadFiles(document.getElementById("projectID").value); // Reload files
-                    })
-                    .catch(error => console.error("Error deleting file:", error));
-                }
-
-                // Handle Status & Fund Source Change Animations
-                $(document).ready(function () {
-                    $('#projectStatus').on('change', function () {
-                        $(this).val() === 'Ongoing' ? $('#ongoingStatusContainer').slideDown() : $('#ongoingStatusContainer').slideUp();
-                    });
-
-                    $('#sourceOfFunds').on('change', function () {
-                        $(this).val() === 'Others' ? $('#otherFundContainer').slideDown() : $('#otherFundContainer').slideUp();
-                    });
-                });
-
-                document.addEventListener("DOMContentLoaded", function () {
-                    fetchProjectDetails(); // Fetch project details when page loads
-                });
-
-                //  Fetch Project ID & Details
-                function fetchProjectDetails() {
-                    fetch("/get-project-id", {
-                        method: "GET",
-                        headers: { "Accept": "application/json" }
-                    })
-                    .then(response => {
-                        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (!data.projectID) {
-                            console.error("No project ID found in session. Redirecting...");
-                            window.location.href = "{{ route('staff.index') }}"; // Redirect if no ID
-                            return;
-                        }
-                        
-                        console.log("Project ID:", data.projectID);
-                        fetch(`/projects/getProject/${data.projectID}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.status === "success") {
-                                    console.log(" Fetched Project Data:", data.project);
-                                    updateProjectUI(data.project); // Populate UI
-                                    updateProjectForm(data.project); // Populate form in modal
-                                } else {
-                                    console.error(" Error fetching project details:", data.message);
-                                }
-                            })
-                            .catch(error => console.error(" Error fetching project data:", error));
-                    })
-                    .catch(error => console.error(" Error fetching project ID:", error));
-                }
-
-                //  Update UI with Project Data
-                function updateProjectUI(project) {
-                    let fields = {
-                        "projectTitle": project.projectTitle,
-                        "projectLoc": project.projectLoc,
-                        "projectID": project.projectID,
-                        "projectDescription": project.projectDescription,
-                        "projectContractor": project.projectContractor,
-                        "projectStatus": project.projectStatus,
-                        "noticeOfAward": project.noticeOfAward,
-                        "modeOfImplementation": project.modeOfImplementation,
-                        "officialStart": project.officialStart,
-                        "targetCompletion": project.targetCompletion,
-                        "suspensionOrderNo": project.suspensionOrderNo,
-                        "resumeOrderNo": project.resumeOrderNo,
-                        "timeExtension": project.timeExtension,
-                        "revisedTargetCompletion": project.revisedTargetCompletion,
-                        "completionDate": project.completionDate,
-                        "abc": project.abc,
-                        "mqc": project.mqc,
-                        "contractAmount": project.contractAmount,
-                        "bid": project.bid,
-                        "engineering": project.engineering,
-                        "contingency": project.contingency,
-                        "appropriation": project.appropriation
-                    };
-
-                    for (let id in fields) {
-                        let element = document.getElementById(id);
-                        if (element) {
-                            element.textContent = fields[id] !== null && fields[id] !== undefined ? fields[id] : "N/A";
-                        }
-                    }
-
-                    //  Extract & display ongoing project status (if applicable)
-                    let ongoingStatusText = project.ongoingStatus || "";
-                    let percentage = "", date = "";
-
-                    if (ongoingStatusText.includes(" - ")) {
-                        let parts = ongoingStatusText.split(" - ");
-                        percentage = parts[0].trim() + "%";
-                        date = formatDate(parts[1].trim());
-                    }
-
-                    let ongoingStatusElem = document.getElementById("ongoingStatus");
-                    if (ongoingStatusElem) {
-                        ongoingStatusElem.textContent = percentage ? `${percentage} as of ${date}` : "N/A";
-                    }
-                }
-
-                //  Open Edit Modal & Populate Form
-                document.getElementById("editProjectBtn").addEventListener("click", function () {
-                    let projectModal = new bootstrap.Modal(document.getElementById("projectModal"));
-                    projectModal.show();
-                });
-
-
-
-                //  Populate Modal Form with Project Data
-                function updateProjectForm(project) {
-                    if (!project) {
-                        console.error("Error: Project data is undefined or null.");
-                        return;
-                    }
-
-                    console.log("Populating form with project data:", project);
-
-                    let fields = [
-                        "projectTitle", "projectLoc", "projectID", "projectContractor",
-                        "sourceOfFunds", "modeOfImplementation", "projectStatus", "projectDescription",
-                        "projectContractDays", "noticeOfAward", "noticeToProceed", "officialStart",
-                        "targetCompletion", "suspensionOrderNo", "resumeOrderNo", "timeExtension",
-                        "revisedTargetCompletion", "completionDate", "abc", "contractAmount",
-                        "engineering", "mqc", "contingency", "bid", "appropriation"
-                    ];
-
-                    fields.forEach(field => {
-                        let input = document.getElementById(field);
-                        if (input) {
-                            let value = project[field] !== null && project[field] !== undefined ? project[field] : "";
-                            
-                            if (input.type === "date" && value.includes(" ")) {
-                                value = value.split(" ")[0]; // Extract only YYYY-MM-DD
-                            }
-
-                            input.value = value;
-                        } else {
-                            console.warn(`Warning: Element #${field} not found.`);
-                        }
-                    });
-
-                    // Handle dropdowns separately
-                    setDropdownValue("sourceOfFunds", project["sourceOfFunds"]);
-                    setDropdownValue("projectStatus", project["projectStatus"]);
-
-                    // Handle "Ongoing" status separately
-                    let ongoingContainer = document.getElementById("ongoingStatusContainer");
-                    let ongoingInput = document.getElementById("ongoingStatus");
-                    let ongoingDateInput = document.getElementById("ongoingDate");
-
-                    if (project.projectStatus === "Ongoing" && project.ongoingStatus) {
-                        ongoingContainer.style.display = "block";
-                        let [percentage, date] = project.ongoingStatus.split(" - ");
-                        ongoingInput.value = percentage.trim();
-                        ongoingDateInput.value = date.trim();
-                    } else {
-                        ongoingContainer.style.display = "none";
-                    }
-                }
-
-                //  Helper function to safely set dropdown values
-                function setDropdownValue(elementID, value) {
-                    let selectElement = document.getElementById(elementID);
-                    if (!selectElement || !selectElement.options) {
-                        console.warn(` Dropdown #${elementID} is not available.`);
-                        return;
-                    }
-
-                    let options = Array.from(selectElement.options).map(option => option.value);
-                    selectElement.value = options.includes(value) ? value : "";
-
-                    // Handle the "Ongoing" status showing hidden fields
-                    if (elementID === "projectStatus") {
-                        let ongoingContainer = document.getElementById("ongoingStatusContainer");
-                        ongoingContainer.style.display = value === "Ongoing" ? "block" : "none";
-                    }
-                }
-
-                //  Handle Project Updates
-                document.getElementById("updateProjectForm").addEventListener("submit", function (event) {
-                    event.preventDefault();
-
-                    fetch("/get-project-id", { method: "GET", headers: { "Accept": "application/json" } })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.projectID) {
-                            console.error("No project ID found in session.");
-                            return;
-                        }
-
-                        let updatedData = {};
-                        let fieldIDs = [
-                            "projectContractor", "sourceOfFunds", "modeOfImplementation", "projectStatus",
-                            "projectDescription", "projectContractDays", "noticeOfAward", "noticeToProceed",
-                            "officialStart", "targetCompletion", "suspensionOrderNo", "resumeOrderNo",
-                            "timeExtension", "revisedTargetCompletion", "completionDate", "abc",
-                            "contractAmount", "engineering", "mqc", "contingency", "bid", "appropriation"
-                        ];
-
-                        fieldIDs.forEach(id => {
-                            let input = document.getElementById(id);
-                            updatedData[id] = input ? input.value : null;
-                        });
-
-                        // Handle "Ongoing" status fields
-                        if (updatedData.projectStatus === "Ongoing") {
-                            let ongoingStatus = document.getElementById("ongoingStatus").value;
-                            let ongoingDate = document.getElementById("ongoingDate").value;
-                            updatedData.ongoingStatus = `${ongoingStatus} - ${ongoingDate}`;
-                        } else {
-                            updatedData.ongoingStatus = null;
-                        }
-
-                        return fetch(`/projects/update/${data.projectID}`, {
-                            method: "PUT",  // FIX: Use PUT instead of POST
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                            },
-                            body: JSON.stringify(updatedData)
-                        });
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP Error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.status === "success") {
-                            Swal.fire({ title: "Updated Successfully!", text: data.message, icon: "success", confirmButtonText: "OK" })
-                                .then(() => location.reload());
-                        } else {
-                            Swal.fire({ title: "Error!", text: data.message, icon: "error", confirmButtonText: "OK" });
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error updating project:", error);
-                        Swal.fire({ title: "Error!", text: "Failed to update project. Please try again.", icon: "error", confirmButtonText: "OK" });
-                    });
-                });
-
-
-
-                // Helper: Format Date to "Month Day, Year"
-                function formatDate(inputDate) {
-                    if (!inputDate || inputDate === "N/A") return "N/A";
-
-                    let dateObj = new Date(inputDate);
-                    if (isNaN(dateObj.getTime())) {
-                        console.error("Invalid Date Format:", inputDate);
-                        return inputDate;
-                    }
-
-                    return dateObj.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-                }
-
-                // Handle Status Change Animation
-                $(document).ready(function () {
-                    $('#editStatus').on('change', function () {
-                        $(this).val() === 'Ongoing' ? $('#ongoingStatusContainer').slideDown() : $('#ongoingStatusContainer').slideUp();
-                    });
-
-                    $('#sourceOfFunds').on('change', function () {
-                        $(this).val() === 'Others' ? $('#otherFundContainer').slideDown() : $('#otherFundContainer').slideUp();
-                    });
-                });
-
-                document.addEventListener("DOMContentLoaded", function () {
-                    let projectModal = document.getElementById("projectModal");
-
-                    projectModal.addEventListener("hidden.bs.modal", function () {
-                        location.reload(); // Reload the page after the modal is closed
-                    });
-                });
+// Initial validation for the first order pair when the page loads
+document.addEventListener("DOMContentLoaded", function() {
+    const firstSuspensionOrderNo = document.getElementById('suspensionOrderNo1');
+    const firstResumeOrderNo = document.getElementById('resumeOrderNo1');
+    
+    firstSuspensionOrderNo.addEventListener('change', function() {
+        validateOrderDates(1);
+    });
+    
+    firstResumeOrderNo.addEventListener('change', function() {
+        validateOrderDates(1);
+    });
+});
 </script>
+
+<script>
+
+    //load the contractors name this is example only
+const contractors = ['Kristine Joy Briones', 'Janessa Guillermo', 'CJenalyn Jumawan', 'Arjay Ordinario'];
+
+function showSuggestions(query) {
+    const suggestionsBox = document.getElementById('suggestionsBox');
+    suggestionsBox.innerHTML = ''; // Clear previous suggestions
+
+    if (query.length > 0) {
+        const filteredContractors = contractors.filter(contractor => contractor.toLowerCase().includes(query.toLowerCase()));
+        
+        if (filteredContractors.length > 0) {
+            suggestionsBox.style.display = 'block';
+            filteredContractors.forEach(contractor => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'list-group-item list-group-item-action';
+                item.textContent = contractor;
+                suggestionsBox.appendChild(item);
+            });
+        } else {
+            suggestionsBox.style.display = 'none';
+        }
+    } else {
+        suggestionsBox.style.display = 'none';
+    }
+}
+
+
+// Predefined list of municipalities in Nueva Vizcaya
+const municipalities = [
+    'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
+    'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano', 
+    'Villaverde', 'Ambaguio', 'Santa Fe', 'Lamut'
+];
+
+function showMunicipalitySuggestions(query) {
+    const suggestionsBox = document.getElementById('suggestionsBox');
+    suggestionsBox.innerHTML = ''; // Clear previous suggestions
+
+    if (query.length > 0) {
+        // Filter the municipalities based on the user input
+        const filteredMunicipalities = municipalities.filter(municipality => municipality.toLowerCase().includes(query.toLowerCase()));
+
+        if (filteredMunicipalities.length > 0) {
+            suggestionsBox.style.display = 'block';
+            filteredMunicipalities.forEach(municipality => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'list-group-item list-group-item-action';
+                item.textContent = municipality;
+                item.onclick = function() {
+                    document.getElementById('projectLoc').value = municipality + ', Nueva Vizcaya'; // Auto-format the location
+                    suggestionsBox.style.display = 'none'; // Hide suggestions after selection
+                };
+                suggestionsBox.appendChild(item);
+            });
+        } else {
+            suggestionsBox.style.display = 'none';
+        }
+    } else {
+        suggestionsBox.style.display = 'none';
+    }
+}
+
+
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    function validateDates(issuedId, receivedId, label) {
+      const issued = document.getElementById(issuedId);
+      const received = document.getElementById(receivedId);
+
+      function checkDate() {
+        const issuedDate = new Date(issued.value);
+        const receivedDate = new Date(received.value);
+
+        if (issued.value && received.value && receivedDate <= issuedDate) {
+          Swal.fire({
+            icon: 'error',
+            title: `${label} Error`,
+            text: 'Received date must be after the issued date.',
+            confirmButtonColor: '#3085d6',
+          });
+          received.value = ""; // Clear invalid input
+        }
+      }
+
+      issued.addEventListener("change", checkDate);
+      received.addEventListener("change", checkDate);
+    }
+
+    validateDates("noaIssuedDate", "noaReceivedDate", "Notice of Award");
+    validateDates("ntpIssuedDate", "ntpReceivedDate", "Notice to Proceed");
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const contractDaysInput = document.getElementById("projectContractDays");
+    const startDateInput = document.getElementById("officialStart");
+    const completionDateInput = document.getElementById("targetCompletion");
+
+    function calculateCompletionDate() {
+      const startDateValue = startDateInput.value;
+      const contractDays = parseInt(contractDaysInput.value);
+
+      if (startDateValue && contractDays > 0) {
+        const startDate = new Date(startDateValue);
+        const completionDate = new Date(startDate);
+        completionDate.setDate(startDate.getDate() + contractDays - 1); // minus 1 here
+        const formatted = completionDate.toISOString().split('T')[0];
+        completionDateInput.value = formatted;
+      }
+    }
+
+    contractDaysInput.addEventListener("input", calculateCompletionDate);
+    startDateInput.addEventListener("change", calculateCompletionDate);
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const targetCompletionInput = document.getElementById("targetCompletion");
+    const timeExtensionInput = document.getElementById("timeExtension");
+    const revisedTargetInput = document.getElementById("revisedTargetCompletion");
+    const completionDateInput = document.getElementById("completionDate");
+
+    function updateDates() {
+      const targetDateValue = targetCompletionInput.value;
+      const timeExtension = parseInt(timeExtensionInput.value);
+
+      if (targetDateValue && !isNaN(timeExtension) && timeExtension > 0) {
+        const targetDate = new Date(targetDateValue);
+        const revisedDate = new Date(targetDate);
+        revisedDate.setDate(targetDate.getDate() + timeExtension);
+
+        const formatted = revisedDate.toISOString().split('T')[0];
+
+        revisedTargetInput.value = formatted;
+        completionDateInput.value = formatted;
+
+        revisedTargetInput.readOnly = true;
+        completionDateInput.readOnly = true;
+      } else {
+        revisedTargetInput.readOnly = false;
+        completionDateInput.readOnly = false;
+      }
+    }
+
+    targetCompletionInput.addEventListener("change", updateDates);
+    timeExtensionInput.addEventListener("input", updateDates);
+  });
+</script>
+
+    
+    @include('systemAdmin.modals.check-status')
+    @include('systemAdmin.modals.generate-report')
+
 @endsection

@@ -84,7 +84,6 @@
                             <div class="col">
                                 <h5 class="m-0">Projects</h5>
                             </div>
-
                             <hr class="mt-2">
                         </div>
                         <div class="row">

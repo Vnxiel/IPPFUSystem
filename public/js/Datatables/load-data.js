@@ -68,13 +68,15 @@ $('#location_filter, #contractor_filter, #amount_filter, #status_filter').on('in
 
 
 function loadProjects() {
-    $("#loading-message").text("Fetching projects...").show();
+
 
     $.ajax({
-        url: "/projects/ProjectDetails", // 🔄 Using the cleaned-up endpoint
+        url: "/projects/ProjectDetails",
         method: "GET",
         dataType: "json",
         success: function (response) {
+            Swal.close(); // Hide loading when done
+
             console.log("API Response:", response);
 
             if (!response || typeof response !== "object" || !Array.isArray(response.projects) || response.projects.length === 0) {
@@ -126,27 +128,26 @@ function loadProjects() {
                 }
             });
 
-            // Only bind this once — leave it here, not inside AJAX success
             $(document).off('click', '.overview-btn').on('click', '.overview-btn', function () {
                 const projectId = $(this).data('id');
                 sessionStorage.setItem('project_id', projectId);
 
                 const role = sessionStorage.getItem('user_role');
                 if (role === 'Admin') {
-                    window.location.href = "/admin/overview";
+                    window.location.href = `/admin/overview/${projectId}`;
                 } else if (role === 'System Admin') {
-                    window.location.href = "/systemAdmin/overview";
+                    window.location.href = `/systemAdmin/overview/${projectId}`;
                 } else if (role === 'Staff') {
-                    window.location.href = "/staff/overview";
+                    window.location.href = `/staff/overview/${projectId}`;
                 } else {
                     alert("Unauthorized: Unknown role.");
                 }
             });
 
-            $("#loading-message").hide();
             $("#projects-container").show();
         },
         error: function (xhr) {
+            Swal.close();
             console.error("AJAX Error:", xhr.responseText);
             let errorMessage = "Failed to load project data.";
 
@@ -190,14 +191,47 @@ autoWidth: false,   // Disable the auto width setting to make it flexible
 });
 });
 
-window.fetchTrashedProjects = function() {
+function fetchTrashedProjects() {
     $.ajax({
         url: "/projects/fetch-trash",
         method: "GET",
         dataType: "json",
         success: function(response) {
-            let table = $('#trashList').DataTable();
-            table.clear(); // Clear existing rows
+            Swal.close(); // Close the loading alert
+
+            if ($.fn.DataTable.isDataTable('#trashList')) {
+                $('#trashList').DataTable().destroy();
+            }
+
+            let table = $('#trashList').DataTable({
+                responsive: true,
+                scrollX: true,
+                paging: true,
+                searching: true,
+                autoWidth: false,
+                aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+                pageLength: 10,
+                order: [[3, 'desc']],
+                processing: true,
+                columnDefs: [
+                    { targets: '_all', orderable: true }
+                ],
+                fixedColumns: {
+                    leftColumns: 1
+                },
+                data: [],
+                columns: [
+                    { title: "Title" },
+                    { title: "Location" },
+                    { title: "Status" },
+                    { title: "Amount" },
+                    { title: "Contractor" },
+                    { title: "Duration" },
+                    { title: "Action" }
+                ]
+            });
+
+            table.clear();
 
             if (response.status === "success") {
                 let projects = response.projects;
@@ -224,33 +258,36 @@ window.fetchTrashedProjects = function() {
             }
         },
         error: function() {
+            Swal.close();
             Swal.fire("Error!", "Failed to fetch trashed projects. Please try again.", "error");
         }
     });
-};
+}
+
 
 
 
 
 $(document).ready(function() {
-$('#activityLogs').DataTable({
-"aLengthMenu": [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-"pageLength": 10,
-"order": [[3, 'desc']],  // Sorting based on the 4th column (Appropriation)
-"scrollX": true,  // Enables horizontal scrolling
-"responsive": true, // Ensures responsiveness
-autoWidth: false,   // Disable the auto width setting to make it flexible
-"columnDefs": [
-    {
-        targets: '_all',   // Apply this to all columns
-        orderable: true     // Ensure columns can still be ordered
+    $('#activityLogs').DataTable({
+    "aLengthMenu": [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+    "pageLength": 10,
+    "order": [[3, 'desc']],  // Sorting based on the 4th column (Appropriation)
+    "scrollX": true,  // Enables horizontal scrolling
+    "responsive": true, // Ensures responsiveness
+    autoWidth: false,   // Disable the auto width setting to make it flexible
+    "columnDefs": [
+        {
+            targets: '_all',   // Apply this to all columns
+            orderable: true     // Ensure columns can still be ordered
+        }
+    ],
+    "fixedColumns": {
+        leftColumns: 1  // Freezes the first column
     }
-],
-"fixedColumns": {
-    leftColumns: 1  // Freezes the first column
-}
-});
-});
+    });
+    });
+
 
 $(document).ready(function () {
     let projectFilesTable = $('#projectFiles').DataTable({

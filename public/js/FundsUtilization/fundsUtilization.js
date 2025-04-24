@@ -134,11 +134,20 @@ function addVOFields() {
 
   rowNames.forEach((name, index) => {
     const cell = document.createElement('td');
-    cell.innerHTML = `<input type="text" class="form-control" id="vo_${name}_${voCount}" name="vo_${name}_${voCount}" placeholder="₱0.00">`;
+    cell.innerHTML = `<input type="text" class="form-control amount-input" id="vo_${name}_${voCount}" name="vo_${name}_${voCount}" placeholder="₱0.00">`;
     const cells = rows[index].querySelectorAll('td');
     rows[index].insertBefore(cell, cells[cells.length - 1]);
   });
+
+  
 }
+
+document.querySelectorAll('.amount-input').forEach(input => {
+  input.addEventListener('input', function () {
+    // Allow: numbers, comma, dot, and peso sign
+    this.value = this.value.replace(/[^\d.,₱]/g, '');
+  });
+});
 
 function removeLastVOFields() {
   if (voCount > 1) {
@@ -233,9 +242,9 @@ function loadFundUtilization(project_id) {
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${billingCount} Partial Billing </td>
-              <td><input type="date" class="form-control" name="datePart${billingCount}" value="${billing.date ?? ''}"></td>
-              <td><input type="text" class="form-control" name="amountPart${billingCount}" value="${billing.amount ?? ''}" placeholder="₱0.00"></td>
-              <td><input type="text" class="form-control" name="remPart${billingCount}" value="${billing.remarks ?? ''}"></td>
+              <td><input type="date" class="form-control amount-input" name="datePart${billingCount}" value="${billing.date ?? ''}"></td>
+              <td><input type="text" class="form-control amount-input" name="amountPart${billingCount}" value="${billing.amount ?? ''}" placeholder="₱0.00"></td>
+              <td><input type="text" class="form-control amount-input" name="remPart${billingCount}" value="${billing.remarks ?? ''}"></td>
             `;
             billingsBody.appendChild(row);
           });

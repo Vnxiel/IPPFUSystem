@@ -47,13 +47,6 @@ class ProjectManager extends Controller
             'timeExtension' => 'nullable|string|max:50',
             'revisedTargetCompletion' => 'nullable|string|max:50',
             'completionDate' => 'nullable|string|max:50',
-            'abc' => 'nullable|string',
-            'contractAmount' => 'nullable|string',
-            'engineering' => 'nullable|string',
-            'mqc' => 'nullable|string',
-            'contingency' => 'nullable|string',
-            'bid' => 'nullable|string',
-            'appropriation' => 'nullable|string',
             'contractCost' => 'nullable|string',
             'revisedContractCost' => 'nullable|string',
             'projectSlippage' => 'nullable|string',
@@ -73,22 +66,15 @@ class ProjectManager extends Controller
             return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d*$/', $key);
         });
     
-        if ($dynamicFields->isNotEmpty()) {
-            Schema::table('projects', function (Blueprint $table) use ($dynamicFields) {
-                foreach ($dynamicFields as $field => $_) {
-                    if (!Schema::hasColumn('projects', $field)) {
-                        $table->string($field)->nullable();
-                    }
-                }
-            });
-        }
-    
         DB::beginTransaction();
     
         try {
-            $standardFields = $request->except($dynamicFields->keys()->toArray());
+            // EXCLUDE fund fields from project
+           
     
-            // Add required fields manually into the project fields
+            $standardFields = $request->except(array_merge($dynamicFields->keys()->toArray()));
+    
+            // Add manually handled fields
             $standardFields['projectStatus'] = $request->input('projectStatus');
             $standardFields['ongoingStatus'] = $request->input('ongoingStatus');
             $standardFields['othersContractor'] = $request->input('othersContractor');
@@ -103,7 +89,6 @@ class ProjectManager extends Controller
     
             if (!$project->exists) {
                 throw new \Exception("Failed to save project data into the projects table.");
-
             }
     
             // Insert contractor if not yet in contractors table
@@ -111,15 +96,15 @@ class ProjectManager extends Controller
             if ($contractorName && !Contractor::where('name', $contractorName)->exists()) {
                 Contractor::create(['name' => $contractorName]);
             }
-
+    
             // Insert location if not yet in locations table
             $location = $request->input('projectLoc');
             if ($location && !Location::where('location', $location)->exists()) {
                 Location::create(['location' => $location]);
             }
-
-            $projectDescription = $request->input('projectDescription');
     
+            // Project Descriptions
+            $projectDescription = $request->input('projectDescription');
             if (!empty($projectDescription)) {
                 $lines = preg_split('/\r\n|\r|\n/', $projectDescription);
                 foreach ($lines as $line) {
@@ -134,6 +119,7 @@ class ProjectManager extends Controller
                 }
             }
     
+            // Funds Utilization
             FundsUtilization::create([
                 'project_id' => $project->id,
                 'orig_abc' => $this->cleanMoney($request->input('abc')),
@@ -146,6 +132,7 @@ class ProjectManager extends Controller
                 'orig_completion_date' => $request->input('completionDate'),
             ]);
     
+            // Ongoing Status
             if (strtolower($request->input('projectStatus')) === 'ongoing') {
                 ProjectStatus::create([
                     'project_id' => $project->id,
@@ -155,27 +142,22 @@ class ProjectManager extends Controller
                     'date' => $request->input('ongoingDate') ?? now(),
                 ]);
             }
-            
     
+            // User Session Logging
             if (session()->has('loggedIn')) {
                 $sessionData = session()->get('loggedIn');
-                $user_id = $sessionData['user_id'];
-                $ofmis_id = $sessionData['ofmis_id'];
-                $username = $sessionData['performedBy'];
-                $role = $sessionData['role'];
-                $projectTitle = $request->input('projectTitle');
-                $action = "Added a new project: $projectTitle.";
+                $action = "Added a new project: " . $request->input('projectTitle');
     
                 $request->session()->put('AddedNewProject', [
-                    'user_id' => $user_id,
-                    'ofmis_id' => $ofmis_id,
-                    'performedBy' => $username,
-                    'role' => $role,
+                    'user_id' => $sessionData['user_id'],
+                    'ofmis_id' => $sessionData['ofmis_id'],
+                    'performedBy' => $sessionData['performedBy'],
+                    'role' => $sessionData['role'],
                     'action' => $action,
                 ]);
     
                 Log::info("User action logged: " . json_encode($request->session()->get('AddedNewProject')));
-                (new ActivityLogs)->userAction($user_id, $ofmis_id, $username, $role, $action);
+                (new ActivityLogs)->userAction($sessionData['user_id'], $sessionData['ofmis_id'], $sessionData['performedBy'], $sessionData['role'], $action);
             } else {
                 DB::rollBack();
                 Log::error("Session not found");
@@ -190,6 +172,7 @@ class ProjectManager extends Controller
             return response()->json(['status' => 'error', 'message' => 'Error adding project. ' . $e->getMessage()]);
         }
     }
+    
     
     
     
@@ -222,7 +205,7 @@ class ProjectManager extends Controller
                     'title' => $project->projectTitle ?? 'N/A',
                     'location' => $project->projectLoc ?? 'N/A',
                     'status' => $project->projectStatus ?? 'N/A',
-                    'amount' => number_format($project->contractAmount ?? 0, 2),
+                  'amount' => number_format((float) preg_replace('/[^\d.]/', '', $project->contractAmount), 2),
                     'contractor' => (strtolower($project->projectContractor) === 'others')
                         ? ($project->othersContractor ?? 'N/A')
                         : ($project->projectContractor ?? 'N/A'),
@@ -258,12 +241,13 @@ class ProjectManager extends Controller
                         'title' => $project->projectTitle ?? 'N/A',
                         'location' => $project->projectLoc ?? 'N/A',
                         'status' => $project->projectStatus ?? 'N/A',
-                        'amount' => number_format($project->contractAmount ?? 0, 2),
+                      'amount' => number_format((float) preg_replace('/[^\d.]/', '', $project->contractAmount), 2),
+
                         'contractor' => (strtolower($project->projectContractor) === 'others')
                             ? ($project->othersContractor ?? 'N/A')
                             : ($project->projectContractor ?? 'N/A'),
                         'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
-                        'action' => '<button class="btn btn-primary btn-sm overview-btn" data-id="' . $project->id . '">Overview</button>',
+                        'action' => '<button class="btn btn-primary btn-sm restore-btn" data-id="' . $project->id . '">Restore</button>',
                     ];
                 });
     
@@ -303,35 +287,37 @@ class ProjectManager extends Controller
         }
     }
 
-    public function getProject(Request $request, $id) 
+    public function getProject(Request $request, $id)
     {
         try {
-            $projectData = DB::table('projects')->where('id', $id)->first();
+            $contractors = Contractor::orderBy('name')->get();
+            $locations = Location::orderBy('location')->get();
+    
+            $projectData = Project::find($id);
     
             if (!$projectData) {
-                return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
+                return redirect()->back()->withErrors(['Project not found.']);
             }
     
-            $project = (array) $projectData;
+            $project = $projectData->toArray();
+            $project['projectStatus'] = $projectData->projectStatus ?? 'Not Available';
     
-            // Fetch project status
-            $projectStatus = ProjectStatus::where('project_id', $id)->first();
-            $project['projectStatus'] = $projectStatus->progress ?? 'Not Available';
-            
-            if ($projectStatus && $projectStatus->percentage) {
-                $percentage = rtrim($projectStatus->percentage, '%'); // Remove any stray % if present
-                $date = $projectStatus->updated_at ? $projectStatus->updated_at->format('F d, Y') : 'Unknown date';
-                $project['ongoingStatus'] = $percentage . ' - ' . $date;
+            if (strtolower($project['projectStatus']) === 'ongoing') {
+                $projectStatus = ProjectStatus::where('project_id', $id)->first();
+                if ($projectStatus && $projectStatus->percentage) {
+                    $percentage = rtrim($projectStatus->percentage, '%');
+                    $date = $projectStatus->updated_at ? $projectStatus->updated_at->format('F d, Y') : 'Unknown date';
+                    $project['ongoingStatus'] = $percentage . '% - ' . $date;
+                } else {
+                    $project['ongoingStatus'] = 'Not Available';
+                }
             } else {
-                $project['ongoingStatus'] = 'Not Available';
+                $project['ongoingStatus'] = null;
             }
-            
     
-            // Fetch all descriptions related to this project
-            $descriptions = ProjectDescription::where('project_id', $id)->pluck('ProjectDescription')->toArray();
-            $project['projectDescriptions'] = $descriptions;
+            $project['projectDescriptions'] = ProjectDescription::where('project_id', $id)
+                ->pluck('ProjectDescription')->toArray();
     
-            // Get matching dynamic order fields
             $columns = DB::getSchemaBuilder()->getColumnListing('projects');
             $matchingColumns = collect($columns)->filter(function ($column) {
                 return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d+$/', $column);
@@ -343,66 +329,109 @@ class ProjectManager extends Controller
             }
             $project['orderDetails'] = $orderDetails;
     
-            return response()->json([
-                'status' => 'success',
-                'project' => $project
-            ]);
+            $fundUtilization = FundsUtilization::where('project_id', $id)->first();
+            if ($fundUtilization) {
+                $project['funds'] = $fundUtilization->only([
+                    'orig_abc', 'orig_contract_amount', 'orig_engineering', 'orig_mqc', 'orig_contingency', 'orig_bid', 'orig_appropriation',
+                    'actual_abc', 'actual_contract_amount', 'actual_engineering', 'actual_mqc', 'actual_contingency', 'actual_bid', 'actual_appropriation',
+                ]);
+    
+                $project['summary'] = is_string($fundUtilization->summary)
+                    ? json_decode($fundUtilization->summary, true)
+                    : ($fundUtilization->summary ?? []);
+    
+                $project['partial_billings'] = is_string($fundUtilization->partial_billings)
+                    ? json_decode($fundUtilization->partial_billings, true)
+                    : ($fundUtilization->partial_billings ?? []);
+            }
+    
+            $project['variation_orders'] = VariationOrder::where('funds_utilization_id', $fundUtilization->id ?? null)
+                ->orderBy('vo_number')
+                ->get()
+                ->map(function ($vo) {
+                    return $vo->only([
+                        'vo_number', 'vo_abc', 'vo_contract_amount', 'vo_engineering', 'vo_mqc', 'vo_contingency', 'vo_bid', 'vo_appropriation'
+                    ]);
+                })
+                ->toArray();
+    
+            // 👉 Role-based view logic for 3 roles
+            $role = auth()->user()->role; // assuming 'role' column in users table
+    
+            switch ($role) {
+                case 'System Admin':
+                    $view = 'systemAdmin.overview';
+                    break;
+                case 'Admin':
+                    $view = 'admin.overview';
+                    break;
+                case 'Staff':
+                    $view = 'staff.overview';
+                    break;
+                default:
+                    return redirect()->back()->withErrors(['Unauthorized role.']);
+            }
+    
+            return view($view, compact('contractors', 'locations', 'project'));
     
         } catch (\Exception $e) {
             Log::error('Error fetching project details: ' . $e->getMessage());
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Project not found.',
-            ]);
+            return redirect()->back()->withErrors(['An error occurred while retrieving the project.']);
         }
     }
     
-    public function getProjectSummary()
-    {
-        try {
-            Log::info('Fetching project summary...');
 
-            if (!Schema::hasTable('projects')) {
-                Log::error('Error: Table "projects" does not exist.');
-                return response()->json(['status' => 'error', 'message' => 'Database table not found.']);
-            }
+    
+    
+public function getProjectSummary()
+{
+    try {
+        Log::info('Fetching project summary...');
 
-            $totalProjects = Project::count();
-            $ongoingProjects = Project::where('projectStatus', 'Ongoing')->count();
-            $completedProjects = Project::where('projectStatus', 'Completed')->count();
-            $discontinuedProjects = Project::where('projectStatus', 'Cancelled')->count();
-
-            $projects = Project::all();
-            $totalBudget = $projects->sum(fn ($p) => (float) preg_replace('/[^0-9.]/', '', $p->abc ?? '0'));
-            $totalUsed = $projects->sum(fn ($p) => (float) preg_replace('/[^0-9.]/', '', $p->contractAmount ?? '0'));
-            $remainingBalance = max($totalBudget - $totalUsed, 0);
-
-            $recentProjects = Project::orderBy('created_at', 'desc')->limit(5)->get();
-
-            Log::info('Project summary fetched successfully.');
-
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'totalProjects' => $totalProjects,
-                    'ongoingProjects' => $ongoingProjects,
-                    'completedProjects' => $completedProjects,
-                    'discontinuedProjects' => $discontinuedProjects,
-                    'totalBudget' => number_format($totalBudget, 2),
-                    'totalUsed' => number_format($totalUsed, 2),
-                    'remainingBalance' => number_format($remainingBalance, 2),
-                    'recentProjects' => $recentProjects
-                ]
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error fetching project summary: ' . $e->getMessage());
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error fetching project summary.',
-                'error_details' => $e->getMessage()
-            ]);
+        if (!Schema::hasTable('projects')) {
+            Log::error('Error: Table "projects" does not exist.');
+            return response()->json(['status' => 'error', 'message' => 'Database table not found.']);
         }
+
+        // Only consider projects that are not hidden
+        $visibleProjects = Project::where('is_hidden', '!=', 1);
+
+        $totalProjects = $visibleProjects->count();
+        $ongoingProjects = $visibleProjects->clone()->where('projectStatus', 'Ongoing')->count();
+        $completedProjects = $visibleProjects->clone()->where('projectStatus', 'Completed')->count();
+        $discontinuedProjects = $visibleProjects->clone()->where('projectStatus', 'Cancelled')->count();
+
+        $projects = $visibleProjects->get();
+        $totalBudget = $projects->sum(fn ($p) => (float) preg_replace('/[^0-9.]/', '', $p->abc ?? '0'));
+        $totalUsed = $projects->sum(fn ($p) => (float) preg_replace('/[^0-9.]/', '', $p->contractAmount ?? '0'));
+        $remainingBalance = max($totalBudget - $totalUsed, 0);
+
+        $recentProjects = $visibleProjects->orderBy('created_at', 'desc')->limit(5)->get();
+
+        Log::info('Project summary fetched successfully.');
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'totalProjects' => $totalProjects,
+                'ongoingProjects' => $ongoingProjects,
+                'completedProjects' => $completedProjects,
+                'discontinuedProjects' => $discontinuedProjects,
+                'totalBudget' => number_format($totalBudget, 2),
+                'totalUsed' => number_format($totalUsed, 2),
+                'remainingBalance' => number_format($remainingBalance, 2),
+                'recentProjects' => $recentProjects
+            ]
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Error fetching project summary: ' . $e->getMessage());
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Error fetching project summary.',
+            'error_details' => $e->getMessage()
+        ]);
     }
+}
 
     public function getAllProjects()
     {
@@ -586,26 +615,45 @@ class ProjectManager extends Controller
         return response()->json(["status" => "success", "message" => "Project successfully archived."]);
     }
 
+    
+
     public function fetchStatus(Request $request, $id)
 {
     if (!is_numeric($id)) {
         return response()->json(['error' => 'Invalid project ID'], 400);
     }
 
-    $project = DB::table('projects')->where('id', $id)->first();
+    $project = Project::find($id);
 
     if (!$project) {
         return response()->json(['error' => 'Project not found'], 404);
     }
 
-    $statuses = DB::table('project_statuses')
-        ->where('project_id', $id)
+    $statuses = ProjectStatus::where('project_id', $id)
         ->orderByDesc('date')
         ->orderByDesc('percentage')
         ->get();
 
+    // Fallback if no statuses and project status is 'Completed'
+    if ($statuses->isEmpty() && strtolower($project->progress) === 'completed') {
+        return response()->json([
+            'project_id' => $project->id,
+            'projectStatus' => 'Completed',
+            'updatedAt' => $project->updated_at,
+            'latestPercentage' => 100,
+            'ongoingStatus' => [] // No progress table
+        ]);
+    }
+
+    // If still empty and not Completed, fallback to whatever is in project
     if ($statuses->isEmpty()) {
-        return response()->json(['error' => 'No status updates found for this project'], 404);
+        return response()->json([
+            'project_id' => $project->id,
+            'projectStatus' => $project->projectStatus ?? 'No status available',
+            'updatedAt' => optional($project->updated_at)->format('Y-m-d'),
+            'latestPercentage' => $project->percentage ?? null,
+            'ongoingStatus' => []
+        ]);
     }
 
     $latestStatus = $statuses->first();
@@ -625,6 +673,8 @@ class ProjectManager extends Controller
     ]);
 }
 
+    
+
 public function addStatus(Request $request)
 {
     $request->validate([
@@ -635,7 +685,7 @@ public function addStatus(Request $request)
     ]);
 
     try {
-        $project = DB::table('projects')->where('id', $request->project_id)->first();
+        $project = Project::where('id', $request->project_id)->first();
 
         if (!$project) {
             return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
@@ -648,8 +698,7 @@ public function addStatus(Request $request)
             ], 403);
         }
 
-        $latestStatus = DB::table('project_statuses')
-            ->where('project_id', $request->project_id)
+        $latestStatus = ProjectStatus::where('project_id', $request->project_id)
             ->orderByDesc('date')
             ->orderByDesc('percentage')
             ->first();
@@ -668,7 +717,7 @@ public function addStatus(Request $request)
 
         DB::beginTransaction();
 
-        DB::table('project_statuses')->insert([
+        ProjectStatus::insert([
             'project_id' => $request->project_id,
             'progress' => $request->progress,
             'percentage' => $request->percentage,
@@ -679,11 +728,10 @@ public function addStatus(Request $request)
 
         $ongoingStatus = $request->percentage . ' - ' . $request->date;
 
-        DB::table('projects')
-            ->where('id', $request->project_id)
+        Project::where('id', $request->project_id)
             ->update([
-                'projectStatus' => 'Ongoing',
-                'ongoingStatus' => $ongoingStatus,
+                'projectStatus' => $request->progress,
+                'ongoingStatus' =>$request->percentage,
                 'updated_at' => now()
             ]);
 

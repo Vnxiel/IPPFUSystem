@@ -88,9 +88,12 @@ $(document).ready(function () {
                             </tr>
                         `;
                     });
+                } else if (data.projectStatus === "Completed") {
+                    progressRows = `<tr><td colspan="3" class="text-center">This project is completed. No further updates available.</td></tr>`;
                 } else {
                     progressRows = `<tr><td colspan="3" class="text-center">No progress data available.</td></tr>`;
                 }
+                
 
                 const progressTable = `
                     <div class="card shadow-sm">

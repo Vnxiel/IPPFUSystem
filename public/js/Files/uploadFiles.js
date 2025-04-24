@@ -60,39 +60,68 @@ $(document).ready(function () {
         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
       },
       success: function (response) {
-        if (response.status === "success") {
-          let successMsg = response.uploaded.length
-            ? `${response.uploaded.length} file(s) uploaded successfully.`
-            : "No new files were uploaded.";
+        let duplicateFiles = response.errors?.filter(err => err.message.includes("already exists")) || [];
+        let otherErrors = response.errors?.filter(err => !err.message.includes("already exists")) || [];
 
-          let duplicateFiles = response.errors.filter(err => err.message.includes("already exists"));
-          let otherErrors = response.errors.filter(err => !err.message.includes("already exists"));
-
-          let errorHtml = '';
-          if (duplicateFiles.length) {
-            errorHtml += `<br><b>Duplicates:</b><ul>`;
-            duplicateFiles.forEach(err => {
-              errorHtml += `<li>${err.file} already exists.</li>`;
+        let showSuccess = () => {
+          if (response.uploaded && response.uploaded.length > 0) {
+            return Swal.fire({
+              title: "Success",
+              text: `${response.uploaded.length} file(s) uploaded successfully.`,
+              icon: "success",
+              confirmButtonText: "OK"
             });
-            errorHtml += `</ul>`;
+          } else {
+            return Promise.resolve();
           }
+        };
 
-          if (otherErrors.length) {
-            errorHtml += `<br><b>Errors:</b><ul>`;
+        let showDuplicates = () => {
+          if (duplicateFiles.length > 0) {
+            let duplicatesHtml = `<ul>`;
+            duplicateFiles.forEach(err => {
+              duplicatesHtml += `<li>${err.file} already exists.</li>`;
+            });
+            duplicatesHtml += `</ul>`;
+
+            return Swal.fire({
+              title: "Duplicate Files",
+              html: duplicatesHtml,
+              icon: "warning",
+              confirmButtonText: "OK"
+            });
+          } else {
+            return Promise.resolve();
+          }
+        };
+
+        let showErrors = () => {
+          if (otherErrors.length > 0) {
+            let errorHtml = `<ul>`;
             otherErrors.forEach(err => {
               errorHtml += `<li>${err.file}: ${err.message}</li>`;
             });
             errorHtml += `</ul>`;
-          }
 
-          Swal.fire({
-            title: "Upload Result",
-            html: `<b>Success:</b> ${successMsg}${errorHtml}`,
-            icon: "info",
-          }).then(() => location.reload());
-        } else {
-          Swal.fire("Error", response.message || "Upload failed.", "error");
-        }
+            return Swal.fire({
+              title: "Upload Errors",
+              html: errorHtml,
+              icon: "error",
+              confirmButtonText: "OK"
+            });
+          } else {
+            return Promise.resolve();
+          }
+        };
+
+        showSuccess()
+          .then(showDuplicates)
+          .then(showErrors)
+          .then(() => {
+            if (response.uploaded && response.uploaded.length > 0) {
+              location.reload();
+            }
+          });
       },
       error: function (xhr) {
         console.error("Upload Error:", xhr.responseText);

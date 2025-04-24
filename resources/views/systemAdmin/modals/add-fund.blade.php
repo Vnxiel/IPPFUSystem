@@ -38,45 +38,45 @@
         <input type="hidden" id="voCount" name="voCount" value="1">
 
           <td>ABC</td>
-          <td><input type="text" class="form-control" id="orig_abc" name="orig_abc" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_abc_1" name="vo_abc_1" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_abc" name="actual_abc" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="orig_abc" name="orig_abc" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="vo_abc_1" name="vo_abc_1" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="actual_abc" name="actual_abc" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Contract Amount</td>
-          <td><input type="text" class="form-control" id="orig_contract_amount" name="orig_contract_amount" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_contract_amount_1" name="vo_contract_amount_1" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_contract_amount" name="actual_contract_amount" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="orig_contract_amount" name="orig_contract_amount" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="vo_contract_amount_1" name="vo_contract_amount_1" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="actual_contract_amount" name="actual_contract_amount" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Engineering</td>
-          <td><input type="text" class="form-control" id="orig_engineering" name="orig_engineering" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_engineering_1" name="vo_engineering_1" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_engineering" name="actual_engineering" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="orig_engineering" name="orig_engineering" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="vo_engineering_1" name="vo_engineering_1" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="actual_engineering" name="actual_engineering" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>MQC</td>
-          <td><input type="text" class="form-control" id="orig_mqc" name="orig_mqc" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_mqc_1" name="vo_mqc_1" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_mqc" name="actual_mqc" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="orig_mqc" name="orig_mqc" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="vo_mqc_1" name="vo_mqc_1" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="actual_mqc" name="actual_mqc" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Contingency</td>
-          <td><input type="text" class="form-control" id="orig_contingency" name="orig_contingency" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_contingency_1" name="vo_contingency_1" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_contingency" name="actual_contingency" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="orig_contingency" name="orig_contingency" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="vo_contingency_1" name="vo_contingency_1" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="actual_contingency" name="actual_contingency" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Bid Difference</td>
-          <td><input type="text" class="form-control" id="orig_bid" name="orig_bid" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_bid_1" name="vo_bid_1" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_bid" name="actual_bid" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="orig_bid" name="orig_bid" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="vo_bid_1" name="vo_bid_1" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="actual_bid" name="actual_bid" placeholder="₱0.00"></td>
         </tr>
         <tr>
           <td>Appropriation</td>
-          <td><input type="text" class="form-control" id="orig_appropriation" name="orig_appropriation" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_appropriation_1" name="vo_appropriation_1" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_appropriation" name="actual_appropriation" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="orig_appropriation" name="orig_appropriation" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="vo_appropriation_1" name="vo_appropriation_1" placeholder="₱0.00"></td>
+          <td><input type="text"  class="form-control amount-input" id="actual_appropriation" name="actual_appropriation" placeholder="₱0.00"></td>
         </tr>
       </tbody>
     </table>
@@ -112,7 +112,7 @@
                   <tr>
                     <td>15% Mobilization</td>
                     <td><input type="date" class="form-control" name="dateMobi"></td>
-                    <td><input type="text" class="form-control" name="amountMobi" placeholder="₱0.00"></td>
+                    <td><input type="text"  class="form-control amount-input" name="amountMobi" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remMobi"></td>
                   </tr>
                 </tbody>
@@ -120,7 +120,7 @@
                   <tr>
                     <td>1st Partial Billing</td>
                     <td><input type="date" class="form-control" name="datePart1"></td>
-                    <td><input type="text" class="form-control" name="amountPart1" placeholder="₱0.00"></td>
+                    <td><input type="text"  class="form-control amount-input" name="amountPart1" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remPart1"></td>
                   </tr>
                 </tbody>
@@ -128,31 +128,31 @@
                   <tr>
                     <td>Final Billing</td>
                     <td><input type="date" class="form-control" name="dateFinal"></td>
-                    <td><input type="text" class="form-control" name="amountFinal" placeholder="₱0.00"></td>
+                    <td><input type="text"  class="form-control amount-input" name="amountFinal" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remFinal"></td>
                   </tr>
                   <tr>
                     <td>Engineering</td>
                     <td><input type="date" class="form-control" name="dateEng"></td>
-                    <td><input type="text" class="form-control" name="amountEng" placeholder="₱0.00"></td>
+                    <td><input type="text"  class="form-control amount-input" name="amountEng" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remEng"></td>
                   </tr>
                   <tr>
                     <td>MQC</td>
                     <td><input type="date" class="form-control" name="dateMqc"></td>
-                    <td><input type="text" class="form-control" name="amountMqc" placeholder="₱0.00"></td>
+                    <td><input type="text"  class="form-control amount-input" name="amountMqc" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remMqc"></td>
                   </tr>
                   <tr class="fw-bold">
                     <td>Total Expenditures</td>
                     <td></td>
-                    <td><input type="text" class="form-control" name="amountTotal" placeholder="₱0.00"></td>
+                    <td><input type="text"  class="form-control amount-input" name="amountTotal" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remTotal"></td>
                   </tr>
                   <tr class="fw-bold">
                     <td>Total Savings</td>
                     <td></td>
-                    <td><input type="text" class="form-control" name="amountSavings" placeholder="₱0.00"></td>
+                    <td><input type="text"  class="form-control amount-input" name="amountSavings" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remSavings"></td>
                   </tr>
                 </tbody>
@@ -199,7 +199,7 @@ function addNextBilling() {
   row.innerHTML = `
     <td>${billingCount}${suffix} Partial Billing</td>
     <td><input type="date" class="form-control" name="datePart${billingCount}"></td>
-    <td><input type="text" class="form-control" name="amountPart${billingCount}" placeholder="₱0.00"></td>
+    <td><input type="text" class="form-control amount-input" name="amountPart${billingCount}" placeholder="₱0.00"></td>
     <td><input type="text" class="form-control" name="remPart${billingCount}"></td>
   `;
   tbody.appendChild(row);

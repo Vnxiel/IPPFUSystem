@@ -50,9 +50,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('staff.projects') }}">Projects</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('staff.userManagement') }}">User Management</a>
-                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
@@ -107,11 +104,9 @@
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
-        <script src="{{ asset('js/Projects/fetchProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/projects.js') }}"></script>
         <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
-       
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Account/logout.js') }}"></script>
         
