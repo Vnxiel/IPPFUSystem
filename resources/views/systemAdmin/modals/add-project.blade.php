@@ -166,12 +166,12 @@
                                             <input type="date" class="form-control" id="officialStart" name="officialStart">
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <!-- <div class="row">
                                         <div class="mb-1">
                                             <label for="targetCompletion" class="form-label">Target Completion</label>
                                             <input type="date" class="form-control" id="targetCompletion" name="targetCompletion">
                                         </div>
-                                    </div>
+                                    </div> -->
                                     
                                 </div>
                             </div>
@@ -293,10 +293,10 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-1">
+                                    <!-- <div class="mb-1">
                                         <label for="timeExtension" class="form-label">Time Extension</label>
                                         <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="">
-                                    </div> 
+                                    </div>  -->
                                     <div class="mb-1">
                                         <label for="revisedTargetCompletion" class="form-label">Revised Target Completion</label>
                                         <input type="date" class="form-control" style="background-color: lightgray;" id="revisedTargetCompletion" name="revisedTargetCompletion">
