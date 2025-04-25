@@ -144,11 +144,11 @@
                 </tbody>
                 <tbody id="billingsTableBody">
                   <tr>
-                    <td>1st Partial Billing</td>
-                    <td><input type="date" class="form-control" name="datePart1"></td>
-                    <td><input type="text" class="form-control amount-input" name="amountPart1" placeholder="₱0.00">
-                    </td>
-                    <td><input type="text" class="form-control" name="remPart1"></td>
+                  <td>1st Partial Billing</td>
+                  <td><input type="date" class="form-control" name="datePart1"></td>
+                  <td><input type="text" class="form-control amount-input" name="amountPart1" placeholder="₱0.00">
+                  </td>
+                  <td><input type="text" class="form-control" name="remPart1"></td>
                   </tr>
                 </tbody>
                 <tbody>
@@ -222,6 +222,14 @@
 
 
   function addNextBilling() {
+    if (billingCount >= 5) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Limit Reached',
+        text: 'You can only add up to 5 billings.',
+      });
+      return;
+    }
     billingCount++;
     const suffix = getOrdinalSuffix(billingCount);
     const tbody = document.getElementById('billingsTableBody');
@@ -233,13 +241,38 @@
     <td><input type="text" class="form-control" name="remPart${billingCount}"></td>
   `;
     tbody.appendChild(row);
+
+    // Disable Add Billing button if limit is reached
+    if (billingCount >= 5) {
+      document.querySelector('button[onclick="addNextBilling()"]').disabled = true;
+    }
+
+    // Enable Remove Billing button
+    document.querySelector('button[onclick="removeLastBilling()"]').disabled = false;
   }
 
   function removeLastBilling() {
-    if (billingCount > 1) {
+    if (billingCount > 0) {
       const tbody = document.getElementById('billingsTableBody');
       tbody.removeChild(tbody.lastElementChild);
       billingCount--;
+
+      // Enable Add Billing button if below limit
+      if (billingCount < 5) {
+        document.querySelector('button[onclick="addNextBilling()"]').disabled = false;
+      }
+
+      // Disable Remove Billing button if only 1 billing remains
+      if (billingCount === 0) {
+        document.querySelector('button[onclick="removeLastBilling()"]').disabled = true;
+      }
     }
   }
+
+  // Initial state: Disable Remove Billing button if only 1 billing exists
+  document.addEventListener('DOMContentLoaded', () => {
+    if (billingCount === 1) {
+      document.querySelector('button[onclick="removeLastBilling()"]').disabled = true;
+    }
+  });
 </script>
