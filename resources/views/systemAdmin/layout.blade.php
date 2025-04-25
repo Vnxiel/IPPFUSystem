@@ -53,6 +53,7 @@
                             </li>
                             <li class="nav-item">
                                 <a id="userManagementBtn" class="nav-link active {{ Request::is('systemAdmin/userManagement') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/userManagement') }}">User Management</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ Request::is('systemAdmin/trash') || Request::is('systemAdmin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
