@@ -32,12 +32,12 @@
                 <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#generateProjectModal" title="Generate/Download Report">
                     <i class="fa fa-download"></i>
                 </button>
-                <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#trashModal" title="Temporary Delete Project">
+                <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#trashModal" title="Archive Project">
                     <i class="fa fa-trash"></i>
                 </button>
-                <button type="button" id="checkStatusBtn" class="btn btn-secondary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#checkStatusModal">
-                Check Status
-                 </button>
+                <button type="button" id="checkStatusBtn" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#checkStatusModal" title="Check Status"> 
+                <i class="fa-solid fa-check-to-slot"></i>
+                </button>
             </div>
         </div>
         <hr class="mt-2">

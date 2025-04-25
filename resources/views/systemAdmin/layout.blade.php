@@ -57,7 +57,7 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ Request::is('systemAdmin/trash') || Request::is('systemAdmin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item {{ Request::is('systemAdmin/trash') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/trash') }}">Trash</li>
+                                    <li><a class="dropdown-item {{ Request::is('systemAdmin/trash') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/trash') }}">Archive</li>
                                     <li><a class="dropdown-item {{ Request::is('systemAdmin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/systemAdmin/activityLogs') }}">Activity Logs</a></li>
                                 </ul>
                             </li>
