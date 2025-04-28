@@ -19,77 +19,77 @@
                         readonly>Project Title</textarea>
             </div>
           </fieldset>
-<!-- Cost Breakdown Table -->
-<fieldset class="border p-3 mb-4 rounded">
-  <legend class="float-none w-auto px-2 fw-bold">Cost Breakdown</legend>
+        <!-- Cost Breakdown Table -->
+        <fieldset class="border p-3 mb-4 rounded">
+          <legend class="float-none w-auto px-2 fw-bold">Cost Breakdown</legend>
 
-  <div class="table-responsive">
-    <table class="table table-bordered text-center align-middle">
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Original</th>
-          <th>V.O.1</th>
-          <th>Actual</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>ABC</td>
-          <td><input type="text" class="form-control" id="orig_abc" name="orig_abc" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_abc" name="vo_abc" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_abc" name="actual_abc" placeholder="₱0.00"></td>
-        </tr>
-        <tr>
-          <td>Contract Amount</td>
-          <td><input type="text" class="form-control" id="orig_contract_amount" name="orig_contract_amount" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_contract_amount" name="vo_contract_amount" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_contract_amount" name="actual_contract_amount" placeholder="₱0.00"></td>
-        </tr>
-        <tr>
-          <td>Engineering</td>
-          <td><input type="text" class="form-control" id="orig_engineering" name="orig_engineering" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_engineering" name="vo_engineering" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_engineering" name="actual_engineering" placeholder="₱0.00"></td>
-        </tr>
-        <tr>
-          <td>MQC</td>
-          <td><input type="text" class="form-control" id="orig_mqc" name="orig_mqc" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_mqc" name="vo_mqc" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_mqc" name="actual_mqc" placeholder="₱0.00"></td>
-        </tr>
-        <tr>
-          <td>Contingency</td>
-          <td><input type="text" class="form-control" id="orig_contingency" name="orig_contingency" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_contingency" name="vo_contingency" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_contingency" name="actual_contingency" placeholder="₱0.00"></td>
-        </tr>
-        <tr>
-          <td>Bid Difference</td>
-          <td><input type="text" class="form-control" id="orig_bid" name="orig_bid" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_bid" name="vo_bid" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_bid" name="actual_bid" placeholder="₱0.00"></td>
-        </tr>
-        <tr>
-          <td>Appropriation</td>
-          <td><input type="text" class="form-control" id="orig_appropriation" name="orig_appropriation" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="vo_appropriation" name="vo_appropriation" placeholder="₱0.00"></td>
-          <td><input type="text" class="form-control" id="actual_appropriation" name="actual_appropriation" placeholder="₱0.00"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Original</th>
+                  <th>V.O.1</th>
+                  <th>Actual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ABC</td>
+                  <td><input type="text" class="form-control" id="orig_abc" name="orig_abc" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="vo_abc" name="vo_abc" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="actual_abc" name="actual_abc" placeholder="₱0.00"></td>
+                </tr>
+                <tr>
+                  <td>Contract Amount</td>
+                  <td><input type="text" class="form-control" id="orig_contract_amount" name="orig_contract_amount" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="vo_contract_amount" name="vo_contract_amount" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="actual_contract_amount" name="actual_contract_amount" placeholder="₱0.00"></td>
+                </tr>
+                <tr>
+                  <td>Engineering</td>
+                  <td><input type="text" class="form-control" id="orig_engineering" name="orig_engineering" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="vo_engineering" name="vo_engineering" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="actual_engineering" name="actual_engineering" placeholder="₱0.00"></td>
+                </tr>
+                <tr>
+                  <td>MQC</td>
+                  <td><input type="text" class="form-control" id="orig_mqc" name="orig_mqc" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="vo_mqc" name="vo_mqc" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="actual_mqc" name="actual_mqc" placeholder="₱0.00"></td>
+                </tr>
+                <tr>
+                  <td>Contingency</td>
+                  <td><input type="text" class="form-control" id="orig_contingency" name="orig_contingency" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="vo_contingency" name="vo_contingency" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="actual_contingency" name="actual_contingency" placeholder="₱0.00"></td>
+                </tr>
+                <tr>
+                  <td>Bid Difference</td>
+                  <td><input type="text" class="form-control" id="orig_bid" name="orig_bid" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="vo_bid" name="vo_bid" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="actual_bid" name="actual_bid" placeholder="₱0.00"></td>
+                </tr>
+                <tr>
+                  <td>Appropriation</td>
+                  <td><input type="text" class="form-control" id="orig_appropriation" name="orig_appropriation" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="vo_appropriation" name="vo_appropriation" placeholder="₱0.00"></td>
+                  <td><input type="text" class="form-control" id="actual_appropriation" name="actual_appropriation" placeholder="₱0.00"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-  <!-- VO Dynamic Controls -->
-  <div class="text-end mt-2">
-    <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addVOFields()" title="Add V.O.">
-      <i class="fa-solid fa-square-plus"></i> Add V.O.
-    </button>
-    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastVOFields()" title="Remove Last V.O.">
-      <i class="fa-solid fa-circle-minus"></i> Remove V.O.
-    </button>
-  </div>
-</fieldset>
+          <!-- VO Dynamic Controls -->
+          <div class="text-end mt-2">
+            <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addVOFields()" title="Add V.O.">
+              <i class="fa-solid fa-square-plus"></i> Add V.O.
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastVOFields()" title="Remove Last V.O.">
+              <i class="fa-solid fa-circle-minus"></i> Remove V.O.
+            </button>
+          </div>
+        </fieldset>
 
 
 
