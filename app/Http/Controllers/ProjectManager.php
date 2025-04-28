@@ -534,9 +534,7 @@ public function getProjectSummary()
                 $project['contingency'] = $this->cleanMoney($request->input('contingency'));
     
                 $project->save();
-    
-                session()->put('projectID', $project->projectID);
-                session()->save();
+
     
                 // Insert or update project descriptions if present
                 $projectDescription = $request->input('projectDescription');

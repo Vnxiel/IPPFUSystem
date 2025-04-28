@@ -282,7 +282,7 @@
                  });
 
 //  Fetch Project Summary (Total Projects, Ongoing, Completed, Budget)
-function fetchProjectSummary() {
+function fetchProjectSummary() { 
     fetch("/projects/summary")
         .then(response => response.json())
         .then(data => {

@@ -82,17 +82,24 @@ $(document).ready(function () {
                             timer: 2000,
                             didClose: function () {
                                 $("#addNewProjectModal").modal("hide");
-                                $("#addProjectForm")[0].reset();
-                                loadProjects();
                             }
                         });
+                
+                        // After modal fully hides, reload the projects
+                        $('#addNewProjectModal').on('hidden.bs.modal', function () {
+                            $("#addProjectForm")[0].reset();
+                            loadProjects();
+                            // Optional: Unbind the event so it doesn't stack on future submissions
+                            $(this).off('hidden.bs.modal');
+                        });
+                
                     } else if (response.errors) {
                         let errorMessages = "<ul class='text-left'>";
                         $.each(response.errors, function (field, errors) {
                             errorMessages += `<li><strong>${field.replace(/_/g, " ")}:</strong> ${errors.join(", ")}</li>`;
                         });
                         errorMessages += "</ul>";
-
+                
                         Swal.fire({
                             icon: "warning",
                             title: "Validation Error",
@@ -107,7 +114,8 @@ $(document).ready(function () {
                             confirmButtonText: "OK"
                         });
                     }
-                },
+                }
+                ,
                 error: function (xhr) {
                     Swal.fire({
                         icon: "error",

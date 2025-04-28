@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Controllers\ActivityLog;
 
 class User extends Authenticatable
 {
@@ -31,4 +32,30 @@ class User extends Authenticatable
             }
         });
     }
+
+   // app/Models/User.php
+
+public function expireTemporaryRole(): bool
+{
+    if ($this->time_frame === 'Temporary' && $this->time_limit && now()->gt($this->time_limit)) {
+        $this->role = $this->temp_role ?? 'Staff';
+        $this->temp_role = null;
+        $this->time_frame = 'Permanent';
+        $this->time_limit = null;
+        $this->save();
+
+        (new \App\Controllers\ActivityLogs)->userAction(
+            $this->id,
+            $this->ofmis_id,
+            $this->username,
+            $this->role,
+            'Temporary role expired and reverted'
+        );
+
+        return true;
+    }
+
+    return false;
+}
+
 }

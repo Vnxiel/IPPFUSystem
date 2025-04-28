@@ -102,20 +102,33 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-12">
-                                                            <div class="mb-3">
+                                                            <div class="mb-1">
                                                                 <label for="password" class="form-label fw-bolder">Password:</label>
-                                                                <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                                                                <div class="input-group">
+                                                                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" required minlength="6">
+                                                                    <span class="input-group-text" style="cursor:pointer;">
+                                                                        <i class="fa fa-eye toggle-password" data-target="#password"></i>
+                                                                    </span>
+                                                                </div>
+                                                                @error('password') <small class="text-danger">{{ $message }}</small> @enderror
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                     <div class="row">
                                                         <div class="col-md-12">
-                                                            <div class="mb-3">
+                                                            <div class="mb-1">
                                                                 <label for="password_confirmation" class="form-label fw-bolder">Confirm Password:</label>
-                                                                <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" aria-describedby="password_confirmation" placeholder="Confirm Password"  required minlength="6" required>
+                                                                <div class="input-group">
+                                                                    <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password" required minlength="6">
+                                                                    <span class="input-group-text" style="cursor:pointer;">
+                                                                        <i class="fa fa-eye toggle-password" data-target="#password_confirmation"></i>
+                                                                    </span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                   
                                                 </div>
 
                                                 <!-- OFMIS Button -->

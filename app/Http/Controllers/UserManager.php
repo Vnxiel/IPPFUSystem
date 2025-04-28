@@ -139,6 +139,9 @@ public function userLogin(Request $request)
         return response()->json(['error' => 'Invalid credentials'], 401);
     }
 
+    // Expire temporary role if needed
+    $expired = $user->expireTemporaryRole();
+
     Auth::login($user);
 
     if (in_array($user->role, ['System Admin', 'Admin', 'Staff'])) {
@@ -152,7 +155,13 @@ public function userLogin(Request $request)
 
         if (session()->has('loggedIn')) {
             $log = session()->get('loggedIn');
-            (new ActivityLogs)->userAction($log['user_id'], $log['ofmis_id'], $log['performedBy'], $log['role'], $log['action']);
+            (new ActivityLogs)->userAction(
+                $log['user_id'],
+                $log['ofmis_id'],
+                $log['performedBy'],
+                $log['role'],
+                $log['action']
+            );
         }
 
         $redirect = match ($user->role) {
@@ -164,12 +173,14 @@ public function userLogin(Request $request)
 
         return response()->json([
             'redirect' => $redirect,
-            'role' => $user->role
+            'role' => $user->role,
+            'expired' => $expired ? 'Your temporary role has expired and has been updated.' : null,
         ]);
     }
 
     return response()->json(['error' => 'Unauthorized role'], 403);
 }
+
     
     public function validateUser(Request $request) {}
 

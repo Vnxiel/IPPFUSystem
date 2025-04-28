@@ -1,3 +1,85 @@
+const formatter = new Intl.NumberFormat('en-PH', {
+  style: 'currency',
+  currency: 'PHP',
+  minimumFractionDigits: 2
+});
+
+function parseCurrency(value) {
+  return parseFloat((value || '0').replace(/[₱,]/g, '')) || 0;
+}
+
+function formatCurrency(value) {
+  return formatter.format(value);
+}
+
+function calculateTotalExpenditures() {
+  const final = parseCurrency(document.querySelector('input[name="amountFinal"]')?.value);
+  const eng = parseCurrency(document.querySelector('input[name="amountEng"]')?.value);
+  const mqc = parseCurrency(document.querySelector('input[name="amountMqc"]')?.value);
+  // const mobi = parseCurrency(document.querySelector('input[name="amountMobi"]')?.value);
+
+  let partials = 0;
+  document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
+    partials += parseCurrency(input.value);
+  });
+
+  const total = final + eng + mqc + partials;
+
+  const totalField = document.querySelector('input[name="amountTotal"]');
+  if (totalField) totalField.value = formatCurrency(total);
+
+  calculateSavings(total);
+}
+
+function calculateSavings(total) {
+  const appropriation = parseCurrency(document.getElementById('orig_appropriation')?.value);
+  const savings = appropriation - total;
+
+  const savingsField = document.querySelector('input[name="amountSavings"]');
+  if (savingsField) savingsField.value = formatCurrency(savings);
+}
+
+function calculateMobilization() {
+  const percent = parseFloat(document.getElementById("percentMobi")?.value) || 0;
+  const contract = parseCurrency(document.getElementById("orig_contract_amount")?.value);
+  const mobiAmount = (percent / 100) * contract;
+
+  const mobiField = document.querySelector('input[name="amountMobi"]');
+  if (mobiField) {
+    mobiField.value = formatCurrency(mobiAmount);
+    calculateTotalExpenditures(); // recalc after update
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const fieldNames = ['amountFinal', 'amountEng', 'amountMqc', 'amountMobi'];
+
+  fieldNames.forEach(name => {
+    const input = document.querySelector(`input[name="${name}"]`);
+    if (input) input.addEventListener('input', calculateTotalExpenditures);
+  });
+
+  document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
+    input.addEventListener('input', calculateTotalExpenditures);
+  });
+
+  const billingsTableBody = document.getElementById('billingsTableBody');
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
+      input.removeEventListener('input', calculateTotalExpenditures); // safety
+      input.addEventListener('input', calculateTotalExpenditures);
+    });
+  });
+  observer.observe(billingsTableBody, { childList: true });
+
+  document.getElementById('orig_appropriation')?.addEventListener('input', calculateTotalExpenditures);
+
+  document.getElementById('percentMobi')?.addEventListener('input', calculateMobilization);
+  document.getElementById('orig_contract_amount')?.addEventListener('input', calculateMobilization);
+
+  // Initial calculation on load
+  calculateTotalExpenditures();
+});
 
 document.addEventListener('DOMContentLoaded', function () {
   const fundModal = document.getElementById('addProjectFundUtilization');
@@ -99,23 +181,25 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       body: JSON.stringify(formData)
     })
-    .then(res => res.json())
-    .then(result => {
-      if (result.status === 'success') {
-        Swal.fire('Success', 'Fund Utilization saved successfully!', 'success').then(() => location.reload());
-      } else {
-        Swal.fire('Failed', result.message || 'Failed to save fund utilization.', 'error');
-      }
-    })
-    .catch(error => {
-      console.error('Error saving fund utilization:', error);
-      Swal.fire('Error', 'An error occurred while saving fund utilization.', 'error');
-    });
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === 'success') {
+          Swal.fire('Success', 'Fund Utilization saved successfully!', 'success').then(() => location.reload());
+        } else {
+          Swal.fire('Failed', result.message || 'Failed to save fund utilization.', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error saving fund utilization:', error);
+        Swal.fire('Error', 'An error occurred while saving fund utilization.', 'error');
+      });
   });
 });
 
 // Add this global so it works outside the event listener
 function addVOFields() {
+  if (voCount >= 3) return; // Limit to 3 VOs
+
   voCount++;
   document.getElementById('voCount').value = voCount;
 
@@ -139,15 +223,8 @@ function addVOFields() {
     rows[index].insertBefore(cell, cells[cells.length - 1]);
   });
 
-  
+  updateVOButtonsState();
 }
-
-document.querySelectorAll('.amount-input').forEach(input => {
-  input.addEventListener('input', function () {
-    // Allow: numbers, comma, dot, and peso sign
-    this.value = this.value.replace(/[^\d.,₱]/g, '');
-  });
-});
 
 function removeLastVOFields() {
   if (voCount > 1) {
@@ -164,7 +241,20 @@ function removeLastVOFields() {
     voCount--;
     document.getElementById('voCount').value = voCount;
   }
+
+  updateVOButtonsState();
 }
+
+function updateVOButtonsState() {
+  const addButton = document.querySelector('.btn-outline-primary[onclick="addVOFields()"]');
+  const removeButton = document.querySelector('.btn-outline-danger[onclick="removeLastVOFields()"]');
+
+  if (addButton) addButton.disabled = voCount >= 3;
+  if (removeButton) removeButton.disabled = voCount <= 1;
+}
+
+// Call updateVOButtonsState initially to set the correct state
+document.addEventListener('DOMContentLoaded', updateVOButtonsState);
 
 function loadFundUtilization(project_id) {
   fetch(`/fund-utilization/${project_id}`)
@@ -251,4 +341,133 @@ function loadFundUtilization(project_id) {
         }
       }
     });
+
+
+  //input event for mobilization amount. as per client ask to add to put input text box for mobilization
+  document.getElementById('percentMobi').addEventListener('input', function () {
+    const percent = parseFloat(this.value) || 0;
+
+    const contractInput = document.getElementById('orig_contract_amount');
+    const rawContract = (contractInput.value || '0').replace(/[₱,]/g, '');
+    const contractAmount = parseFloat(rawContract) || 0;
+
+    const result = contractAmount * (percent / 100);
+
+    // Format result as ₱ currency
+    const formatted = `₱${result.toLocaleString('en-PH', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+
+    document.querySelector('[name="amountMobi"]').value = formatted;
+  });
+
+
+ // Formatter for PHP currency
+const formatter = new Intl.NumberFormat('en-PH', {
+  style: 'currency',
+  currency: 'PHP',
+  minimumFractionDigits: 2,
+});
+
+// Utility: convert "₱1,000.00" -> 1000
+function parseCurrency(val) {
+  return parseFloat((val || '0').replace(/[₱,]/g, '')) || 0;
+}
+
+// Utility: convert number -> "₱1,000.00"
+function formatCurrency(val) {
+  return formatter.format(val);
+}
+
+// Get sum of all partial billing fields
+function getPartialBillingTotal() {
+  let total = 0;
+  const partials = document.querySelectorAll('input[name^="amountPart"]');
+  partials.forEach(input => {
+    total += parseCurrency(input.value);
+  });
+  return total;
+}
+
+// Compute total expenditures and inject into DOM
+function calculateTotalExpenditures() {
+  const final = parseCurrency(document.querySelector('input[name="amountFinal"]')?.value || '0');
+  const eng = parseCurrency(document.querySelector('input[name="amountEng"]')?.value || '0');
+  const mqc = parseCurrency(document.querySelector('input[name="amountMqc"]')?.value || '0');
+  const mobi = parseCurrency(document.querySelector('input[name="amountMobi"]')?.value || '0');
+  const partialTotal = getPartialBillingTotal();
+
+  const total = final + eng + mqc + mobi + partialTotal;
+
+  const totalInput = document.querySelector('input[name="amountTotal"]');
+  if (totalInput) {
+    totalInput.value = formatCurrency(total);
+    totalInput.dispatchEvent(new Event('input')); // Trigger input event for savings calculation
+  }
+
+  calculateSavings(total); // pass total expenditures
+}
+
+// Compute savings = appropriation - expenditures
+function calculateSavings(totalExpenditures) {
+  const appropriation = parseCurrency(document.getElementById("orig_appropriation")?.value || '0');
+  const savings = appropriation - totalExpenditures;
+
+  const savingsInput = document.querySelector('input[name="amountSavings"]');
+  if (savingsInput) savingsInput.value = formatCurrency(savings);
+}
+
+// Calculate mobilization as % of contract
+function calculateMobilization() {
+  const percent = parseFloat(document.getElementById('percentMobi')?.value || '0');
+  const contractAmount = parseCurrency(document.getElementById('orig_contract_amount')?.value || '0');
+  const mobiAmount = contractAmount * (percent / 100);
+
+  const mobiInput = document.querySelector('input[name="amountMobi"]');
+  if (mobiInput) mobiInput.value = formatCurrency(mobiAmount);
+
+  calculateTotalExpenditures(); // Recalculate after updating mobi
+}
+
+// Setup all event listeners after DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  const fieldNames = ['amountFinal', 'amountEng', 'amountMqc', 'amountMobi'];
+
+  // Attach input listeners to main fields
+  fieldNames.forEach(name => {
+    const input = document.querySelector(`input[name="${name}"]`);
+    if (input) {
+      input.addEventListener('input', calculateTotalExpenditures);
+    }
+  });
+
+  // Attach to existing partial billing inputs
+  document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
+    input.addEventListener('input', calculateTotalExpenditures);
+  });
+
+  // Recalculate when dynamic rows are added
+  const billingsTableBody = document.getElementById('billingsTableBody');
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
+      input.removeEventListener('input', calculateTotalExpenditures); // optional safety
+      input.addEventListener('input', calculateTotalExpenditures);
+    });
+  });
+  observer.observe(billingsTableBody, { childList: true });
+
+  // Orig appropriation change
+  const appropriationInput = document.getElementById('orig_appropriation');
+  if (appropriationInput) {
+    appropriationInput.addEventListener('input', calculateTotalExpenditures);
+  }
+
+  // Mobilization fields
+  const percentMobi = document.getElementById('percentMobi');
+  const origContract = document.getElementById('orig_contract_amount');
+
+  percentMobi?.addEventListener('input', calculateMobilization);
+  origContract?.addEventListener('input', calculateMobilization);
+});
 }
