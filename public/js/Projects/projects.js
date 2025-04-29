@@ -2,9 +2,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const project_id = sessionStorage.getItem("project_id");
 
-    if (project_id) {
-        fetchProjectDetails();
-    }
+
     let currencyDivs = document.querySelectorAll(".currency-input"); // Hanapin ang lahat ng currency input fields
 
     currencyDivs.forEach(div => {
@@ -104,6 +102,8 @@ $(document).ready(function () {
     $('#editStatus').on('change', function () {
         $(this).val() === 'Ongoing' ? $('#ongoingStatusContainer').slideDown() : $('#ongoingStatusContainer').slideUp();
     });
+
+    
 });
 
 // Kapag isinara ang modal, mare-reload ang page para makita ang mga pagbabago

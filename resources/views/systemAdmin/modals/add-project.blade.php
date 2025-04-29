@@ -13,11 +13,16 @@
                         <legend class="float-none w-auto px-2 fw-bold">Project Details</legend>
 
                         <div class="row">
-
                             <div class="col-md-12">
                                 <div class="mb-1">
-                                    <label for="projectID" class="form-label">Project ID <span
-                                            class="text-danger">*</span></label>
+                                    <label for="projectTitle" class="form-label">Project Title</label>
+                                    <textarea class="form-control" id="projectTitle" name="projectTitle" rows="2"
+                                        placeholder="Enter project title." required></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="mb-1">
+                                    <label for="projectID" class="form-label">Project ID</label>
                                     <textarea class="form-control" id="projectID" name="projectID" rows="2"
                                         placeholder="Enter Project ID." required></textarea>
                                 </div>
@@ -168,114 +173,113 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="mb-1">
-                                        <label for="projectContractDays" class="form-label">Contract Days <span
-                                                class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="projectContractDays"
-                                            name="projectContractDays" min="0">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="mb-1">
+                                            <label for="projectContractDays" class="form-label">Contract Days</label>
+                                            <input type="number" class="form-control" id="projectContractDays" name="projectContractDays" min="0">
+                                        </div>
+                                    </div> 
+                                    <div class="row">
+                                        <div class="mb-1">
+                                            <label for="officialStart" class="form-label">Official Start</label>
+                                            <input type="date" class="form-control" id="officialStart" name="officialStart">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="mb-1">
-                                        <label for="officialStart" class="form-label">Official Start <span
-                                                class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="officialStart" name="officialStart">
-                                    </div>
-                                </div>
-                                <!-- <div class="row">
+                                    <div class="row">
                                         <div class="mb-1">
                                             <label for="targetCompletion" class="form-label">Target Completion</label>
                                             <input type="date" class="form-control" id="targetCompletion" name="targetCompletion">
-                                        </div>-->
+                                        </div>
+                                    </div>
+                                    
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6"> 
+                                    <div class="row">
+                                        <div class="row text-center">
+                                            <h6 class=" m-1 fw-bold">Notice of Award</h6>
+                                        </div> 
+                                        <div class="mb-1">
+                                            <label for="noaIssuedDate" class="form-label">Issued Date</label>
+                                            <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
+                                        </div> 
+                                        <div class="mb-1">
+                                            <label for="noaReceivedDate" class="form-label">Received Date</label>
+                                            <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">                                          
+                                        <div class="row text-center">
+                                            <h6 class=" m-1 fw-bold">Notice to Proceed</h6>
+                                        </div> 
+                                        <div class="mb-1">
+                                            <label for="ntpIssuedDate" class="form-label">Issued Date</label>
+                                            <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate">
+                                        </div> 
+                                        <div class="mb-1">
+                                            <label for="ntpReceivedDate" class="form-label">Received Date</label>
+                                            <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate">
+                                        </div> 
+                                    </div>                                                                 
+                                </div>  
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="originalExpiryDate" class="form-label">Original Expiry Date</label>
+                                    <input type="date" class="form-control" id="originalExpiryDate" name="originalExpiryDate">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="revisedExpiryDate" class="form-label">Revised Expiry Date</label>
+                                    <input type="date" class="form-control" id="revisedExpiryDate" name="revisedExpiryDate">
+                                </div> 
+                            </div> 
+                                
+                                
+                            <div class="row">   
+                                <div class="col-md-6">
+                                    <div class="mb-1">
+                                        <label for="abc" class="form-label">ABC</label>
+                                        <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                    </div>
+                                    <div class="mb-1">
+                                        <label for="contractAmount" class="form-label">Contract Amount</label>
+                                        <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount">
+                                    </div> 
+                                    <div class="mb-1">
+                                        <label for="engineering" class="form-label">Engineering</label>
+                                        <input type="text" class="form-control currency-input" id="engineering" name="engineering">
+                                    </div>                                        
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-1">
+                                        <label for="mqc" class="form-label">MQC</label>
+                                        <input type="text" class="form-control currency-input" id="mqc" name="mqc">
+                                    </div>
+                                    <div class="mb-1">
+                                        <label for="bid" class="form-label">Contingency</label>
+                                        <input type="text" class="form-control currency-input" id="contingency" name="contingency">
+                                    </div> 
+                                    <div class="mb-1">
+                                        <label for="bid" class="form-label">Bid Difference</label>
+                                        <input type="text" class="form-control currency-input" id="bid" name="bid" readonly>
+                                    </div>                                    
+                                </div>
+                            </div>
+
+
+                            <hr class="w-50 mx-auto" style="border-color: red;">
+
+                            <div class="row text-center">
                                 <div class="row">
-                                    <div class="row text-center">
-                                        <h6 class=" m-1 fw-bold">Notice of Award</h6>
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="noaIssuedDate" class="form-label">Issued Date</label>
-                                        <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="noaReceivedDate" class="form-label">Received Date</label>
-                                        <input type="date" class="form-control" id="noaReceivedDate"
-                                            name="noaReceivedDate">
-                                    </div>
+                                    <h6 class=" m-1 fw-bold">Implementation Details</h6>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="row text-center">
-                                        <h6 class=" m-1 fw-bold">Notice to Proceed</h6>
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="ntpIssuedDate" class="form-label">Issued Date</label>
-                                        <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate">
-                                    </div>
-                                    <div class="mb-1">
-                                        <label for="ntpReceivedDate" class="form-label">Received Date</label>
-                                        <input type="date" class="form-control" id="ntpReceivedDate"
-                                            name="ntpReceivedDate">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="originalExpiryDate" class="form-label">Original Expiry Date</label>
-                                <input type="date" class="form-control" id="originalExpiryDate"
-                                    name="originalExpiryDate">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="revisedExpiryDate" class="form-label">Revised Expiry Date</label>
-                                <input type="date" class="form-control" id="revisedExpiryDate" name="revisedExpiryDate">
-                            </div>
-                        </div>
 
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-1">
-                                    <label for="abc" class="form-label">ABC</label>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="contractAmount" class="form-label">Contract Amount</label>
-                                    <input type="text" class="form-control currency-input" id="contractAmount"
-                                        name="contractAmount">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="engineering" class="form-label">Engineering</label>
-                                    <input type="text" class="form-control currency-input" id="engineering"
-                                        name="engineering">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-1">
-                                    <label for="mqc" class="form-label">MQC</label>
-                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="bid" class="form-label">Contingency</label>
-                                    <input type="text" class="form-control currency-input" id="contingency"
-                                        name="contingency">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="bid" class="form-label">Bid Difference</label>
-                                    <input type="text" class="form-control currency-input" id="bid" name="bid" readonly>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="border p-3 mb-4 rounded">
-                     <legend class="float-none w-auto px-2 fw-bold">Implementaion Details</legend>
-
+                            <hr class="w-50 mx-auto" style="border-color: red;">
 
                     <div class="container">
                         <div class="row align-items-center">

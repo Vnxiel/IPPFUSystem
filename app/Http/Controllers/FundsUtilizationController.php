@@ -38,90 +38,98 @@ class FundsUtilizationController extends Controller
         ]);
     }
 
-            public function storeFundUtilization(Request $request) 
-        {
-            DB::beginTransaction();
+    public function storeFundUtilization(Request $request)
+    {
+        DB::beginTransaction();
+    
+        try {
+            $variationOrders = $request->input('variation_orders', []);
+            $summary = $request->input('summary', []);
+            $partialBillings = $request->input('partialBillings', []);
+            $fundData = $request->except(['_token', 'variation_orders', 'summary', 'partialBillings']);
 
-            try {
-                $variationOrders = $request->input('variation_orders', []);
-                $summary = $request->input('summary', []);
-                $partialBillings = $request->input('partialBillings', []);
-                $fundData = $request->except(['_token', 'variation_orders', 'summary', 'partialBillings']);
+            \Log::info('Incoming Fund Utilization Data', [
+                'summary' => $summary,
+                'partialBillings' => $partialBillings,
+                'fundData' => $fundData
+            ]);
 
-                // Insert or update the main fund utilization using Eloquent
-                $fundUtilization = FundsUtilization::updateOrCreate(
-                    ['project_id' => $request->project_id],
-                    [
-                        'orig_abc' => $fundData['orig_abc'] ?? null,
-                        'orig_contract_amount' => $fundData['orig_contract_amount'] ?? null,
-                        'orig_engineering' => $fundData['orig_engineering'] ?? null,
-                        'orig_mqc' => $fundData['orig_mqc'] ?? null,
-                        'orig_contingency' => $fundData['orig_contingency'] ?? null,
-                        'orig_bid' => $fundData['orig_bid'] ?? null,
-                        'orig_appropriation' => $fundData['orig_appropriation'] ?? null,
-                        'actual_abc' => $fundData['actual_abc'] ?? null,
-                        'actual_contract_amount' => $fundData['actual_contract_amount'] ?? null,
-                        'actual_engineering' => $fundData['actual_engineering'] ?? null,
-                        'actual_mqc' => $fundData['actual_mqc'] ?? null,
-                        'actual_bid' => $fundData['actual_bid'] ?? null,
-                        'actual_contingency' => $fundData['actual_contingency'] ?? null,
-                        'actual_appropriation' => $fundData['actual_appropriation'] ?? null,
-                        'summary' => json_encode($summary),
-                        'partial_billings' => json_encode($partialBillings),
-                        'updated_at' => now()
-                    ]
-                );
-
-                // Update original values in the project model
-                $project = Project::find($request->project_id);
-                if ($project) {
-                    $project->update([
-                        'abc' => $fundData['orig_abc'] ?? null,
-                        'contractAmount' => $fundData['orig_contract_amount'] ?? null,
-                        'engineering' => $fundData['orig_engineering'] ?? null,
-                        'mqc' => $fundData['orig_mqc'] ?? null,
-                        'contingency' => $fundData['orig_contingency'] ?? null,
-                        'bid' => $fundData['orig_bid'] ?? null,
-                        'appropriation' => $fundData['orig_appropriation'] ?? null,
-                    ]);
-                }
-
-                // Remove old variation orders
-                VariationOrder::where('funds_utilization_id', $fundUtilization->id)->delete();
-
-                // Insert updated variation orders
-                foreach ($variationOrders as $index => $vo) {
-                    VariationOrder::create([
-                        'funds_utilization_id' => $fundUtilization->id,
-                        'vo_number' => $index + 1,
-                        'vo_abc' => $vo['vo_abc'] ?? null,
-                        'vo_contract_amount' => $vo['vo_contract_amount'] ?? null,
-                        'vo_engineering' => $vo['vo_engineering'] ?? null,
-                        'vo_mqc' => $vo['vo_mqc'] ?? null,
-                        'vo_bid' => $vo['vo_bid'] ?? null,
-                        'vo_contingency' => $vo['vo_contingency'] ?? null,
-                        'vo_appropriation' => $vo['vo_appropriation'] ?? null,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-
-                DB::commit();
-
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Fund Utilization, Summary, and Variation Orders saved successfully.'
+            $project = Project::find($request->project_id);
+            if ($project) {
+                $project->update([
+                    'abc' => $this->cleanMoney($fundData['orig_abc'] ?? null),
+                    'contractAmount' => $this->cleanMoney($fundData['orig_contract_amount'] ?? null),
+                    'engineering' => $this->cleanMoney($fundData['orig_engineering'] ?? null),
+                    'mqc' => $this->cleanMoney($fundData['orig_mqc'] ?? null),
+                    'contingency' => $this->cleanMoney($fundData['orig_contingency'] ?? null),
+                    'bid' => $this->cleanMoney($fundData['orig_bid'] ?? null),
+                    'appropriation' => $this->cleanMoney($fundData['orig_appropriation'] ?? null),
                 ]);
-
-            } catch (\Exception $e) {
-                DB::rollBack();
-                \Log::error('Error saving fund utilization: ' . $e->getMessage());
-
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to save fund utilization.'
-                ], 500);
             }
-        }
 
+            $fundUtilization = FundsUtilization::updateOrCreate(
+                ['project_id' => $request->project_id],
+                [
+                    'orig_abc' => $this->cleanMoney($fundData['orig_abc'] ?? null),
+                    'orig_contract_amount' => $this->cleanMoney($fundData['orig_contract_amount'] ?? null),
+                    'orig_engineering' => $this->cleanMoney($fundData['orig_engineering'] ?? null),
+                    'orig_mqc' => $this->cleanMoney($fundData['orig_mqc'] ?? null),
+                    'orig_contingency' => $this->cleanMoney($fundData['orig_contingency'] ?? null),
+                    'orig_bid' => $this->cleanMoney($fundData['orig_bid'] ?? null),
+                    'orig_appropriation' => $this->cleanMoney($fundData['orig_appropriation'] ?? null),
+                    'actual_abc' => $this->cleanMoney($fundData['actual_abc'] ?? null),
+                    'actual_contract_amount' => $this->cleanMoney($fundData['actual_contract_amount'] ?? null),
+                    'actual_engineering' => $this->cleanMoney($fundData['actual_engineering'] ?? null),
+                    'actual_mqc' => $this->cleanMoney($fundData['actual_mqc'] ?? null),
+                    'actual_bid' => $this->cleanMoney($fundData['actual_bid'] ?? null),
+                    'actual_contingency' => $this->cleanMoney($fundData['actual_contingency'] ?? null),
+                    'actual_appropriation' => $this->cleanMoney($fundData['actual_appropriation'] ?? null),
+                    'summary' => $summary,
+                    'partial_billings' => $partialBillings,
+                    'updated_at' => now()
+                ]
+            );
+
+            VariationOrder::where('funds_utilization_id', $fundUtilization->id)->delete();
+
+            foreach ($variationOrders as $index => $vo) {
+                VariationOrder::create([
+                    'funds_utilization_id' => $fundUtilization->id,
+                    'vo_number' => $index + 1,
+                    'vo_abc' => $this->cleanMoney($vo['vo_abc'] ?? null),
+                    'vo_contract_amount' => $this->cleanMoney($vo['vo_contract_amount'] ?? null),
+                    'vo_engineering' => $this->cleanMoney($vo['vo_engineering'] ?? null),
+                    'vo_mqc' => $this->cleanMoney($vo['vo_mqc'] ?? null),
+                    'vo_bid' => $this->cleanMoney($vo['vo_bid'] ?? null),
+                    'vo_contingency' => $this->cleanMoney($vo['vo_contingency'] ?? null),
+                    'vo_appropriation' => $this->cleanMoney($vo['vo_appropriation'] ?? null),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Fund Utilization, Summary, and Variation Orders saved successfully.'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error saving fund utilization: ' . $e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to save fund utilization.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Helper function to clean currency strings (₱, commas, etc.)
+     */
+    private function cleanMoney($value)
+    {
+        return $value ? str_replace([',', '₱', 'Php', 'php'], '', $value) : null;
+    }
 }

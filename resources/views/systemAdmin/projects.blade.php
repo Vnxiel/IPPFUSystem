@@ -215,23 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 ongoingDate.value = ""; // Clear the date when status is not "Ongoing"
             }
         }
-
-
-        // Add Event Listener for Project Status Dropdown
-        document.getElementById("projectStatus").addEventListener("change", function () {
-            toggleOngoingStatus();
-        });
-
-
-        // Handle "Other Fund" Dropdown Change
-        $('#sourceOfFunds').on('change', function () {
-            if ($(this).val() === 'Others') {
-                $('#otherFundContainer').slideDown(); // Show input with animation
-            } else {
-                $('#otherFundContainer').slideUp(); // Hide input with animation
-            }
-        });
-
         
     </script>
 

@@ -96,7 +96,7 @@ $(document).ready(function() {
             }
         });
     });
-});
+
 
 // Get references to the elements
 const userRoleSelect = document.getElementById('userRole');
@@ -131,7 +131,6 @@ timeFrameSelect.addEventListener('change', function() {
     }
 });
 
-$(document).ready(function () {
     let selectedUserId = null; // Store the user ID globally
 
     // Open modal & fetch user role details
@@ -215,5 +214,14 @@ $(document).ready(function () {
                 });
             }
         });
+    });
+
+    
+    // Show/hide password toggle
+    $(document).on('click', '.toggle-password', function () {
+        const targetInput = $($(this).data('target'));
+        const type = targetInput.attr('type') === 'password' ? 'text' : 'password';
+        targetInput.attr('type', type);
+        $(this).toggleClass('fa-eye fa-eye-slash');
     });
 });

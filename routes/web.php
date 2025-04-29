@@ -110,4 +110,20 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/file-delete/{fileName}',  'delete')->name('file.delete');
         Route::get('/download-file/{filename}', 'downloadFile');
     });
+
+ 
+    
+});
+
+Route::get('/test-pdf-view', function () {
+    $sampleData = [
+        'project' => (object)[ 'projectTitle' => 'Sample Project', 'projectLoc' => 'Test Location', 'projectContractor' => 'XYZ' ],
+        'projectDescriptions' => ['Desc 1', 'Desc 2'],
+        'projectFundsUtilization' => [],
+        'projectVariationOrder' => [],
+        'projectFiles' => [
+            [ 'name' => 'example.jpg', 'data' => 'data:image/jpeg;base64,' . base64_encode(file_get_contents(public_path('img/temp_logo.png'))) ]
+        ]
+    ];
+    return view('pdf.generateProjectWithPicNew', $sampleData);
 });

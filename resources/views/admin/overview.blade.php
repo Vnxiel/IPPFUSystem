@@ -1,4 +1,4 @@
-@extends('systemAdmin.layout')
+@extends('admin.layout')
 
 @section('title', 'Overview Page')
 
@@ -10,8 +10,8 @@
     <div class="row">
         <div class="col-md-12 d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2">
-                    <a class="{{ Request::is('systemAdmin/projects') ? 'bg-light-green text-dark-white' : 'inactive' }}"
-                        aria-current="page" href="{{ url('/systemAdmin/projects') }}"><span
+                    <a class="{{ Request::is('admin/projects') ? 'bg-light-green text-dark-white' : 'inactive' }}"
+                        aria-current="page" href="{{ url('/admin/projects') }}"><span
                             class="fa fa-arrow-left"></span></a>
 
                 <h5 class="m-0">Project Overview</h5>
@@ -441,62 +441,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+
 <script>
-let orderCount = 1;
-
-// Function to add order fields dynamically
-function addOrderFields() {
-    orderCount++;
-    const container = document.getElementById('orderContainer');
-
-    const newSet = document.createElement('div');
-    newSet.classList.add('row', 'order-set');
-    newSet.id = `orderSet${orderCount}`;
-    newSet.innerHTML = `
-        <div class="col-md-6">
-            <div class="mb-1">
-                <label for="suspensionOrderNo${orderCount}" class="form-label">Suspension Order No. ${orderCount}</label>
-                <input type="date" class="form-control" id="suspensionOrderNo${orderCount}" name="suspensionOrderNo${orderCount}">
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-1">
-                <label for="resumeOrderNo${orderCount}" class="form-label">Resumption Order No. ${orderCount}</label>
-                <input type="date" class="form-control" id="resumeOrderNo${orderCount}" name="resumeOrderNo${orderCount}">
-            </div>
-        </div>
-    `;
-
-    container.appendChild(newSet);
-
-    // Attach event listeners to the new input fields
-    const suspensionOrderNo = document.getElementById(`suspensionOrderNo${orderCount}`);
-    const resumeOrderNo = document.getElementById(`resumeOrderNo${orderCount}`);
-
-    suspensionOrderNo.addEventListener('change', function() {
-        validateOrderDates(orderCount);
-    });
-    
-    resumeOrderNo.addEventListener('change', function() {
-        validateOrderDates(orderCount);
-    });
-}
-
-// Function to remove last order fields dynamically
-function removeLastOrderFields() {
-    if (orderCount > 1) {
-        const lastSet = document.getElementById(`orderSet${orderCount}`);
-        lastSet.remove();
-        orderCount--;
-    } else {
-        Swal.fire({
-            icon: "warning",
-            title: "Oops...",
-            text: "You must keep at least one order pair. If none leave it blank.",
-        });
-    }
-}
-
 // Function to validate that resumeOrderNo is not earlier than or equal to suspensionOrderNo
 function validateOrderDates(orderId) {
     const suspensionOrderNo = document.getElementById(`suspensionOrderNo${orderId}`);

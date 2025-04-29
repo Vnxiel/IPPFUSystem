@@ -36,13 +36,39 @@ class GenerateProjectReport extends Controller
                 ? VariationOrder::where('funds_utilization_id', $projectFundsUtilization->id)->get()
                 : [];
 
-                $projectFiles = ProjectFile::where('project_id', $project_id)
+            $projectFileNames = ProjectFile::where('project_id', $project_id)
+                ->where(function ($query) {
+                    $query->whereRaw('LOWER(fileName) LIKE ?', ['%.jpg'])
+                          ->orWhereRaw('LOWER(fileName) LIKE ?', ['%.jpeg'])
+                          ->orWhereRaw('LOWER(fileName) LIKE ?', ['%.png'])
+                          ->orWhereRaw('LOWER(fileName) LIKE ?', ['%.gif']);
+                })
                 ->pluck('fileName')
                 ->toArray();
-            
+
+                $user = auth()->user();
+
+
+            // Convert images to base64 for reliable DomPDF embedding
+            $projectFiles = array_map(function ($fileName) {
+                $path = storage_path('app/public/project_files/' . $fileName);
+                if (file_exists($path)) {
+                    $extension = pathinfo($path, PATHINFO_EXTENSION);
+                    $base64 = base64_encode(file_get_contents($path));
+                    return [
+                        'name' => $fileName,
+                        'data' => "data:image/{$extension};base64,{$base64}",
+                    ];
+                }
+                return null;
+            }, $projectFileNames);
+
+            $projectFiles = array_filter($projectFiles); // Remove nulls
+
+            Log::info('Base64-encoded image count: ' . count($projectFiles));
 
             $view = $request->boolean('with_pictures')
-                ? 'pdf.generateProjectWithPic'
+                ? 'pdf.generateProjectWithPicNew'
                 : 'pdf.generateProject';
 
             $user = auth()->user();

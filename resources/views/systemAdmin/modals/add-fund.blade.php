@@ -251,28 +251,11 @@
     document.querySelector('button[onclick="removeLastBilling()"]').disabled = false;
   }
 
-  function removeLastBilling() {
-    if (billingCount > 0) {
-      const tbody = document.getElementById('billingsTableBody');
-      tbody.removeChild(tbody.lastElementChild);
-      billingCount--;
-
-      // Enable Add Billing button if below limit
-      if (billingCount < 5) {
-        document.querySelector('button[onclick="addNextBilling()"]').disabled = false;
-      }
-
-      // Disable Remove Billing button if only 1 billing remains
-      if (billingCount === 0) {
-        document.querySelector('button[onclick="removeLastBilling()"]').disabled = true;
-      }
-    }
+function removeLastBilling() {
+  if (billingCount > 1) {
+    const tbody = document.getElementById('billingsTableBody');
+    tbody.removeChild(tbody.lastElementChild);
+    billingCount--;
   }
-
-  // Initial state: Disable Remove Billing button if only 1 billing exists
-  document.addEventListener('DOMContentLoaded', () => {
-    if (billingCount === 1) {
-      document.querySelector('button[onclick="removeLastBilling()"]').disabled = true;
-    }
-  });
+}
 </script>

@@ -79,6 +79,9 @@ return [
          * $dompdf = new DOMPDF();  $dompdf->load_html($htmldata); $dompdf->render(); $pdfdata = $dompdf->output();
          */
         'chroot' => realpath(base_path()),
+        'enable_remote' => true, // if images are hosted externally
+'chroot' => public_path(), // ensures paths like public_path() work
+
 
         /**
          * Protocol whitelist
