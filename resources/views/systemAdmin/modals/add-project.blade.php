@@ -10,7 +10,7 @@
                 <form action="{{ route('projects.addProject') }}" id="addProjectForm" method="POST">
                     @csrf
                     <fieldset class="border p-3 mb-4 rounded">
-                        <legend class="float-none w-auto px-2 fw-bold">Project Details</legend>
+                        <legend class="float-none w-auto px-2 fw-bold">Project Profile</legend>
 
                         <div class="row">
                             <div class="col-md-12">
@@ -26,10 +26,7 @@
                                     <textarea class="form-control" id="projectID" name="projectID" rows="2"
                                         placeholder="Enter Project ID." required></textarea>
                                 </div>
-                                <div class="mb-1">
-                                    <label for="ea" class="form-label">Project E.A </label>
-                                    <input type="text" class="form-control" id="ea" name="ea" placeholder="Enter E.A">
-                                </div>
+
                             </div>
                         </div>
                         <div class="row">
@@ -44,6 +41,10 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
+                                <div class="mb-1">
+                                    <label for="ea" class="form-label">Project E.A </label>
+                                    <input type="text" class="form-control" id="ea" name="ea" placeholder="Enter E.A">
+                                </div>
                                 <div class="mb-1 position-relative">
                                     <label for="projectLoc" class="form-label">Location <span
                                             class="text-danger">*</span></label>
@@ -86,7 +87,7 @@
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="modeOfImplementation"
                                         name="modeOfImplementation" placeholder="Enter mode of implementation."
-                                        value="By contract">
+                                        value="By contract." readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -117,9 +118,11 @@
                                     <select id="projectStatus" name="projectStatus" class="form-select"
                                         onchange="toggleOngoingStatus()">
                                         <option value="---">---</option>
+                                        <option value="Started">Started</option>
                                         <option value="Ongoing">Ongoing</option>
                                         <option value="Completed">Completed</option>
                                         <option value="Cancelled">Discontinued</option>
+                                        <option value="Cancelled">Suspended</option>
                                     </select>
 
                                     <!-- Hidden text input for 'Ongoing' -->
@@ -136,7 +139,7 @@
                                 </div>
                                 <div class="mb-1">
                                     <label for="projectSlippage" class="form-label">Slippage</label>
-                                    <input type="text" class="form-control" id="projectSlippage" name="projectSlippage"
+                                    <input type="number" class="form-control" id="projectSlippage" name="projectSlippage"
                                         placeholder="Enter slippage">
                                 </div>
                             </div>
@@ -155,7 +158,7 @@
                                             name="appropriation">
                                     </div>
                                 </div>
-                                <div class="row">
+                                <!-- <div class="row">
                                     <div class="mb-1">
                                         <label for="contractCost" class="form-label">Contract Cost <span
                                                 class="text-danger">*</span></label>
@@ -170,13 +173,13 @@
                                         <input type="text" class="form-control currency-input" id="revisedContractCost"
                                             name="revisedConstractCost" min="0">
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="mb-1">
-                                            <label for="projectContractDays" class="form-label">Contract Days</label>
+                                            <label for="projectContractDays" class="form-label">Contract Days(Calendar days)</label>
                                             <input type="number" class="form-control" id="projectContractDays" name="projectContractDays" min="0">
                                         </div>
                                     </div> 

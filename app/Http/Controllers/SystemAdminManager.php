@@ -7,11 +7,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\ActivityLog;
+use App\Models\Location;
+use App\Models\Contractor;
 
 class SystemAdminManager extends Controller
 {
     public function index(){
-        return view('systemAdmin.index');
+        $locations = Location::orderBy('location', 'asc')->get();
+        $contractors = Contractor::orderBy('name', 'asc')->get();
+        return view('systemAdmin.index', compact('locations', 'contractors'));
     }
 
     public function userManagement(){

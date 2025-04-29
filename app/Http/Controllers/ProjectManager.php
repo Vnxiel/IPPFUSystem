@@ -738,25 +738,33 @@ public function addStatus(Request $request)
 }
 
 
-public function getDropdownOptions(Request $request) {
-    // Fetch contractors and municipalities
-    $contractors = Contractor::orderBy('name', 'asc')->get();
-    $municipalities = Municipalities::orderBy('municipalityOf', 'asc')->get();
+// public function getDropdownOptions(Request $request) {
+//     // Fetch contractors and municipalities
+//     $contractors = Contractor::orderBy('name', 'asc')->get();
+//     $municipalities = Municipalities::orderBy('municipalityOf', 'asc')->get();
 
-    // Check if the request is for the overview page
-    if ($request->has('overview') && $request->overview == true) {
-        return response()->json([
-            'contractors' => $contractors,
-            'municipalities' => $municipalities
-        ]);
-    }
+//     // Check if the request is for the overview page
+//     if ($request->has('overview') && $request->overview == true) {
+//         return response()->json([
+//             'contractors' => $contractors,
+//             'municipalities' => $municipalities
+//         ]);
+//     }
 
-    // Pass both to the view for the system admin projects page
-    return view('systemAdmin.projects', [
-        'contractors' => $contractors,
-        'municipalities' => $municipalities
-    ]);
-}
+//     // Check if the request is for the dashboard (index page)
+//     if ($request->has('dashboard') && $request->dashboard == true) {
+//         return response()->json([
+//             'contractors' => $contractors,
+//             'municipalities' => $municipalities
+//         ]);
+//     }
+
+//     // Pass both to the view for the system admin projects page
+//     return view('systemAdmin.projects', [
+//         'contractors' => $contractors,
+//         'municipalities' => $municipalities
+//     ]);
+// }
 
 public function viewProjects() {
     return view('systemAdmin.projects');  // Returns the 'projects.blade.php' view
