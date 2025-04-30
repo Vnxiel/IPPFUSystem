@@ -3,31 +3,36 @@
 
     /*  Order fields
         This script allows the user to add or remove order fields dynamically  */
-    let orderCount = 1;
+        let orderCount = 1;
 
-    function addOrderFields() {
-        orderCount++;
-        const container = document.getElementById('orderContainer');
-
-        const newSet = document.createElement('div');
-        newSet.classList.add('row', 'order-set');
-        newSet.id = `orderSet${orderCount}`;
-        newSet.innerHTML = `
-                            <div class="col-md-6">
-                                <div class="mb-1">
-                                    <label for="suspensionOrderNo${orderCount}" class="form-label">Suspension Order No. ${orderCount}</label>
-                                    <input type="date" class="form-control" id="suspensionOrderNo${orderCount}" name="suspensionOrderNo${orderCount}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-1">
-                                    <label for="resumeOrderNo${orderCount}" class="form-label">Resumption Order No. ${orderCount}</label>
-                                    <input type="date" class="form-control" id="resumeOrderNo${orderCount}" name="resumeOrderNo${orderCount}">
-                                </div>
-                            </div>
-                        `;
-        container.appendChild(newSet);
-    }
+        function addOrderFields() {
+            orderCount++;
+            const container = document.getElementById('orderContainer');
+        
+            const newSet = document.createElement('div');
+            newSet.classList.add('row', 'mb-2', 'order-set');
+            newSet.id = `orderSet${orderCount}`;
+            newSet.innerHTML = `
+                <div class="col-md-6 mb-2">
+                    <label for="suspensionOrderNo${orderCount}" class="form-label">Suspension Order No. ${orderCount}</label>
+                    <input type="date" class="form-control" id="suspensionOrderNo${orderCount}" name="suspensionOrderNo${orderCount}">
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="suspensionRemarks${orderCount}" class="form-label">Remarks</label>
+                    <input type="text" class="form-control" id="suspensionRemarks${orderCount}" name="suspensionRemarks${orderCount}">
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="resumeOrderNo${orderCount}" class="form-label">Resumption Order No. ${orderCount}</label>
+                    <input type="date" class="form-control" id="resumeOrderNo${orderCount}" name="resumeOrderNo${orderCount}">
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="resumeRemarks${orderCount}" class="form-label">Remarks</label>
+                    <input type="text" class="form-control" id="resumeRemarks${orderCount}" name="resumeRemarks${orderCount}">
+                </div>
+            `;
+            container.appendChild(newSet);
+        }
+        
 
     function removeLastOrderFields() {
         if (orderCount > 1) {
