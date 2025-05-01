@@ -78,7 +78,6 @@ $(document).ready(function () {
                 confirmButtonText: "OK"
             });
         }
-
         $.ajax({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -87,9 +86,11 @@ $(document).ready(function () {
             method: "POST",
             data: { project_id, progress, percentage, date },
             success: function () {
-                Swal.fire({ icon: "success", title: "Status Added" });
-                $("#addStatusModal").modal("hide");
-                fetchProjectStatus(project_id);
+                Swal.fire({ icon: "success", title: "Status Added" }).then(() => {
+                    $("#addStatusModal").modal("hide");
+                    fetchProjectStatus(project_id);
+                    location.reload();
+                });
             },
             error: function (xhr) {
                 console.error(xhr.responseText);
@@ -100,5 +101,6 @@ $(document).ready(function () {
                 });
             }
         });
+        
     });
 });

@@ -20,19 +20,19 @@ return new class extends Migration
             $table->string('modeOfImplementation');
             $table->string('projectContractDays');
 
-            $table->date('officialStart')->nullable();
-            $table->date('targetCompletion')->nullable();
+            $table->date('officialStart');
+            $table->date('targetCompletion');
             $table->string('timeExtension')->nullable();
             $table->string('revisedTargetCompletion')->nullable();
-            $table->string('completionDate')->nullable();
+            $table->string('completionDate');
 
-            $table->decimal('abc', 15, 2)->nullable();
-            $table->decimal('contractAmount', 15, 2)->nullable();
-            $table->decimal('engineering', 15, 2)->nullable();
-            $table->decimal('mqc', 15, 2)->nullable();
-            $table->decimal('contingency', 15, 2)->nullable();
-            $table->decimal('bid', 15, 2)->nullable();
-            $table->decimal('appropriation', 15, 2)->nullable();
+            $table->decimal('abc', 15, 2);
+            $table->decimal('contractAmount', 15, 2);
+            $table->decimal('engineering', 15, 2);
+            $table->decimal('mqc', 15, 2);
+            $table->decimal('contingency', 15, 2);
+            $table->decimal('bid', 15, 2);
+            $table->decimal('appropriation', 15, 2);
             $table->decimal('directOrIndirectCost', 15, 2)->nullable();
             $table->decimal('revisedContractCost', 15, 2)->nullable();
             
@@ -47,6 +47,8 @@ return new class extends Migration
             $table->string('projectSlippage')->nullable();
             $table->string('totalExpenditure')->nullable();
             $table->string('ea')->nullable();
+            $table->string('ea_position')->nullable();
+            $table->string('ea_monthlyRate')->nullable();
             $table->string('contractCost')->nullable();
             $table->string('othersContractor')->nullable();
             $table->string('projectStatus')->nullable();

@@ -75,3 +75,12 @@ tbody tr:first-child td {
     font-weight: 600;
   }
   
+  .status-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.status-card:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+}

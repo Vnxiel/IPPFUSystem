@@ -1,15 +1,205 @@
 $(document).ready(function () {
-    // When the form is submitted
+    // ================================
+    // DOM Manipulations and Event Listeners
+    // ================================
+
+    // Project Location Suggestions
+    const input = document.getElementById("projectLoc");
+    const suggestionsBox = document.getElementById("suggestionsBoxs");
+    const suggestionItems = suggestionsBox.querySelectorAll(".suggestion-items");
+
+    input.addEventListener("keyup", function () {
+        const query = input.value.toLowerCase().trim();
+        if (query === "") {
+            suggestionsBox.style.display = "none";
+            return;
+        }
+
+        let hasMatch = false;
+        suggestionItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(query) ? "block" : "none";
+            if (text.includes(query)) hasMatch = true;
+        });
+
+        suggestionsBox.style.display = hasMatch ? "block" : "none";
+    });
+
+    suggestionItems.forEach(item => {
+        item.addEventListener("click", function () {
+            input.value = this.textContent.trim();
+            suggestionsBox.style.display = "none";
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!suggestionsBox.contains(e.target) && e.target !== input) {
+            suggestionsBox.style.display = "none";
+        }
+    });
+
+    // Contractor 'Others' toggle
+    const contractorSelect = document.getElementById("projectContractor");
+    const othersContractorDiv = document.getElementById("othersContractorDiv");
+    const othersContractorInput = document.getElementById("othersContractor");
+
+    contractorSelect.addEventListener("change", function () {
+        if (this.value === "Others") {
+            othersContractorDiv.style.display = "block";
+        } else {
+            othersContractorDiv.style.display = "none";
+            othersContractorInput.value = "";
+        }
+    });
+
+    // Project Status 'Ongoing' toggle
+    const projectStatusSelect = document.getElementById("projectStatus");
+    const ongoingStatusContainer = document.getElementById("ongoingStatusContainer");
+
+    projectStatusSelect.addEventListener("change", function () {
+        if (this.value === "Ongoing") {
+            ongoingStatusContainer.style.display = "block";
+        } else {
+            ongoingStatusContainer.style.display = "none";
+            document.getElementById("ongoingStatus").value = '';
+            document.getElementById("ongoingDate").value = '';
+        }
+    });
+
+    // Currency Formatting
+    const currencyFields = ['abc', 'contractAmount', 'engineering', 'mqc', 'contingency', 'bid', 'appropriation'];
+    const limitedFields = ['abc', 'contractAmount', 'engineering', 'mqc', 'contingency'];
+    const appropriationInput = document.getElementById('appropriation');
+
+    function parseCurrency(value) {
+        return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
+    }
+
+    function formatToPeso(value) {
+        const number = parseFloat(value.replace(/[^0-9.-]+/g, ''));
+        if (isNaN(number)) return '';
+        return '₱ ' + number.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function unformatCurrency(value) {
+        return value.replace(/[^0-9.-]+/g, '');
+    }
+
+    currencyFields.forEach(id => {
+        const field = document.getElementById(id);
+        if (!field) return;
+
+        field.addEventListener('blur', () => {
+            if (field.value.trim() !== '') {
+                const value = parseCurrency(field.value);
+                if (limitedFields.includes(id)) {
+                    const appropriation = parseCurrency(appropriationInput.value);
+                    if (value > appropriation) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Exceeds Appropriation',
+                            text: `${field.labels[0].innerText} must not exceed Appropriation amount.`
+                        });
+                        field.value = '';
+                        return;
+                    }
+                }
+                field.value = formatToPeso(field.value);
+            }
+        });
+
+        field.addEventListener('focus', () => {
+            field.value = unformatCurrency(field.value);
+        });
+    });
+
+    const abcInput = document.getElementById('abc');
+    const contractAmountInput = document.getElementById('contractAmount');
+    const bidInput = document.getElementById('bid');
+
+    function updateBidDifference() {
+        const abc = parseCurrency(abcInput.value);
+        const contractAmount = parseCurrency(contractAmountInput.value);
+        const bid = contractAmount - abc;
+        bidInput.value = isNaN(bid) ? '' : bid.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    abcInput.addEventListener('input', updateBidDifference);
+    contractAmountInput.addEventListener('input', updateBidDifference);
+
+    function validateDateOrder(earlierId, laterId, message) {
+        const earlier = document.getElementById(earlierId);
+        const later = document.getElementById(laterId);
+
+        later.addEventListener('blur', () => {
+            if (!later.value || !earlier.value) return;
+
+            const earlierDate = new Date(earlier.value);
+            const laterDate = new Date(later.value);
+
+            if (laterDate <= earlierDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Date Entry',
+                    text: message
+                });
+                later.value = '';
+            }
+        });
+    }
+
+    validateDateOrder('noaIssuedDate', 'noaReceivedDate', 'NOA Received Date must be after Issued Date.');
+    validateDateOrder('ntpIssuedDate', 'ntpReceivedDate', 'NTP Received Date must be after Issued Date.');
+
+    document.querySelectorAll('.order-set').forEach(order => {
+        const suspension = order.querySelector('input[id^="suspensionOrderNo"]');
+        const resumption = order.querySelector('input[id^="resumeOrderNo"]');
+        const remarks = order.querySelector('input[name$="Remarks"]');
+
+        if (remarks) remarks.value = '';
+
+        if (suspension && resumption) {
+            resumption.addEventListener('change', () => {
+                if (!resumption.value) return;
+                if (suspension.value && new Date(resumption.value) <= new Date(suspension.value)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Invalid Date Entry',
+                        text: 'Resumption date must be after Suspension date.'
+                    });
+                    resumption.value = '';
+                }
+            });
+        }
+    });
+
+    const officialStart = document.getElementById('officialStart');
+    const contractDays = document.getElementById('projectContractDays');
+    const targetCompletion = document.getElementById('targetCompletion');
+
+    function updateTargetCompletion() {
+        if (officialStart.value && contractDays.value) {
+            const start = new Date(officialStart.value);
+            start.setDate(start.getDate() + parseInt(contractDays.value) - 1);
+            targetCompletion.value = start.toISOString().split('T')[0];
+        }
+    }
+
+    officialStart.addEventListener('change', updateTargetCompletion);
+    contractDays.addEventListener('input', updateTargetCompletion);
+
+    // ================================
+    // Form Submission Logic
+    // ================================
+
     $(document).on("submit", "#addProjectForm", function (event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
 
         const form = this;
         let emptyFields = [];
 
-        // Clear previous highlights
         $(form).find("input, textarea, select").removeClass("empty-field");
 
-        // Check for any empty field (required or not)
         const allElements = form.querySelectorAll("input, textarea, select");
         allElements.forEach(el => {
             if (!el.value.trim()) {
@@ -18,7 +208,6 @@ $(document).ready(function () {
             }
         });
 
-        // If there are empty fields, show a warning with an option to submit anyway
         if (emptyFields.length > 0) {
             Swal.fire({
                 title: "Some fields are empty!",
@@ -32,20 +221,16 @@ $(document).ready(function () {
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // If the user confirms, submit the form anyway
                     submitFormAjax();
                 } else {
-                    // If the user cancels, do nothing
                     return false;
                 }
             });
         } else {
-            // If no empty fields, proceed with AJAX form submission
             submitFormAjax();
         }
 
         function submitFormAjax() {
-            // Clean up any currency signs and commas
             $(".currency-input").each(function () {
                 $(this).val($(this).val().replace(/[₱,]/g, ""));
             });
@@ -55,19 +240,17 @@ $(document).ready(function () {
             var percentage = ongoingInput.val().trim();
             var date = $("#ongoingDate").val().trim();
 
-            // Handle ongoing status logic
             if (statusValue === "Ongoing" && percentage && date) {
                 if (!ongoingInput.val().includes(" - ")) {
                     ongoingInput.val(`${percentage} - ${date}`);
                 }
             }
 
-            // AJAX request to submit the form
             $.ajax({
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
-                url: "/projects/addProject",  // Direct URL
+                url: "/projects/addProject",
                 method: "POST",
                 data: new FormData(form),
                 processData: false,
@@ -84,22 +267,20 @@ $(document).ready(function () {
                                 $("#addNewProjectModal").modal("hide");
                             }
                         });
-                
-                        // After modal fully hides, reload the projects
+
                         $('#addNewProjectModal').on('hidden.bs.modal', function () {
                             $("#addProjectForm")[0].reset();
                             loadProjects();
-                            // Optional: Unbind the event so it doesn't stack on future submissions
                             $(this).off('hidden.bs.modal');
                         });
-                
+
                     } else if (response.errors) {
                         let errorMessages = "<ul class='text-left'>";
                         $.each(response.errors, function (field, errors) {
                             errorMessages += `<li><strong>${field.replace(/_/g, " ")}:</strong> ${errors.join(", ")}</li>`;
                         });
                         errorMessages += "</ul>";
-                
+
                         Swal.fire({
                             icon: "warning",
                             title: "Validation Error",
@@ -114,8 +295,7 @@ $(document).ready(function () {
                             confirmButtonText: "OK"
                         });
                     }
-                }
-                ,
+                },
                 error: function (xhr) {
                     Swal.fire({
                         icon: "error",
@@ -129,7 +309,6 @@ $(document).ready(function () {
         }
     });
 
-    // Optional: Remove highlight when user starts typing/selecting
     $(document).on("input change", "input, textarea, select", function () {
         if ($(this).val().trim() !== "") {
             $(this).removeClass("empty-field");

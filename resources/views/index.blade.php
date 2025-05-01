@@ -40,22 +40,29 @@
                             <div style="color:#006400;"> Login to Access (DMSv2.1.0.0.413)</div>
                         </div>
                         <div class="card-body">
-                            <form id="loginForm"  method="POST" action="{{ route('login') }}">
-                                @csrf
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                    <input type="text" name="username" class="form-control" placeholder="Username" aria-label="Username" id="username" required>
+                        <form id="loginForm" method="POST" action="{{ route('login') }}">
+                            @csrf
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                                <input type="text" name="username" class="form-control" placeholder="Username" aria-label="Username" id="username" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                                <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" id="password" required>
+                                <span class="input-group-text" style="cursor:pointer;">
+                                    <i class="fa fa-eye toggle-password" id="toggleLoginPassword"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-center mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">Remember Me</label>
                                 </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-                                    <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" id="password" required>
-                                    <span class="input-group-text" style="cursor:pointer;">
-                                        <i class="fa fa-eye toggle-password" id="toggleLoginPassword"></i>
-                                    </span>
-                                </div>
+                            </div>
 
-                                <button type="submit" class="btn w-100" style="background-color:#006400; color:white;">Login</button>
-                            </form>
+                            <button type="submit" class="btn w-100" style="background-color:#006400; color:white;">Login</button>
+                        </form>
+
                         </div>
                     </div>
                 </div>

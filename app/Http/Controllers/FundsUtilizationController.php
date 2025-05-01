@@ -54,19 +54,6 @@ class FundsUtilizationController extends Controller
                 'fundData' => $fundData
             ]);
 
-            $project = Project::find($request->project_id);
-            if ($project) {
-                $project->update([
-                    'abc' => $this->cleanMoney($fundData['orig_abc'] ?? null),
-                    'contractAmount' => $this->cleanMoney($fundData['orig_contract_amount'] ?? null),
-                    'engineering' => $this->cleanMoney($fundData['orig_engineering'] ?? null),
-                    'mqc' => $this->cleanMoney($fundData['orig_mqc'] ?? null),
-                    'contingency' => $this->cleanMoney($fundData['orig_contingency'] ?? null),
-                    'bid' => $this->cleanMoney($fundData['orig_bid'] ?? null),
-                    'appropriation' => $this->cleanMoney($fundData['orig_appropriation'] ?? null),
-                ]);
-            }
-
             $fundUtilization = FundsUtilization::updateOrCreate(
                 ['project_id' => $request->project_id],
                 [

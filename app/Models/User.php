@@ -34,7 +34,6 @@ class User extends Authenticatable
     }
 
    // app/Models/User.php
-
 public function expireTemporaryRole(): bool
 {
     if ($this->time_frame === 'Temporary' && $this->time_limit && now()->gt($this->time_limit)) {

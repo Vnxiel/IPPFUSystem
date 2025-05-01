@@ -1,6 +1,17 @@
-$(document).ready(function() { 
+$(document).ready(function() {
+    // Autofill saved credentials
+    if (localStorage.getItem('remember_me') === 'true') {
+        $('#username').val(localStorage.getItem('saved_username'));
+        $('#password').val(localStorage.getItem('saved_password'));
+        $('#rememberMe').prop('checked', true);
+    }
+
     $(document).on('submit', '#loginForm', function(event){
         event.preventDefault();
+
+        const username = $('#username').val();
+        const password = $('#password').val();
+        const rememberMe = $('#rememberMe').is(':checked');
 
         $.ajax({
             headers: {
@@ -10,7 +21,17 @@ $(document).ready(function() {
             method: "POST",
             data: $(this).serialize(),
             success: function(response) {
-                // Save role to sessionStorage
+                // Save credentials if Remember Me is checked
+                if (rememberMe) {
+                    localStorage.setItem('saved_username', username);
+                    localStorage.setItem('saved_password', password); // ⚠️ Not secure
+                    localStorage.setItem('remember_me', 'true');
+                } else {
+                    localStorage.removeItem('saved_username');
+                    localStorage.removeItem('saved_password');
+                    localStorage.setItem('remember_me', 'false');
+                }
+
                 sessionStorage.setItem('user_role', response.role);
 
                 Swal.fire({
@@ -19,7 +40,6 @@ $(document).ready(function() {
                     showConfirmButton: false,
                     timer: 2000,
                 }).then(function(){
-                    // Redirect based on backend-provided URL
                     window.location = response.redirect;
                 });
             },
@@ -48,8 +68,6 @@ $(document).ready(function() {
             }
         });
     });
-});
-
 
     $(document).on('click', '#toggleLoginPassword', function () {
         const input = $('#password');
@@ -57,5 +75,4 @@ $(document).ready(function() {
         input.attr('type', type);
         $(this).toggleClass('fa-eye fa-eye-slash');
     });
-
-
+});

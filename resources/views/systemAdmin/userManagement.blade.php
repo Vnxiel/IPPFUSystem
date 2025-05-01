@@ -51,14 +51,14 @@
                                     <div class="d-flex align-items-center">
                                         <span>{{ $user->fullname }}</span>
                                     </div>
-                                </td>
+                                </td> 
                                 <td>{{ $user->username }}</td>
                                 <td>{{ $user->position }}</td>
                                 <td>
                                     <span class="badge bg-primary">{{ $user->role }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-outline-primary btn-sm" 
+                                    <button class="btn btn-outline-warning btn-sm" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#roleModal" 
                                             data-id="{{ $user->id }}"

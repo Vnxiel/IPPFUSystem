@@ -67,124 +67,169 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-// Initially hide the table
-$("#projects-container").hide(); 
+    // Initially hide the table
+    $("#projects-container").hide(); 
 
-// Load projects and initialize DataTable
-loadProjects();
-$('#location_filter, #contractor_filter, #amount_filter, #status_filter').on('input change', function () {
-    filterProjects();
-});
-
-
-
-function loadProjects() {
-
-
-    $.ajax({
-        url: "/projects/ProjectDetails",
-        method: "GET",
-        dataType: "json",
-        success: function (response) {
-            Swal.close(); // Hide loading when done
-
-            console.log("API Response:", response);
-
-            if (!response || typeof response !== "object" || !Array.isArray(response.projects)) {
-                console.error("Invalid API Response Structure:", response);
-                showError("Failed to fetch project data. Please try again.");
-                return;
-            }
-            
-            if (response.projects.length === 0) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'No Projects Found',
-                    text: 'There are no currently added projects. Please add one first.',
-                    timer: 10000,  // Close after 5 seconds
-                    showConfirmButton: false,  // Remove the OK button
-                });
-                return;
-            }
-            
-
-            const projects = response.projects.map(project => [
-                project.title || "N/A",
-                project.location || "N/A",
-                project.status || "N/A",
-                `₱${project.amount || "0.00"}`,
-                project.contractor || "N/A",
-                project.duration || "N/A",
-                project.action
-            ]);
-
-            if ($.fn.DataTable.isDataTable("#projects")) {
-                $('#projects').DataTable().clear().destroy();
-                console.log("Existing DataTable destroyed.");
-            }
-
-            $('#projects').DataTable({
-                data: projects,
-                columns: [
-                    { title: "Project Title" },
-                    { title: "Location" },
-                    { title: "Status" },
-                    { title: "Contract Amount" },
-                    { title: "Contractor" },
-                    { title: "Duration" },
-                    { title: "Action", orderable: false }
-                ],
-                responsive: true,
-                scrollX: true,
-                paging: true,
-                searching: true,
-                autoWidth: false,
-                aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-                pageLength: 10,
-                order: [[3, 'desc']],
-                processing: true,
-                columnDefs: [
-                    { targets: '_all', orderable: true }
-                ],
-                fixedColumns: {
-                    leftColumns: 1
-                }
-            });
-
-            $(document).off('click', '.overview-btn').on('click', '.overview-btn', function () {
-                const projectId = $(this).data('id');
-                sessionStorage.setItem('project_id', projectId);
-
-                const role = sessionStorage.getItem('user_role');
-                if (role === 'Admin') {
-                    window.location.href = `/admin/overview/${projectId}`;
-                } else if (role === 'System Admin') {
-                    window.location.href = `/systemAdmin/overview/${projectId}`;
-                } else if (role === 'Staff') {
-                    window.location.href = `/staff/overview/${projectId}`;
-                } else {
-                    alert("Unauthorized: Unknown role.");
-                }
-            });
-
-            $("#projects-container").show();
-        },
-        error: function (xhr) {
-            Swal.close();
-            console.error("AJAX Error:", xhr.responseText);
-            let errorMessage = "Failed to load project data.";
-
-            if (xhr.status === 404) {
-                errorMessage = "No project data found.";
-            } else if (xhr.status === 500) {
-                errorMessage = "Internal Server Error. Please try again later.";
-            }
-
-            showError(errorMessage);
-        }
+    // Load projects and initialize DataTable
+    loadProjects();
+    $('#location_filter, #contractor_filter, #amount_filter, #status_filter').on('input change', function () {
+        filterProjects();
     });
-}
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const statusFilter = urlParams.get('page'); // e.g., 'ongoing', 'started', etc.
+
+    function loadProjects() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const statusFilter = urlParams.get('page'); // Get query parameter (e.g., ?page=started)
+
+        $.ajax({
+            url: "/projects/ProjectDetails",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                Swal.close(); // Hide loading when done
+
+                console.log("API Response:", response);
+
+                if (!response || typeof response !== "object" || !Array.isArray(response.projects)) {
+                    console.error("Invalid API Response Structure:", response);
+                    showError("Failed to fetch project data. Please try again.");
+                    return;
+                }
+
+                if (response.projects.length === 0) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Projects Found',
+                        text: 'There are no currently added projects. Please add one first.',
+                        timer: 10000,
+                        showConfirmButton: false,
+                    });
+                    return;
+                }
+
+                let filteredProjects = response.projects;
+
+                // Apply filtering only if a dashboard card was clicked
+                if (statusFilter) {
+                    const validStatuses = ['started', 'ongoing', 'completed', 'discontinued', 'suspended'];
+
+                    if (validStatuses.includes(statusFilter.toLowerCase())) {
+                        filteredProjects = response.projects.filter(p =>
+                            p.status && p.status.toLowerCase() === statusFilter.toLowerCase()
+                        );
+
+                        if (filteredProjects.length === 0) {
+                            if ($.fn.DataTable.isDataTable("#projects")) {
+                                $('#projects').DataTable().clear().destroy();
+                            }
+
+                            $('#projects').DataTable({
+                                data: [[`There are no currently ${statusFilter.toLowerCase()} projects.`, '', '', '', '', '', '']],
+                                columns: [
+                                    { title: "Project Title" },
+                                    { title: "Location" },
+                                    { title: "Status" },
+                                    { title: "Contract Amount" },
+                                    { title: "Contractor" },
+                                    { title: "Duration" },
+                                    { title: "Action", orderable: false }
+                                ],
+                                columnDefs: [{
+                                    targets: 0,
+                                    render: function (data) {
+                                        return `<td colspan="7" style="text-align:center;">${data}</td>`;
+                                    }
+                                }],
+                                ordering: false,
+                                paging: false,
+                                searching: false,
+                                info: false
+                            });
+
+                            $("#projects-container").show();
+                            return;
+                        }
+                    }
+                }
+
+                const projects = filteredProjects.map(project => [
+                    project.title || "N/A",
+                    project.location || "N/A",
+                    project.status || "N/A",
+                    `₱${project.amount || "0.00"}`,
+                    project.contractor || "N/A",
+                    project.duration || "N/A",
+                    project.action
+                ]);
+
+                if ($.fn.DataTable.isDataTable("#projects")) {
+                    $('#projects').DataTable().clear().destroy();
+                    console.log("Existing DataTable destroyed.");
+                }
+
+                $('#projects').DataTable({
+                    data: projects,
+                    columns: [
+                        { title: "Project Title" },
+                        { title: "Location" },
+                        { title: "Status" },
+                        { title: "Contract Amount" },
+                        { title: "Contractor" },
+                        { title: "Duration" },
+                        { title: "Action", orderable: false }
+                    ],
+                    responsive: true,
+                    scrollX: true,
+                    paging: true,
+                    searching: true,
+                    autoWidth: false,
+                    aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+                    pageLength: 10,
+                    order: [[3, 'desc']],
+                    processing: true,
+                    columnDefs: [
+                        { targets: '_all', orderable: true }
+                    ],
+                    fixedColumns: {
+                        leftColumns: 1
+                    }
+                });
+
+                $(document).off('click', '.overview-btn').on('click', '.overview-btn', function () {
+                    const projectId = $(this).data('id');
+                    sessionStorage.setItem('project_id', projectId);
+
+                    const role = sessionStorage.getItem('user_role');
+                    if (role === 'Admin') {
+                        window.location.href = `/admin/overview/${projectId}`;
+                    } else if (role === 'System Admin') {
+                        window.location.href = `/systemAdmin/overview/${projectId}`;
+                    } else if (role === 'Staff') {
+                        window.location.href = `/staff/overview/${projectId}`;
+                    } else {
+                        alert("Unauthorized: Unknown role.");
+                    }
+                });
+
+                $("#projects-container").show();
+            },
+            error: function (xhr) {
+                Swal.close();
+                console.error("AJAX Error:", xhr.responseText);
+                let errorMessage = "Failed to load project data.";
+
+                if (xhr.status === 404) {
+                    errorMessage = "No project data found.";
+                } else if (xhr.status === 500) {
+                    errorMessage = "Internal Server Error. Please try again later.";
+                }
+
+                showError(errorMessage);
+            }
+        });
+    }
 
 // Function to show errors
 function showError(message) {

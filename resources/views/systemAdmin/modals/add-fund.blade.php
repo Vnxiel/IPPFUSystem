@@ -209,8 +209,31 @@
     </div>
   </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const actualEng = document.getElementById("actual_engineering");
+  const summaryEng = document.querySelector('input[name="amountEng"]');
+
+  const actualMqc = document.getElementById("actual_mqc");
+  const summaryMqc = document.querySelector('input[name="amountMqc"]');
+
+  if (actualEng && summaryEng) {
+    actualEng.addEventListener("input", () => {
+      summaryEng.value = actualEng.value;
+    });
+  }
+
+  if (actualMqc && summaryMqc) {
+    actualMqc.addEventListener("input", () => {
+      summaryMqc.value = actualMqc.value;
+    });
+  }
+});
+</script>
+
 
 <script>
+  
   let voCount = 1;
   let billingCount = 1;
 

@@ -103,7 +103,7 @@
                                     <label for="sourceOfFunds" class="form-label">Source of Fund <span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
-                                        placeholder="Enter source of funds." value="By contract." readonly>
+                                        placeholder="Enter source of funds.">
                                     <!-- <label for="sourceOfFunds" class="form-label">Source of Fund <span
                                             class="text-danger">*</span></label>
                                     <select id="sourceOfFunds" name="sourceOfFunds" class="form-select"
@@ -158,23 +158,23 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="eaFullname" class="form-label">Project E.A (Engineer Assigned) <span
+                                <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span
                                         class="text-danger">*</span></label>
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="eaFullname" name="eaFiullname">
+                                    <input type="text" class="form-control" id="ea" name="ea">
                                     <label for="ea">Fullname</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="eaFullname" name="eaFiullname">
-                                    <label for="ea">Position</label>
+                                    <input type="text" class="form-control" id="ea_position" name="ea_position">
+                                    <label for="ea_position">Position</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-2">
-                                    <input type="number" class="form-control" id="eaFullname" name="eaFiullname">
-                                    <label for="ea">Monthly Rate</label>
+                                    <input type="number" class="form-control" id="ea_monthlyRate" name="ea_monthlyRate">
+                                    <label for="ea_monthlyRate">Monthly Rate</label>
                                 </div>
                             </div>
                         </div>
@@ -206,7 +206,7 @@
                                 </div>
                                 <div class="mb-2">
                                     <label for="bid" class="form-label">Bid Difference</label>
-                                    <input type="text" class="form-control currency-input" id="bid" name="bid" readonly>
+                                    <input type="text" class="form-control currency-input" id="bid" name="bid">
                                 </div>
                                 <div class="mb-2">
                                         <label for="projectContractDays" class="form-label">Contract Days(Calendar
@@ -300,21 +300,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-2">
-                                    <label for="targetCompletion" class="form-label">Target Completion Date</label>
-                                    <input type="date" class="form-control" id="targetCompletion"
-                                        name="targetCompletion">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-2">
                                         <label for="officialStart" class="form-label">Official Start</label>
                                         <input type="date" class="form-control" id="officialStart" name="officialStart">
                                  </div>
                             </div>
                             <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="revisedExpiryDate" class="form-label">Revised Completion Date</label>
-                                <input type="date" class="form-control" id="revisedExpiryDate" name="revisedExpiryDate">
+                                <div class="mb-2">
+                                    <label for="targetCompletion" class="form-label">Target Completion Date</label>
+                                    <input type="date" class="form-control" id="targetCompletion"
+                                        name="targetCompletion">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -325,6 +319,13 @@
                                 </div>
                             </div>
                             
+                            <div class="col-md-6">
+                            <div class="mb-2">
+                                <label for="revisedCompletionDate" class="form-label">Revised Completion Date</label>
+                                <input type="date" class="form-control" id="revisedCompletionDate" name="revisedCompletionDate">
+                                </div>
+                            </div>
+                           
                             
                             </div>
                         <!-- <div class="row">
@@ -397,14 +398,11 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                <!-- <div class="mb-2">
-                                        <label for="timeExtension" class="form-label">Time Extension</label>
-                                        <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="">
-                                    </div>  -->
-                                
-                            </div>
-
-                            
+                                <div class="mb-2">
+                                    <label for="timeExtension" class="form-label">Time Extension</label>
+                                    <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="">
+                                </div>  
+                            </div> 
                         </div>
                     </fieldset>
             </div>
@@ -417,58 +415,9 @@
                     <i class="fas fa-save me-2"></i>Save Project
                 </button>
             </div>
-            </form>
+        </form>
         </div>
     </div>
 </div>
 </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const input = document.getElementById("projectLoc");
-        const suggestionsBox = document.getElementById("suggestionsBoxs");
-        const suggestionItems = suggestionsBox.querySelectorAll(".suggestion-items");
-
-        // Show/hide and filter suggestions
-        input.addEventListener("keyup", function () {
-            const query = input.value.toLowerCase().trim();
-
-            if (query === "") {
-                suggestionsBox.style.display = "none";
-                return;
-            }
-
-            let hasMatch = false;
-
-            suggestionItems.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                if (text.includes(query)) {
-                    item.style.display = "block";
-                    hasMatch = true;
-                } else {
-                    item.style.display = "none";
-                }
-            });
-
-            suggestionsBox.style.display = hasMatch ? "block" : "none";
-        });
-
-        // Set selected value in input
-        suggestionItems.forEach(item => {
-            item.addEventListener("click", function () {
-                input.value = this.textContent.trim();
-                suggestionsBox.style.display = "none";
-            });
-        });
-
-        // Optional: Hide suggestions when clicking outside
-        document.addEventListener("click", function (e) {
-            if (!suggestionsBox.contains(e.target) && e.target !== input) {
-                suggestionsBox.style.display = "none";
-            }
-        });
-    });
-
-
-</script>

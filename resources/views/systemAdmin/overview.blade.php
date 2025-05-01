@@ -120,43 +120,84 @@
 
                             <!-- Contract Details -->
                              <!--EDIT THIS-->
-                            <div class="card shadow-sm mb-3">
+                             <div class="card shadow-sm mb-3">
                                 <div class="card-header bg-light py-2">
                                     <h6 class="fw-bold m-0">Fund Utilization Summary</h6>
                                 </div>
                                 <div class="card-body">
                                     @php
-                                        $labels = [
-                                            'ABC' => ['orig_abc', 'actual_abc', 'vo_abc'],
-                                            'Contract Amount' => ['orig_contract_amount', 'actual_contract_amount', 'vo_contract_amount'],
-                                            'Engineering' => ['orig_engineering', 'actual_engineering', 'vo_engineering'],
-                                            'MQC' => ['orig_mqc', 'actual_mqc', 'vo_mqc'],
-                                            'Contingency' => ['orig_contingency', 'actual_contingency', 'vo_contingency'],
-                                            'Bid Difference' => ['orig_bid', 'actual_bid', 'vo_bid'],
-                                            'Appropriation' => ['orig_appropriation', 'actual_appropriation', 'vo_appropriation'],
-                                        ];
                                         $funds = $project['funds'] ?? [];
                                         $variationOrders = $project['variation_orders'] ?? [];
                                         $voHeaders = collect($variationOrders)->pluck('vo_number');
                                     @endphp
 
-                                    <!-- Header Row -->
                                     <div class="table-responsive">
-                                        <table class="table table-sm table-hover">
-                                            <thead>
+                                        <table class="table table-sm table-bordered align-middle">
+                                            <thead class="table-light">
                                                 <tr>
-                                                    <th>Category</th>
-                                                    <th class="text-end">Original</th>
+                                                    <th style="width: 25%">Category</th>
+                                                    <th class="text-end" style="width: 15%">Original</th>
                                                     @foreach ($voHeaders as $voNum)
-                                                        <th class="text-end">VO {{ $voNum }}</th>
+                                                        <th class="text-end" style="width: 15%">VO {{ $voNum }}</th>
                                                     @endforeach
-                                                    <th class="text-end">Actual</th>
+                                                    <th class="text-end" style="width: 15%">Actual</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($labels as $label => [$origKey, $actualKey, $voKey])
+                                                @php
+                                                    $standardRows = [
+                                                        'Appropriation' => ['orig_appropriation', 'actual_appropriation', 'vo_appropriation'],
+                                                        'ABC' => ['orig_abc', 'actual_abc', 'vo_abc'],
+                                                        'Contract Amount' => ['orig_contract_amount', 'actual_contract_amount', 'vo_contract_amount'],
+                                                        'Bid Difference' => ['orig_bid', 'actual_bid', 'vo_bid'],
+                                                    ];
+                                                    $postEngineeringRows = [
+                                                        'MQC' => ['orig_mqc', 'actual_mqc', 'vo_mqc'],
+                                                        'Contingency' => ['orig_contingency', 'actual_contingency', 'vo_contingency'],
+                                                    ];
+                                                @endphp
+
+                                                {{-- Standard Rows --}}
+                                                @foreach ($standardRows as $label => [$origKey, $actualKey, $voKey])
                                                     <tr>
-                                                        <td>{{ $label }}</td>
+                                                        <td class="fw-semibold">{{ $label }}</td>
+                                                        <td class="text-end">₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}</td>
+                                                        @foreach ($variationOrders as $vo)
+                                                            <td class="text-end">₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}</td>
+                                                        @endforeach
+                                                        <td class="text-end">₱{{ number_format((float)($funds[$actualKey] ?? 0), 2) }}</td>
+                                                    </tr>
+                                                @endforeach
+
+                                                {{-- Section Divider --}}
+                                                <tr>
+                                                    <td colspan="{{ 3 + $voHeaders->count() }}" style="border-top: 3px solid #999;"></td>
+                                                </tr>
+
+                                                {{-- Engineering Header Row (no values) --}}
+                                                <tr class="fw-bold">
+                                                    <td>Engineering</td>
+                                                    <td class="text-end"></td>
+                                                    @foreach ($voHeaders as $voNum)
+                                                        <td class="text-end"></td>
+                                                    @endforeach
+                                                    <td class="text-end"></td>
+                                                </tr>
+
+                                                {{-- Wages Sub-Row (contains Engineering values) --}}
+                                                <tr>
+                                                    <td class="ps-4">Wages</td>
+                                                    <td class="text-end">₱{{ number_format((float)($funds['orig_engineering'] ?? 0), 2) }}</td>
+                                                    @foreach ($variationOrders as $vo)
+                                                        <td class="text-end">₱{{ number_format((float)($vo['vo_engineering'] ?? 0), 2) }}</td>
+                                                    @endforeach
+                                                    <td class="text-end">₱{{ number_format((float)($funds['actual_engineering'] ?? 0), 2) }}</td>
+                                                </tr>
+
+                                                {{-- Post-Engineering Rows --}}
+                                                @foreach ($postEngineeringRows as $label => [$origKey, $actualKey, $voKey])
+                                                    <tr>
+                                                        <td class="fw-semibold">{{ $label }}</td>
                                                         <td class="text-end">₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}</td>
                                                         @foreach ($variationOrders as $vo)
                                                             <td class="text-end">₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}</td>
@@ -168,6 +209,8 @@
                                         </table>
                                     </div>
                                 </div>
+                            </div>
+
                             </div>
 
                             <!-- Implementation Details -->

@@ -53,12 +53,12 @@
                             </li>
                             <li class="nav-item">
                                 <a id="userManagementBtn" class="nav-link active {{ Request::is('admin/userManagement') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/userManagement') }}">User Management</a>
-                            <li class="nav-item dropdown">
+                            </li>
+                                <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ Request::is('admin/trash') || Request::is('admin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item {{ Request::is('admin/trash') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/trash') }}">Trash</li>
-                                    <li><a class="dropdown-item {{ Request::is('admin/activityLogs') ? 'fw-bold text-danger' : 'inactive' }}" aria-current="page"  href="{{ url('/admin/activityLogs') }}">Activity Logs</a></li>
-                                </ul>
+                                    </ul>
                             </li>
                         </ul>
                         <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
@@ -214,3 +214,47 @@
                 </div>
             </div>
         </div>
+        @if(session('logout_soon'))
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let secondsLeft = 3;
+    let timerInterval;
+    let manuallyRedirected = false; // ✅ Prevent double redirect
+
+    Swal.fire({
+        title: 'Role Limit Expired!',
+        html: 'You will be redirected to the home page in <b>3</b> seconds.',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: true,
+        confirmButtonText: 'Go to Home Now',
+        didOpen: () => {
+            const b = Swal.getHtmlContainer().querySelector('b');
+
+            timerInterval = setInterval(() => {
+                secondsLeft--;
+
+                if (secondsLeft > 0) {
+                    b.textContent = secondsLeft;
+                } else {
+                    clearInterval(timerInterval);
+                    if (!manuallyRedirected) {
+                        manuallyRedirected = true; //Flag that we're redirecting
+                        setTimeout(() => {
+                            window.location.href = "{{ route('home') }}";
+                        }, 500); // brief delay after showing 0
+                    }
+                }
+            }, 1000);
+        }
+    }).then((result) => {
+        clearInterval(timerInterval); // Always clear interval
+        if (result.isConfirmed && !manuallyRedirected) {
+            manuallyRedirected = true; // ✅ Avoid race condition
+            window.location.href = "{{ route('home') }}";
+        }
+    });
+});
+</script>
+@endif

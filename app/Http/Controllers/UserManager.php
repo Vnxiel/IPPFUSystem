@@ -74,46 +74,66 @@ class UserManager extends Controller
                 ]
             ]);
     }
-
-    public function changeRole(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'ofmis_id' => 'required|exists:users,ofmis_id',
-        'userRole' => 'required|string',
-        'time_frame' => 'required|string',
-        'time_limit' => 'nullable|date',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(0); 
-    }
-
-    $user = User::find($request->id);
-
-    // Save current role as temp_role if setting admin temporarily
-    if ($request->userRole === 'Admin' && $request->time_frame === 'Temporary') {
-        $user->temp_role = $user->role; // Save original role
-        $user->role = 'Admin';
-        $user->time_limit = $request->time_limit;
-    } else {
-        $user->role = $request->userRole;
-        $user->temp_role = null; // clear temp_role
-        $user->time_limit = null;
-    }
-
-    $user->time_frame = $request->time_frame;
-    $user->save();
-
-    // Log role change
-    $activityLogData = [
-        'performedBy' => auth()->user()->id,
-        'role' => $user->role,
-        'action' => "Changed role to {$user->role}",
-    ];
-    (new ActivityLogs())->store(new Request($activityLogData));
-
-    return response()->json(1); 
-}
+        public function changeRole(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'ofmis_id' => 'required|exists:users,ofmis_id',
+                'userRole' => 'required|string',
+                'time_frame' => 'required|string',
+                'time_limit' => 'nullable|date',
+            ]);
+        
+            if ($validator->fails()) {
+                return response()->json(0); 
+            }
+        
+            $user = User::find($request->id);
+        
+            if (!$user) {
+                return response()->json(['status' => 'error', 'message' => 'User not found.'], 404);
+            }
+        
+            // Apply role changes
+            if ($request->userRole === 'Admin' && $request->time_frame === 'Temporary') {
+                $user->temp_role = $user->role;
+                $user->role = 'Admin';
+                $user->time_limit = $request->time_limit;
+            } else {
+                $user->role = $request->userRole;
+                $user->temp_role = null;
+                $user->time_limit = null;
+            }
+        
+            $user->time_frame = $request->time_frame;
+            $user->save();
+        
+            // ✅ Activity logging
+            if (session()->has('loggedIn')) {
+                $sessionData = session()->get('loggedIn');
+                $action = "Changed role of user '{$user->username}' to '{$user->role}' ({$request->time_frame})";
+        
+                $request->session()->put('ChangedUserRole', [
+                    'user_id' => $sessionData['user_id'],
+                    'ofmis_id' => $sessionData['ofmis_id'],
+                    'performedBy' => $sessionData['performedBy'],
+                    'role' => $sessionData['role'],
+                    'action' => $action,
+                ]);
+        
+                \Log::info("User action logged: " . json_encode($request->session()->get('ChangedUserRole')));
+        
+                (new ActivityLogs)->userAction(
+                    $sessionData['user_id'],
+                    $sessionData['ofmis_id'],
+                    $sessionData['performedBy'],
+                    $sessionData['role'],
+                    $action
+                );
+            }
+        
+            return response()->json(1);
+        }
+        
 
 public function userLogin(Request $request)
 {
@@ -139,9 +159,6 @@ public function userLogin(Request $request)
         return response()->json(['error' => 'Invalid credentials'], 401);
     }
 
-    // Expire temporary role if needed
-    $expired = $user->expireTemporaryRole();
-
     Auth::login($user);
 
     if (in_array($user->role, ['System Admin', 'Admin', 'Staff'])) {
@@ -151,6 +168,8 @@ public function userLogin(Request $request)
             'performedBy' => $user->username,
             'role' => $user->role,
             'action' => "Logged in into the system.",
+            'time_limit' => $user->time_limit, // Save user's expiration time
+            'time_frame' => $user->time_frame,
         ]);
 
         if (session()->has('loggedIn')) {
@@ -174,7 +193,6 @@ public function userLogin(Request $request)
         return response()->json([
             'redirect' => $redirect,
             'role' => $user->role,
-            'expired' => $expired ? 'Your temporary role has expired and has been updated.' : null,
         ]);
     }
 
@@ -315,13 +333,14 @@ public function userLogin(Request $request)
     // it will retrieve the user's information, log the the activity before clearing the session data. 
     public function logout(Request $request)
     {
-        $user = auth()->user(); 
+        $user = auth()->user();
     
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
     
         try {
+            // Log activity using current authenticated user (not session)
             (new ActivityLogs)->userAction(
                 $user->id,
                 $user->ofmis_id,
@@ -330,14 +349,14 @@ public function userLogin(Request $request)
                 'Logged out from the system.'
             );
         } catch (\Exception $e) {
-            Log::error('Logout logging failed: ' . $e->getMessage());
+            Log::error('Logout activity log failed: ' . $e->getMessage());
         }
     
-        auth()->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        auth()->logout(); // End the user's auth session
+        $request->session()->invalidate(); // Kill session
+        $request->session()->regenerateToken(); // For security
     
         return redirect()->route('/');
     }
     
-    }
+        }

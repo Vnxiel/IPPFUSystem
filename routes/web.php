@@ -101,8 +101,6 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('generateProject/{project_id}', [GenerateProjectReport::class, 'generateProjectPDF']);
 
-    Route::post('/store-project-id', [SessionController::class, 'storeProjectID'])->name('store.project.id');
-    Route::get('/get-project-id', [SessionController::class, 'getProjectID']);
 
     Route::controller(FileManager::class)->group(function () {
         Route::post('/upload-file/{project_id}', 'uploadFile');
@@ -113,17 +111,4 @@ Route::middleware(['auth'])->group(function () {
 
  
     
-});
-
-Route::get('/test-pdf-view', function () {
-    $sampleData = [
-        'project' => (object)[ 'projectTitle' => 'Sample Project', 'projectLoc' => 'Test Location', 'projectContractor' => 'XYZ' ],
-        'projectDescriptions' => ['Desc 1', 'Desc 2'],
-        'projectFundsUtilization' => [],
-        'projectVariationOrder' => [],
-        'projectFiles' => [
-            [ 'name' => 'example.jpg', 'data' => 'data:image/jpeg;base64,' . base64_encode(file_get_contents(public_path('img/temp_logo.png'))) ]
-        ]
-    ];
-    return view('pdf.generateProjectWithPicNew', $sampleData);
 });
