@@ -100,10 +100,10 @@
                                     </div>
                                 </div>
 
-                                    <div class="mb-2">
+                                    <!-- <div class="mb-2">
                                         <label for="projectSlippage" class="form-label">Slippage</label>
                                         <input type="text" class="form-control" id="projectSlippage" name="projectSlippage" value="{{ old('projectSlippage', $project['projectSlippage'] ?? '') }}">
-                                    </div>
+                                    </div> -->
                                 </div>
 
                                 <div class="row">
@@ -155,10 +155,7 @@
                                             <label for="bid" class="form-label">Bid Difference</label>
                                             <input type="text" class="form-control currency-input" id="bid" name="bid" value="{{ old('bid', $funds['orig_bid'] ?? '') }}">
                                         </div>
-                                        <div class="mb-2">
-                                            <label for="projectContractDays" class="form-label">Contract Days (Calendar days)</label>
-                                            <input type="number" class="form-control" id="projectContractDays" name="projectContractDays" min="0" value="{{ old('projectContractDays', $project['projectContractDays'] ?? '') }}">
-                                        </div>
+                    
                                     </div>
 
                                     <div class="col-md-6">
@@ -219,6 +216,10 @@
                                         <label for="revisedExpiryDate" class="form-label">Revised Completion Date</label>
                                         <input type="date" class="form-control" id="revisedExpiryDate" name="revisedExpiryDate" value="{{ old('revisedExpiryDate', $project['revisedExpiryDate'] ?? '') }}">
                                     </div>
+                                    <div class="mb-2">
+                                            <label for="projectContractDays" class="form-label">Contract Days (Calendar days)</label>
+                                            <input type="number" class="form-control" id="projectContractDays" name="projectContractDays" min="0" value="{{ old('projectContractDays', $project['projectContractDays'] ?? '') }}">
+                                        </div>
                                 </div>
                             </fieldset>
 
@@ -288,13 +289,18 @@
                                                             <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order No. {{ $order['index'] }}</label>
                                                             <input type="date" class="form-control" id="{{ $order['resumeKey'] }}" name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
                                                         </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <label for="resumptionOrderNo{{ $order['index'] }}Remarks" class="form-label">Remarks</label>
+                                                            <input type="text" class="form-control" id="resumptionOrderNo{{ $order['index'] }}Remarks" name="resumptionOrderNo{{ $order['index'] }}Remarks">
+                                                        </div>
+        
                                                     </div>
                                                 </div>
                                             @endforeach
                                         </div>
                                     </div>
                                 </div>
-
+<!-- 
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
                                         <label for="timeExtension" class="form-label">Time Extension</label>
@@ -304,7 +310,7 @@
                                         <label for="revisedTargetCompletion" class="form-label">Revised Target Completion</label>
                                         <input type="text" class="form-control" id="revisedTargetCompletion" name="revisedTargetCompletion" value="{{ old('revisedTargetCompletion', $project['revisedTargetCompletion'] ?? '') }}">
                                     </div>
-                                </div>
+                                </div> -->
                             </fieldset>
 
                             <!-- Modal Footer -->

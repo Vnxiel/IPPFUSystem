@@ -32,14 +32,14 @@
             <nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(to right, #ffffff, #F8F2DE);">
                 <div class="container-fluid px-4">
                     <a href="{{ route('systemAdmin.index') }}" class="navbar-brand d-flex align-items-center">
-                            <div class="d-flex align-items-center">
-                                <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="55" height="45" class="img-fluid me-3">
-                                <div>
-                                    <h5 class="mb-0 fw-bold" style="color: #2c3e50;">Provincial Engineering Office</h5>
-                                    <h6 class="mt-1 text-muted" style="font-size: 0.9rem;">Province of Nueva Vizcaya</h6>
-                                </div>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="55" height="45" class="img-fluid me-3">
+                            <div>
+                                <h5 class="mb-0 fw-bold" style="color: #2c3e50;">Provincial Engineering Office</h5>
+                                <h6 class="mt-1 text-muted" style="font-size: 0.9rem;">Province of Nueva Vizcaya</h6>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
                     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -89,7 +89,7 @@
                             </li>
                         </ul>
 
-                        <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3">
+                        <div class="ms-lg-3 mt-3 mt-lg-0">
                             <div class="dropdown">
                                 <?php $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest'; ?>
                                 <a href="#" id="dropdownMenuButton" 

@@ -84,3 +84,26 @@ tbody tr:first-child td {
     transform: scale(0.97);
     transition: transform 0.1s ease;
 }
+
+/* auto complete  */
+.autocomplete-box {
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    width: 100%;
+    z-index: 999;
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+    background-color: #f0f0f0;
+}
