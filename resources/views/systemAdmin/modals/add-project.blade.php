@@ -24,18 +24,17 @@
                                     <textarea class="form-control" id="projectTitle" name="projectTitle"
                                         style="height: 80px" required></textarea>
                                     <label for="projectTitle">Project Title<span
-                                    class="text-danger">*</span></label>
+                                            class="text-danger">*</span></label>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-floating mb-2">
                                     <input type="text" class="form-control" id="projectID" name="projectID" required>
                                     <label for="projectID">Project ID<span
-                                    class="text-danger">*</span></label>
+                                            class="text-danger">*</span></label>
                                 </div>
                             </div>
-                        </div>
-
+                   
                         <!-- Project Description -->
                         <div class="row g-3">
                             <div class="col-md-12">
@@ -58,10 +57,10 @@
                                     <div id="suggestionsBoxs" class="list-group position-absolute w-100 shadow"
                                         style="display:none; max-height: 200px; overflow-y: auto; z-index: 1050;">
                                         @foreach($locations as $location)
-                                            <button type="button"
-                                                class="list-group-item list-group-item-action suggestion-items">
-                                                {{ $location->location }}
-                                            </button>
+                                        <button type="button"
+                                            class="list-group-item list-group-item-action suggestion-items">
+                                            {{ $location->location }}
+                                        </button>
                                         @endforeach
                                     </div>
                                 </div>
@@ -99,30 +98,13 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label for="sourceOfFunds" class="form-label">Source of Fund <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
-                                        placeholder="Enter source of funds.">
-                                    <!-- <label for="sourceOfFunds" class="form-label">Source of Fund <span
-                                            class="text-danger">*</span></label>
-                                    <select id="sourceOfFunds" name="sourceOfFunds" class="form-select"
-                                        onchange="toggleOtherFund()">
-                                        <option value="">Select Source</option>
-                                        <option value="Wages">Wages</option>
-                                        <option value="% Mobilization">15% Mobilization</option>
-                                        <option value="Trust Fund">Trust Fund</option>
-                                        <option value="Final Billing">Final Billing</option>
-                                        <option value="Others">Others</option>
-                                    </select> -->
-
-                                    <!-- Hidden text input for 'Others' -->
-                                    <div id="otherFundContainer" class="mt-2" style="display: none;">
-                                        <label for="otherFund" class="form-label">Please specify:</label>
-                                        <input type="text" id="otherFund" name="otherFund" class="form-control"
-                                            placeholder="Enter fund source">
-                                    </div>
+                                <div class="mb-2" style="position: relative;">
+                                    <label for="sourceOfFunds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds" placeholder="Enter source of funds..." autocomplete="off">
+                                    <div id="fundSuggestions" class="autocomplete-box"></div>
                                 </div>
+
+
 
                                 <div class="mb-2">
                                     <label for="projectStatus" class="form-label">Status <span
@@ -157,14 +139,15 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span
-                                        class="text-danger">*</span></label>
+                            <div class="col-md-12" style="position: relative;">
+                                <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span class="text-danger">*</span></label>
                                 <div class="form-floating mb-2">
                                     <input type="text" class="form-control" id="ea" name="ea">
                                     <label for="ea">Fullname</label>
                                 </div>
+                                <div id="eaSuggestions" class="autocomplete-box"></div>
                             </div>
+
                             <div class="col-md-6">
                                 <div class="form-floating mb-2">
                                     <input type="text" class="form-control" id="ea_position" name="ea_position">
@@ -196,23 +179,17 @@
                                             name="appropriation">
                                     </div>
                                     <div class="mb-2">
-                                    <label for="abc" class="form-label">ABC</label>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
-                                </div>
-                                <div class="mb-2">
-                                    <label for="contractAmount" class="form-label">Contract Amount</label>
-                                    <input type="text" class="form-control currency-input" id="contractAmount"
-                                        name="contractAmount">
-                                </div>
-                                <div class="mb-2">
-                                    <label for="bid" class="form-label">Bid Difference</label>
-                                    <input type="text" class="form-control currency-input" id="bid" name="bid">
-                                </div>
-                                <div class="mb-2">
-                                        <label for="projectContractDays" class="form-label">Contract Days(Calendar
-                                            days)</label>
-                                        <input type="number" class="form-control" id="projectContractDays"
-                                            name="projectContractDays" min="0">
+                                        <label for="abc" class="form-label">ABC</label>
+                                        <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="contractAmount" class="form-label">Contract Amount</label>
+                                        <input type="text" class="form-control currency-input" id="contractAmount"
+                                            name="contractAmount">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="bid" class="form-label">Bid Difference</label>
+                                        <input type="text" class="form-control currency-input" id="bid" name="bid">
                                     </div>
                                 </div>
                                 <!-- <div class="row">
@@ -234,7 +211,7 @@
                             </div>
 
                             <div class="col-md-6">
-                            <h6 class=" m-1 fw-bold">Wages:</h6>
+                                <h6 class=" m-1 fw-bold">Wages:</h6>
                                 <div class="row">
                                     <div class="mb-2">
                                         <label for="engineering" class="form-label">Engineering</label>
@@ -251,9 +228,9 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                  
+
                                 </div>
-                                
+
 
                             </div>
                         </div>
@@ -263,7 +240,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                               
+
                                     <div class="mb-2">
                                         <label for="noaIssuedDate" class="form-label">Issued Date</label>
                                         <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
@@ -282,7 +259,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                               
+
                                     <div class="mb-2">
                                         <label for="ntpIssuedDate" class="form-label">Issued Date</label>
                                         <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate">
@@ -300,9 +277,9 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-2">
-                                        <label for="officialStart" class="form-label">Official Start</label>
-                                        <input type="date" class="form-control" id="officialStart" name="officialStart">
-                                 </div>
+                                    <label for="officialStart" class="form-label">Official Start</label>
+                                    <input type="date" class="form-control" id="officialStart" name="officialStart">
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-2">
@@ -323,6 +300,10 @@
                             <div class="mb-2">
                                 <label for="revisedCompletionDate" class="form-label">Revised Completion Date</label>
                                 <input type="date" class="form-control" id="revisedCompletionDate" name="revisedCompletionDate">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="projectContractDays" class="form-label">Contract Days(Calendar days)</label>
+                                    <input type="number" class="form-control" id="projectContractDays" name="projectContractDays" min="0">
                                 </div>
                             </div>
                            
@@ -396,14 +377,14 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-2">
                                     <label for="timeExtension" class="form-label">Time Extension</label>
                                     <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="">
                                 </div>  
                             </div> 
-                        </div>
+                        </div> -->
                     </fieldset>
             </div>
 
@@ -421,3 +402,87 @@
 </div>
 </div>
 </div>
+
+
+
+<script>
+    const contractorInput = document.getElementById('projectContractor');
+    const suggestionsBox = document.getElementById('contractorSuggestions');
+    const contractorList = @json($contractors - > pluck('name'));
+
+    let currentFocus = -1;
+
+    contractorInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        suggestionsBox.innerHTML = '';
+        currentFocus = -1;
+
+        if (!query) {
+            suggestionsBox.style.display = 'none';
+            return;
+        }
+
+        const filtered = contractorList.filter(name => name.toLowerCase().includes(query));
+        if (filtered.length === 0) {
+            suggestionsBox.style.display = 'none';
+            return;
+        }
+
+        filtered.forEach((name, index) => {
+            const item = document.createElement('div');
+            item.textContent = name;
+            item.classList.add('autocomplete-item');
+            item.setAttribute('data-index', index);
+            item.addEventListener('click', function() {
+                contractorInput.value = name;
+                suggestionsBox.style.display = 'none';
+            });
+            suggestionsBox.appendChild(item);
+        });
+
+        suggestionsBox.style.display = 'block';
+    });
+
+    contractorInput.addEventListener('keydown', function(e) {
+        const items = suggestionsBox.querySelectorAll('.autocomplete-item');
+        if (items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            currentFocus++;
+            if (currentFocus >= items.length) currentFocus = 0;
+            addActive(items);
+            e.preventDefault();
+        } else if (e.key === 'ArrowUp') {
+            currentFocus--;
+            if (currentFocus < 0) currentFocus = items.length - 1;
+            addActive(items);
+            e.preventDefault();
+        } else if (e.key === 'Enter') {
+            if (currentFocus > -1 && items[currentFocus]) {
+                contractorInput.value = items[currentFocus].textContent;
+                suggestionsBox.style.display = 'none';
+                e.preventDefault();
+            }
+        }
+    });
+
+    function addActive(items) {
+        removeActive(items);
+        if (currentFocus >= 0 && currentFocus < items.length) {
+            items[currentFocus].classList.add('active');
+            items[currentFocus].scrollIntoView({
+                block: 'nearest'
+            });
+        }
+    }
+
+    function removeActive(items) {
+        items.forEach(item => item.classList.remove('active'));
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!suggestionsBox.contains(e.target) && e.target !== contractorInput) {
+            suggestionsBox.style.display = 'none';
+        }
+    });
+</script>
