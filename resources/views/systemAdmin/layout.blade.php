@@ -31,12 +31,7 @@
             <!-- Enhanced Navbar -->
             <nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(to right, #ffffff, #F8F2DE);">
                 <div class="container-fluid px-4">
-                    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('systemAdmin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
+                    <a href="{{ route('systemAdmin.index') }}" class="navbar-brand d-flex align-items-center">
                             <div class="d-flex align-items-center">
                                 <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="55" height="45" class="img-fluid me-3">
                                 <div>
@@ -46,7 +41,12 @@
                             </div>
                         </a>
 
-                        <ul class="navbar-nav col-lg-6 justify-content-lg-center gap-lg-2">
+                    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarContent">
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
                             <li class="nav-item">
                                 <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/index') ? 'fw-bold text-white' : '' }}" 
                                    style="{{ Request::is('systemAdmin/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
