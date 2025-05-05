@@ -25,18 +25,7 @@ return new class extends Migration
             $table->string('timeExtension')->nullable();
             $table->string('revisedTargetCompletion')->nullable();
             $table->string('completionDate');
-
-            $table->decimal('abc', 15, 2);
-            $table->decimal('contractAmount', 15, 2);
-            $table->decimal('engineering', 15, 2);
-            $table->decimal('mqc', 15, 2);
-            $table->decimal('contingency', 15, 2);
-            $table->decimal('bid', 15, 2);
-            $table->decimal('appropriation', 15, 2);
-            $table->decimal('directOrIndirectCost', 15, 2)->nullable();
-            $table->decimal('revisedContractCost', 15, 2)->nullable();
-            
-
+          
             $table->date('originalExpiryDate')->nullable();
             $table->date('revisedExpiryDate')->nullable();
             $table->date('noaIssuedDate')->nullable();
@@ -55,6 +44,9 @@ return new class extends Migration
             $table->string('ongoingStatus')->nullable();
             $table->boolean('is_hidden')->default(false); // Better as boolean
 
+            $table->integer('projectYear')->nullable();
+            $table->string('projectFPP')->nullable();
+            $table->string('projectRC')->nullable();
             $table->timestamps();
         });
     }

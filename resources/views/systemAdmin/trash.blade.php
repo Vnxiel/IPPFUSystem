@@ -4,16 +4,14 @@
 
 @section('content') 
 <div class="container-fluid py-4">
-        <!-- Header Section -->
         <div class="card mb-2 border-0 shadow-sm">
-            <div class="card-body p-4">
+            <div class="card-body p-2">
                 <div class="d-flex align-items-center">
                     <div class="icon-circle me-3" style="background: rgba(158, 158, 158, 0.1); padding: 12px; border-radius: 50%;">
                         <i class="fas fa-archive" style="font-size: 24px; color: #757575;"></i>
                     </div>
                     <div>
                         <h4 class="mb-0">Archived Projects</h4>
-                        <small class="text-muted">View and manage archived project records</small>
                     </div>
                 </div>
             </div>
