@@ -71,6 +71,8 @@ class FundsUtilizationController extends Controller
                     'actual_bid' => $this->cleanMoney($fundData['actual_bid'] ?? null),
                     'actual_contingency' => $this->cleanMoney($fundData['actual_contingency'] ?? null),
                     'actual_appropriation' => $this->cleanMoney($fundData['actual_appropriation'] ?? null),
+                    'total_expenditure' => $this->cleanMoney($fundData['total_expenditure'] ?? null),
+                    'total_savings' => $this->cleanMoney($fundData['total_savings'] ?? null),
                     'summary' => $summary,
                     'partial_billings' => $partialBillings,
                     'updated_at' => now()

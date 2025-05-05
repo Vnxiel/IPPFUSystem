@@ -7,11 +7,7 @@
                 <h5 class="modal-title" id="addStatusModalLabel">Add Project Status</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <!-- Project Title and Project ID -->
-            <div class="text-center mb-4">
-                        <h4 id="projectTitleDisplay" class="text-primary">Project Title</h4>
-                    </div>
-
+           
             <form id="addStatusForm">
                 <div class="modal-body">
                     
@@ -20,8 +16,9 @@
                         <label for="progress" class="form-label">Progress</label>
                         <select class="form-select" id="progress" aria-label="Select project progress">
                             <option value="Ongoing">Ongoing</option>
-                            <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
+                            <option value="Cancelled">Discontinued</option>
+                          
                         </select>
                     </div>
 

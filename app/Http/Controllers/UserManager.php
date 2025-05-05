@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\ActivityLog;
 use App\Http\Controllers\ActivityLogs;
 use App\Models\Contractor;
-use App\Models\Location;
+use App\Models\Project;
 
 class UserManager extends Controller
 {
@@ -74,66 +74,65 @@ class UserManager extends Controller
                 ]
             ]);
     }
-        public function changeRole(Request $request)
-        {
-            $validator = Validator::make($request->all(), [
-                'ofmis_id' => 'required|exists:users,ofmis_id',
-                'userRole' => 'required|string',
-                'time_frame' => 'required|string',
-                'time_limit' => 'nullable|date',
-            ]);
-        
-            if ($validator->fails()) {
-                return response()->json(0); 
-            }
-        
-            $user = User::find($request->id);
-        
-            if (!$user) {
-                return response()->json(['status' => 'error', 'message' => 'User not found.'], 404);
-            }
-        
-            // Apply role changes
-            if ($request->userRole === 'Admin' && $request->time_frame === 'Temporary') {
-                $user->temp_role = $user->role;
-                $user->role = 'Admin';
-                $user->time_limit = $request->time_limit;
-            } else {
-                $user->role = $request->userRole;
-                $user->temp_role = null;
-                $user->time_limit = null;
-            }
-        
-            $user->time_frame = $request->time_frame;
-            $user->save();
-        
-            // ✅ Activity logging
-            if (session()->has('loggedIn')) {
-                $sessionData = session()->get('loggedIn');
-                $action = "Changed role of user '{$user->username}' to '{$user->role}' ({$request->time_frame})";
-        
-                $request->session()->put('ChangedUserRole', [
-                    'user_id' => $sessionData['user_id'],
-                    'ofmis_id' => $sessionData['ofmis_id'],
-                    'performedBy' => $sessionData['performedBy'],
-                    'role' => $sessionData['role'],
-                    'action' => $action,
-                ]);
-        
-                \Log::info("User action logged: " . json_encode($request->session()->get('ChangedUserRole')));
-        
-                (new ActivityLogs)->userAction(
-                    $sessionData['user_id'],
-                    $sessionData['ofmis_id'],
-                    $sessionData['performedBy'],
-                    $sessionData['role'],
-                    $action
-                );
-            }
-        
-            return response()->json(1);
+    public function changeRole(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ofmis_id' => 'required|exists:users,ofmis_id',
+            'userRole' => 'required|string',
+            'time_frame' => 'required|string',
+            'time_limit' => 'nullable|date',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(0); 
         }
-        
+    
+        $user = User::find($request->id);
+    
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User not found.'], 404);
+        }
+    
+        // Apply role changes
+        if ($request->userRole === 'Admin' && $request->time_frame === 'Temporary') {
+            $user->temp_role = $user->role;
+            $user->role = 'Admin';
+            $user->time_limit = $request->time_limit;
+        } else {
+            $user->role = $request->userRole;
+            $user->temp_role = null;
+            $user->time_limit = null;
+        }
+    
+        $user->time_frame = $request->time_frame;
+        $user->save();
+    
+        // ✅ Activity logging
+        if (session()->has('loggedIn')) {
+            $sessionData = session()->get('loggedIn');
+            $action = "Changed role of user '{$user->username}' to '{$user->role}' ({$request->time_frame})";
+    
+            $request->session()->put('ChangedUserRole', [
+                'user_id' => $sessionData['user_id'],
+                'ofmis_id' => $sessionData['ofmis_id'],
+                'performedBy' => $sessionData['performedBy'],
+                'role' => $sessionData['role'],
+                'action' => $action,
+            ]);
+    
+            \Log::info("User action logged: " . json_encode($request->session()->get('ChangedUserRole')));
+    
+            (new ActivityLogs)->userAction(
+                $sessionData['user_id'],
+                $sessionData['ofmis_id'],
+                $sessionData['performedBy'],
+                $sessionData['role'],
+                $action
+            );
+        }
+    
+        return response()->json(1);
+    }
 
 public function userLogin(Request $request)
 {
@@ -304,10 +303,42 @@ public function userLogin(Request $request)
     public function projects()
     {
         $contractors = Contractor::orderBy('name')->get();
-        $locations   = Location::orderBy('location')->get();
+        $staticLocations = [
+            'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
+            'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
+            'Villaverde', 'Ambaguio', 'Santa Fe'
+        ];
     
+        $dbLocations = Project::select('projectLoc')
+            ->whereNotNull('projectLoc')
+            ->pluck('projectLoc')
+            ->toArray();
+    
+        // Merge and remove duplicates
+        $allLocations = collect(array_merge($staticLocations, $dbLocations))
+            ->unique()
+            ->sort()
+            ->values();
+
+        $sourceOfFunds = Project::select('sourceOfFunds')
+        ->distinct()
+        ->whereNotNull('sourceOfFunds')
+        ->orderBy('sourceOfFunds')
+        ->get();
+        $projectYear = Project::select('projectYear')
+        ->distinct()
+        ->whereNotNull('projectYear')
+        ->orderBy('projectYear')
+        ->get();
+        $projectEA = Project::select('ea')
+        ->distinct()
+        ->whereNotNull('ea')
+        ->orderBy('ea')
+        ->get();
+
+
         // default to system admin
-        return view('systemAdmin.projects', compact('contractors', 'locations'));
+        return view('systemAdmin.projects', compact('contractors', 'allLocations', 'sourceOfFunds', 'projectEA', 'projectYear'));
     }
     
     
@@ -316,10 +347,9 @@ public function userLogin(Request $request)
     {
         // 1. Load your data
         $contractors = Contractor::orderBy('name')->get();
-        $locations   = Location::orderBy('location')->get();
     
         // 3. Otherwise, show the system‑admin overview
-        return view('systemAdmin.overview', compact('contractors', 'locations'));
+        return view('systemAdmin.overview', compact('contractors'));
     }
     
 

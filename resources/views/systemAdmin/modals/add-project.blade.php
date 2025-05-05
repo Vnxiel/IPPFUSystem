@@ -17,24 +17,72 @@
                             <i class="fas fa-info-circle me-2"></i>Project Profile
                         </legend>
 
-                        <!-- Project Title & ID Section -->
+                        <!-- Project Title, ID, and Year -->
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <div class="form-floating mb-2">
-                                    <textarea class="form-control" id="projectTitle" name="projectTitle"
-                                        style="height: 80px" required></textarea>
-                                    <label for="projectTitle">Project Title<span
-                                    class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="projectTitle" name="projectTitle" style="height: 80px" required></textarea>
+                                    <label for="projectTitle">Project Title <span class="text-danger">*</span></label>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-5">
                                 <div class="form-floating mb-2">
                                     <input type="text" class="form-control" id="projectID" name="projectID" required>
-                                    <label for="projectID">Project ID<span
-                                    class="text-danger">*</span></label>
+                                    <label for="projectID">Project ID <span class="text-danger">*</span></label>
+                                </div>
+                            </div>
+                            <!-- Project Year with Datalist -->
+                                <div class="col-md-3">
+                                    <div class="form-floating mb-2">
+                                        <input type="number" class="form-control" id="projectYear" name="projectYear" list="yearOptions" required>
+                                        <label for="projectYear">Year <span class="text-danger">*</span></label>
+                                        <datalist id="yearOptions">
+                                            @foreach($projectYear as $year)
+                                                <option value="{{ $year->projectYear }}"></option>
+                                            @endforeach
+                                        </datalist>
+                                    </div>
+                                </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control" id="projectFPP" name="projectFPP" required>
+                                    <label for="projectFPP">FPP <span class="text-danger">*</span></label>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- FPP and Responsibility Center -->
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control" id="projectRC" name="projectRC" required>
+                                    <label for="projectRC">Responsibility Center <span class="text-danger">*</span></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+    <div class="col-md-12 position-relative">
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control" id="projectLoc" name="projectLoc"
+                placeholder="Select or enter location" autocomplete="off"
+                onfocus="showLocDropdown()" oninput="showLocDropdown()" />
+            <label for="projectLoc">Location <span class="text-danger">*</span></label>
+        </div>
+
+        <!-- Place dropdown outside form-floating -->
+        <div id="projectLocDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+            style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+            @foreach($allLocations as $location)
+                <button type="button" class="list-group-item list-group-item-action"
+                    onclick="selectLoc('{{ $location }}')">
+                    {{ $location }}
+                </button>
+            @endforeach
+        </div>
+    </div>
+</div>
+
 
                         <!-- Project Description -->
                         <div class="row g-3">
@@ -48,27 +96,6 @@
                             </div>
                         </div>
 
-                        <div class="row g-3">
-                            <div class="col-md-12">
-                                <div class="form-floating mb-2 position-relative">
-                                    <input type="text" class="form-control" id="projectLoc" name="projectLoc" required
-                                        onkeyup="filterSuggestions(this.value)" autocomplete="off">
-                                    <label for="projectLoc">Location <span class="text-danger">*</span></label>
-
-                                    <div id="suggestionsBoxs" class="list-group position-absolute w-100 shadow"
-                                        style="display:none; max-height: 200px; overflow-y: auto; z-index: 1050;">
-                                        @foreach($locations as $location)
-                                            <button type="button"
-                                                class="list-group-item list-group-item-action suggestion-items">
-                                                {{ $location->location }}
-                                            </button>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Location & Details Section -->
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="mb-2">
@@ -97,25 +124,26 @@
                                         name="modeOfImplementation" placeholder="Enter mode of implementation."
                                         value="By contract." readonly>
                                 </div>
+                                <div class="mb-2">
+                                        <label for="projectContractDays" class="form-label">Contract Days(Calendar
+                                            days)</label>
+                                        <input type="number" class="form-control" id="projectContractDays"
+                                            name="projectContractDays" min="0">
+                                    </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-2">
-                                    <label for="sourceOfFunds" class="form-label">Source of Fund <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
-                                        placeholder="Enter source of funds.">
-                                    <!-- <label for="sourceOfFunds" class="form-label">Source of Fund <span
-                                            class="text-danger">*</span></label>
-                                    <select id="sourceOfFunds" name="sourceOfFunds" class="form-select"
-                                        onchange="toggleOtherFund()">
-                                        <option value="">Select Source</option>
-                                        <option value="Wages">Wages</option>
-                                        <option value="% Mobilization">15% Mobilization</option>
-                                        <option value="Trust Fund">Trust Fund</option>
-                                        <option value="Final Billing">Final Billing</option>
-                                        <option value="Others">Others</option>
-                                    </select> -->
+                                <label for="sourceOfFunds" class="form-label">
+                                    Source of Fund <span class="text-danger">*</span>
+                                </label>
+                                <input list="sourceOfFundsList" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
+                                    placeholder="Enter source of funds." required>
 
+                                <datalist id="sourceOfFundsList">
+                                    @foreach($sourceOfFunds as $fund)
+                                        <option value="{{ $fund->sourceOfFunds }}"></option>
+                                    @endforeach
+                                </datalist>
                                     <!-- Hidden text input for 'Others' -->
                                     <div id="otherFundContainer" class="mt-2" style="display: none;">
                                         <label for="otherFund" class="form-label">Please specify:</label>
@@ -130,7 +158,7 @@
                                     <select id="projectStatus" name="projectStatus" class="form-select"
                                         onchange="toggleOngoingStatus()">
                                         <option value="">Select Status</option>
-                                        <option value="Started">Started</option>
+                                        <option value="To Be Started">To Be Started</option>
                                         <option value="Ongoing">Ongoing</option>
                                         <option value="Completed">Completed</option>
                                         <option value="Discontinued">Discontinued</option>
@@ -149,20 +177,25 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="mb-2">
+                               <div class="mb-2">
                                     <label for="projectSlippage" class="form-label">Slippage</label>
                                     <input type="number" class="form-control" id="projectSlippage"
                                         name="projectSlippage" placeholder="Enter slippage">
-                                </div> -->
+                                </div> 
                             </div>
                         </div>
                         <div class="row">
+                            <!-- Engineer Assigned (E.A) with Datalist -->
                             <div class="col-md-12">
-                                <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span
-                                        class="text-danger">*</span></label>
+                                <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span class="text-danger">*</span></label>
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="ea" name="ea">
+                                    <input type="text" class="form-control" id="ea" name="ea" list="eaList">
                                     <label for="ea">Fullname</label>
+                                    <datalist id="eaList">
+                                        @foreach($projectEA as $ea)
+                                            <option value="{{ $ea->ea }}"></option>
+                                        @endforeach
+                                    </datalist>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -196,45 +229,25 @@
                                             name="appropriation">
                                     </div>
                                     <div class="mb-2">
-                                    <label for="abc" class="form-label">ABC</label>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
-                                </div>
-                                <div class="mb-2">
                                     <label for="contractAmount" class="form-label">Contract Amount</label>
                                     <input type="text" class="form-control currency-input" id="contractAmount"
                                         name="contractAmount">
-                                </div>
+                                    </div>
+                                    <div class="mb-2">
+                                    <label for="abc" class="form-label">ABC</label>
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                    </div>
+                               
                                 <div class="mb-2">
                                     <label for="bid" class="form-label">Bid Difference</label>
                                     <input type="text" class="form-control currency-input" id="bid" name="bid">
                                 </div>
-                                <div class="mb-2">
-                                        <label for="projectContractDays" class="form-label">Contract Days(Calendar
-                                            days)</label>
-                                        <input type="number" class="form-control" id="projectContractDays"
-                                            name="projectContractDays" min="0">
-                                    </div>
+                               
                                 </div>
-                                <!-- <div class="row">
-                                    <div class="mb-2">
-                                        <label for="contractCost" class="form-label">Contract Cost <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control currency-input" id="contractCost"
-                                            name="contractCost">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="mb-2">
-                                        <label for="revisedContractCost" class="form-label">Revised Contract
-                                            Cost</label>
-                                        <input type="text" class="form-control currency-input" id="revisedContractCost"
-                                            name="revisedConstractCost" min="0">
-                                    </div>
-                                </div> -->
                             </div>
 
                             <div class="col-md-6">
-                            <h6 class=" m-1 fw-bold">Wages:</h6>
+                            <h6 class="mt-5 fw-bold">Wages:</h6>
                                 <div class="row">
                                     <div class="mb-2">
                                         <label for="engineering" class="form-label">Engineering</label>
@@ -385,11 +398,7 @@
                                                 <input type="date" class="form-control" id="resumeOrderNo1"
                                                     name="resumeOrderNo1">
                                             </div>
-                                            <div class="col-md-6 mb-2">
-                                                <label for="resumeOrderNo1" class="form-label">Remarks</label>
-                                                <input type="text" class="form-control" id="resumeOrderNo1Remarks"
-                                                    name="resumeOrderNo1Remarks">
-                                            </div>
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -421,3 +430,26 @@
 </div>
 </div>
 </div>
+<script>
+    function showLocDropdown() {
+        const dropdown = document.getElementById('projectLocDropdown');
+        if (dropdown) {
+            dropdown.style.display = 'block';
+        }
+    }
+
+    function selectLoc(value) {
+        document.getElementById('projectLoc').value = value + ', Nueva Vizcaya';
+        document.getElementById('projectLocDropdown').style.display = 'none';
+    }
+
+    // Hide when clicking outside
+    document.addEventListener('click', function (event) {
+        const dropdown = document.getElementById('projectLocDropdown');
+        const input = document.getElementById('projectLoc');
+
+        if (!dropdown.contains(event.target) && event.target !== input) {
+            dropdown.style.display = 'none';
+        }
+    });
+</script>

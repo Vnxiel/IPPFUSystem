@@ -1,18 +1,29 @@
 @extends('admin.layout')
 
-@section('title', 'Trash')
+@section('title', 'Archived Projects')
 
 @section('content') 
-    <hr class="mx-2">
-    <div class="container-fluid px-3">
-        <div class="col-md-12 m-2">
-            <div class="row">
-                <h5 class="p-0">Trash</h5>
-                <hr>
+<div class="container-fluid py-4">
+        <!-- Header Section -->
+        <div class="card mb-2 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle me-3" style="background: rgba(158, 158, 158, 0.1); padding: 12px; border-radius: 50%;">
+                        <i class="fas fa-archive" style="font-size: 24px; color: #757575;"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0">Archived Projects</h4>
+                        <small class="text-muted">View and manage archived project records</small>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <div class="table-container table-responsive">
-                    <table id="trashList" class="table table-striped table-hover table-bordered">
+        </div>
+    
+        <!-- Projects Table Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table id="trashList" class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th style="width: 25%;">Project Title</th>
@@ -25,8 +36,10 @@
                             </tr>   
                         </thead>
                         <tbody>
-                           
-                        </tbody>
+                                    <tr>
+                                        <td colspan="7" class="text-center">Loading projects...</td>
+                                    </tr>
+                                </tbody>
                     </table>
                 </div>
             </div>

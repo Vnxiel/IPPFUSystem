@@ -12,29 +12,19 @@ use App\Models\ActivityLog;
 class AdminManager extends Controller
 {
 
-    public function index() {
-        return view('admin.index');  // Returns the 'trash.blade.php' view
-    }
-
-    public function getLocConProject()
-    {
-        $contractors = Contractor::orderBy('name')->get();
-        $locations   = Location::orderBy('location')->get();
-    
-        // default to system admin
-        return view('admin.projects', compact('contractors', 'locations'));
-    }
-    
-    
-
-    public function getLocConOverview()
-    {
-        // 1. Load your data
-        $contractors = Contractor::orderBy('name')->get();
-        $locations   = Location::orderBy('location')->get();
-    
-        // 3. Otherwise, show the system‑admin overview
-        return view('admin.overview', compact('contractors', 'locations'));
+    public function index(){
+        $locations = Project::select('projectLoc')
+        ->distinct()
+        ->whereNotNull('projectLoc')
+        ->orderBy('projectLoc')
+        ->get();
+        $sourceOfFunds = Project::select('sourceOfFunds')
+        ->distinct()
+        ->whereNotNull('sourceOfFunds')
+        ->orderBy('sourceOfFunds')
+        ->get();
+        $contractors = Contractor::orderBy('name', 'asc')->get();
+        return view('admin.index', compact('locations', 'contractors', 'sourceOfFunds'));
     }
 
     public function projects() {

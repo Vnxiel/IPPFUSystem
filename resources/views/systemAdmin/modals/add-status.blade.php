@@ -15,9 +15,12 @@
                     <div class="mb-3">
                         <label for="progress" class="form-label">Progress</label>
                         <select class="form-select" id="progress" aria-label="Select project progress">
+                            <option value="">Select Status</option>
+                            <option value="To Be Started">To Be Started</option>
                             <option value="Ongoing">Ongoing</option>
                             <option value="Completed">Completed</option>
-                            <option value="Cancelled">Discontinued</option>
+                            <option value="Discontinued">Discontinued</option>
+                            <option value="Suspended">Suspended</option>
                           
                         </select>
                     </div>

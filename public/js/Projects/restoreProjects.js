@@ -1,7 +1,4 @@
 $(document).ready(function() {
-  // Call the function to fetch projects on page load
-   fetchTrashedProjects();
-  // Function to Restore a Project
   $(document).on('click', '.restore-btn', function() {
     let projectID = $(this).data('id');
 
@@ -24,11 +21,11 @@ $(document).ready(function() {
                 success: function(response) {
                     if (response.status === "success") {
                         Swal.fire("Restored!", "The project has been restored.", "success")
-                            .then(() => fetchTrashedProjects()); // Refresh table without reloading
+                            .then(() => location.reload()); // Reload the entire page
                     } else {
                         Swal.fire("Error!", response.message, "error");
                     }
-                },
+                },                
                 error: function() {
                     Swal.fire("Error!", "Failed to restore the project. Please try again.", "error");
                 }

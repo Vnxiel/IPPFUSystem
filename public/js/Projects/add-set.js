@@ -3,7 +3,6 @@
 
     /*  Order fields
         This script allows the user to add or remove order fields dynamically  */
-        let orderCount = 1;
 
         function addOrderFields() {
             orderCount++;

@@ -1,5 +1,4 @@
 function downloadFile(filePath) {
-  console.log("Original filePath:", filePath);
 
   if (!filePath) {
     Swal.fire({

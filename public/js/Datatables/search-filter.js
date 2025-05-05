@@ -1,19 +1,28 @@
 function filterProjects() {
     var table = $('#projects').DataTable();
 
-    // Get filter values
+    const viewAll = $('#view_all_checkbox').is(':checked');
+
+    if (viewAll) {
+        // Show all rows unconditionally
+        table.rows().every(function () {
+            $(this.node()).show();
+        });
+        return;
+    }
+
+    // Regular filter logic
     const location = $('#location_filter').val().toLowerCase();
     const contractor = $('#contractor_filter').val().toLowerCase();
     const amount = $('#amount_filter').val().replace(/[₱,]/g, '');
     const status = $('#status_filter').val().toLowerCase();
 
-    // Use DataTables built-in filtering
     table.rows().every(function () {
         const data = this.data();
-        const rowLocation = (data[1] || '').toLowerCase();    // Location column
-        const rowStatus = (data[2] || '').toLowerCase();      // Status column
+        const rowLocation = (data[1] || '').toLowerCase();
+        const rowStatus = (data[2] || '').toLowerCase();
         const rowAmount = parseFloat((data[3] || '').replace(/[₱,]/g, '')) || 0;
-        const rowContractor = (data[4] || '').toLowerCase();  // Contractor column
+        const rowContractor = (data[4] || '').toLowerCase();
 
         const match =
             (!location || rowLocation.includes(location)) &&
@@ -21,13 +30,10 @@ function filterProjects() {
             (!amount || rowAmount <= parseFloat(amount)) &&
             (!status || rowStatus.includes(status));
 
-        if (match) {
-            $(this.node()).show(); 
-        } else {
-            $(this.node()).hide();
-        }
+        $(this.node()).toggle(match);
     });
 }
+
 
 $(document).ready(function () {
     $('#amount_filter').on('input', function () {

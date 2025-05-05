@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Crypt;
 use App\Models\ActivityLog;
 use App\Http\Controllers\ActivityLogs;
 use App\Models\Contractor;
-use App\Models\Location;
 use App\Models\FundsUtilization;
 use App\Models\ProjectDescription;
 use App\Models\ProjectFile;
@@ -27,12 +26,15 @@ class ProjectManager extends Controller
     public function addProject(Request $request)
 {
     $validator = \Validator::make($request->all(), [
-        'projectTitle' => 'required|string|max:255',
-        'projectLoc' => 'required|string|max:255',
-        'projectID' => 'required|string|max:255',
+        'projectTitle' => 'required|string',
+        'projectLoc' => 'required|string',
+        'projectID' => 'required|string',
+        'projectYear' => 'required|integer|max:2100|min:1900',
+        'projectFPP' => 'required|string',
+        'projectRC' => 'required|string',
         'projectContractor' => 'required|string',
         'sourceOfFunds' => 'required|string',
-        'otherFund' => 'nullable|string|max:255',
+        'otherFund' => 'nullable|string',
         'modeOfImplementation' => 'required|string',
         'projectDescription' => 'string',
         'projectStatus' => 'required|string',
@@ -44,8 +46,8 @@ class ProjectManager extends Controller
         'ntpReceivedDate' => 'nullable|date',
         'officialStart' => 'required|date',
         'targetCompletion' => 'required|date',
-        'timeExtension' => 'integer',
-        'revisedCompletionDate' => 'date',
+        'timeExtension' => 'nullable|integer',
+        'revisedCompletionDate' => 'nullable|date',
         'completionDate' => 'required|date',
         'projectSlippage' => 'nullable|string',
         'othersContractor' => 'nullable|string',
@@ -138,16 +140,10 @@ class ProjectManager extends Controller
             throw new \Exception("Failed to save project data into the projects table.");
         }
 
-        // ➕ Insert contractor if new
+        //  Insert contractor if new
         $contractorName = $request->input('othersContractor');
         if ($contractorName && !Contractor::where('name', $contractorName)->exists()) {
             Contractor::create(['name' => $contractorName]);
-        }
-
-        // ➕ Insert location if new
-        $location = $request->input('projectLoc');
-        if ($location && !Location::where('location', $location)->exists()) {
-            Location::create(['location' => $location]);
         }
 
         // Insert project description line-by-line if provided
@@ -228,13 +224,6 @@ class ProjectManager extends Controller
         return response()->json(['status' => 'error', 'message' => 'Error adding project. ' . $e->getMessage()]);
     }
 }
-
-
-    
-
-    
-    
-    
     
     /**
      * Helper function to clean currency strings (₱, commas, etc.)
@@ -242,12 +231,6 @@ class ProjectManager extends Controller
     private function cleanMoney($value)
     {
         return $value ? str_replace([',', '₱', 'Php', 'php'], '', $value) : null;
-    }
-    
-
-    public function yourViewMethod() {
-        $contractors = Contractor::orderBy('name')->get(); // or any query you'd like
-        return view('systemAdmin.projects', compact('contractors'));
     }
     
     public function ProjectDetails()
@@ -341,6 +324,17 @@ class ProjectManager extends Controller
             $project->is_hidden = 0;
             $project->save();
 
+              // Log activity
+        $sessionData = session('loggedIn', []);
+        $action = "Restored project: " . $project->projectTitle;
+        (new ActivityLogs)->userAction(
+            $sessionData['user_id'] ?? null,
+            $sessionData['ofmis_id'] ?? null,
+            $sessionData['performedBy'] ?? null,
+            $sessionData['role'] ?? null,
+            $action
+        );
+
             return response()->json(["status" => "success", "message" => "Project successfully restored."]);
         } catch (\Exception $e) {
             \Log::error('Error restoring project: ' . $e->getMessage());
@@ -351,12 +345,14 @@ class ProjectManager extends Controller
             ], 500);
         }
     }
-
     public function getProject(Request $request, $id)
     {
         try {
             $contractors = Contractor::orderBy('name')->get();
-            $locations = Location::orderBy('location')->get();
+            $locations = Project::select('projectLoc')->distinct()->whereNotNull('projectLoc')->orderBy('projectLoc')->get();
+            $sourceOfFunds = Project::select('sourceOfFunds')->distinct()->whereNotNull('sourceOfFunds')->orderBy('sourceOfFunds')->get();
+            $projectYear = Project::select('projectYear')->distinct()->whereNotNull('projectYear')->orderBy('projectYear')->get();
+            $projectEA = Project::select('ea')->distinct()->whereNotNull('ea')->orderBy('ea')->get();
     
             $projectData = Project::find($id);
     
@@ -367,12 +363,27 @@ class ProjectManager extends Controller
             $project = $projectData->toArray();
             $project['projectStatus'] = $projectData->projectStatus ?? 'Not Available';
     
+            $statuses = ProjectStatus::where('project_id', $id)
+                ->orderByDesc('date')
+                ->orderByDesc('percentage')
+                ->get();
+    
+            $projectStatusData = [
+                'project_id' => $projectData->id,
+                'projectStatus' => $statuses->isEmpty() ? ($projectData->projectStatus ?? 'No status available') : $statuses->first()->progress,
+                'updatedAt' => $statuses->isEmpty() ? optional($projectData->updated_at)->format('Y-m-d') : $statuses->first()->date,
+                'latestPercentage' => $statuses->isEmpty() ? $projectData->percentage : $statuses->first()->percentage,
+                'ongoingStatus' => $statuses->map(function ($status) {
+                    return [
+                        'progress' => $status->progress,
+                        'percentage' => $status->percentage,
+                        'date' => $status->date,
+                    ];
+                })->toArray()
+            ];
+    
             if (strtolower($project['projectStatus']) === 'ongoing') {
-                $projectStatus = ProjectStatus::where('project_id', $id)
-                    ->whereNotNull('percentage')
-                    ->orderBy('date', 'desc') // use the custom date field
-                    ->first();
-            
+                $projectStatus = $statuses->first();
                 if ($projectStatus) {
                     $percentage = rtrim($projectStatus->percentage, '%');
                     $formattedDate = $projectStatus->date ? \Carbon\Carbon::parse($projectStatus->date)->format('F d, Y') : 'Unknown date';
@@ -383,7 +394,6 @@ class ProjectManager extends Controller
             } else {
                 $project['ongoingStatus'] = null;
             }
-            
     
             $project['projectDescriptions'] = ProjectDescription::where('project_id', $id)
                 ->pluck('ProjectDescription')->toArray();
@@ -425,9 +435,7 @@ class ProjectManager extends Controller
                 })
                 ->toArray();
     
-            // 👉 Role-based view logic for 3 roles
-            $role = auth()->user()->role; // assuming 'role' column in users table
-    
+            $role = auth()->user()->role;
             switch ($role) {
                 case 'System Admin':
                     $view = 'systemAdmin.overview';
@@ -442,13 +450,14 @@ class ProjectManager extends Controller
                     return redirect()->back()->withErrors(['Unauthorized role.']);
             }
     
-            return view($view, compact('contractors', 'locations', 'project'));
+            return view($view, compact('contractors', 'project', 'locations', 'sourceOfFunds', 'projectYear', 'projectEA', 'projectStatusData'));
     
         } catch (\Exception $e) {
             Log::error('Error fetching project details: ' . $e->getMessage());
             return redirect()->back()->withErrors(['An error occurred while retrieving the project.']);
         }
     }
+    
     
 
     
@@ -470,14 +479,28 @@ public function getProjectSummary()
         $ongoingProjects = $visibleProjects->clone()->where('projectStatus', 'Ongoing')->count();
         $completedProjects = $visibleProjects->clone()->where('projectStatus', 'Completed')->count();
         $discontinuedProjects = $visibleProjects->clone()->where('projectStatus', 'Cancelled')->count();
-        $startedProjects = $visibleProjects->clone()->where('projectStatus', 'Started')->count();
+        $toBeStartedProjects = $visibleProjects->clone()->where('projectStatus', 'To Be Started')->count();
         $suspendedProjects = $visibleProjects->clone()->where('projectStatus', 'Suspended')->count();
 
         $projects = $visibleProjects->get();
-        $totalBudget = $projects->sum(fn ($p) => (float) preg_replace('/[^0-9.]/', '', $p->abc ?? '0'));
-        $totalUsed = $projects->sum(fn ($p) => (float) preg_replace('/[^0-9.]/', '', $p->contractAmount ?? '0'));
+        
+        $totalBudget = 0;
+        $totalUsed = 0;
+        
+        foreach ($projects as $project) {
+            // Try to find a FundsUtilization entry for this project
+            $funds = FundsUtilization::where('project_id', $project->id)->first();
+        
+            // Use FundsUtilization values if available, otherwise fallback to Project values
+            $abc = $funds ? $funds->orig_abc : $project->abc;
+            $contractAmount = $funds ? $funds->orig_contract_amount : $project->contractAmount;
+        
+            $totalBudget += (float) preg_replace('/[^0-9.]/', '', $abc ?? '0');
+            $totalUsed += (float) preg_replace('/[^0-9.]/', '', $contractAmount ?? '0');
+        }
+        
         $remainingBalance = max($totalBudget - $totalUsed, 0);
-
+        
         $recentProjects = $visibleProjects->orderBy('created_at', 'desc')->limit(5)->get();
 
         Log::info('Project summary fetched successfully.');
@@ -489,7 +512,7 @@ public function getProjectSummary()
                 'ongoingProjects' => $ongoingProjects,
                 'completedProjects' => $completedProjects,
                 'discontinuedProjects' => $discontinuedProjects,
-                'startedProjects' => $startedProjects,
+                'toBeStartedProjects' => $toBeStartedProjects,
                 'suspendedProjects' => $suspendedProjects,
                 'totalBudget' => number_format($totalBudget, 2),
                 'totalUsed' => number_format($totalUsed, 2),
@@ -506,6 +529,8 @@ public function getProjectSummary()
         ]);
     }
 }
+
+
 public function updateProject(Request $request, $id)
 {
     try {
@@ -640,67 +665,98 @@ public function updateProject(Request $request, $id)
         $project->is_hidden = 1;
         $project->save();
 
+         // Log activity
+    $sessionData = session('loggedIn', []);
+    $action = "Archived project: " . $project->projectTitle;
+    (new ActivityLogs)->userAction(
+        $sessionData['user_id'] ?? null,
+        $sessionData['ofmis_id'] ?? null,
+        $sessionData['performedBy'] ?? null,
+        $sessionData['role'] ?? null,
+        $action
+    );
+
         return response()->json(["status" => "success", "message" => "Project successfully archived."]);
     }
 
     
-
     public function fetchStatus(Request $request, $id)
-{
-    if (!is_numeric($id)) {
-        return response()->json(['error' => 'Invalid project ID'], 400);
-    }
-
-    $project = Project::find($id);
-
-    if (!$project) {
-        return response()->json(['error' => 'Project not found'], 404);
-    }
-
-    $statuses = ProjectStatus::where('project_id', $id)
-        ->orderByDesc('date')
-        ->orderByDesc('percentage')
-        ->get();
-
-    // Fallback if no statuses and project status is 'Completed'
-    if ($statuses->isEmpty() && strtolower($project->progress) === 'completed') {
-        return response()->json([
+    {
+        if (!is_numeric($id)) {
+            return redirect()->back()->withErrors(['Invalid project ID']);
+        }
+    
+        $project = Project::find($id);
+    
+        if (!$project) {
+            return redirect()->back()->withErrors(['Project not found']);
+        }
+    
+        $statuses = ProjectStatus::where('project_id', $id)
+            ->orderByDesc('date')
+            ->orderByDesc('percentage')
+            ->get();
+    
+        $projectStatusData = [
             'project_id' => $project->id,
-            'projectStatus' => 'Completed',
-            'updatedAt' => $project->updated_at,
-            'latestPercentage' => 100,
-            'ongoingStatus' => [] // No progress table
-        ]);
+            'projectStatus' => $statuses->isEmpty() ? ($project->projectStatus ?? 'No status available') : $statuses->first()->progress,
+            'updatedAt' => $statuses->isEmpty() ? optional($project->updated_at)->format('Y-m-d') : $statuses->first()->date,
+            'latestPercentage' => $statuses->isEmpty() ? $project->percentage : $statuses->first()->percentage,
+            'ongoingStatus' => $statuses->map(function ($status) {
+                return [
+                    'progress' => $status->progress,
+                    'percentage' => $status->percentage,
+                    'date' => $status->date,
+                ];
+            })->toArray()
+        ];
+    
+        // Role-based view logic
+        $role = auth()->user()->role;
+    
+        switch ($role) {
+            case 'System Admin':
+                $view = 'systemAdmin.overview';
+                break;
+            case 'Admin':
+                $view = 'admin.overview';
+                break;
+            case 'Staff':
+                $view = 'staff.overview';
+                break;
+            default:
+                return redirect()->back()->withErrors(['Unauthorized role.']);
+        }
+    
+        return view($view, compact('projectStatusData'));
     }
-
-    // If still empty and not Completed, fallback to whatever is in project
-    if ($statuses->isEmpty()) {
-        return response()->json([
+    
+    
+    public function showProjectStatus($id)
+    {
+        $project = Project::findOrFail($id);
+        $statuses = ProjectStatus::where('project_id', $id)
+            ->orderByDesc('date')
+            ->orderByDesc('percentage')
+            ->get();
+    
+        $projectStatusData = [
             'project_id' => $project->id,
-            'projectStatus' => $project->projectStatus ?? 'No status available',
-            'updatedAt' => optional($project->updated_at)->format('Y-m-d'),
-            'latestPercentage' => $project->percentage ?? null,
-            'ongoingStatus' => []
-        ]);
+            'projectStatus' => $statuses->isEmpty() ? ($project->projectStatus ?? 'No status available') : $statuses->first()->progress,
+            'updatedAt' => $statuses->isEmpty() ? optional($project->updated_at)->format('Y-m-d') : $statuses->first()->date,
+            'latestPercentage' => $statuses->isEmpty() ? $project->percentage : $statuses->first()->percentage,
+            'ongoingStatus' => $statuses->map(function ($status) {
+                return [
+                    'progress' => $status->progress,
+                    'percentage' => $status->percentage,
+                    'date' => $status->date,
+                ];
+            })->toArray()
+        ];
+    
+        return view('systemAdmin.overview', compact('projectStatusData'));
     }
-
-    $latestStatus = $statuses->first();
-
-    return response()->json([
-        'project_id' => $project->id,
-        'projectStatus' => $latestStatus->progress,
-        'updatedAt' => $latestStatus->date,
-        'latestPercentage' => $latestStatus->percentage,
-        'ongoingStatus' => $statuses->map(function ($status) {
-            return [
-                'progress' => $status->progress,
-                'percentage' => $status->percentage,
-                'date' => $status->date,
-            ];
-        })->toArray()
-    ]);
-}
-
+    
     
 
 public function addStatus(Request $request)

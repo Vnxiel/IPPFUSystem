@@ -2,315 +2,296 @@
 
 @section('title', 'Overview Page')
 
-@section('content') 
-                
+@section('content')
 <!-- Project Overview -->
 <hr class="mx-2">
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12 d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-2">
-                    <a class="{{ Request::is('admin/projects') ? 'bg-light-green text-dark-white' : 'inactive' }}"
-                        aria-current="page" href="{{ url('/admin/projects') }}"><span
-                            class="fa fa-arrow-left"></span></a>
-
+        <div class="col-md-12 d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <a class="btn btn-outline-secondary btn-sm {{ Request::is('systemAdmin/projects') ? 'active' : '' }}"
+                    href="{{ url('/systemAdmin/projects') }}">
+                    <span class="fa fa-arrow-left"></span>
+                </a>
                 <h5 class="m-0">Project Overview</h5>
             </div>
 
             <!-- Action Buttons -->
             <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#addProjectFundUtilization" title="Add Fund Utilization Details">
-                        <span class="fa fa-plus"></span>
-                    </button>
-                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
+                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"
+                    data-bs-target="#addProjectFundUtilization" title="Add Fund Utilization Details">
+                    <span class="fa fa-plus"></span>
+                    <span class="d-none d-md-inline">Add Fund</span>
+                </button>
+                <button type="button" class="btn btn-success btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" 
+                    data-bs-target="#uploadModal" title="Upload Files">
                     <i class="fa fa-upload"></i>
+                    <span class="d-none d-md-inline">Upload</span>
                 </button>
-                <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#projectModal" title="Edit Project Details">
+                <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm d-flex align-items-center gap-1" 
+                    data-bs-toggle="modal" data-bs-target="#projectModal" title="Edit Project Details">
                     <i class="fa fa-edit"></i>
-                </button>   
-                <button type="button" id="generateProjectBtn" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#generateProjectModal" title="Generate/Download Report">
+                    <span class="d-none d-md-inline">Edit</span>
+                </button>
+                <button type="button" id="generateProjectBtn" class="btn btn-info btn-sm d-flex align-items-center gap-1" 
+                    data-bs-toggle="modal" data-bs-target="#generateProjectModal" title="Generate/Download Report">
                     <i class="fa fa-download"></i>
+                    <span class="d-none d-md-inline">Report</span>
                 </button>
-                <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#trashModal" title="Temporary Delete Project">
+                <button type="button" id="checkStatusBtn" class="btn btn-secondary btn-sm d-flex align-items-center gap-1" 
+                    data-bs-toggle="modal" data-bs-target="#checkStatusModal" title="Check Status">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                    <span class="d-none d-md-inline">Status</span>
+                </button>
+                <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm d-flex align-items-center gap-1" 
+                    data-bs-toggle="modal" data-bs-target="#trashModal" title="Archive Project">
                     <i class="fa fa-trash"></i>
+                    <span class="d-none d-md-inline">Archive</span>
                 </button>
-                <button type="button" id="checkStatusBtn" class="btn btn-secondary btn-sm mb-2 w-100" data-bs-toggle="modal" data-bs-target="#checkStatusModal">
-                Check Status
-                 </button>
             </div>
         </div>
-        <hr class="mt-2">
     </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="card bg-light mb-1">
-            <div class="card-header">
-                <h5><strong>{{ $project['projectTitle'] ?? 'N/A' }}</strong></h5>
-                <div class="row p-1">
-                    <div class="d-flex align-items-center">
-                        <strong class="me-2">Project ID:</strong>
-                        <div>{{ $project['projectID'] ?? 'N/A' }}</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-3">{{ $project['projectTitle'] ?? 'N/A' }}</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="text-muted" style="width: 120px;">Project ID:</span>
+                                <span class="fw-medium">{{ $project['projectID'] ?? 'N/A' }}</span>
+                            </div>
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="text-muted" style="width: 120px;">Location:</span>
+                                <span class="fw-medium">{{ $project['projectLoc'] ?? 'N/A' }}</span>
+                            </div>
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="text-muted" style="width: 120px;">Contractor:</span>
+                                <span class="fw-medium">
+                                    {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex gap-3 mb-2">
+                                <span class="text-muted" style="width: 150px;">Implementation:</span>
+                                <span class="fw-medium">{{ $project['modeOfImplementation'] ?? 'N/A' }}</span>
+                            </div>
+                            <div class="d-flex gap-3 mb-2">
+                                <span class="text-muted" style="width: 150px;">Source of Fund:</span>
+                                <span class="fw-medium">
+                                    {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
+                                </span>
+                            </div>
+                            <div class="d-flex gap-3 align-items-center">
+                                <span class="text-muted" style="width: 150px;">Status:</span>
+                                <span class="badge bg-success">{{ $project['projectStatus'] ?? 'N/A' }}</span>
+                                <span class="text-muted ms-2">{{ $project['ongoingStatus'] ?? '' }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body" style="font-size: 14px;">
-                <div class="row">
-                    <!-- LEFT COLUMN -->
-                    <div class="col-md-6">
-                        <!-- Project Details -->
-                        <div class="card mb-2">
-                            <div class="card-header">
-                                <h6 class="fw-bold">Project Details</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Project Description:</strong></div>
-                                    <div class="col-md-7">
-                                        @foreach ($project['projectDescriptions'] ?? [] as $desc)
-                                            <li>{{ $desc }}</li>
-                                        @endforeach
+
+                <div class="card-body">
+                    <div class="row g-4">
+                        <!-- LEFT COLUMN -->
+                        <div class="col-md-12">
+                            <!-- Project Details -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-light py-2">
+                                    <h6 class="fw-bold m-0">Project Description</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <ul class="list-unstyled ps-3">
+                                            @foreach ($project['projectDescriptions'] ?? [] as $desc)
+                                                <li class="mb-1">• {{ $desc }}</li>
+                                            @endforeach
+                                        </ul>
                                     </div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Location:</strong></div>
-                                    <div class="col-md-7">{{ $project['projectLoc'] ?? 'N/A' }}</div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Contractor:</strong></div>
-                                    <div class="col-md-7">
-                                        {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
-                                    </div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Mode of Implementation:</strong></div>
-                                    <div class="col-md-7">{{ $project['modeOfImplementation'] ?? 'N/A' }}</div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Source of Fund:</strong></div>
-                                    <div class="col-md-7">
-                                        {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
-                                    </div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Status:</strong></div>
-                                    <div class="col-md-7">
-                                        <span class="badge bg-success">{{ $project['projectStatus'] ?? 'N/A' }}</span>
-                                        <span style="margin-left: 10px;">{{ $project['ongoingStatus'] ?? '' }}</span>
-                                    </div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Slippage:</strong></div>
-                                    <div class="col-md-7">
-                                        <span class="badge bg-danger">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
+                                    <div>
+                                        <label class="text-muted">Slippage:</label>
+                                        <span class="badge bg-danger ms-2">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                       <!-- Contract Details -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="fw-bold mb-0">Contract Details</h6>
-                            </div>
-                            <div class="card-body">
-                                <!-- General Information -->
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Appropriation:</strong></div>
-                                    <div class="col-md-7">₱{{ number_format((float) preg_replace('/[^\d.]/', '', $project['appropriation'] ?? 0), 2) }}</div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Contract Cost:</strong></div>
-                                    <div class="col-md-7">₱{{ number_format((float)($project['contractCost'] ?? 0), 2) }}</div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Revised Contract Cost:</strong></div>
-                                    <div class="col-md-7">₱{{ number_format((float)($project['revisedContractCost'] ?? 0), 2) }}</div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Contract Duration:</strong></div>
-                                    <div class="col-md-7">{{ $project['projectContractDays'] ?? 'N/A' }} days</div>
-                                </div>
-
-                                <!-- Project Dates -->
-                                <hr>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Official Start:</strong></div>
-                                    <div class="col-md-7">{{ $project['officialStart'] ?? 'N/A' }}</div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Target Completion Date:</strong></div>
-                                    <div class="col-md-7">{{ $project['targetCompletion'] ?? 'N/A' }}</div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Original Expiry Date:</strong></div>
-                                    <div class="col-md-7">{{ $project['originalExpiryDate'] ?? 'N/A' }}</div>
-                                </div>
-                                <div class="row p-1">
-                                    <div class="col-md-5 text-end"><strong>Revised Expiry Date:</strong></div>
-                                    <div class="col-md-7">{{ $project['revisedExpiryDate'] ?? 'N/A' }}</div>
-                                </div>
-
-                                <!-- Notices -->
-                                <hr>
-                                <div class="row text-center">
-                                    <div class="fw-bold">Notice of Award (NOA)</div>
-                                </div>
-                                <div class="row p-1 "><!-- Just added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>Issued Date:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center">
-                                        {{ $project['noaIssuedDate'] ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="row p-1 "><!-- Just added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>Received Date:</strong>
-                                        </div>
-                                        <div class="col-md-7">
-                                        {{ $project['noaReceivedDate'] ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    
-                                <div class="row text-center">
-                                    <div class="fw-bold">Notice to Proceed (NTP)</div>
-                                </div>
-                                <div class="row p-1 "><!-- Just added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>Issued Date:</strong>
-                                        </div>
-                                        <div class="col-md-7 d-flex align-items-center">
-                                        {{ $project['ntpIssuedDate'] ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="row p-1 "><!-- Just added-->
-                                        <div class="col-md-5 text-end">
-                                            <strong>Received Date:</strong>
-                                        </div>
-                                        <div class="col-md-7">
-                                        {{ $project['ntpReceivedDate'] ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- RIGHT COLUMN -->
-                    <div class="col-md-6"><!-- Fund Utilization Summary Table Without Variation Orders -->
-                    <div class="card mb-3">
-    <div class="card-header">
-        <h6 class="fw-bold">Fund Utilization Summary</h6>
+                           <!-- Contract Details -->
+<!-- Contract Details -->
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-light py-2">
+        <h6 class="fw-bold m-0">Fund Utilization Summary</h6>
     </div>
     <div class="card-body">
-
         @php
-            $labels = [
-                'ABC' => ['orig_abc', 'actual_abc', 'vo_abc'],
-                'Contract Amount' => ['orig_contract_amount', 'actual_contract_amount', 'vo_contract_amount'],
-                'Engineering' => ['orig_engineering', 'actual_engineering', 'vo_engineering'],
-                'MQC' => ['orig_mqc', 'actual_mqc', 'vo_mqc'],
-                'Contingency' => ['orig_contingency', 'actual_contingency', 'vo_contingency'],
-                'Bid Difference' => ['orig_bid', 'actual_bid', 'vo_bid'],
-                'Appropriation' => ['orig_appropriation', 'actual_appropriation', 'vo_appropriation'],
-            ];
             $funds = $project['funds'] ?? [];
+            $summary = $project['summary'] ?? [];
             $variationOrders = $project['variation_orders'] ?? [];
-            $voHeaders = collect($variationOrders)->pluck('vo_number');
+            $voHeader = collect($variationOrders)->pluck('vo_number');
+
+            $voCount = $voHeader->count();
+            $totalCol = 2 + $voCount; // original + actual + VOs
+
+            $totalExpenditures = $summary['totalExpenditures'] ?? 0;
+            $totalSavings = $summary['totalSavings'] ?? 0;
         @endphp
 
-        <!-- Header Row -->
-        <div class="d-flex fw-bold border-bottom mb-2 pb-1">
-            <div class="flex-grow-1" style="min-width: 150px;">Category</div>
-            <div class="text-center" style="width: 120px;">Original</div>
-            @foreach ($voHeaders as $voNum)
-                <div class="text-center" style="width: 120px;">VO {{ $voNum }}</div>
-            @endforeach
-            <div class="text-center" style="width: 120px;">Actual</div>
-        </div>
-
-        <!-- Data Rows -->
-        @foreach ($labels as $label => [$origKey, $actualKey, $voKey])
-            <div class="d-flex mb-2">
-                <div class="flex-grow-1" style="min-width: 150px;">{{ $label }}</div>
-                <div class="text-center" style="width: 120px;">
-                    ₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}
-                </div>
-                @foreach ($variationOrders as $vo)
-                    <div class="text-center" style="width: 120px;">
-                        ₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}
-                    </div>
+        <div class="d-flex flex-column gap-2">
+            <!-- Header Row -->
+            <div class="d-flex fw-bold border-bottom pb-2">
+                <div class="flex-grow-1" style="width: 25%;">Category</div>
+                <div class="text-end" style="width: 15%;">Original</div>
+                @foreach ($voHeader as $voNum)
+                    <div class="text-end" style="width: 15%;">VO {{ $voNum }}</div>
                 @endforeach
-                <div class="text-center" style="width: 120px;">
-                    ₱{{ number_format((float)($funds[$actualKey] ?? 0), 2) }}
-                </div>
+                <div class="text-end" style="width: 15%;">Actual</div>
             </div>
-        @endforeach
 
+            @php
+                $standardRows = [
+                    'Appropriation' => ['orig_appropriation', 'actual_appropriation', 'vo_appropriation'],
+                    'ABC' => ['orig_abc', 'actual_abc', 'vo_abc'],
+                    'Contract Amount' => ['orig_contract_amount', 'actual_contract_amount', 'vo_contract_amount'],
+                    'Bid Difference' => ['orig_bid', 'actual_bid', 'vo_bid'],
+                ];
+                $postEngineeringRows = [
+                    'MQC' => ['orig_mqc', 'actual_mqc', 'vo_mqc'],
+                    'Contingency' => ['orig_contingency', 'actual_contingency', 'vo_contingency'],
+                ];
+            @endphp
+
+            <!-- Standard Rows -->
+            @foreach ($standardRows as $label => [$origKey, $actualKey, $voKey])
+                <div class="d-flex border-bottom py-1 align-items-center">
+                    <div class="flex-grow-1 fw-semibold" style="width: 25%;">{{ $label }}</div>
+                    <div class="text-end" style="width: 15%;">₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}</div>
+                    @foreach ($variationOrders as $vo)
+                        <div class="text-end" style="width: 15%;">₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}</div>
+                    @endforeach
+                    <div class="text-end" style="width: 15%;">₱{{ number_format((float)($funds[$actualKey] ?? 0), 2) }}</div>
+                </div>
+            @endforeach
+
+            <!-- Divider -->
+            <div class="border-top border-dark my-2" style="height: 3px;"></div>
+
+            <!-- Wages Header Row -->
+            <div class="d-flex fw-bold align-items-center">
+                <div class="flex-grow-1" style="width: 25%;">Wages</div>
+                <div class="text-end" style="width: 15%;"></div>
+                @for ($i = 0; $i < $voCount; $i++)
+                    <div class="text-end" style="width: 15%;"></div>
+                @endfor
+                <div class="text-end" style="width: 15%;"></div>
+            </div>
+
+            <!-- Wages: Engineering Row -->
+            <div class="d-flex py-1 align-items-center">
+                <div class="flex-grow-1 ps-3" style="width: 25%;">Engineering</div>
+                <div class="text-end" style="width: 15%;">₱{{ number_format((float)($funds['orig_engineering'] ?? 0), 2) }}</div>
+                @foreach ($variationOrders as $vo)
+                    <div class="text-end" style="width: 15%;">₱{{ number_format((float)($vo['vo_engineering'] ?? 0), 2) }}</div>
+                @endforeach
+                <div class="text-end" style="width: 15%;">₱{{ number_format((float)($funds['actual_engineering'] ?? 0), 2) }}</div>
+            </div>
+
+            <!-- Post Engineering Rows -->
+            @foreach ($postEngineeringRows as $label => [$origKey, $actualKey, $voKey])
+                <div class="d-flex py-1 align-items-center">
+                    <div class="flex-grow-1 fw-semibold" style="width: 25%;">{{ $label }}</div>
+                    <div class="text-end" style="width: 15%;">₱{{ number_format((float)($funds[$origKey] ?? 0), 2) }}</div>
+                    @foreach ($variationOrders as $vo)
+                        <div class="text-end" style="width: 15%;">₱{{ number_format((float)($vo[$voKey] ?? 0), 2) }}</div>
+                    @endforeach
+                    <div class="text-end" style="width: 15%;">₱{{ number_format((float)($funds[$actualKey] ?? 0), 2) }}</div>
+                </div>
+            @endforeach
+
+            <!-- Totals -->
+            <div class="border-top border-dark my-2" style="height: 3px;"></div>
+
+            <div class="d-flex py-1 align-items-center bg-light">
+                <div class="fw-bold" style="width: 25%;">Total Expenditures</div>
+                <div class="text-end" style="width: 15%;"></div>
+                <div class="text-end fw-bold" style="width: 15%;">
+                    {{ $summary['totalExpenditures']['amount'] ?? '₱0.00' }}
+                </div>   
+            </div>
+
+            <div class="d-flex py-1 align-items-center bg-light">
+                <div class="fw-bold" style="width: 25%;">Total Savings</div>
+                <div class="text-end" style="width: 15%;"></div>
+                <div class="text-end fw-bold" style="width: 15%;">
+                    {{ $summary['totalSavings']['amount'] ?? '₱0.00' }}
+                </div>   
+            </div>
+        </div>
     </div>
 </div>
 
-                    
-                       <!-- Implementation Details -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="fw-bold">Implementation Details</h6>
+
+
                             </div>
-                            <div class="card-body">
-                            @foreach ($project['orderDetails'] as $field => $value)
-                            @php
-                                // Match fields like suspensionOrderNo2, resumeOrderNo3, etc.
-                                preg_match('/(suspensionOrderNo|resumeOrderNo)(\d+)/', $field, $matches);
-                                $type = $matches[1] ?? null;
-                                $index = isset($matches[2]) ? (int)$matches[2] : null;
 
-                                // Get both suspension and resume values for this index
-                                $suspKey = 'suspensionOrderNo' . $index;
-                                $resumeKey = 'resumeOrderNo' . $index;
-
-                                $suspensionValue = $project['orderDetails'][$suspKey] ?? null;
-                                $resumeValue = $project['orderDetails'][$resumeKey] ?? null;
-
-                                $shouldShow = $index === 1 || !empty($suspensionValue) || !empty($resumeValue);
-                            @endphp
-
-                            @if (!$type || $shouldShow)
-                                <div class="row p-1 border-bottom">
-                                    <div class="col-md-5 text-end">
-                                        <strong>{{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:</strong>
-                                    </div>
-                                    <div class="col-md-7">
-                                        {{ $value ?? 'N/A' }}
-                                    </div>
+                            <!-- Implementation Details -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="fw-bold">Implementation Details</h6>
                                 </div>
-                            @endif
-                        @endforeach
+                                <div class="card-body">
+                                @foreach ($project['orderDetails'] as $field => $value)
+                                @php
+                                    // Match fields like suspensionOrderNo2, resumeOrderNo3, etc.
+                                    preg_match('/(suspensionOrderNo|resumeOrderNo)(\d+)/', $field, $matches);
+                                    $type = $matches[1] ?? null;
+                                    $index = isset($matches[2]) ? (int)$matches[2] : null;
+
+                                    // Get both suspension and resume values for this index
+                                    $suspKey = 'suspensionOrderNo' . $index;
+                                    $resumeKey = 'resumeOrderNo' . $index;
+
+                                    $suspensionValue = $project['orderDetails'][$suspKey] ?? null;
+                                    $resumeValue = $project['orderDetails'][$resumeKey] ?? null;
+
+                                    $shouldShow = $index === 1 || !empty($suspensionValue) || !empty($resumeValue);
+                                @endphp
+
+                                @if (!$type || $shouldShow)
+                                    <div class="d-flex gap-2 mb-2">
+                                        <span class="text-muted" style="width: 200px;">{{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:</span>
+                                        <span class="fw-medium">
+                                            {{ $value ?? 'N/A' }}                                       
+                                        </span>
+                                    </div>
+                                @endif
+                            @endforeach
 
                                 @foreach ([
                                     'Time Extension' => 'timeExtension',
                                     'Revised Target Completion' => 'revisedTargetCompletion',
                                     'Completion Date' => 'completionDate'
                                 ] as $label => $key)
-                                    <div class="row p-1 border-bottom">
-                                        <div class="col-md-5 text-end">
-                                            <strong>{{ $label }}:</strong>
-                                        </div>
-                                        <div class="col-md-7">
-                                            {{ $project[$key] ?? 'N/A' }}
-                                        </div>
+                                    <div class="d-flex gap-2 mb-2">
+                                        <span class="text-muted" style="width: 200px;">{{ $label }}:</span>
+                                        <span class="fw-medium">
+                                            {{ $project[$key] ?? 'N/A' }}                                     
+                                        </span>
                                     </div>
-                                @endforeach
+
+                    
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
-
-                    </div> <!-- END RIGHT COLUMN -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+ </div>
+
 
 
 
@@ -441,8 +422,62 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-
 <script>
+let orderCount = 1;
+
+// Function to add order fields dynamically
+function addOrderFields() {
+    orderCount++;
+    const container = document.getElementById('orderContainer');
+
+    const newSet = document.createElement('div');
+    newSet.classList.add('row', 'order-set');
+    newSet.id = `orderSet${orderCount}`;
+    newSet.innerHTML = `
+        <div class="col-md-6">
+            <div class="mb-1">
+                <label for="suspensionOrderNo${orderCount}" class="form-label">Suspension Order No. ${orderCount}</label>
+                <input type="date" class="form-control" id="suspensionOrderNo${orderCount}" name="suspensionOrderNo${orderCount}">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-1">
+                <label for="resumeOrderNo${orderCount}" class="form-label">Resumption Order No. ${orderCount}</label>
+                <input type="date" class="form-control" id="resumeOrderNo${orderCount}" name="resumeOrderNo${orderCount}">
+            </div>
+        </div>
+    `;
+
+    container.appendChild(newSet);
+
+    // Attach event listeners to the new input fields
+    const suspensionOrderNo = document.getElementById(`suspensionOrderNo${orderCount}`);
+    const resumeOrderNo = document.getElementById(`resumeOrderNo${orderCount}`);
+
+    suspensionOrderNo.addEventListener('change', function() {
+        validateOrderDates(orderCount);
+    });
+    
+    resumeOrderNo.addEventListener('change', function() {
+        validateOrderDates(orderCount);
+    });
+}
+
+// Function to remove last order fields dynamically
+function removeLastOrderFields() {
+    if (orderCount > 1) {
+        const lastSet = document.getElementById(`orderSet${orderCount}`);
+        lastSet.remove();
+        orderCount--;
+    } else {
+        Swal.fire({
+            icon: "warning",
+            title: "Oops...",
+            text: "You must keep at least one order pair. If none leave it blank.",
+        });
+    }
+}
+
 // Function to validate that resumeOrderNo is not earlier than or equal to suspensionOrderNo
 function validateOrderDates(orderId) {
     const suspensionOrderNo = document.getElementById(`suspensionOrderNo${orderId}`);

@@ -14,8 +14,6 @@ $(document).ready(function () {
             return;
         }
 
-        console.log("Retrieved Project ID from sessionStorage:", projectID);
-
         $("#generateProjectModal").modal("hide");
 
         // Open PDF in a new tab

@@ -7,22 +7,17 @@
     <!-- Header Section -->
     <div class="card mb-2 border-0 shadow-sm">
         <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                        <div class="icon-circle me-3" style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 50%;">
-                            <i class="fas fa-chart-line" style="font-size: 24px; color: #2196F3;"></i>
-                        </div>
-                        <div>
-                            <h4 class="m-0" style="color: #2c3e50; font-weight: 600;">Dashboard</h4>
-                            <small class="text-muted">Project Management Overview</small>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewProjectModal" 
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="ms-auto">
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addNewProjectModal"
                         style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
-                        <i class="fas fa-plus-circle me-2"></i>Add New Project
-                    </button>
-                </div>
+                    <i class="fas fa-plus-circle me-2"></i>Add New Project
+                </button>
             </div>
+        </div>
+
         </div>
     <div class="container py-4">
         <div class="row mt-1">
@@ -48,16 +43,16 @@
 
                     <!-- Started Projects -->
                     <div class="col-md-4">
-                        <a href="/systemAdmin/projects?page=started" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/systemAdmin/projects?page=tobestarted" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                              <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div style="font-weight: 600; font-size: 16px; color: #2c3e50;">Started Projects</div>
+                                        <div style="font-weight: 600; font-size: 16px; color: #2c3e50;">To Be Started Projects</div>
                                         <div class="icon-circle" style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 50%;">
                                             <i class="fas fa-lightbulb" style="font-size: 28px; color: #2196F3;"></i>
                                         </div>
                                     </div>
-                                    <div id="startedProjects" style="font-size: 32px; font-weight: bold; color: #2c3e50; margin-top: auto;">0</div>
+                                    <div id="toBeStartedProjects" style="font-size: 32px; font-weight: bold; color: #2c3e50; margin-top: auto;">0</div>
                                 </div>
                             </div>
                         </a>
@@ -196,7 +191,6 @@
     fetch("/projects/summary")
         .then(response => response.json())
         .then(data => {
-            console.log("Project Summary Data:", data);
 
             if (data.status === "success" && data.data) {
                 const summary = data.data;
@@ -206,7 +200,7 @@
                 document.getElementById("ongoingProjects").textContent = summary.ongoingProjects ?? 0;
                 document.getElementById("completedProjects").textContent = summary.completedProjects ?? 0;
                 document.getElementById("discontinuedProjects").textContent = summary.discontinuedProjects ?? 0;
-                document.getElementById("startedProjects").textContent = summary.startedProjects;
+                document.getElementById("toBeStartedProjects").textContent = summary.toBeStartedProjects;
                 document.getElementById("suspendedProjects").textContent = summary.suspendedProjects;
            
               

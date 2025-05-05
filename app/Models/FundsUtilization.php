@@ -29,6 +29,8 @@ class FundsUtilization extends Model
         'actual_appropriation',
         'summary',
         'partial_billings',
+        'total_expenditure',
+        'total_savings',
     ];
 
     protected $casts = [

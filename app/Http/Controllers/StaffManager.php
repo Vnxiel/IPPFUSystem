@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Contractor;
-use App\Models\Location;
 use App\Models\User;
 use App\Models\ActivityLog;
 
@@ -19,21 +18,9 @@ class StaffManager extends Controller
     public function projects()
     {
         $contractors = Contractor::orderBy('name')->get();
-        $locations   = Location::orderBy('location')->get();
     
         // default to system admin
-        return view('staff.projects', compact('contractors', 'locations'));
-    }
-    
-
-    public function getLocConOverview()
-    {
-        // 1. Load your data
-        $contractors = Contractor::orderBy('name')->get();
-        $locations   = Location::orderBy('location')->get();
-    
-        // 3. Otherwise, show the system‑admin overview
-        return view('staff.overview', compact('contractors', 'locations'));
+        return view('staff.projects', compact('contractors'));
     }
 
     public function activityLogs() {

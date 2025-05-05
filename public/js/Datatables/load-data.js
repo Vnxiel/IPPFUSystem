@@ -90,8 +90,6 @@ $(document).ready(function () {
             success: function (response) {
                 Swal.close(); // Hide loading when done
 
-                console.log("API Response:", response);
-
                 if (!response || typeof response !== "object" || !Array.isArray(response.projects)) {
                     console.error("Invalid API Response Structure:", response);
                     showError("Failed to fetch project data. Please try again.");
@@ -113,16 +111,30 @@ $(document).ready(function () {
 
                 // Apply filtering only if a dashboard card was clicked
                 if (statusFilter) {
-                    const validStatuses = ['started', 'ongoing', 'completed', 'discontinued', 'suspended'];
-
-                    if (validStatuses.includes(statusFilter.toLowerCase())) {
+                    const statusMap = {
+                        tobestarted: 'To Be Started',
+                        ongoing: 'Ongoing',
+                        completed: 'Completed',
+                        discontinued: 'Discontinued',
+                        suspended: 'Suspended'
+                    };
+                    
+                    const actualStatus = statusMap[statusFilter?.toLowerCase()];
+                    
+                    if (actualStatus) {
                         filteredProjects = response.projects.filter(p =>
-                            p.status && p.status.toLowerCase() === statusFilter.toLowerCase()
+                            p.status === actualStatus
                         );
+                    
 
                         if (filteredProjects.length === 0) {
+                            
                             if ($.fn.DataTable.isDataTable("#projects")) {
-                                $('#projects').DataTable().clear().destroy();
+                                // Update existing DataTable
+                                var table = $('#projects').DataTable();
+                                table.clear(); // Clear existing data
+                                table.rows.add(projects); // Add new data
+                                table.draw(); // Redraw the table
                             }
 
                             $('#projects').DataTable({
@@ -164,11 +176,7 @@ $(document).ready(function () {
                     project.action
                 ]);
 
-                if ($.fn.DataTable.isDataTable("#projects")) {
-                    $('#projects').DataTable().clear().destroy();
-                    console.log("Existing DataTable destroyed.");
-                }
-
+        
                 $('#projects').DataTable({
                     data: projects,
                     columns: [
@@ -342,6 +350,9 @@ function fetchTrashedProjects() {
         }
     });
 }
+
+
+fetchTrashedProjects();
 });
 
 
@@ -393,8 +404,6 @@ $(document).ready(function () {
                 });
                 return;
             }
-
-            console.log("Fetching files for Project ID:", project_id);
 
             // Fetch project files
             fetch(`/files/${project_id}`)

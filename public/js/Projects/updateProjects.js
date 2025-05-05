@@ -15,8 +15,6 @@ $(document).ready(function () {
             return;
         }
 
-        console.log("Retrieved Project ID:", project_id);
-
         let updatedData = {};
         let fieldIDs = [
             "projectTitle", "projectLoc", "projectID", "projectContractor", "sourceOfFunds", "modeOfImplementation",
@@ -51,8 +49,6 @@ $(document).ready(function () {
         } else {
             updatedData.ongoingStatus = null;
         }
-
-        console.log("Updating project with ID:", project_id);
 
         // AJAX request to update the project
         $.ajax({

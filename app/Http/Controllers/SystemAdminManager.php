@@ -7,16 +7,50 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\ActivityLog;
-use App\Models\Location;
 use App\Models\Contractor;
+use App\Models\Project;
 
 class SystemAdminManager extends Controller
 {
     public function index(){
-        $locations = Location::orderBy('location', 'asc')->get();
+    
         $contractors = Contractor::orderBy('name', 'asc')->get();
-        return view('systemAdmin.index', compact('locations', 'contractors'));
-    }
+        $staticLocations = [
+            'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
+            'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
+            'Villaverde', 'Ambaguio', 'Santa Fe'
+        ];
+    
+        $dbLocations = Project::select('projectLoc')
+            ->whereNotNull('projectLoc')
+            ->pluck('projectLoc')
+            ->toArray();
+    
+        // Merge and remove duplicates
+        $allLocations = collect(array_merge($staticLocations, $dbLocations))
+            ->unique()
+            ->sort()
+            ->values();
+
+        $sourceOfFunds = Project::select('sourceOfFunds')
+        ->distinct()
+        ->whereNotNull('sourceOfFunds')
+        ->orderBy('sourceOfFunds')
+        ->get();
+
+        $projectYear = Project::select('projectYear')
+        ->distinct()
+        ->whereNotNull('projectYear')
+        ->orderBy('projectYear')
+        ->get();
+        $projectEA = Project::select('ea')
+        ->distinct()
+        ->whereNotNull('ea')
+        ->orderBy('ea')
+        ->get();
+
+         return view('systemAdmin.index', compact('contractors', 'allLocations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+}
 
     public function userManagement(){
         return view('systemAdmin.userManagement'); 
