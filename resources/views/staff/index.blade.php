@@ -4,31 +4,16 @@
 
 @section('content') 
 <div class="container-fluid py-4">
-    <!-- Header Section -->
-    <div class="card mb-2 border-0 shadow-sm">
-        <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                        <div class="icon-circle me-3" style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 50%;">
-                            <i class="fas fa-chart-line" style="font-size: 24px; color: #2196F3;"></i>
-                        </div>
-                        <div>
-                            <h4 class="m-0" style="color: #2c3e50; font-weight: 600;">Dashboard</h4>
-                            <small class="text-muted">Project Management Overview</small>
-                        </div>
-                    </div>
-                   
-                </div>
-            </div>
-        </div>
+      <!-- Header Section -->
+     
     <div class="container py-4">
         <div class="row mt-1">
             <div class="col-12">
                 <!-- Project Status Cards -->
-                <div class="row g-4 mb-5">
+                <div class="row g-2 mb-5">
                    <!-- Total Projects -->
                     <div class="col-md-4">
-                        <a href="/staff/projects" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/systemAdmin/projects" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                  <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">

@@ -25,66 +25,86 @@
 
     </head>
     <!-- <body style="background-color: #F8F2DE;" class="montserrat"> -->
-    <body class="montserrat d-flex flex-column min-vh-100">
-        <div class="wrapper d-flex flex-column flex-grow-1">
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg rounded" style="background-color: #F8F2DE;" aria-label="Thirteenth navbar example">
-                <div class="container-fluid">
-                    <button class="navbar-toggler" style="background-color: #F8F2DE;" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+   
+<body class="montserrat d-flex flex-column min-vh-100">
+    <div class="wrapper d-flex flex-column flex-grow-1">
 
-                    <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('staff.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
-                            <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid d-inline-block align-text-top me-2">
+        <nav class="navbar navbar-expand-lg shadow-sm" style="background: #ECDCBF;">
+            <div class="container-fluid px-4">
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
+                    <a href="{{ route('staff.index') }}"
+                        class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="55" height="45"
+                                class="img-fluid me-3">
                             <div>
-                                <h5 class="mb-0">Provincial Engineering Office</h5>
-                                <h6 class="mt-0">Province of Nueva Vizcaya</h6>
+                                <h5 class="mb-0 fw-bold" style="color: #2c3e50;">Provincial Engineering Office</h5>
+                                <h6 class="mt-1 text-muted" style="font-size: 0.9rem;">Province of Nueva Vizcaya</h6>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        <ul class="navbar-nav col-lg-6 justify-content-lg-center">
+                    <div class="d-lg-flex align-items-center ms-auto gap-lg-3">
+                        <ul class="navbar-nav gap-lg-2">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{{ route('staff.index') }}">Dashboard</a>
+                                <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('staff/index') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('staff/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/staff/index') }}">
+                                    <i class="fas fa-chart-line me-2"></i>Dashboard
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('staff.projects') }}">Projects</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('staff.activityLogs') }}">Activity Logs</a></li>
-                                </ul>
+                                <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('staff/projects') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('staff/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/staff/projects') }}">
+                                    <i class="fas fa-project-diagram me-2"></i>Projects
+                                </a>
                             </li>
                         </ul>
-                        <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3 gap-3 pe-lg-3">
-                            <div class="dropdown">
-                    
 
-                                    <a href="#" id="dropdownMenuButton" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                                    data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                    <span class="fa fa-user me-1"></span>
+                        <div class="dropdown">
+                            <?php $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest'; ?>
+                            <a href="#" id="dropdownMenuButton"
+                                class="d-flex align-items-center text-decoration-none dropdown-toggle px-3 py-2 rounded-3"
+                                style="color: #2c3e50;" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle me-2"
+                                        style="background: rgba(33, 150, 243, 0.1); padding: 8px; border-radius: 50%;">
+                                        <i class="fas fa-user" style="color: #2196F3;"></i>
+                                    </div>
+                                    <span class="fw-medium"><?php echo htmlspecialchars($username); ?></span>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2">
+                                <li>
+                                    <a class="dropdown-item py-2 text-danger" href="javascript:void(0);"
+                                        onclick="logout()">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Sign out
                                     </a>
-                                <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="logout()">Sign out</a></li>
-                                </ul>
-                            </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </nav>
-
-            <!-- Content -->
-            <div class="container-fluid flex-grow-1">
-                @yield('content')
             </div>
+        </nav>
+
+        <!-- Content -->
+        <div class="container-fluid flex-grow-1" style="background: #F8F2DE;">
+            @yield('content')
         </div>
+    </div>
 
-        <!-- Footer -->
-        <footer class="text-center p-2 bg-light mt-auto">
-            <p>&copy; {{ date('Y') }} PEO. All Rights Reserved.</p>
-        </footer>
-
+    <!-- Footer -->
+    <footer class="text-center p-2 bg-light mt-auto">
+        <p>&copy; {{ date('Y') }} PEO. All Rights Reserved.</p>
+    </footer>
 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  
