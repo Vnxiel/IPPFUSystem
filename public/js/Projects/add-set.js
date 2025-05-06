@@ -19,42 +19,42 @@ function addOrderFields() {
     newSet.innerHTML = `
         <div class="row mb-2">
             <div class="col-3 text-end">
-                <label for="suspensionOrderNo${orderCount}" class="form-label">
-                    Suspension Order No. ${orderCount}
-                </label>
+            <label for="suspensionOrderNo${orderCount}" class="form-label">
+                Suspension Order No. ${orderCount}
+            </label>
             </div>
             <div class="col-3">
-                <input type="date" class="form-control" id="suspensionOrderNo${orderCount}" name="suspensionOrderNo${orderCount}">
+            <input type="date" class="form-control" id="suspensionOrderNo${orderCount}" name="suspensionOrderNo${orderCount}">
             </div>
             <div class="col-3 text-end">
-                <label for="suspensionOrderNo${orderCount}Remarks" class="form-label">
-                    Remarks
-                </label>
+            <label for="suspensionOrderNo${orderCount}Remarks" class="form-label">
+                Remarks
+            </label>
             </div>
             <div class="col-3">
-                <input type="text" class="form-control" id="suspensionOrderNo${orderCount}Remarks" name="suspensionOrderNo${orderCount}Remarks">
+            <textarea class="form-control" id="suspensionOrderNo${orderCount}Remarks" name="suspensionOrderNo${orderCount}Remarks" rows="2"></textarea>
             </div>
         </div>
 
         <div class="row mb-2">
             <div class="col-3 text-end">
-                <label for="resumeOrderNo${orderCount}" class="form-label">
-                    Resumption Order No. ${orderCount}
-                </label>
+            <label for="resumeOrderNo${orderCount}" class="form-label">
+                Resumption Order No. ${orderCount}
+            </label>
             </div>
             <div class="col-3">
-                <input type="date" class="form-control" id="resumeOrderNo${orderCount}" name="resumeOrderNo${orderCount}">
+            <input type="date" class="form-control" id="resumeOrderNo${orderCount}" name="resumeOrderNo${orderCount}">
             </div>
             <div class="col-3 text-end">
-                <label for="resumeOrderNo${orderCount}Remarks" class="form-label">
-                    Remarks
-                </label>
+            <label for="resumeOrderNo${orderCount}Remarks" class="form-label">
+                Remarks
+            </label>
             </div>
             <div class="col-3">
-                <input type="text" class="form-control" id="resumeOrderNo${orderCount}Remarks" name="resumeOrderNo${orderCount}Remarks">
+            <textarea class="form-control" id="resumeOrderNo${orderCount}Remarks" name="resumeOrderNo${orderCount}Remarks" rows="2"></textarea>
             </div>
         </div>
-    `;
+        `;
 
     container.appendChild(newSet);
 }

@@ -453,11 +453,11 @@
                                                     name="suspensionOrderNo1">
                                             </div>
                                             <div class="col-3 text-end">
-                                                <label for="suspensionOrderNo1" class="form-label">Remarks</label>
+                                                <label for="suspensionOrderNo1Remarks" class="form-label">Remarks</label>
                                             </div>
                                             <div class="col-3">
-                                                <input type="text" class="form-control" id="resumeOrderNo1Remarks"
-                                                    name="suspensionOrderNo1Remarks">
+                                                <textarea class="form-control" id="suspensionOrderNo1Remarks"
+                                                    name="suspensionOrderNo1Remarks" rows="2"></textarea>
                                             </div>
                                         </div>
 
@@ -467,15 +467,15 @@
                                                     1</label>
                                             </div>
                                             <div class="col-3">
-                                                <input type="date" class="form-control" id="suspensionOrderNo1"
-                                                    name="suspensionOrderNo1">
+                                                <input type="date" class="form-control" id="resumeOrderNo1"
+                                                    name="resumeOrderNo1">
                                             </div>
                                             <div class="col-3 text-end">
-                                                <label for="resumeOrderNo1" class="form-label">Remarks</label>
+                                                <label for="resumeOrderNo1Remarks" class="form-label">Remarks</label>
                                             </div>
                                             <div class="col-3">
-                                                <input type="text" class="form-control" id="resumeOrderNo1Remarks"
-                                                    name="resumeOrderNo1Remarks">
+                                                <textarea class="form-control" id="resumeOrderNo1Remarks"
+                                                    name="resumeOrderNo1Remarks" rows="2"></textarea>
                                             </div>
                                         </div>
                                     </div>
