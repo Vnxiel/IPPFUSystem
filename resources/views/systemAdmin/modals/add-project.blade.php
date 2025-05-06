@@ -68,7 +68,7 @@
                                 <input type="text" class="form-control" id="projectFPP" name="projectFPP" required>
                             </div>
                         </div>
-                        <div class="row mb-1 g-3 text-end">
+                        <div class="row mb-2 g-3 text-end">
                             <div class="col-md-3 text-end">
                                 <label for="projectRC" class="form-label">Responsibility Center<span
                                         class="text-danger">*</span></label>
@@ -178,12 +178,14 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input type="number" class="form-control" id="contractDays" name="contractDays"
+                                        <input type="number" class="form-control" id="projectContractDays" name="projectContractDays"
                                             min="0" required>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            </div>
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-md-12 ">
                                 <div class="row align-items-center">
                                     <div class="col-md-3 text-end">
                                         <label for="projectStatus" class="form-label">Status <span
@@ -452,10 +454,10 @@
                                                 <input type="date" class="form-control" id="suspensionOrderNo1"
                                                     name="suspensionOrderNo1">
                                             </div>
-                                            <div class="col-3 text-end">
+                                            <div class="col-2 text-end">
                                                 <label for="suspensionOrderNo1Remarks" class="form-label">Remarks</label>
                                             </div>
-                                            <div class="col-3">
+                                            <div class="col-4">
                                                 <textarea class="form-control" id="suspensionOrderNo1Remarks"
                                                     name="suspensionOrderNo1Remarks" rows="2"></textarea>
                                             </div>
@@ -470,10 +472,10 @@
                                                 <input type="date" class="form-control" id="resumeOrderNo1"
                                                     name="resumeOrderNo1">
                                             </div>
-                                            <div class="col-3 text-end">
+                                            <div class="col-2 text-end">
                                                 <label for="resumeOrderNo1Remarks" class="form-label">Remarks</label>
                                             </div>
-                                            <div class="col-3">
+                                            <div class="col-4">
                                                 <textarea class="form-control" id="resumeOrderNo1Remarks"
                                                     name="resumeOrderNo1Remarks" rows="2"></textarea>
                                             </div>
