@@ -59,7 +59,7 @@
                                         <option value="{{ $year->projectYear }}"></option>
                                     @endforeach
                                 </datalist>
-                            </div>
+                            </div> 
                             <div class="col-md-2 text-end">
                                 <label for="projectFPP" class="form-label">FPP <span
                                         class="text-danger">*</span></label>
@@ -425,9 +425,8 @@
                         </legend>
 
                         <div class="container">
-                            <fieldset class="row text-end">
-                                Buttons above the order fields
-                                <div class="col-2 text-center mb-0">
+                            <div class="row text-end">
+                                <div class="offset-10 col-2 text-center mb-0">
                                     <button type="button" class="btn btn-outline-primary btn-sm mr-1"
                                         onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top"
                                         title="Add Suspension and Resumption Order">
@@ -438,65 +437,66 @@
                                         <span class="fa-solid fa-circle-minus"></span>
                                     </button>
                                 </div>
-                            </fieldset>
+                            </div>
 
-                            <!-- Order pair container -->
-                            <div id="orderContainer" class="col-12">
-                                <div class="row mt-2 mb-2 order-set" id="orderSet1">
-                                    <div class="row mb-2">
-                                        <div class="col-3 text-end">
-                                            <label for="suspensionOrderNo1" class="form-label">Suspension Order No.
-                                                1</label>
+                            <div class="row">
+                                <!-- Order pair container -->
+                                <div id="orderContainer" class="col-12">
+                                    <div class="row mt-2 mb-2 order-set" id="orderSet1">
+                                        <div class="row mb-2">
+                                            <div class="col-3 text-end">
+                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No.
+                                                    1</label>
+                                            </div>
+                                            <div class="col-3">
+                                                <input type="date" class="form-control" id="suspensionOrderNo1"
+                                                    name="suspensionOrderNo1">
+                                            </div>
+                                            <div class="col-3 text-end">
+                                                <label for="suspensionOrderNo1" class="form-label">Remarks</label>
+                                            </div>
+                                            <div class="col-3">
+                                                <input type="text" class="form-control" id="resumeOrderNo1Remarks"
+                                                    name="suspensionOrderNo1Remarks">
+                                            </div>
                                         </div>
-                                        <div class="col-3">
-                                            <input type="date" class="form-control" id="suspensionOrderNo1"
-                                                name="suspensionOrderNo1">
-                                        </div>
-                                        <div class="col-3 text-end">
-                                            <label for="suspensionOrderNo1" class="form-label">Remarks</label>
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="text" class="form-control" id="resumeOrderNo1Remarks"
-                                                name="suspensionOrderNo1Remarks">
-                                        </div>
-                                    </div>
 
-                                    <div class="row mb-2">
-                                        <div class="col-3 text-end">
-                                            <label for="resumeOrderNo1" class="form-label">Resumption Order No.
-                                                1</label>
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="date" class="form-control" id="suspensionOrderNo1"
-                                                name="suspensionOrderNo1">
-                                        </div>
-                                        <div class="col-3 text-end">
-                                            <label for="resumeOrderNo1" class="form-label">Remarks</label>
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="text" class="form-control" id="resumeOrderNo1Remarks"
-                                                name="resumeOrderNo1Remarks">
+                                        <div class="row mb-2">
+                                            <div class="col-3 text-end">
+                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No.
+                                                    1</label>
+                                            </div>
+                                            <div class="col-3">
+                                                <input type="date" class="form-control" id="suspensionOrderNo1"
+                                                    name="suspensionOrderNo1">
+                                            </div>
+                                            <div class="col-3 text-end">
+                                                <label for="resumeOrderNo1" class="form-label">Remarks</label>
+                                            </div>
+                                            <div class="col-3">
+                                                <input type="text" class="form-control" id="resumeOrderNo1Remarks"
+                                                    name="resumeOrderNo1Remarks">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            </div>
+                        </fieldset>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Project
+                            </button>
                         </div>
-                    </fieldset>
-
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-2"></i>Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Save Project
-                        </button>
-                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-</div>
+
 <script>
     function showLocDropdown() {
         const dropdown = document.getElementById('projectLocDropdown');

@@ -23,9 +23,23 @@
     <!-- Filters Section -->
     <div class="card border-0 shadow-sm mb-1">
         <div class="card-body p-2">
-            <h5 class="mb-3" style="color: #2c3e50; font-weight: 600;">
-                <i class="fas fa-filter me-2"></i>Filter Projects
-            </h5>
+            <div class="d-flex align-items-center justify-content-between mb-3" style="color: #2c3e50; font-weight: 600;">
+                <h6 class="mb-0">
+                    <i class="fas fa-filter me-2"></i>Filter Projects
+                </h6>
+                <div class="d-flex align-items-center">
+                    <!-- View All Projects Checkbox -->
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
+                        <label class="form-check-label fw-semibold" for="view_all_checkbox">
+                            View All Projects
+                        </label>
+                    </div>
+                    <!-- Clear Filters Button -->
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="clearFilters()">Clear</button>
+                </div>
+            </div>
+
             <div class="row g-3">
                 <!-- Location Filter -->
                 <div class="col-md-3">
@@ -68,7 +82,7 @@
                 <!-- Amount Filter -->
                 <div class="col-md-3">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="amount_filter" name="amount_filter"
+                        <input type="number" class="form-control" id="amount_filter" name="amount_filter"
                             placeholder="Enter amount">
                         <label for="amount_filter">
                             <i class="fas fa-peso-sign me-2"></i>Amount
@@ -93,16 +107,11 @@
                         </label>
                     </div>
                 </div>
-                <!-- View All Projects Checkbox -->
-            <div class="col-md-3 d-flex align-items-end">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
-                    <label class="form-check-label fw-semibold" for="view_all_checkbox">
-                        View All Projects
-                    </label>
-                </div>
             </div>
+            <div class="row g-3 pt-1">
 
+
+            </div>
             </div>
         </div>
     </div>
@@ -590,6 +599,26 @@
         });
 
     </script>
+
+<script>
+    function clearFilters() {
+        // Clear all filter inputs
+        document.getElementById('location_filter').value = '';
+        document.getElementById('contractor_filter').value = '';
+        document.getElementById('amount_filter').value = '';
+        document.getElementById('status_filter').value = '';
+        document.getElementById('view_all_checkbox').checked = false;
+
+        // Hide location dropdown if visible
+        const locationDropdown = document.getElementById('locationDropdown');
+        if (locationDropdown) {
+            locationDropdown.style.display = 'none';
+        }
+
+        // Optionally, trigger any filtering logic to reset the displayed data
+        filterProjects();
+    }
+</script>
 
     @include('systemAdmin.modals.add-project')
 

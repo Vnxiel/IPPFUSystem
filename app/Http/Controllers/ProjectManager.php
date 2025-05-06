@@ -19,6 +19,7 @@ use App\Models\ProjectDescription;
 use App\Models\ProjectFile;
 use App\Models\ProjectStatus;
 use App\Models\VariationOrder;
+use App\Models\Location;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProjectManager extends Controller
@@ -869,7 +870,11 @@ public function viewProjects() {
     return view('systemAdmin.projects');  // Returns the 'projects.blade.php' view
 }
 
-
+// public function showLocationSelection()
+// {
+//     $locations = Location::all(); // Fetch all locations from the database
+//     return view('systemAdmin.modals.add-project', compact('locations'));
+// }
 
 
 

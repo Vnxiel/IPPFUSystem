@@ -94,6 +94,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/projects/restore/{project_id}', 'restoreProject')->name('projects.restore');
         Route::get('/project-status/{project_id}', 'fetchStatus')->name('projects.status.fetch');
         Route::post('/project-status/addStatus', 'addStatus');
+
+        // Route::get('/systemAdmin/modals/add-project',  'showLocationSelection')->name('systemAdmin.modals.add-project');
     });
 
     Route::get('/fund-utilization/{project_id}', [FundsUtilizationController::class, 'getFundUtilization']);

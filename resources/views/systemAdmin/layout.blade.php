@@ -169,6 +169,7 @@
     <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
     <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
     <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
+    <script src="{{ asset('js/Projects/fetchselectionData.js') }}"></script>
     <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
     <script src="{{ asset('js/Projects/add-set.js') }}"></script>
     <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
