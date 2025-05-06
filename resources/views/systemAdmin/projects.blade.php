@@ -29,7 +29,7 @@
                 </h6>
                 <div class="d-flex align-items-center">
                     <!-- View All Projects Checkbox -->
-                    <div class="form-check me-3">
+                    <div class="form-check me-2">
                         <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
                         <label class="form-check-label fw-semibold" for="view_all_checkbox">
                             View All Projects
@@ -95,7 +95,6 @@
                     <div class="form-floating">
                         <select id="status_filter" class="form-select">
                             <option value="">Select Status</option>
-                            <option value="All">All</option>
                             <option value="To Be Started">To Be Started</option>
                             <option value="Ongoing">Ongoing</option>
                             <option value="Completed">Completed</option>
@@ -107,10 +106,6 @@
                         </label>
                     </div>
                 </div>
-            </div>
-            <div class="row g-3 pt-1">
-
-
             </div>
             </div>
         </div>

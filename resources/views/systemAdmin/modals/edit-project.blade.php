@@ -192,8 +192,9 @@
                                     <div class="col-md-9 d-flex gap-2">
                                         <select id="projectStatus" name="projectStatus" class="form-select"
                                             onchange="toggleOngoingStatus()" required>
-                                            <option value="" disabled selected>Select Status</option>
-                                            <option value="To Be Started">To Be Started</option>
+                                            <option value
+                                            ="" disabled selected>Select Status</option>
+                                            <option value="Not Started"><i class="fas fa-not-equal"></i>Not Startedd</option>
                                             <option value="Ongoing">Ongoing</option>
                                             <option value="Completed">Completed</option>
                                             <option value="Discontinued">Discontinued</option>

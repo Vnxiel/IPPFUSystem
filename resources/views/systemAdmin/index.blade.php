@@ -47,7 +47,7 @@
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                              <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div style="font-weight: 600; font-size: 16px; color: #2c3e50;">To Be Started Projects</div>
+                                        <div style="font-weight: 600; font-size: 16px; color: #2c3e50;">Not Started Projects</div>
                                         <div class="icon-circle" style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 50%;">
                                             <i class="fas fa-lightbulb" style="font-size: 28px; color: #2196F3;"></i>
                                         </div>
