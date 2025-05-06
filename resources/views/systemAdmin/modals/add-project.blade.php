@@ -53,7 +53,7 @@
                             </div>
                             <div class="col-md-3">
                                 <input type="number" class="form-control" id="projectYear" name="projectYear"
-                                    list="yearOptions" required>
+                                    list="yearOptions" min="1000" max="9999" required>
                                 <datalist id="yearOptions">
                                     @foreach($projectYear as $year)
                                         <option value="{{ $year->projectYear }}"></option>

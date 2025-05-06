@@ -82,13 +82,14 @@
                 <!-- Amount Filter -->
                 <div class="col-md-3">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="amount_filter" name="amount_filter"
-                            placeholder="Enter amount">
+                        <input type="text" class="form-control" id="amount_filter" name="amount_filter"
+                            placeholder="Enter amount"> <!-- Keep this non-empty -->
                         <label for="amount_filter">
                             <i class="fas fa-peso-sign me-2"></i>Amount
                         </label>
                     </div>
                 </div>
+
 
                 <!-- Status Filter -->
                 <div class="col-md-3">
@@ -597,23 +598,33 @@
 
 <script>
     function clearFilters() {
-        // Clear all filter inputs
-        document.getElementById('location_filter').value = '';
-        document.getElementById('contractor_filter').value = '';
-        document.getElementById('amount_filter').value = '';
-        document.getElementById('status_filter').value = '';
-        document.getElementById('view_all_checkbox').checked = false;
-
-        // Hide location dropdown if visible
+        // Get filter inputs safely
+        const locationFilter = document.getElementById('location_filter');
+        const contractorFilter = document.getElementById('contractor_filter');
+        const amountFilter = document.getElementById('amount_filter');
+        const statusFilter = document.getElementById('status_filter');
+        const viewAllCheckbox = document.getElementById('view_all_checkbox');
         const locationDropdown = document.getElementById('locationDropdown');
-        if (locationDropdown) {
-            locationDropdown.style.display = 'none';
-        }
 
-        // Optionally, trigger any filtering logic to reset the displayed data
-        filterProjects();
+        // Clear input values if they exist
+        if (locationFilter) locationFilter.value = '';
+        if (contractorFilter) contractorFilter.value = '';
+        if (amountFilter) amountFilter.value = '';
+        if (statusFilter) statusFilter.value = '';
+        if (viewAllCheckbox) viewAllCheckbox.checked = false;
+
+        // Hide the dropdown if it exists
+        if (locationDropdown) locationDropdown.style.display = 'none';
+
+        // Re-run filtering logic if defined
+        if (typeof filterProjects === 'function') {
+            filterProjects();
+        } else {
+            console.warn('filterProjects() is not defined.');
+        }
     }
 </script>
+    
 
     @include('systemAdmin.modals.add-project')
 
