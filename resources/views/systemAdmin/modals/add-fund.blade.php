@@ -27,11 +27,32 @@
                   <tr>
                     <th>Category</th>
                     <th>Original</th>
-                    <th>V.O. 1</th>
+                    <th class="vo-header editable-header" data-vo-index="1">
+                      <input type="checkbox" class="vo-select" data-vo-index="1"> 
+                      <span ondblclick="editHeader(this)">V.O. 1</span>
+                    </th>
                     <th>Actual</th>
                   </tr>
                 </thead>
                 <tbody>
+                <tr>
+                    <td>Appropriation</td>
+                    <td><input type="text" class="form-control amount-input" id="orig_appropriation"
+                        name="orig_appropriation" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="vo_appropriation_1"
+                        name="vo_appropriation_1" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="actual_appropriation"
+                        name="actual_appropriation" placeholder="₱0.00"></td>
+                  </tr>
+                  <tr>
+                    <td>Contract Amount</td>
+                    <td><input type="text" class="form-control amount-input" id="orig_contract_amount"
+                        name="orig_contract_amount" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="vo_contract_amount_1"
+                        name="vo_contract_amount_1" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="actual_contract_amount"
+                        name="actual_contract_amount" placeholder="₱0.00"></td>
+                  </tr>
                   <tr>
                     <input type="hidden" id="voCount" name="voCount" value="1">
 
@@ -44,13 +65,13 @@
                         placeholder="₱0.00"></td>
                   </tr>
                   <tr>
-                    <td>Contract Amount</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_contract_amount"
-                        name="orig_contract_amount" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_contract_amount_1"
-                        name="vo_contract_amount_1" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_contract_amount"
-                        name="actual_contract_amount" placeholder="₱0.00"></td>
+                    <td>Bid Difference</td>
+                    <td><input type="text" class="form-control amount-input" id="orig_bid" name="orig_bid"
+                        placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="vo_bid_1" name="vo_bid_1"
+                        placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="actual_bid" name="actual_bid"
+                        placeholder="₱0.00"></td>
                   </tr>
                   <tr>
                     <td>Engineering</td>
@@ -78,24 +99,6 @@
                         name="vo_contingency_1" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control amount-input" id="actual_contingency"
                         name="actual_contingency" placeholder="₱0.00"></td>
-                  </tr>
-                  <tr>
-                    <td>Bid Difference</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_bid" name="orig_bid"
-                        placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_bid_1" name="vo_bid_1"
-                        placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_bid" name="actual_bid"
-                        placeholder="₱0.00"></td>
-                  </tr>
-                  <tr>
-                    <td>Appropriation</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_appropriation"
-                        name="orig_appropriation" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_appropriation_1"
-                        name="vo_appropriation_1" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_appropriation"
-                        name="actual_appropriation" placeholder="₱0.00"></td>
                   </tr>
                 </tbody>
               </table>
@@ -209,6 +212,39 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const amountInputs = document.querySelectorAll(".amount-input");
+
+  amountInputs.forEach(input => {
+    input.addEventListener("input", function (e) {
+      let value = this.value.replace(/[^\d.]/g, "");
+      let parts = value.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.value = '₱' + parts.join(".");
+    });
+
+    input.addEventListener("focus", function () {
+      this.value = this.value.replace(/[^\d.]/g, "");
+    });
+
+    input.addEventListener("blur", function () {
+      let value = this.value.replace(/[^\d.]/g, "");
+      let parts = value.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.value = value ? '₱' + parts.join(".") : '';
+    });
+  });
+
+  document.getElementById("addFundUtilization").addEventListener("submit", function () {
+    amountInputs.forEach(input => {
+      input.value = input.value.replace(/[^\d.]/g, "");
+    });
+  });
+});
+</script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const actualEng = document.getElementById("actual_engineering");
@@ -229,8 +265,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-</script>
 
+</script>
 
 <script>
   

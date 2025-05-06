@@ -2,12 +2,45 @@ $(document).ready(function () {
     // ================================
     // DOM Manipulations and Event Listeners
     // ================================
-
+document.addEventListener("DOMContentLoaded", function () {
     // Project Location Suggestions
     const input = document.getElementById("projectLoc");
     const suggestionsBox = document.getElementById("suggestionsBoxs");
-    const suggestionItems = suggestionsBox.querySelectorAll(".suggestion-items");
-
+    
+    if (suggestionsBox) {
+        const suggestionItems = suggestionsBox.querySelectorAll(".suggestion-items");
+    
+        input.addEventListener("keyup", function () {
+            const query = input.value.toLowerCase().trim();
+            if (query === "") {
+                suggestionsBox.style.display = "none";
+                return;
+            }
+    
+            let hasMatch = false;
+            suggestionItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? "block" : "none";
+                if (text.includes(query)) hasMatch = true;
+            });
+    
+            suggestionsBox.style.display = hasMatch ? "block" : "none";
+        });
+    
+        suggestionItems.forEach(item => {
+            item.addEventListener("click", function () {
+                input.value = this.textContent.trim();
+                suggestionsBox.style.display = "none";
+            });
+        });
+    
+        document.addEventListener("click", function (e) {
+            if (!suggestionsBox.contains(e.target) && e.target !== input) {
+                suggestionsBox.style.display = "none";
+            }
+        });
+    
+    
     input.addEventListener("keyup", function () {
         const query = input.value.toLowerCase().trim();
         if (query === "") {
@@ -32,39 +65,52 @@ $(document).ready(function () {
         });
     });
 
+
     document.addEventListener("click", function (e) {
         if (!suggestionsBox.contains(e.target) && e.target !== input) {
             suggestionsBox.style.display = "none";
         }
     });
-
+    }
     // Contractor 'Others' toggle
-    const contractorSelect = document.getElementById("projectContractor");
-    const othersContractorDiv = document.getElementById("othersContractorDiv");
-    const othersContractorInput = document.getElementById("othersContractor");
-
-    contractorSelect.addEventListener("change", function () {
-        if (this.value === "Others") {
-            othersContractorDiv.style.display = "block";
-        } else {
-            othersContractorDiv.style.display = "none";
-            othersContractorInput.value = "";
+    document.addEventListener("DOMContentLoaded", function () {
+        const contractorSelect = document.getElementById("projectContractor");
+        const othersContractorDiv = document.getElementById("othersContractorDiv");
+        const othersContractorInput = document.getElementById("othersContractor");
+    
+        if (contractorSelect) {
+            contractorSelect.addEventListener("change", function () {
+                if (this.value === "Others") {
+                    othersContractorDiv.style.display = "block";
+                } else {
+                    othersContractorDiv.style.display = "none";
+                    othersContractorInput.value = "";
+                }
+            });
         }
     });
-
-    // Project Status 'Ongoing' toggle
-    const projectStatusSelect = document.getElementById("projectStatus");
-    const ongoingStatusContainer = document.getElementById("ongoingStatusContainer");
-
-    projectStatusSelect.addEventListener("change", function () {
-        if (this.value === "Ongoing") {
-            ongoingStatusContainer.style.display = "block";
-        } else {
-            ongoingStatusContainer.style.display = "none";
-            document.getElementById("ongoingStatus").value = '';
-            document.getElementById("ongoingDate").value = '';
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        const projectStatusSelect = document.getElementById("projectStatus");
+        const ongoingStatusContainer = document.getElementById("ongoingStatusContainer");
+    
+        if (projectStatusSelect && ongoingStatusContainer) {
+            projectStatusSelect.addEventListener("change", function () {
+                if (this.value === "Ongoing") {
+                    ongoingStatusContainer.style.display = "block";
+                } else {
+                    ongoingStatusContainer.style.display = "none";
+                    
+                    const ongoingStatus = document.getElementById("ongoingStatus");
+                    const ongoingDate = document.getElementById("ongoingDate");
+    
+                    if (ongoingStatus) ongoingStatus.value = '';
+                    if (ongoingDate) ongoingDate.value = '';
+                }
+            });
         }
     });
+    
 
     // Currency Formatting
     const currencyFields = ['abc', 'contractAmount', 'engineering', 'mqc', 'contingency', 'bid', 'appropriation'];
@@ -187,7 +233,7 @@ $(document).ready(function () {
 
     officialStart.addEventListener('change', updateTargetCompletion);
     contractDays.addEventListener('input', updateTargetCompletion);
-
+});
     // ================================
     // Form Submission Logic
     // ================================

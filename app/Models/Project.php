@@ -20,7 +20,7 @@ class Project extends Model
         'abc', 'contractAmount', 'engineering', 'mqc', 'contingency', 'bid', 'appropriation',
         'directOrIndirectCost', 'revisedContractCost', 'originalExpiryDate', 'revisedExpiryDate',
         'noaIssuedDate', 'noaReceivedDate', 'ntpIssuedDate', 'ntpReceivedDate',
-        'projectSlippage', 'totalExpenditure', 'ea', 'ea_position', 'ea_monthlyRate', 'suspensionRemarks', 'contractCost', 'othersContractor', 'is_hidden'
+        'projectSlippage', 'totalExpenditure', 'ea', 'ea_position', 'ea_monthlyRate', 'projectYear', 'projectRC', 'projectFPP', 'suspensionRemarks', 'contractCost', 'othersContractor', 'is_hidden'
     ];
 
     // Relationships

@@ -1,59 +1,54 @@
 
+function addOrderFields() {
+    orderCount++;
+    const container = document.getElementById('orderContainer');
 
+    const suspensionKey = `suspensionOrderNo${orderCount}`;
+    const resumeKey = `resumeOrderNo${orderCount}`;
 
-    /*  Order fields
-        This script allows the user to add or remove order fields dynamically  */
+    const newSet = document.createElement('div');
+    newSet.classList.add('row', 'mb-2', 'order-set');
+    newSet.id = `orderSet${orderCount}`;
+    newSet.innerHTML = `
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <label for="${suspensionKey}" class="form-label">Suspension Order No. ${orderCount}</label>
+                <input type="date" class="form-control" id="${suspensionKey}" name="${suspensionKey}">
+            </div>
+            <div class="col-md-6 mb-2">
+                <label for="${resumeKey}" class="form-label">Resumption Order No. ${orderCount}</label>
+                <input type="date" class="form-control" id="${resumeKey}" name="${resumeKey}">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-2">
+                <label for="${suspensionKey}Remarks" class="form-label">Suspension Remarks</label>
+                <input type="text" class="form-control" id="${suspensionKey}Remarks" name="${suspensionKey}Remarks">
+            </div>
+        </div>
+    `;
+    container.appendChild(newSet);
+}
 
-        function addOrderFields() {
-            orderCount++;
-            const container = document.getElementById('orderContainer');
-        
-            const newSet = document.createElement('div');
-            newSet.classList.add('row', 'mb-2', 'order-set');
-            newSet.id = `orderSet${orderCount}`;
-            newSet.innerHTML = `
-                <div class="col-md-6 mb-2">
-                    <label for="suspensionOrderNo${orderCount}" class="form-label">Suspension Order No. ${orderCount}</label>
-                    <input type="date" class="form-control" id="suspensionOrderNo${orderCount}" name="suspensionOrderNo${orderCount}">
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="suspensionRemarks${orderCount}" class="form-label">Remarks</label>
-                    <input type="text" class="form-control" id="suspensionRemarks${orderCount}" name="suspensionRemarks${orderCount}">
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="resumeOrderNo${orderCount}" class="form-label">Resumption Order No. ${orderCount}</label>
-                    <input type="date" class="form-control" id="resumeOrderNo${orderCount}" name="resumeOrderNo${orderCount}">
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="resumeRemarks${orderCount}" class="form-label">Remarks</label>
-                    <input type="text" class="form-control" id="resumeRemarks${orderCount}" name="resumeRemarks${orderCount}">
-                </div>
-            `;
-            container.appendChild(newSet);
-        }
-        
-
-    function removeLastOrderFields() {
-        if (orderCount > 1) {
-            const lastSet = document.getElementById(`orderSet${orderCount}`);
-            lastSet.remove();
-            orderCount--;
-        } else {
-            Swal.fire({
-                icon: "warning",
-                title: "Oops...",
-                text: "You must keep at least one order pair. If none leave it blank.",
-            });
-        }
+function removeLastOrderFields() {
+    if (orderCount > 1) {
+        const lastSet = document.getElementById(`orderSet${orderCount}`);
+        if (lastSet) lastSet.remove();
+        orderCount--;
+    } else {
+        Swal.fire({
+            icon: "warning",
+            title: "Oops...",
+            text: "You must keep at least one order pair. If none, leave it blank.",
+        });
     }
+}
+
 
 
     /*  V.O. fields
         This script allows the user to add or remove V.O. fields dynamically
         V.O. stands for Variation Order*/
-
-    let voCount = 1; // Initialize V.O. count
-
     function addVOFields() {
         voCount++;
         const container = document.getElementById('voContainer');

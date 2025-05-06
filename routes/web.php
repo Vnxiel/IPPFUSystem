@@ -25,7 +25,7 @@ Route::controller(UserManager::class)->group(function () {
 // SYSTEM ADMIN ROUTES
 Route::middleware(['auth', 'role:System Admin'])->group(function () {
     Route::controller(UserManager::class)->group(function () {
-        Route::get('/systemAdmin/projects', 'projects')->name('systemAdmin.projects');
+      
         Route::get('/systemAdmin/reports', 'funds')->name('systemAdmin.funds');
         Route::get('/systemAdmin/trash', 'trash')->name('systemAdmin.trash');
         Route::get('/systemAdmin/index', 'index')->name('systemAdmin.index');
@@ -79,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(ProjectManager::class)->group(function () {
         Route::get('/projects/ProjectDetails', 'ProjectDetails')->name('projects.ProjectDetails');
+        Route::get('/systemAdmin/projects', 'viewProjects')->name('systemAdmin.projects');
         Route::post('/projects/addProject', 'addProject')->name('projects.addProject');
         Route::get('/systemAdmin/overview/{id}', 'getProject')->name('systemAdmin.overview');
         Route::get('/admin/overview/{id}', 'getProject')->name('admin.overview');
@@ -87,12 +88,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/projects/summary', 'getProjectSummary');
         Route::get('/projects/getAllProjects', 'getAllProjects');
         Route::get('/projects/fetch-trash', 'fetchTrashedProjects');
-        Route::post('/projects/insertProjectStatus', 'insertProjectStatus');
-        Route::post('/update-project-status', 'updateProjectStatus');
         Route::put('/projects/update/{project_id}', 'updateProject')->name('projects.update');
         Route::put('/projects/trash/{project_id}', 'trashProject')->name('projects.trash');
         Route::put('/projects/restore/{project_id}', 'restoreProject')->name('projects.restore');
-        Route::get('/project-status/{project_id}', 'fetchStatus')->name('projects.status.fetch');
         Route::post('/project-status/addStatus', 'addStatus');
     });
 

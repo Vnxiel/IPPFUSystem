@@ -1,6 +1,6 @@
 <!-- Add Project Modal -->
 <div class="modal fade" id="addNewProjectModal" tabindex="-1" aria-labelledby="addNewProjectLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h1 class="modal-title fs-5 fw-bold" id="appNewProjectLabel">

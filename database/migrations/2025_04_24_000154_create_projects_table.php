@@ -18,24 +18,16 @@ return new class extends Migration
             $table->string('sourceOfFunds');
             $table->string('otherFund')->nullable();
             $table->string('modeOfImplementation');
-            $table->string('projectContractDays');
+            $table->int('projectYear');
+            $table->string('projectRC');
+            $table->string('projectFPP');
+
 
             $table->date('officialStart');
             $table->date('targetCompletion');
             $table->string('timeExtension')->nullable();
             $table->string('revisedTargetCompletion')->nullable();
             $table->string('completionDate');
-
-            $table->decimal('abc', 15, 2);
-            $table->decimal('contractAmount', 15, 2);
-            $table->decimal('engineering', 15, 2);
-            $table->decimal('mqc', 15, 2);
-            $table->decimal('contingency', 15, 2);
-            $table->decimal('bid', 15, 2);
-            $table->decimal('appropriation', 15, 2);
-            $table->decimal('directOrIndirectCost', 15, 2)->nullable();
-            $table->decimal('revisedContractCost', 15, 2)->nullable();
-            
 
             $table->date('originalExpiryDate')->nullable();
             $table->date('revisedExpiryDate')->nullable();

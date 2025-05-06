@@ -1,41 +1,22 @@
 $(document).ready(function () {
-    // Fetch status before showing modal
-    $(document).on("click", "#addStatusBtnInside", function () {
+    // Handle Add Status button click
+    $(document).on("click", "#addStatusBtn", function () {
         const project_id = sessionStorage.getItem("project_id");
-      
+
         if (!project_id) {
             return Swal.fire({ icon: "error", title: "Missing Info", text: "Cannot load project." });
         }
 
-        // ✅ FIXED: Missing backtick added
-        $.get(`/project-status/${encodeURIComponent(project_id)}`, function (response) {
-            if (["Completed", "Discontinued"].includes(response.projectStatus)) {
-                return Swal.fire({
-                    icon: "warning",
-                    title: "Status Locked",
-                    text: "This project is already completed or discontinued.",
-                    confirmButtonText: "OK"
-                });
-            }
+        // Clear previous inputs
+        $("#progress").val("");
+        $("#percentage").val("");
+        $("#autoDate").prop("checked", true).trigger("change");
 
-            // Store current latest status data in memory
-            sessionStorage.setItem("latestStatusData", JSON.stringify({
-                percentage: parseFloat(response.latestPercentage ?? 0),
-                date: response.updatedAt
-            }));
-
-            // Fill modal fields
-            $("#projectID").text(project_id);
-            $("#progress").val("Ongoing");
-            $("#percentage").val("");
-            $("#autoDate").prop("checked", true);
-            $("#date").prop("disabled", true).val(new Date().toISOString().split("T")[0]);
-
-            $("#addStatusModal").modal("show");
-        });
+        // Show the Add Status Modal
+        $("#addStatusModal").modal("show");
     });
 
-    // Toggle auto/manual date input
+    // Toggle manual date
     $("#autoDate").on("change", function () {
         if ($(this).is(":checked")) {
             $("#date").prop("disabled", true).val(new Date().toISOString().split("T")[0]);
@@ -44,7 +25,7 @@ $(document).ready(function () {
         }
     });
 
-    // Handle form submission
+    // Submit new status
     $("#addStatusForm").on("submit", function (e) {
         e.preventDefault();
 
@@ -55,29 +36,70 @@ $(document).ready(function () {
             ? new Date().toISOString().split("T")[0]
             : $("#date").val();
 
-        // ✅ FIXED: Allow 0 and properly validate number
-        if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+            if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "Invalid Percentage",
+                    text: "Please enter a value between 0 and 100."
+                });
+            }
+            
+            if (percentage === 0) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "Invalid Progress",
+                    text: "0% progress is not allowed."
+                });
+            }
+            
+
+        if (percentage === 100 && progress.trim().toLowerCase() !== "completed") {
             return Swal.fire({
                 icon: "warning",
-                title: "Invalid Percentage",
-                text: "Please enter a valid percentage between 0 and 100."
+                title: "Status Mismatch",
+                text: 'Progress must be set to "Completed" if percentage is 100%.'
+            });
+        }
+
+        if (progress.trim().toLowerCase() === "completed" && percentage < 100) {
+            return Swal.fire({
+                icon: "warning",
+                title: "Percentage Mismatch",
+                text: 'Percentage must be 100% if progress is marked "Completed".'
             });
         }
 
         const latestStatus = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
 
-        // ✅ ENFORCE strictly greater condition
-        if (latestStatus.percentage !== undefined && (
-            percentage <= latestStatus.percentage ||
-            new Date(date) <= new Date(latestStatus.date)
-        )) {
-            return Swal.fire({
-                icon: "error",
-                title: "Invalid Update",
-                text: "New percentage and date must be strictly greater than the latest entry.",
-                confirmButtonText: "OK"
-            });
+        if (latestStatus.percentage !== undefined) {
+            const lastDate = new Date(latestStatus.date).toISOString().split("T")[0];
+            const newDate = new Date(date).toISOString().split("T")[0];
+
+            if (latestStatus.percentage === 100) {
+                return Swal.fire({
+                    icon: "error",
+                    title: "Invalid Status",
+                    text: "Cannot add updates after project is already completed (100%)."
+                });
+            }
+
+            if (percentage <= latestStatus.percentage) {
+                return Swal.fire({
+                    icon: "error",
+                    title: "Invalid Percentage",
+                    text: "New percentage must be greater than the last recorded percentage."
+                });
+            }
+
+            if (newDate <= lastDate) {
+                return Swal.fire({
+                    icon: "error",
+                    title: "Invalid Date",
+                    text: "New status date must be later than the last recorded date."
+                });
+            }
         }
+
         $.ajax({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -88,19 +110,32 @@ $(document).ready(function () {
             success: function () {
                 Swal.fire({ icon: "success", title: "Status Added" }).then(() => {
                     $("#addStatusModal").modal("hide");
-                    fetchProjectStatus(project_id);
                     location.reload();
                 });
             },
             error: function (xhr) {
                 console.error(xhr.responseText);
+
+                let errorMessage = "Could not update status. Please try again later.";
+                try {
+                    const response = JSON.parse(xhr.responseText);
+
+                    // Concatenate all validation messages into a single string
+                    if (response.errors) {
+                        errorMessage = Object.values(response.errors).flat().join("\n");
+                    } else if (response.message) {
+                        errorMessage = response.message;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse error response:", e);
+                }
+
                 Swal.fire({
                     icon: "error",
-                    title: "Failed",
-                    text: "Could not update status. Please try again later."
+                    title: "Validation Error",
+                    text: errorMessage
                 });
             }
         });
-        
     });
 });

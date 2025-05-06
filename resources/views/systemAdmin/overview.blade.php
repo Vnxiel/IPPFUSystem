@@ -74,20 +74,28 @@
                             <strong class="text-muted d-block" style="font-size: 18px;">Contractor:  <span style="font-weight: normal; color: black;">
                                 {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
                             </span></strong>
-                           
+                        </div>
+                        <div class="mb-2">
+                            <strong class="text-muted d-block" style="font-size: 18px;">Project Year:  <span style="font-weight: normal; font-size: 18px; color: black;">{{ $project['projectYear'] ?? 'N/A' }}</span></strong>  
+                        </div>
+                        <div class="mb-2">
+                            <strong class="text-muted d-block" style="font-size: 18px;">Project FPP:  <span style="font-weight: normal; font-size: 18px; color: black;">{{ $project['projectFPP'] ?? 'N/A' }}</span></strong>  
                         </div>
                     </div>
 
                     <!-- Column 2 -->
                     <div class="col-md-4">
                         <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;">Implementation:  <span style="font-weight: normal; color: black;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</span></strong>
+                            <strong class="text-muted d-block" style="font-size: 18px;">Implementation Mode:  <span style="font-weight: normal; color: black;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</span></strong>
                         </div>
                         <div class="mb-2">
                             <strong class="text-muted d-block" style="font-size: 18px;">Source of Fund:  <span style="font-weight: normal; color: black;">
                                 {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
                             </span></strong>
                            
+                        </div>
+                        <div class="mb-2">
+                            <strong class="text-muted d-block" style="font-size: 18px;">Responsibility Center:  <span style="font-weight: normal; font-size: 18px; color: black;">{{ $project['projectRC'] ?? 'N/A' }}</span></strong>  
                         </div>
                         <div class="mb-2 d-flex align-items-center">
                             <strong class="text-muted me-2" style="font-size: 18px;">Status:  <span class="badge bg-success me-2" style="font-weight: normal;">{{ $project['projectStatus'] ?? 'N/A' }}</span>
@@ -97,47 +105,47 @@
                     </div>
 
                     <!-- Column 3 - Progress Table -->
-                        <div class="col-md-4">
-                            <div class="bg-light p-2 d-flex justify-content-between align-items-center">
-                                <span><i class="bi bi-bar-chart-line me-2"></i><strong>Progress</strong></span>
-                                <button class="btn btn-sm btn-outline-primary" id="addStatusBtnInside">
-                                    <i class="bi bi-plus-circle me-1"></i>Add
-                                </button>
-                            </div>
-
-                            <!-- Scrollable Table Wrapper for max 3 rows -->
-                            <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
-                                <table class="table table-sm table-hover mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Progress</th>
-                                            <th>Percentage</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (!empty($projectStatusData['ongoingStatus']) && is_array($projectStatusData['ongoingStatus']))
-                                            @foreach ($projectStatusData['ongoingStatus'] as $status)
-                                                <tr>
-                                                    <td>{{ $status['progress'] }}</td>
-                                                    <td>{{ $status['percentage'] }}%</td>
-                                                    <td>{{ $status['date'] }}</td>
-                                                </tr>
-                                            @endforeach
-                                        @elseif ($projectStatusData['projectStatus'] === 'Completed')
-                                            <tr>
-                                                <td colspan="3" class="text-center text-muted">This project is completed.</td>
-                                            </tr>
-                                        @else
-                                            <tr>
-                                                <td colspan="3" class="text-center text-muted">No progress data available.</td>
-                                            </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div class="col-md-4">
+                        <div class="bg-light p-2 d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-bar-chart-line me-2"></i><strong>Progress</strong></span>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="addStatusBtn">
+                                <i class="bi bi-plus-circle me-1"></i>Add
+                            </button>
                         </div>
-                
+
+                        <!-- Scrollable Table Wrapper -->
+                        <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Progress</th>
+                                        <th>Percentage</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (!empty($projectStatusData['ongoingStatus']) && is_array($projectStatusData['ongoingStatus']))
+                                        @foreach ($projectStatusData['ongoingStatus'] as $status)
+                                            <tr>
+                                                <td>{{ $status['progress'] }}</td>
+                                                <td>{{ $status['percentage'] }}%</td>
+                                                <td>{{ $status['date'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @elseif ($projectStatusData['projectStatus'] === 'Completed')
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted">This project is completed.</td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted">No progress data available.</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <div class="col-md-12">
                         <!-- Combined Card with Two Columns -->
                         <div class="card shadow-sm mb-4">

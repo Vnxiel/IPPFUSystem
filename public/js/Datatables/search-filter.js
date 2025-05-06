@@ -11,11 +11,12 @@ function filterProjects() {
         return;
     }
 
-    // Regular filter logic
-    const location = $('#location_filter').val().toLowerCase();
-    const contractor = $('#contractor_filter').val().toLowerCase();
-    const amount = $('#amount_filter').val().replace(/[₱,]/g, '');
-    const status = $('#status_filter').val().toLowerCase();
+    // Get filter values safely
+    const location = ($('#location_filter').val() || '').toLowerCase();
+    const contractor = ($('#contractor_filter').val() || '').toLowerCase();
+    const rawAmount = $('#amount_filter').val();
+    const amount = rawAmount ? rawAmount.replace(/[₱,]/g, '') : '';
+    const status = ($('#status_filter').val() || '').toLowerCase();
 
     table.rows().every(function () {
         const data = this.data();
@@ -33,6 +34,7 @@ function filterProjects() {
         $(this.node()).toggle(match);
     });
 }
+
 
 
 $(document).ready(function () {
