@@ -59,7 +59,7 @@
                                         <option value="{{ $year->projectYear }}"></option>
                                     @endforeach
                                 </datalist>
-                            </div> 
+                            </div>
                             <div class="col-md-2 text-end">
                                 <label for="projectFPP" class="form-label">FPP <span
                                         class="text-danger">*</span></label>
@@ -178,12 +178,12 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input type="number" class="form-control" id="projectContractDays" name="projectContractDays"
-                                            min="0" required>
+                                        <input type="number" class="form-control" id="projectContractDays"
+                                            name="projectContractDays" min="0" required>
                                     </div>
                                 </div>
                             </div>
-                            </div>
+                        </div>
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12 ">
                                 <div class="row align-items-center">
@@ -195,7 +195,8 @@
                                         <select id="projectStatus" name="projectStatus" class="form-select"
                                             onchange="toggleOngoingStatus()" required>
                                             <option value="" disabled selected>Select Status</option>
-                                            <option value="Not Started"><i class="fas fa-not-equal"></i>Not Startedd</option>
+                                            <option value="Not Started"><i class="fas fa-not-equal"></i>Not Startedd
+                                            </option>
                                             <option value="Ongoing">Ongoing</option>
                                             <option value="Completed">Completed</option>
                                             <option value="Discontinued">Discontinued</option>
@@ -278,8 +279,11 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control currency-input" id="appropriation"
-                                            name="appropriation">
+                                        <div class="input-group">
+                                            <span class="input-group-text">₱</span>
+                                            <input type="text" class="form-control currency-input" name="appropriation"
+                                                id="appropriation" required>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -290,15 +294,21 @@
                                 <label for="contractAmount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control currency-input" id="contractAmount"
-                                    name="contractAmount">
+                                <div class="input-group">
+                                    <span class="input-group-text">₱</span>
+                                    <input type="text" class="form-control currency-input" id="contractAmount"
+                                        name="contractAmount">
+                                </div>
                             </div>
                             <div class="col-3 text-end">
                                 <label for="engineering" class="form-label">Engineering</label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control currency-input" id="engineering"
-                                    name="engineering">
+                                <div class="input-group">
+                                    <span class="input-group-text">₱</span>
+                                    <input type="text" class="form-control currency-input" id="engineering"
+                                        name="engineering">
+                                </div>
                             </div>
                         </div>
 
@@ -307,13 +317,20 @@
                                 <label for="abc" class="form-label">ABC</label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                <div class="input-group">
+                                    <span class="input-group-text">₱</span>
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                </div>
                             </div>
+
                             <div class="col-3 text-end">
                                 <label for="mqc" class="form-label">MQC</label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control currency-input" id="mqc" name="mqc">
+                                <div class="input-group">
+                                    <span class="input-group-text">₱</span>
+                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc">
+                                </div>
                             </div>
                         </div>
 
@@ -322,16 +339,22 @@
                                 <label for="bid" class="form-label">Bid Difference</label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control currency-input" id="bid" name="bid">
-                            </div>
+                                <div class="input-group">
+                                    <span class="input-group-text">₱</span>
+                                    <input type="text" class="form-control currency-input" id="bid" name="bid">
+                                </div>
+                             </div>
                             <div class="col-3 text-end">
                                 <label for="bid" class="form-label">Contingency</label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control currency-input" id="contingency"
-                                    name="contingency">
+                                <div class="input-group">
+                                    <span class="input-group-text">₱</span>
+                                    <input type="text" name="contingency" class="form-control currency-input" id="contingency">
+                                </div>
                             </div>
                         </div>
+                        
 
 
                         <div class="row">
@@ -455,7 +478,8 @@
                                                     name="suspensionOrderNo1">
                                             </div>
                                             <div class="col-2 text-end">
-                                                <label for="suspensionOrderNo1Remarks" class="form-label">Remarks</label>
+                                                <label for="suspensionOrderNo1Remarks"
+                                                    class="form-label">Remarks</label>
                                             </div>
                                             <div class="col-4">
                                                 <textarea class="form-control" id="suspensionOrderNo1Remarks"
@@ -483,16 +507,16 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                        </fieldset>
-                        <div class="modal-footer bg-light">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times me-2"></i>Cancel
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Save Project
-                            </button>
                         </div>
+                    </fieldset>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Project
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -521,4 +545,28 @@
             dropdown.style.display = 'none';
         }
     });
+
+    document.querySelectorAll('.currency-input').forEach(input => {
+    input.addEventListener('input', () => {
+        let value = input.value.replace(/[^0-9.]/g, '');
+        let parts = value.split('.');
+        let intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        let decimalPart = parts[1] ? '.' + parts[1].slice(0, 2) : '';
+        input.value = intPart + decimalPart;
+    });
+});
+
+document.querySelector('form').addEventListener('submit', () => {
+    document.querySelectorAll('.currency-input').forEach(input => {
+        input.value = input.value.replace(/[^0-9.]/g, '');
+    });
+});
+
+document.querySelectorAll('.currency-input').forEach(input => {
+    input.addEventListener('blur', () => {
+        let value = parseFloat(input.value.replace(/[^0-9.]/g, ''));
+        input.value = isNaN(value) ? '' : value.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    });
+});
+
 </script>
