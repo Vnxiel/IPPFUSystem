@@ -184,7 +184,7 @@
 </div>
 <hr class="mx-2">
 
-@include('systemAdmin.modals.add-project')
+@include('admin.modals.add-project')
 
 <!-- DataTable Initialization -->
 <script>    

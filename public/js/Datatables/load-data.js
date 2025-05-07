@@ -5,26 +5,28 @@ $(document).ready(function () {
 
     // Show the table after DOM is ready (and data is already populated server-side)
     $("#projects-container").show();
+    const hasData = $('#projects tbody tr').length > 0 &&
+                    !$('#projects tbody tr td').first().attr('colspan');
 
-    // Initialize DataTable
-    $('#projects').DataTable({
-        responsive: true,
-        scrollX: true,
-        paging: true,
-        searching: true,
-        autoWidth: false,
-        aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
-        pageLength: 10,
-        order: [[3, 'desc']],
-        processing: true,
-        columnDefs: [
-            { targets: '_all', orderable: true }
-        ],
-        fixedColumns: {
-            leftColumns: 1
-        }
-    });
-
+    if (hasData) {
+        $('#projects').DataTable({
+            responsive: true,
+            scrollX: true,
+            paging: true,
+            searching: true,
+            autoWidth: false,
+            aLengthMenu: [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
+            pageLength: 10,
+            order: [[3, 'desc']],
+            processing: true,
+            columnDefs: [
+                { targets: '_all', orderable: true }
+            ],
+            fixedColumns: {
+                leftColumns: 1
+            }
+        });
+    }
     // Overview button click handler
     $(document).on('click', '.overview-btn', function () {
         const projectId = $(this).data('id');

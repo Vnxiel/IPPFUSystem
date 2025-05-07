@@ -311,28 +311,37 @@ document.addEventListener("DOMContentLoaded", function () {
                             timer: 2000,
                             didClose: function () {
                                 $("#addNewProjectModal").modal("hide");
+                                location.reload();
                             }
                         });
-
                         $('#addNewProjectModal').on('hidden.bs.modal', function () {
                             $("#addProjectForm")[0].reset();
                             loadProjects();
                             $(this).off('hidden.bs.modal');
                         });
-
+                
                     } else if (response.errors) {
                         let errorMessages = "<ul class='text-left'>";
                         $.each(response.errors, function (field, errors) {
                             errorMessages += `<li><strong>${field.replace(/_/g, " ")}:</strong> ${errors.join(", ")}</li>`;
                         });
                         errorMessages += "</ul>";
-
+                
                         Swal.fire({
                             icon: "warning",
                             title: "Validation Error",
                             html: errorMessages,
                             confirmButtonText: "OK"
                         });
+                
+                    } else if (response.message === 'A project with the same FPP and RC already exists.') {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Duplicate Entry",
+                            text: response.message,
+                            confirmButtonText: "OK"
+                        });
+                
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -342,6 +351,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     }
                 },
+                
                 error: function (xhr) {
                     Swal.fire({
                         icon: "error",

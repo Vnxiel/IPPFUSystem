@@ -9,8 +9,8 @@
     <div class="row">
         <div class="col-md-12 d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center gap-2">
-                <a class="btn btn-outline-secondary btn-sm {{ Request::is('systemAdmin/projects') ? 'active' : '' }}"
-                    href="{{ url('/systemAdmin/projects') }}">
+                <a class="btn btn-outline-secondary btn-sm {{ Request::is('admin/projects') ? 'active' : '' }}"
+                    href="{{ url('/admin/projects') }}">
                     <span class="fa fa-arrow-left"></span>
                 </a>
                 <h5 class="m-0">Project Overview</h5>

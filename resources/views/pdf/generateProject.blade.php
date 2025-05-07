@@ -269,7 +269,31 @@
       </tr>
       <tr class="fit-text-row">
         <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
-        <td>First and Final Billing</td>
+        <td>1st Partial Billing</td>
+        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
+      </tr>
+      <tr class="fit-text-row">
+        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
+        <td>2nd Partial Billing</td>
+        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
+      </tr>
+      <tr class="fit-text-row">
+        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
+        <td>3rd Partial Billing</td>
+        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
+      </tr>
+      <tr class="fit-text-row">
+        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
+        <td>4th Partial Billing</td>
+        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
+      </tr>
+      <tr class="fit-text-row">
+        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
+        <td>Final Billing</td>
         <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
         <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
       </tr>

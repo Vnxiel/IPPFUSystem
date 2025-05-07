@@ -31,8 +31,10 @@ class GenerateProjectReport extends Controller
                 ->pluck('ProjectDescription')
                 ->toArray();
 
-            $projectFundsUtilization = FundsUtilization::where('project_id', $project_id)->first();
-            $projectVariationOrder = $projectFundsUtilization
+                $projectFundsUtilization = FundsUtilization::where('project_id', $project_id)
+                ->orderBy('updated_at', 'desc')
+                ->first();
+             $projectVariationOrder = $projectFundsUtilization
                 ? VariationOrder::where('funds_utilization_id', $projectFundsUtilization->id)->get()
                 : [];
 

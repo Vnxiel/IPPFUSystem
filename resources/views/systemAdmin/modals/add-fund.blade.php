@@ -10,13 +10,12 @@
       <div class="modal-body">
         <form id="addFundUtilization" method="POST">
           @csrf
-
           <fieldset class="border p-1 mb-1 rounded shadow-sm bg-light">
-            <div class="mb-3">
-              <textarea class="form-control-plaintext border rounded p-3 bg-white text-dark fw-semibold"
-                id="projectTitleFU" name="projectTitleFU" rows="2" readonly>Project Title</textarea>
-            </div>
-          </fieldset>
+              <div class="mb-3">
+                  <!-- Project Title -->
+                  <textarea class="form-control-plaintext border rounded p-3 bg-white text-dark fw-semibold"
+                     id="projectTitleFU" name="projectTitleFU" readonly>{{ $project['projectTitle'] ?? '' }}</textarea>
+           </fieldset>
           <!-- Cost Breakdown Table -->
           <fieldset class="border p-3 mb-4 rounded">
             <legend class="float-none w-auto px-2 fw-bold">Cost Breakdown</legend>
@@ -27,10 +26,7 @@
                   <tr>
                     <th>Category</th>
                     <th>Original</th>
-                    <th class="vo-header editable-header" data-vo-index="1">
-                      <input type="checkbox" class="vo-select" data-vo-index="1"> 
-                      <span ondblclick="editHeader(this)">V.O. 1</span>
-                    </th>
+                    <th>V.O. 1</th>
                     <th>Actual</th>
                   </tr>
                 </thead>
@@ -38,66 +34,66 @@
                 <tr>
                     <td>Appropriation</td>
                     <td><input type="text" class="form-control amount-input" id="orig_appropriation"
-                        name="orig_appropriation" placeholder="₱0.00"></td>
+                        name="orig_appropriation" value="{{ old('appropriation', $project['funds']['orig_appropriation'] ?? '') }}" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control amount-input" id="vo_appropriation_1"
-                        name="vo_appropriation_1" placeholder="₱0.00"></td>
+                        name="vo_appropriation_1" value="{{ old('appropriation', $project['variation_orders']['vo_appropriation'] ?? '') }}" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control amount-input" id="actual_appropriation"
-                        name="actual_appropriation" placeholder="₱0.00"></td>
+                        name="actual_appropriation" value="{{ old('appropriation', $project['funds']['actual_appropriation'] ?? '') }}" placeholder="₱0.00"></td>
                   </tr>
                   <tr>
                     <td>Contract Amount</td>
                     <td><input type="text" class="form-control amount-input" id="orig_contract_amount"
-                        name="orig_contract_amount" placeholder="₱0.00"></td>
+                        name="orig_contract_amount" value="{{ old('appropriation', $project['funds']['orig_contract_amount'] ?? '') }}" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control amount-input" id="vo_contract_amount_1"
-                        name="vo_contract_amount_1" placeholder="₱0.00"></td>
+                        name="vo_contract_amount_1" value="{{ old('appropriation', $project['funds']['vo_contract_amount_1'] ?? '') }}" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control amount-input" id="actual_contract_amount"
-                        name="actual_contract_amount" placeholder="₱0.00"></td>
+                        name="actual_contract_amount" value="{{ old('appropriation', $project['funds']['actual_contract_amount'] ?? '') }}" placeholder="₱0.00"></td>
                   </tr>
                   <tr>
                     <input type="hidden" id="voCount" name="voCount" value="1">
 
                     <td>ABC</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_abc" name="orig_abc"
+                    <td><input type="text" class="form-control amount-input" id="orig_abc" name="orig_abc" value="{{ old('appropriation', $project['funds']['orig_abc'] ?? '') }}"
                         placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_abc_1" name="vo_abc_1"
+                    <td><input type="text" class="form-control amount-input" id="vo_abc_1" name="vo_abc_1" value="{{ old('appropriation', $project['variation_orders']['vo_abc'] ?? '') }}"
                         placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_abc" name="actual_abc"
+                    <td><input type="text" class="form-control amount-input" id="actual_abc" name="actual_abc" value="{{ old('appropriation', $project['funds']['actual_abc'] ?? '') }}"
                         placeholder="₱0.00"></td>
                   </tr>
                   <tr>
                     <td>Bid Difference</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_bid" name="orig_bid"
+                    <td><input type="text" class="form-control amount-input" id="orig_bid" name="orig_bid" value="{{ old('appropriation', $project['funds']['orig_bid'] ?? '') }}"
                         placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_bid_1" name="vo_bid_1"
+                    <td><input type="text" class="form-control amount-input" id="vo_bid_1" name="vo_bid_1" value="{{ old('appropriation', $project['funds']['vo_bid_1'] ?? '') }}"
                         placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_bid" name="actual_bid"
+                    <td><input type="text" class="form-control amount-input" id="actual_bid" name="actual_bid" value="{{ old('appropriation', $project['funds']['actual_bid'] ?? '') }}"
                         placeholder="₱0.00"></td>
                   </tr>
                   <tr>
                     <td>Engineering</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_engineering"
+                    <td><input type="text" class="form-control amount-input" id="orig_engineering" value="{{ old('appropriation', $project['funds']['orig_engineering'] ?? '') }}"
                         name="orig_engineering" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_engineering_1"
+                    <td><input type="text" class="form-control amount-input" id="vo_engineering_1" value="{{ old('appropriation', $project['funds']['vo_engineering_1'] ?? '') }}"
                         name="vo_engineering_1" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_engineering"
+                    <td><input type="text" class="form-control amount-input" id="actual_engineering" value="{{ old('appropriation', $project['funds']['actual_engineering'] ?? '') }}"
                         name="actual_engineering" placeholder="₱0.00"></td>
                   </tr>
                   <tr>
                     <td>MQC</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_mqc" name="orig_mqc"
+                    <td><input type="text" class="form-control amount-input" id="orig_mqc" name="orig_mqc" value="{{ old('appropriation', $project['funds']['orig_mqc'] ?? '') }}"
                         placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_mqc_1" name="vo_mqc_1"
+                    <td><input type="text" class="form-control amount-input" id="vo_mqc_1" name="vo_mqc_1" value="{{ old('appropriation', $project['funds']['vo_mqc_1'] ?? '') }}"
                         placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_mqc" name="actual_mqc"
+                    <td><input type="text" class="form-control amount-input" id="actual_mqc" name="actual_mqc" value="{{ old('appropriation', $project['funds']['actual_mqc'] ?? '') }}"
                         placeholder="₱0.00"></td>
                   </tr>
                   <tr>
                     <td>Contingency</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_contingency"
+                    <td><input type="text" class="form-control amount-input" id="orig_contingency" value="{{ old('appropriation', $project['funds']['orig_contingency'] ?? '') }}"
                         name="orig_contingency" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_contingency_1"
+                    <td><input type="text" class="form-control amount-input" id="vo_contingency_1" value="{{ old('appropriation', $project['variation_orders']['vo_contingency'] ?? '') }}"
                         name="vo_contingency_1" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_contingency"
+                    <td><input type="text" class="form-control amount-input" id="actual_contingency" value="{{ old('appropriation', $project['funds']['actual_contingency'] ?? '') }}"
                         name="actual_contingency" placeholder="₱0.00"></td>
                   </tr>
                 </tbody>
@@ -140,8 +136,8 @@
                 <tbody>
                   <tr>
                     <td>15% Mobilization</td>
-                    <td><input type="date" class="form-control" name="dateMobi"></td>
-                    <td><input type="text" class="form-control amount-input" name="amountMobi" placeholder="₱0.00"></td>
+                    <td><input type="date" class="form-control" name="dateMobi" value="{{ old('dateMobi', $project['summary']['dateMobi'] ?? '') }}"></td>
+                    <td><input type="text" class="form-control amount-input" name="amountMobi" value="{{ old('amountMobi', $project['summary']['amount'] ?? '') }}" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remMobi"></td>
                   </tr>
                 </tbody>
@@ -165,26 +161,26 @@
                   <tr>
                     <td>Engineering</td>
                     <td><input type="date" class="form-control" name="dateEng"></td>
-                    <td><input type="text" class="form-control amount-input" name="amountEng" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" name="amountEng" placeholder="₱0.00" disabled></td>
                     <td><input type="text" class="form-control" name="remEng"></td>
                   </tr>
                   <tr>
                     <td>MQC</td>
                     <td><input type="date" class="form-control" name="dateMqc"></td>
-                    <td><input type="text" class="form-control amount-input" name="amountMqc" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" name="amountMqc" placeholder="₱0.00" disabled></td>
                     <td><input type="text" class="form-control" name="remMqc"></td>
                   </tr>
                   <tr class="fw-bold">
                     <td>Total Expenditures</td>
                     <td></td>
-                    <td><input type="text" class="form-control amount-input" name="amountTotal" placeholder="₱0.00">
+                    <td><input type="text" class="form-control amount-input" name="amountTotal" placeholder="₱0.00" disabled>
                     </td>
                     <td><input type="text" class="form-control" name="remTotal"></td>
                   </tr>
                   <tr class="fw-bold">
                     <td>Total Savings</td>
                     <td></td>
-                    <td><input type="text" class="form-control amount-input" name="amountSavings" placeholder="₱0.00">
+                    <td><input type="text" class="form-control amount-input" name="amountSavings" placeholder="₱0.00" disabled>
                     </td>
                     <td><input type="text" class="form-control" name="remSavings"></td>
                   </tr>
@@ -246,6 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <script>
+  
 document.addEventListener("DOMContentLoaded", function () {
   const actualEng = document.getElementById("actual_engineering");
   const summaryEng = document.querySelector('input[name="amountEng"]');

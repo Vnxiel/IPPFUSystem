@@ -10,13 +10,12 @@
       <div class="modal-body">
         <form id="addFundUtilization" method="POST">
           @csrf
-
           <fieldset class="border p-1 mb-1 rounded shadow-sm bg-light">
-            <div class="mb-3">
-              <textarea class="form-control-plaintext border rounded p-3 bg-white text-dark fw-semibold"
-                id="projectTitleFU" name="projectTitleFU" rows="2" readonly>Project Title</textarea>
-            </div>
-          </fieldset>
+              <div class="mb-3">
+                  <!-- Project Title -->
+                  <textarea class="form-control-plaintext border rounded p-3 bg-white text-dark fw-semibold"
+                     id="projectTitleFU" name="projectTitleFU" readonly>{{ $projectTitle ?? '' }}</textarea>
+           </fieldset>
           <!-- Cost Breakdown Table -->
           <fieldset class="border p-3 mb-4 rounded">
             <legend class="float-none w-auto px-2 fw-bold">Cost Breakdown</legend>
@@ -32,6 +31,24 @@
                   </tr>
                 </thead>
                 <tbody>
+                <tr>
+                    <td>Appropriation</td>
+                    <td><input type="text" class="form-control amount-input" id="orig_appropriation"
+                        name="orig_appropriation" value="{{ $fundUtilization->orig_appropriation ?? '' }}" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="vo_appropriation_1"
+                        name="vo_appropriation_1" value="{{ $fundUtilization->vo_appropriation_1 ?? '' }}" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="actual_appropriation"
+                        name="actual_appropriation" value="{{ $fundUtilizationData->actual_appropriation ?? '' }}" placeholder="₱0.00"></td>
+                  </tr>
+                  <tr>
+                    <td>Contract Amount</td>
+                    <td><input type="text" class="form-control amount-input" id="orig_contract_amount"
+                        name="orig_contract_amount" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="vo_contract_amount_1"
+                        name="vo_contract_amount_1" placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="actual_contract_amount"
+                        name="actual_contract_amount" placeholder="₱0.00"></td>
+                  </tr>
                   <tr>
                     <input type="hidden" id="voCount" name="voCount" value="1">
 
@@ -44,13 +61,13 @@
                         placeholder="₱0.00"></td>
                   </tr>
                   <tr>
-                    <td>Contract Amount</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_contract_amount"
-                        name="orig_contract_amount" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_contract_amount_1"
-                        name="vo_contract_amount_1" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_contract_amount"
-                        name="actual_contract_amount" placeholder="₱0.00"></td>
+                    <td>Bid Difference</td>
+                    <td><input type="text" class="form-control amount-input" id="orig_bid" name="orig_bid"
+                        placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="vo_bid_1" name="vo_bid_1"
+                        placeholder="₱0.00"></td>
+                    <td><input type="text" class="form-control amount-input" id="actual_bid" name="actual_bid"
+                        placeholder="₱0.00"></td>
                   </tr>
                   <tr>
                     <td>Engineering</td>
@@ -78,24 +95,6 @@
                         name="vo_contingency_1" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control amount-input" id="actual_contingency"
                         name="actual_contingency" placeholder="₱0.00"></td>
-                  </tr>
-                  <tr>
-                    <td>Bid Difference</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_bid" name="orig_bid"
-                        placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_bid_1" name="vo_bid_1"
-                        placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_bid" name="actual_bid"
-                        placeholder="₱0.00"></td>
-                  </tr>
-                  <tr>
-                    <td>Appropriation</td>
-                    <td><input type="text" class="form-control amount-input" id="orig_appropriation"
-                        name="orig_appropriation" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="vo_appropriation_1"
-                        name="vo_appropriation_1" placeholder="₱0.00"></td>
-                    <td><input type="text" class="form-control amount-input" id="actual_appropriation"
-                        name="actual_appropriation" placeholder="₱0.00"></td>
                   </tr>
                 </tbody>
               </table>
@@ -209,7 +208,41 @@
     </div>
   </div>
 </div>
+
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const amountInputs = document.querySelectorAll(".amount-input");
+
+  amountInputs.forEach(input => {
+    input.addEventListener("input", function (e) {
+      let value = this.value.replace(/[^\d.]/g, "");
+      let parts = value.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.value = '₱' + parts.join(".");
+    });
+
+    input.addEventListener("focus", function () {
+      this.value = this.value.replace(/[^\d.]/g, "");
+    });
+
+    input.addEventListener("blur", function () {
+      let value = this.value.replace(/[^\d.]/g, "");
+      let parts = value.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.value = value ? '₱' + parts.join(".") : '';
+    });
+  });
+
+  document.getElementById("addFundUtilization").addEventListener("submit", function () {
+    amountInputs.forEach(input => {
+      input.value = input.value.replace(/[^\d.]/g, "");
+    });
+  });
+});
+</script>
+
+<script>
+  
 document.addEventListener("DOMContentLoaded", function () {
   const actualEng = document.getElementById("actual_engineering");
   const summaryEng = document.querySelector('input[name="amountEng"]');
@@ -229,8 +262,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-</script>
 
+</script>
 
 <script>
   

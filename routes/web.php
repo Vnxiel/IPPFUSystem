@@ -56,10 +56,8 @@ Route::middleware(['auth', 'role:Staff'])->group(function () {
 // ADMIN ROUTES
 Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::controller(AdminManager::class)->group(function () {
-        Route::get('/admin/index', [AdminManager::class, 'index'])->name('admin.index');
+        Route::get('/admin/index', 'index')->name('admin.index');
         Route::get('/admin/projects', 'projects')->name('admin.projects');
-        Route::get('/admin/projects', 'getLocConProject')->name('admin.projects');
-      
         Route::get('/admin/userManagement', 'viewUserManagement')->name('admin.userManagement');
         Route::get('/admin/trash', 'trash')->name('admin.trash');
         Route::get('/admin/activityLogs', 'activityLogs')->name('admin.activityLogs');
@@ -93,7 +91,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/projects/restore/{project_id}', 'restoreProject')->name('projects.restore');
         Route::post('/project-status/addStatus', 'addStatus');
     });
-
+    
+  
     Route::get('/fund-utilization/{project_id}', [FundsUtilizationController::class, 'getFundUtilization']);
     Route::post('/fund-utilization/store', [FundsUtilizationController::class, 'storeFundUtilization']);
     

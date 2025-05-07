@@ -69,6 +69,18 @@ class ProjectManager extends Controller
         return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d*$/', $key);
     });
 
+    $existing = Project::where('projectFPP', $request->input('projectFPP'))
+    ->where('projectRC', $request->input('projectRC'))
+    ->exists();
+
+if ($existing) {
+    return response()->json([
+        'status' => 'error',
+        'message' => 'A project with the same FPP and RC already exists.'
+    ], 409);
+}
+
+
     // Begin DB transaction
     DB::beginTransaction();
 
@@ -85,25 +97,30 @@ class ProjectManager extends Controller
             });
         }
 
-            // Collect suspension data
+            // Collect suspension and resumption remarks data
             $suspensionData = [];
             foreach ($request->all() as $key => $value) {
                 if (preg_match('/^suspensionOrderNo(\d+)$/', $key, $matches)) {
                     $index = $matches[1];
-                    $orderNo = (int)$value;  // Make sure orderNo is treated as an integer
+                    $suspensionOrderNo = (int)$value;
 
-                    // Add remarks if available
-                    $remarks = $request->input("suspensionOrderNo{$index}Remarks");
+                    $resumeOrderKey = "resumeOrderNo{$index}";
+                    $resumeOrderNo = (int)($request->input($resumeOrderKey) ?? null);
 
-                    // Only add to suspension data if there's either an orderNo or remarks
-                    if ($orderNo || $remarks) {
-                        $suspensionData[] = [
-                            'orderNo' => $orderNo,  // Store the numeric orderNo
-                            'remarks' => $remarks,
+                    $suspensionRemarks = $request->input("suspensionOrderNo{$index}Remarks");
+                    $resumeRemarks = $request->input("resumeOrderNo{$index}Remarks");
+
+                    if ($suspensionOrderNo || $resumeOrderNo || $suspensionRemarks || $resumeRemarks) {
+                        $suspensionData[$index] = [
+                            'suspensionOrderNo' => $suspensionOrderNo,
+                            'resumeOrderNo' => $resumeOrderNo,
+                            'suspensionOrderRemarks' => $suspensionRemarks,
+                            'resumeOrderRemarks' => $resumeRemarks,
                         ];
                     }
                 }
             }
+
 
 
         // Prepare project data
@@ -121,7 +138,7 @@ class ProjectManager extends Controller
         ]);
 
         // Add suspension remarks as a JSON field
-        $standardFields['suspensionRemarks'] = json_encode($suspensionData);
+        $standardFields['remarksData'] = json_encode($suspensionData);
         $standardFields['projectStatus'] = $request->input('projectStatus');
         $standardFields['ongoingStatus'] = $request->input('ongoingStatus');
         $standardFields['othersContractor'] = $request->input('othersContractor');
@@ -382,8 +399,20 @@ class ProjectManager extends Controller
             if (!$projectData) {
                 return redirect()->back()->withErrors(['Project not found.']);
             }
+            
     
             $project = $projectData->toArray();
+            // Decode suspensionRemarks JSON
+                $project['remarksData'] = [];
+                if (!empty($projectData->suspensionRemarks)) {
+                    $decodedRemarks = json_decode($projectData->suspensionRemarks, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $project['remarksData'] = $decodedRemarks;
+                    } else {
+                        Log::warning('Invalid JSON in suspensionRemarks', ['project_id' => $id]);
+                    }
+                }
+
             $project['projectStatus'] = $projectData->projectStatus ?? 'Not Available';
     
             $statuses = ProjectStatus::where('project_id', $id)
@@ -432,21 +461,49 @@ class ProjectManager extends Controller
             }
             $project['orderDetails'] = $orderDetails;
     
-            $fundUtilization = FundsUtilization::where('project_id', $id)->first();
+            $fundUtilization = FundsUtilization::where('project_id', $id)
+            ->orderBy('updated_at', 'desc')
+            ->first();
             if ($fundUtilization) {
                 $project['funds'] = $fundUtilization->only([
                     'orig_abc', 'orig_contract_amount', 'orig_engineering', 'orig_mqc', 'orig_contingency', 'orig_bid', 'orig_appropriation',
                     'actual_abc', 'actual_contract_amount', 'actual_engineering', 'actual_mqc', 'actual_contingency', 'actual_bid', 'actual_appropriation',
                 ]);
     
-                $project['summary'] = is_string($fundUtilization->summary)
-                    ? json_decode($fundUtilization->summary, true)
-                    : ($fundUtilization->summary ?? []);
-    
-                $project['partial_billings'] = is_string($fundUtilization->partial_billings)
-                    ? json_decode($fundUtilization->partial_billings, true)
-                    : ($fundUtilization->partial_billings ?? []);
+                $project['summary'] = [];
+
+                if (isset($fundUtilization->summary)) {
+                    if (is_string($fundUtilization->summary)) {
+                        $decodedSummary = json_decode($fundUtilization->summary, true);
+                        if (json_last_error() === JSON_ERROR_NONE) {
+                            $project['summary'] = $decodedSummary;
+                        } else {
+                            // Handle JSON decoding error
+                            error_log('Summary JSON decode error: ' . json_last_error_msg());
+                        }
+                    } elseif (is_array($fundUtilization->summary)) {
+                        $project['summary'] = $fundUtilization->summary;
+                    }
+                }
+                
+                $project['partial_billings'] = [];
+                
+                if (isset($fundUtilization->partial_billings)) {
+                    if (is_string($fundUtilization->partial_billings)) {
+                        $decodedBillings = json_decode($fundUtilization->partial_billings, true);
+                        if (json_last_error() === JSON_ERROR_NONE) {
+                            $project['partial_billings'] = $decodedBillings;
+                        } else {
+                            // Handle JSON decoding error
+                            error_log('Partial billings JSON decode error: ' . json_last_error_msg());
+                        }
+                    } elseif (is_array($fundUtilization->partial_billings)) {
+                        $project['partial_billings'] = $fundUtilization->partial_billings;
+                    }
+                }
+                
             }
+        
     
             $project['variation_orders'] = VariationOrder::where('funds_utilization_id', $fundUtilization->id ?? null)
                 ->orderBy('vo_number')
@@ -457,7 +514,10 @@ class ProjectManager extends Controller
                     ]);
                 })
                 ->toArray();
+
+                Log::info('Variation Orders:', ['project_id' => $id, 'variation_orders' => $project['variation_orders']]);
     
+                
             $role = auth()->user()->role;
             switch ($role) {
                 case 'System Admin':
@@ -502,7 +562,7 @@ public function getProjectSummary()
         $ongoingProjects = $visibleProjects->clone()->where('projectStatus', 'Ongoing')->count();
         $completedProjects = $visibleProjects->clone()->where('projectStatus', 'Completed')->count();
         $discontinuedProjects = $visibleProjects->clone()->where('projectStatus', 'Cancelled')->count();
-        $toBeStartedProjects = $visibleProjects->clone()->where('projectStatus', 'To Be Started')->count();
+        $toBeStartedProjects = $visibleProjects->clone()->where('projectStatus', 'Not Started')->count();
         $suspendedProjects = $visibleProjects->clone()->where('projectStatus', 'Suspended')->count();
 
         $projects = $visibleProjects->get();
@@ -743,31 +803,8 @@ public function updateProject(Request $request, $id)
         return response()->json(["status" => "success", "message" => "Project successfully archived."]);
     }
 
-    public function showProjectStatus($id)
-    {
-        $project = Project::findOrFail($id);
-        $statuses = ProjectStatus::where('project_id', $id)
-            ->orderByDesc('date')
-            ->orderByDesc('percentage')
-            ->get();
     
-        $projectStatusData = [
-            'project_id' => $project->id,
-            'projectStatus' => $statuses->isEmpty() ? ($project->projectStatus ?? 'No status available') : $statuses->first()->progress,
-            'updatedAt' => $statuses->isEmpty() ? optional($project->updated_at)->format('Y-m-d') : $statuses->first()->date,
-            'latestPercentage' => $statuses->isEmpty() ? $project->percentage : $statuses->first()->percentage,
-            'ongoingStatus' => $statuses->map(function ($status) {
-                return [
-                    'progress' => $status->progress,
-                    'percentage' => $status->percentage,
-                    'date' => $status->date,
-                ];
-            })->toArray()
-        ];
-    
-        return view('systemAdmin.overview', compact('projectStatusData'));
-    }
-    
+     
     
 
 public function addStatus(Request $request)

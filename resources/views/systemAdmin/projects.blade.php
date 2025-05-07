@@ -31,7 +31,8 @@
                     <div class="col-md-3">
                         <div class="form-floating">
                             <select class="form-select" id="location_filter" name="location_filter">
-                                <option value="">Select Location</option>
+                                <option value="" selected disabled>Select Location</option>
+                                <option value="">All Location</option>
                                 @foreach($allLocations as $location)
                                     <option value="{{ $location }}">{{ $location }}</option>
                                 @endforeach
@@ -48,7 +49,8 @@
                     <div class="col-md-3">
                         <div class="form-floating">
                             <select id="contractor_filter" name="contractor" class="form-select">
-                                <option value="">Select Contractor</option>
+                                <option value="" selected disabled>Select Contractor</option>
+                                <option value="" >All Contractor</option>
                                 @foreach($contractors as $contractor)
                                     <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
                                 @endforeach

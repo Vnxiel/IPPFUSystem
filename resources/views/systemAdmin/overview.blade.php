@@ -596,7 +596,7 @@ function showMunicipalitySuggestions(query) {
     
     @include('systemAdmin.modals.add-fund')
     @include('systemAdmin.modals.add-status')
-    @include('systemAdmin.modals.check-status')
+    @include('systemAdmin.modals.fund-summary')
     @include('systemAdmin.modals.edit-project')
     @include('systemAdmin.modals.uploadFiles')
     @include('systemAdmin.modals.generate-report')

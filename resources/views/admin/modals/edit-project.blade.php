@@ -1,5 +1,5 @@
 <div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="projectModalLabel">Edit Project Details</h5>
@@ -21,10 +21,38 @@
                                         <label for="projectTitle">Project Title<span class="text-danger">*</span></label>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-5">
                                     <div class="form-floating mb-2">
                                         <input type="text" class="form-control" id="projectID" name="projectID" value="{{ old('projectID', $project['projectID'] ?? '') }}" required>
-                                        <label for="projectID">Project ID<span class="text-danger">*</span></label>
+                                        <label for="projectID">Project ID <span class="text-danger">*</span></label>
+                                    </div>
+                                </div>
+                                <!-- Project Year with Datalist -->
+                                <div class="col-md-3">
+                                    <div class="form-floating mb-2">
+                                        <input type="number" class="form-control" id="projectYear" name="projectYear" list="yearOptions" value="{{ old('projectYear', $project['projectYear'] ?? '') }}"required>
+                                        <label for="projectYear">Year <span class="text-danger">*</span></label>
+                                        <datalist id="yearOptions">
+                                            @foreach($projectYear as $year)
+                                                <option value="{{ $year->projectYear }}"></option>
+                                            @endforeach
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating mb-2">
+                                        <input type="text" class="form-control" id="projectFPP" name="projectFPP" value="{{ old('projectFPP', $project['projectFPP'] ?? '') }}" required>
+                                        <label for="projectFPP">FPP <span class="text-danger">*</span></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FPP and Responsibility Center -->
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-2">
+                                        <input type="text" class="form-control" id="projectRC" name="projectRC" value="{{ old('projectRC', $project['projectRC'] ?? '') }}" required>
+                                        <label for="projectRC">Responsibility Center <span class="text-danger">*</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -75,30 +103,12 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label for="sourceOfFunds" class="form-label">Source of Fund <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds" value="{{ old('sourceOfFunds', $project['sourceOfFunds'] ?? '') }}"
-                                        placeholder="Enter source of funds.">
-                                    <!-- <label for="sourceOfFunds" class="form-label">Source of Fund <span
-                                            class="text-danger">*</span></label>
-                                    <select id="sourceOfFunds" name="sourceOfFunds" class="form-select"
-                                        onchange="toggleOtherFund()">
-                                        <option value="">Select Source</option>
-                                        <option value="Wages">Wages</option>
-                                        <option value="% Mobilization">15% Mobilization</option>
-                                        <option value="Trust Fund">Trust Fund</option>
-                                        <option value="Final Billing">Final Billing</option>
-                                        <option value="Others">Others</option>
-                                    </select> -->
-
-                                    <!-- Hidden text input for 'Others' -->
-                                    <div id="otherFundContainer" class="mt-2" style="display: none;">
-                                        <label for="otherFund" class="form-label">Please specify:</label>
-                                        <input type="text" id="otherFund" name="otherFund" class="form-control"
-                                            placeholder="Enter fund source">
+                                    <div class="mb-2">
+                                        <label for="sourceOfFunds" class="form-label">Source of Fund <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds" value="{{ old('sourceOfFunds', $project['sourceOfFunds'] ?? '') }}"
+                                            placeholder="Enter source of funds.">
                                     </div>
-                                </div>
 
                                     <div class="mb-2">
                                         <label for="projectSlippage" class="form-label">Slippage</label>
@@ -141,19 +151,19 @@
                                     <div class="col-md-6">
                                         <div class="mb-2">
                                             <label for="appropriation" class="form-label">Appropriation <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control currency-input" id="appropriation" name="appropriation" value="{{ old('appropriation', $funds['orig_appropriation'] ?? '') }}">
+                                            <input type="text" class="form-control currency-input" id="appropriation" name="appropriation" value="{{ old('appropriation', $project['funds']['orig_appropriation'] ?? '') }}">
                                         </div>
                                         <div class="mb-2">
                                             <label for="abc" class="form-label">ABC</label>
-                                            <input type="text" class="form-control currency-input" id="abc" name="abc" value="{{ old('abc', $funds['orig_abc'] ?? '') }}">
+                                            <input type="text" class="form-control currency-input" id="abc" name="abc" value="{{ old('abc', $project['funds']['orig_abc'] ?? '') }}">
                                         </div>
                                         <div class="mb-2">
                                             <label for="contractAmount" class="form-label">Contract Amount</label>
-                                            <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount" value="{{ old('contractAmount', $funds['orig_contract_amount'] ?? '') }}">
+                                            <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount" value="{{ old('contractAmount', $project['funds']['orig_contract_amount'] ?? '') }}">
                                         </div>
                                         <div class="mb-2">
                                             <label for="bid" class="form-label">Bid Difference</label>
-                                            <input type="text" class="form-control currency-input" id="bid" name="bid" value="{{ old('bid', $funds['orig_bid'] ?? '') }}">
+                                            <input type="text" class="form-control currency-input" id="bid" name="bid" value="{{ old('bid', $project['funds']['orig_bid'] ?? '') }}">
                                         </div>
                                         <div class="mb-2">
                                             <label for="projectContractDays" class="form-label">Contract Days (Calendar days)</label>
@@ -165,15 +175,15 @@
                                         <h6 class="m-1 fw-bold">Wages:</h6>
                                         <div class="mb-2">
                                             <label for="engineering" class="form-label">Engineering</label>
-                                            <input type="text" class="form-control currency-input" id="engineering" name="engineering" value="{{ old('engineering', $funds['orig_engineering'] ?? '') }}">
+                                            <input type="text" class="form-control currency-input" id="engineering" name="engineering" value="{{ old('engineering', $project['funds']['orig_engineering'] ?? '') }}">
                                         </div>
                                         <div class="mb-2">
                                             <label for="mqc" class="form-label">MQC</label>
-                                            <input type="text" class="form-control currency-input" id="mqc" name="mqc" value="{{ old('mqc', $funds['orig_mqc'] ?? '') }}">
+                                            <input type="text" class="form-control currency-input" id="mqc" name="mqc" value="{{ old('mqc', $project['funds']['orig_mqc'] ?? '') }}">
                                         </div>
                                         <div class="mb-2">
                                             <label for="contingency" class="form-label">Contingency</label>
-                                            <input type="text" class="form-control currency-input" id="contingency" name="contingency" value="{{ old('contingency', $funds['orig_contingency'] ?? '') }}">
+                                            <input type="text" class="form-control currency-input" id="contingency" name="contingency" value="{{ old('contingency', $project['funds']['orig_contingency'] ?? '') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -272,24 +282,28 @@
                                             @endphp
 
                                             @foreach ($orders as $order)
-                                                <div class="row mb-2 order-set" id="orderSet{{ $order['index'] }}">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-2">
-                                                            <label for="{{ $order['suspensionKey'] }}" class="form-label">Suspension Order No. {{ $order['index'] }}</label>
-                                                            <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}" name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
-                                                        </div>
-                                                        <div class="col-md-6 mb-2">
-                                                            <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">Remarks</label>
-                                                            <input type="text" class="form-control" id="suspensionOrderNo{{ $order['index'] }}Remarks" name="suspensionOrderNo{{ $order['index'] }}Remarks">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-2">
-                                                            <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order No. {{ $order['index'] }}</label>
-                                                            <input type="date" class="form-control" id="{{ $order['resumeKey'] }}" name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div class="row">
+    <div class="col-md-6 mb-2">
+        <label for="{{ $order['suspensionKey'] }}" class="form-label">Suspension Order No. {{ $order['index'] }}</label>
+        <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}" name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
+    </div>
+    <div class="col-md-6 mb-2">
+        <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order No. {{ $order['index'] }}</label>
+        <input type="date" class="form-control" id="{{ $order['resumeKey'] }}" name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 mb-2">
+        <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">Suspension Remarks</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="suspensionOrderNo{{ $order['index'] }}Remarks" 
+            name="suspensionOrderNo{{ $order['index'] }}Remarks"
+            value="{{ $remarksData[$order['index']]['suspensionOrderRemarks'] ?? '' }}">
+    </div>
+</div>
+
                                             @endforeach
                                         </div>
                                     </div>
@@ -321,4 +335,14 @@
                 </div>
             </div>
         </div>
+        <script>
+    function applyHistoryValue(selectEl, inputId) {
+        const value = selectEl.value;
+        if (value) {
+            document.getElementById(inputId).value = value;
+            document.getElementById(inputId).focus();
+        }
+    }
+</script>
+
 

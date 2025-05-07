@@ -14,11 +14,13 @@ return new class extends Migration
 
             $table->string('projectTitle');
             $table->string('projectLoc');
+
             $table->string('projectContractor');
             $table->string('sourceOfFunds');
             $table->string('otherFund')->nullable();
             $table->string('modeOfImplementation');
-            $table->int('projectYear');
+            $table->integer('projectContractDays');
+            $table->integer('projectYear');
             $table->string('projectRC');
             $table->string('projectFPP');
 
@@ -45,6 +47,7 @@ return new class extends Migration
             $table->string('othersContractor')->nullable();
             $table->string('projectStatus')->nullable();
             $table->string('ongoingStatus')->nullable();
+            $table->string('suspensionRemarks')->nullable();
             $table->boolean('is_hidden')->default(false); // Better as boolean
 
             $table->timestamps();

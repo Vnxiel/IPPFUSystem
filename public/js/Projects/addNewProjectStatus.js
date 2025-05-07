@@ -132,7 +132,7 @@ $(document).ready(function () {
 
                 Swal.fire({
                     icon: "error",
-                    title: "Validation Error",
+                    title: "Error Adding New Status",
                     text: errorMessage
                 });
             }

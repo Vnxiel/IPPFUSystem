@@ -1,5 +1,4 @@
 <!-- Modal for adding project status -->
-<!-- Add Status Modal -->
 <div class="modal fade" id="addStatusModal" tabindex="-1" aria-labelledby="addStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -7,37 +6,50 @@
                 <h5 class="modal-title" id="addStatusModalLabel">Add Project Status</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-           
+
             <form id="addStatusForm">
                 <div class="modal-body">
-                    
+
                     <!-- Progress Dropdown -->
                     <div class="mb-3">
                         <label for="progress" class="form-label">Progress</label>
                         <select class="form-select" id="progress" aria-label="Select project progress">
+                            <option value="">Select Status</option>
+                            <option value="To Be Started">To Be Started</option>
                             <option value="Ongoing">Ongoing</option>
                             <option value="Completed">Completed</option>
-                            <option value="Cancelled">Discontinued</option>
-                          
+                            <option value="Discontinued">Discontinued</option>
+                            <option value="Suspended">Suspended</option>
                         </select>
                     </div>
 
-                    <!-- Percentage Input -->
-                    <div class="mb-3">
+                    <!-- Percentage Input with History -->
+                  <!-- Percentage Input -->
+                    <div class="mb-3 position-relative">
                         <label for="percentage" class="form-label">Percentage</label>
                         <input type="number" class="form-control" id="percentage" placeholder="Enter percentage">
+
+                        <!-- Info Label for History Dropdown -->
+                        <small class="form-text text-muted mt-1" id="historyLabel" style="display: none;">Previous Status History:</small>
+
+                        <!-- History Dropdown Suggestion Box -->
+                        <div id="historyDropdown" class="dropdown-menu show" style="display: none; max-height: 150px; overflow-y: auto;">
+                            <!-- Dynamically filled via JS -->
+                        </div>
                     </div>
 
-                    <!-- Date Input with Checkbox for Auto Date -->
+
+                    <!-- Date Input with Auto Checkbox -->
                     <div class="mb-3">
                         <label for="date" class="form-label">Date</label>
-                        <div class="form-check">
+                        <div class="form-check mb-2">
                             <input type="checkbox" class="form-check-input" id="autoDate" checked>
                             <label class="form-check-label" for="autoDate">Set to Current Date</label>
                         </div>
                         <input type="date" class="form-control" id="date" disabled>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Submit Status</button>
@@ -46,4 +58,54 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const percentageInput = document.getElementById('percentage');
+    const dropdown = document.getElementById('historyDropdown');
+    const historyLabel = document.getElementById('historyLabel'); // Reference to the label element
 
+    // Dynamically injected project status history
+    const historyData = @json($projectStatusData['ongoingStatus']);
+
+    function showHistory() {
+        dropdown.innerHTML = '';
+        historyData.forEach(entry => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item text-muted small';
+            item.textContent = `${entry.progress} - ${entry.percentage}% on ${entry.date}`;
+            dropdown.appendChild(item);
+        });
+        dropdown.style.display = 'block';
+        if (historyLabel) historyLabel.style.display = 'block';
+    }
+
+    percentageInput.addEventListener('focus', showHistory);
+    percentageInput.addEventListener('input', showHistory);
+
+    percentageInput.addEventListener('blur', () => {
+        setTimeout(() => {
+            dropdown.style.display = 'none';
+            if (historyLabel) historyLabel.style.display = 'none';
+        }, 200);
+    });
+
+    // Auto date handling
+    const autoDate = document.getElementById('autoDate');
+    const dateInput = document.getElementById('date');
+
+    autoDate.addEventListener('change', () => {
+        if (autoDate.checked) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+            dateInput.disabled = true;
+        } else {
+            dateInput.disabled = false;
+        }
+    });
+
+    if (autoDate.checked) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.value = today;
+    }
+});
+</script>

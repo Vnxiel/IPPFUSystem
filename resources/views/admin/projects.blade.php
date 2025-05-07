@@ -7,17 +7,16 @@
     <!-- Header Section -->
     <div class="card mb-2 border-0 shadow-sm">
         <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <div class="icon-circle me-3" style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 50%;">
-                        <i class="fas fa-project-diagram" style="font-size: 24px; color: #2196F3;"></i>
-                    </div>
-                </div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewProjectModal" 
-                    style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="ms-auto">
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addNewProjectModal"
+                        style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
                     <i class="fas fa-plus-circle me-2"></i>Add New Project
                 </button>
             </div>
+        </div>
         </div>
     </div>
 
@@ -28,41 +27,37 @@
                 <i class="fas fa-filter me-2"></i>Filter Projects
             </h5>
             <div class="row g-3">
-                <!-- Location Filter -->
-                <div class="col-md-3">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="location_filter" name="location_filter"
-                            placeholder="Enter Location" onkeyup="filterSuggestions(this.value)" autocomplete="off">
-                        <label for="location_filter">
-                            <i class="bi bi-geo-alt me-2"></i>Location
-                        </label>
+               <!-- Location Dropdown -->
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <select class="form-select" id="location_filter" name="location_filter">
+                                <option value="">Select Location</option>
+                                @foreach($allLocations as $location)
+                                    <option value="{{ $location }}">{{ $location }}</option>
+                                @endforeach
+                            </select>
+                            <label for="location_filter">
+                                <i class="bi bi-geo-alt me-2"></i>Location
+                            </label>
+                        </div>
                     </div>
-                    <div id="suggestionsBox" class="list-group position-absolute w-100 shadow-sm"
-                        style="display:none; max-height: 200px; overflow-y: auto; z-index: 1050;">
-                        @foreach($locations as $location)
-                            <button type="button" class="list-group-item list-group-item-action suggestion-item">
-                                {{ $location->location }}
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
 
-                <!-- Contractor Filter -->
-                <div class="col-md-3">
-                    <div class="form-floating">
-                        <input list="contractors_list" id="contractor_filter" name="contractor" class="form-select"
-                            placeholder="Select contractor">
-                        <label for="contractor_filter">
-                            <i class="bi bi-person-workspace me-2"></i>Contractor
-                        </label>
-                        <datalist id="contractors_list">
-                            <option value="">Select Contractors</option>
-                            @foreach($contractors as $contractor)
-                                <option value="{{ $contractor->name }}"></option>
-                            @endforeach
-                        </datalist>
+
+
+                <!-- Contractor Dropdown -->
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <select id="contractor_filter" name="contractor" class="form-select">
+                                <option value="">Select Contractor</option>
+                                @foreach($contractors as $contractor)
+                                    <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="contractor_filter">
+                                <i class="bi bi-person-workspace me-2"></i>Contractor
+                            </label>
+                        </div>
                     </div>
-                </div>
 
                 <!-- Amount Filter -->
                 <div class="col-md-3">
@@ -80,7 +75,8 @@
                     <div class="form-floating">
                         <select id="status_filter" class="form-select">
                             <option value="">Select Status</option>
-                            <option value="Started">Started</option>
+                            <option value="All">All</option>
+                            <option value="To Be Started">To Be Started</option>
                             <option value="Ongoing">Ongoing</option>
                             <option value="Completed">Completed</option>
                             <option value="Discontinued">Discontinued</option>
@@ -91,6 +87,16 @@
                         </label>
                     </div>
                 </div>
+                <!-- View All Projects Checkbox -->
+            <div class="col-md-3 d-flex align-items-end">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
+                    <label class="form-check-label fw-semibold" for="view_all_checkbox">
+                        View All Projects
+                    </label>
+                </div>
+            </div>
+
             </div>
         </div>
     </div>
@@ -113,10 +119,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td colspan="7" class="text-center">Loading projects...</td>
-                                </tr>
+                                @forelse($mappedProjects as $project)
+                                    <tr>
+                                        <td>{{ $project['title'] }}</td>
+                                        <td>{{ $project['location'] }}</td>
+                                        <td>{{ $project['status'] }}</td>
+                                        <td>₱{{ $project['amount'] }}</td>
+                                        <td>{{ $project['contractor'] }}</td>
+                                        <td>{{ $project['duration'] }}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm overview-btn" data-id="{{ $project['id'] }}">Overview</button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center">There are no currently added projects.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -124,7 +145,50 @@
         </div>
     </div>
 
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const locationInput = document.getElementById('location_filter');
+    const dropdown = document.getElementById('locationDropdown');
 
+    function filterLocationDropdown(value) {
+        const items = dropdown.querySelectorAll('button');
+        let visible = 0;
+
+        items.forEach(item => {
+            if (item.textContent.toLowerCase().includes(value.toLowerCase())) {
+                item.style.display = '';
+                visible++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display = (visible > 0) ? 'block' : 'none';
+    }
+
+    function selectLocation(value) {
+        locationInput.value = value + ', Nueva Vizcaya';
+        dropdown.style.display = 'none';
+    }
+
+    function showLocationDropdown() {
+        const items = dropdown.querySelectorAll('button');
+        items.forEach(item => item.style.display = '');
+        dropdown.style.display = 'block';
+    }
+
+    document.addEventListener('click', function (e) {
+        if (dropdown && !dropdown.contains(e.target) && e.target !== locationInput) {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    // If needed, expose the functions globally
+    window.filterLocationDropdown = filterLocationDropdown;
+    window.selectLocation = selectLocation;
+    window.showLocationDropdown = showLocationDropdown;
+});
+</script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -249,28 +313,29 @@
 
         // 2) Wire up events once DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
-            const input = document.getElementById('projectLoc');
-            const box = document.getElementById('suggestionsBox');
-            const items = box.getElementsByClassName('suggestion-item');
+    const input = document.getElementById('projectLoc');
+    const box = document.getElementById('suggestionsBox');
 
-            // Replace inline onkeyup with a JS listener
-            input.addEventListener('keyup', e => filterSuggestions(e.target.value));
+    if (!input || !box) return; // Exit early if elements don't exist
 
-            // Click a suggestion → fill input + hide box
-            Array.from(items).forEach(item => {
-                item.addEventListener('click', () => {
-                    input.value = item.textContent.trim();
-                    box.style.display = 'none';
-                });
-            });
+    const items = box.getElementsByClassName('suggestion-item');
 
-            // Click outside → hide box
-            document.addEventListener('click', e => {
-                if (!box.contains(e.target) && e.target !== input) {
-                    box.style.display = 'none';
-                }
-            });
+    input.addEventListener('keyup', e => filterSuggestions(e.target.value));
+
+    Array.from(items).forEach(item => {
+        item.addEventListener('click', () => {
+            input.value = item.textContent.trim();
+            box.style.display = 'none';
         });
+    });
+
+    document.addEventListener('click', e => {
+        if (!box.contains(e.target) && e.target !== input) {
+            box.style.display = 'none';
+        }
+    });
+});
+
     </script>
 
     <script>
@@ -396,7 +461,7 @@
         const municipalities = [
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
             'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
-            'Villaverde', 'Ambaguio', 'Santa Fe'
+            'Villaverde', 'Ambaguio', 'Santa Fe', 'Lamut'
         ];
 
         function showMunicipalitySuggestions(query) {

@@ -7,30 +7,116 @@ use Illuminate\Http\Request;
 use App\Models\Contractor;
 use App\Models\Location;
 use App\Models\User;
+use App\Models\Project;
 use App\Models\ActivityLog;
 
 class AdminManager extends Controller
 {
 
     public function index(){
-        $locations = Project::select('projectLoc')
-        ->distinct()
-        ->whereNotNull('projectLoc')
-        ->orderBy('projectLoc')
-        ->get();
+    
+        $contractors = Contractor::orderBy('name', 'asc')->get();
+        $staticLocations = [
+            'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
+            'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
+            'Villaverde', 'Ambaguio', 'Santa Fe'
+        ];
+    
+        $dbLocations = Project::select('projectLoc')
+            ->whereNotNull('projectLoc')
+            ->pluck('projectLoc')
+            ->toArray();
+    
+        // Merge and remove duplicates
+        $allLocations = collect(array_merge($staticLocations, $dbLocations))
+            ->unique()
+            ->sort()
+            ->values();
+
         $sourceOfFunds = Project::select('sourceOfFunds')
         ->distinct()
         ->whereNotNull('sourceOfFunds')
         ->orderBy('sourceOfFunds')
         ->get();
-        $contractors = Contractor::orderBy('name', 'asc')->get();
-        return view('admin.index', compact('locations', 'contractors', 'sourceOfFunds'));
-    }
 
-    public function projects() {
-        
-        return view('admin.projects');  // Returns the 'trash.blade.php' view
-    }
+        $projectYear = Project::select('projectYear')
+        ->distinct()
+        ->whereNotNull('projectYear')
+        ->orderBy('projectYear')
+        ->get();
+        $projectEA = Project::select('ea')
+        ->distinct()
+        ->whereNotNull('ea')
+        ->orderBy('ea')
+        ->get();
+
+         return view('admin.index', compact('contractors', 'allLocations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+}
+
+
+public function projects()
+{
+    $projects = Project::select('id', 'projectTitle', 'projectLoc', 'projectStatus', 'projectContractor', 'othersContractor', 'projectContractDays')
+    ->with('fundsUtilization')
+    ->where(function ($query) {
+        $query->whereNull('is_hidden')->orWhere('is_hidden', 0);
+    })
+    ->orderBy('created_at', 'desc')
+    ->get();
+    $contractors = Contractor::orderBy('name')->get();
+    $staticLocations = [
+        'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
+        'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
+        'Villaverde', 'Ambaguio', 'Santa Fe'
+    ];
+
+    $dbLocations = Project::select('projectLoc')
+        ->whereNotNull('projectLoc')
+        ->pluck('projectLoc')
+        ->toArray();
+
+    // Merge and remove duplicates
+    $allLocations = collect(array_merge($staticLocations, $dbLocations))
+        ->unique()
+        ->sort()
+        ->values();
+
+    $sourceOfFunds = Project::select('sourceOfFunds')
+    ->distinct()
+    ->whereNotNull('sourceOfFunds')
+    ->orderBy('sourceOfFunds')
+    ->get();
+    $projectYear = Project::select('projectYear')
+    ->distinct()
+    ->whereNotNull('projectYear')
+    ->orderBy('projectYear')
+    ->get();
+    $projectEA = Project::select('ea')
+    ->distinct()
+    ->whereNotNull('ea')
+    ->orderBy('ea')
+    ->get();
+
+
+    $mappedProjects = $projects->map(function ($project) {
+        $amount = optional($project->fundsUtilization)->orig_contract_amount;
+        $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
+
+        return [
+            'title' => $project->projectTitle ?? 'N/A',
+            'location' => $project->projectLoc ?? 'N/A',
+            'status' => $project->projectStatus ?? 'N/A',
+            'amount' => $formattedAmount,
+            'contractor' => (strtolower($project->projectContractor) === 'others')
+                ? ($project->othersContractor ?? 'N/A')
+                : ($project->projectContractor ?? 'N/A'),
+            'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
+            'id' => $project->id,
+        ];
+    });
+
+    return view('admin.projects', compact('mappedProjects', 'contractors', 'allLocations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+}
 
     public function activityLogs() {
         return view('admin.activityLogs');  // Returns the 'activityLogs.blade.php' view
