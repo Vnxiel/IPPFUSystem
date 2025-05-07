@@ -26,62 +26,70 @@
 
     </head>
     <!-- <body style="background-color: #F8F2DE;" class="montserrat"> -->
+
     <body class="montserrat d-flex flex-column min-vh-100">
-        <div class="wrapper d-flex flex-column flex-grow-1">
-            <!-- Enhanced Navbar -->
-            <nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(to right, #ffffff, #F8F2DE);">
-                <div class="container-fluid px-4">
-                    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+    <div class="wrapper d-flex flex-column flex-grow-1">
 
-                    <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('admin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
-                            <div class="d-flex align-items-center">
-                                <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="55" height="45" class="img-fluid me-3">
-                                <div>
-                                    <h5 class="mb-0 fw-bold" style="color: #2c3e50;">Provincial Engineering Office</h5>
-                                    <h6 class="mt-1 text-muted" style="font-size: 0.9rem;">Province of Nueva Vizcaya</h6>
-                                </div>
+        <nav class="navbar navbar-expand-lg shadow-sm" style="background: #ECDCBF;">
+            <div class="container-fluid px-4">
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
+                    <a href="{{ route('admin.index') }}"
+                        class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="55" height="45"
+                                class="img-fluid me-3">
+                            <div>
+                                <h5 class="mb-0 fw-bold" style="color: #2c3e50;">Provincial Engineering Office</h5>
+                                <h6 class="mt-1 text-muted" style="font-size: 0.9rem;">Province of Nueva Vizcaya</h6>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        <ul class="navbar-nav col-lg-6 justify-content-lg-center gap-lg-2">
+                    <div class="d-lg-flex align-items-center ms-auto gap-lg-3">
+                        <ul class="navbar-nav gap-lg-2">
                             <li class="nav-item">
-                                <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/index') ? 'fw-bold text-white' : '' }}" 
-                                   style="{{ Request::is('admin/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                   href="{{ url('/admin/index') }}">
-                                   <i class="fas fa-chart-line me-2"></i>Dashboard
+                                <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/index') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('admin/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/admin/index') }}">
+                                    <i class="fas fa-chart-line me-2"></i>Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/projects') ? 'fw-bold text-white' : '' }}"
-                                   style="{{ Request::is('admin/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                   href="{{ url('/admin/projects') }}">
-                                   <i class="fas fa-project-diagram me-2"></i>Projects
+                                    style="{{ Request::is('admin/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/admin/projects') }}">
+                                    <i class="fas fa-project-diagram me-2"></i>Projects
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/userManagement') ? 'fw-bold text-white' : '' }}"
-                                   style="{{ Request::is('admin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                   href="{{ url('/admin/userManagement') }}">
-                                   <i class="fas fa-users me-2"></i>User Management
+                                    style="{{ Request::is('admin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/admin/userManagement') }}">
+                                    <i class="fas fa-users me-2"></i>User Management
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 {{ Request::is('admin/trash') || Request::is('admin/activityLogs') ? 'fw-bold text-white' : '' }}"
-                                   style="{{ Request::is('admin/trash') || Request::is('admin/activityLogs') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                   href="#" data-bs-toggle="dropdown">
-                                   <i class="fas fa-cog me-2"></i>Settings
+                                    style="{{ Request::is('admin/trash') || Request::is('admin/activityLogs') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="#" data-bs-toggle="dropdown">
+                                    <i class="fas fa-cog me-2"></i>Settings
                                 </a>
                                 <ul class="dropdown-menu border-0 shadow-sm mt-2">
                                     <li>
-                                        <a class="dropdown-item py-2 {{ Request::is('admin/trash') ? 'fw-bold text-primary' : '' }}" href="{{ url('/admin/trash') }}">
+                                        <a class="dropdown-item py-2 {{ Request::is('admin/trash') ? 'fw-bold text-primary' : '' }}"
+                                            href="{{ url('/admin/trash') }}">
                                             <i class="fas fa-archive me-2"></i>Archive
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item py-2 {{ Request::is('admin/activityLogs') ? 'fw-bold text-primary' : '' }}" href="{{ url('/admin/activityLogs') }}">
+                                        <a class="dropdown-item py-2 {{ Request::is('admin/activityLogs') ? 'fw-bold text-primary' : '' }}"
+                                            href="{{ url('/admin/activityLogs') }}">
                                             <i class="fas fa-history me-2"></i>Activity Logs
                                         </a>
                                     </li>
@@ -89,43 +97,43 @@
                             </li>
                         </ul>
 
-                        <div class="d-lg-flex align-items-center justify-content-lg-end col-lg-3">
-                            <div class="dropdown">
-                                <?php $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest'; ?>
-                                <a href="#" id="dropdownMenuButton" 
-                                   class="d-flex align-items-center text-decoration-none dropdown-toggle px-3 py-2 rounded-3"
-                                   style="color: #2c3e50;"
-                                   data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-circle me-2" style="background: rgba(33, 150, 243, 0.1); padding: 8px; border-radius: 50%;">
-                                            <i class="fas fa-user" style="color: #2196F3;"></i>
-                                        </div>
-                                        <span class="fw-medium"><?php echo htmlspecialchars($username); ?></span>
+                        <div class="dropdown">
+                            <?php $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest'; ?>
+                            <a href="#" id="dropdownMenuButton"
+                                class="d-flex align-items-center text-decoration-none dropdown-toggle px-3 py-2 rounded-3"
+                                style="color: #2c3e50;" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle me-2"
+                                        style="background: rgba(33, 150, 243, 0.1); padding: 8px; border-radius: 50%;">
+                                        <i class="fas fa-user" style="color: #2196F3;"></i>
                                     </div>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2">
-                                    <li>
-                                        <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="logout()">
-                                            <i class="fas fa-sign-out-alt me-2"></i>Sign out
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                                    <span class="fw-medium"><?php echo htmlspecialchars($username); ?></span>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2">
+                                <li>
+                                    <a class="dropdown-item py-2 text-danger" href="javascript:void(0);"
+                                        onclick="logout()">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Sign out
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </nav>
-
-            <!-- Content -->
-            <div class="container-fluid flex-grow-1">
-                @yield('content')
             </div>
-        </div>
+        </nav>
 
-        <!-- Footer -->
-        <footer class="text-center p-2 bg-light mt-auto">
-            <p>&copy; {{ date('Y') }} PEO. All Rights Reserved.</p>
-        </footer>
+        <!-- Content -->
+        <div class="container-fluid flex-grow-1" style="background: #F8F2DE;">
+            @yield('content')
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center p-2 bg-light mt-auto">
+        <p>&copy; {{ date('Y') }} PEO. All Rights Reserved.</p>
+    </footer>
 
 
 
