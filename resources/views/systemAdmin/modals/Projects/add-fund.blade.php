@@ -99,18 +99,19 @@
                 </tbody>
               </table>
             </div>
+
+            <div class="text-end mt-2">
+              <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addVOFields()">
+                <i class="fa-solid fa-square-plus"></i> Add V.O.
+              </button>
+              <!-- <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastVOFields()">
+                <i class="fa-solid fa-circle-minus"></i> Remove V.O.
+              </button> -->
+            </div>
           </fieldset>
 
 
-          <div class="text-end mt-2">
-            <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addVOFields()">
-              <i class="fa-solid fa-square-plus"></i> Add V.O.
-            </button>
-            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastVOFields()">
-              <i class="fa-solid fa-circle-minus"></i> Remove V.O.
-            </button>
-          </div>
-          </fieldset>
+          
 
           <!-- Fund Utilization Summary Table -->
           <fieldset class="border p-3 mb-4 rounded">
@@ -135,7 +136,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>15% Mobilization</td>
+                    <td>% Mobilization</td>
                     <td><input type="date" class="form-control" name="dateMobi" value="{{ old('dateMobi', $project['summary']['dateMobi'] ?? '') }}"></td>
                     <td><input type="text" class="form-control amount-input" name="amountMobi" value="{{ old('amountMobi', $project['summary']['amount'] ?? '') }}" placeholder="₱0.00"></td>
                     <td><input type="text" class="form-control" name="remMobi"></td>

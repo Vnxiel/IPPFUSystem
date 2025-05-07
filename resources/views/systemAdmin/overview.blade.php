@@ -4,54 +4,74 @@
 
 @section('content')
 <!-- Project Overview -->
-<hr class="mx-2">
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12 d-flex align-items-center justify-content-between mb-3">
-            <div class="d-flex align-items-center gap-2">
-                <a class="btn btn-outline-secondary btn-sm {{ Request::is('systemAdmin/projects') ? 'active' : '' }}"
-                    href="{{ url('/systemAdmin/projects') }}">
-                    <span class="fa fa-arrow-left"></span>
-                </a>
-                <h5 class="m-0">Project Overview</h5>
-            </div>
+<div class="container-fluid py-4" style="background-color: transparent;">
+    <!-- Header Section -->
+    <div class="card mb-3 border-0 shadow-sm" style="background-color: #f8f9fa;">
+    <div class="card-body px-4 py-3">
+        <div class="row">
+            <div class="col-12">
+                <!-- Header with Back Button -->
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="d-flex align-items-center mb-2 mb-md-0">
+                        <a class="btn btn-outline-dark btn-sm me-3 {{ Request::is('systemAdmin/projects') ? 'active' : '' }}"
+                            href="{{ url('/systemAdmin/projects') }}" title="Back to Projects">
+                            <i class="fa fa-arrow-left"></i>
+                        </a>
+                        <h4 class="m-0 text-primary fw-semibold">Project Overview</h4>
+                    </div>
 
-            <!-- Action Buttons -->
-            <div class="d-flex align-items-center gap-2">
-                <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm d-flex align-items-center gap-1" 
-                    data-bs-toggle="modal" data-bs-target="#projectModal" title="Edit Project Details">
-                    <i class="fa fa-edit"></i>
-                    <span class="d-none d-md-inline">Edit</span>
-                </button>
-                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"
-                    data-bs-target="#addProjectFundUtilization" title="Add Fund Utilization Details">
-                    <span class="fa fa-plus"></span>
-                    <span class="d-none d-md-inline">Fund Utilization</span>
-                </button>
-               
-                <button type="button" id="fundSummaryBtn" class="btn btn-secondary btn-sm d-flex align-items-center gap-1" 
-                    data-bs-toggle="modal" data-bs-target="#fundSummaryModal" title="Fund Summary">
-                    <i class="fa-solid fa-check-to-slot"></i>
-                    <span class="d-none d-md-inline">Fund Summary</span>
-                </button>
-                <button type="button" id="generateProjectBtn" class="btn btn-info btn-sm d-flex align-items-center gap-1" 
-                    data-bs-toggle="modal" data-bs-target="#generateProjectModal" title="Generate/Download Report">
-                    <i class="fa fa-download"></i>
-                    <span class="d-none d-md-inline">Report</span>
-                </button>
-                <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm d-flex align-items-center gap-1" 
-                    data-bs-toggle="modal" data-bs-target="#trashModal" title="Archive Project">
-                    <i class="fa fa-trash"></i>
-                    <span class="d-none d-md-inline">Archive</span>
-                </button>
-                <button type="button" class="btn btn-success btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" 
-                    data-bs-target="#uploadModal" title="Upload Files">
-                    <i class="fa fa-upload"></i>
-                    <span class="d-none d-md-inline">Upload</span>
-                </button>
+                    <!-- Action Buttons Group -->
+                    <div class="btn-group flex-wrap gap-2" role="group" aria-label="Project Actions">
+                        <button type="button" id="editProjectBtn"
+                            class="btn btn-warning btn-sm d-flex align-items-center gap-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#projectModal">
+                            <i class="fa fa-edit"></i><span>Edit</span>
+                        </button>
+
+                        <button type="button"
+                            class="btn btn-primary btn-sm d-flex align-items-center gap-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addProjectFundUtilization">
+                            <i class="fa fa-plus"></i><span>Fund</span>
+                        </button>
+
+                        <button type="button" id="fundSummaryBtn"
+                            class="btn btn-secondary btn-sm d-flex align-items-center gap-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#fundSummaryModal">
+                            <i class="fa-solid fa-check-to-slot"></i><span>Summary</span>
+                        </button>
+
+                        <button type="button" id="generateProjectBtn"
+                            class="btn btn-info btn-sm d-flex align-items-center gap-1 text-white"
+                            data-bs-toggle="modal"
+                            data-bs-target="#generateProjectModal">
+                            <i class="fa fa-download"></i><span>Report</span>
+                        </button>
+
+                        <button type="button"
+                            class="btn btn-success btn-sm d-flex align-items-center gap-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#uploadModal">
+                            <i class="fa fa-upload"></i><span>Upload</span>
+                        </button>
+
+                        <button type="button" id="trashProjectBtn"
+                            class="btn btn-danger btn-sm d-flex align-items-center gap-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#trashModal">
+                            <i class="fa fa-trash"></i><span>Archive</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+
+    
 
     <div class="row">
         <div class="col-md-12">
@@ -99,8 +119,11 @@
                         </div>
                         <div class="mb-2 d-flex align-items-center">
                             <strong class="text-muted me-2" style="font-size: 18px;">Status:  <span class="badge bg-success me-2" style="font-weight: normal;">{{ $project['projectStatus'] ?? 'N/A' }}</span>
-                            <small >{{ $project['ongoingStatus'] ?? '' }}</small></strong>
-                           
+                            <small >{{ $project['ongoingStatus'] ?? '' }}</small></strong>                           
+                        </div>
+                        <div class="mb-2">
+                            <strong class="text-muted me-2" style="font-size: 18px;">Slippage:</strong>
+                            <span class="badge bg-danger ms-2">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
                         </div>
                     </div>
 
@@ -164,10 +187,6 @@
                                                 @endforeach
                                             </ul>
                                         </div>
-                                        <div>
-                                            <label class="text-muted">Slippage:</label>
-                                            <span class="badge bg-danger ms-2">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
-                                        </div>
                                     </div>
 
                                     <!-- Right Column: Implementation Details -->
@@ -216,6 +235,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 
@@ -594,11 +614,11 @@ function showMunicipalitySuggestions(query) {
 </script>
 
     
-    @include('systemAdmin.modals.add-fund')
-    @include('systemAdmin.modals.add-status')
-    @include('systemAdmin.modals.fund-summary')
-    @include('systemAdmin.modals.edit-project')
-    @include('systemAdmin.modals.uploadFiles')
-    @include('systemAdmin.modals.generate-report')
+    @include('systemAdmin.modals.Projects.add-fund')
+    @include('systemAdmin.modals.Projects.add-status')
+    @include('systemAdmin.modals.Projects.fund-summary')
+    @include('systemAdmin.modals.Projects.edit-project')
+    @include('systemAdmin.modals.Projects.uploadFiles')
+    @include('systemAdmin.modals.Projects.generate-report')
 
 @endsection

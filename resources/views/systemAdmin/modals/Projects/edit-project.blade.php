@@ -22,11 +22,13 @@
                                                     class="text-danger">*</span></label>
                                         </div>
                                         <div class="col">
-                                             <input type="text" class="form-control" id="projectTitle" name="projectTitle" value="{{ old('projectTitle', $project['projectTitle'] ?? '') }}" required>
+                                            <textarea class="form-control" id="projectTitle" name="projectTitle" rows="3"
+                                                required></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row g-3 mb-2">
                                 <div class="col-md-12  mb-2">
                                     <div class="row">
@@ -35,49 +37,48 @@
                                                     class="text-danger">*</span></label>
                                         </div>
                                         <div class="col">
-                                            <input type="text" class="form-control" id="projectID" name="projectID" value="{{ old('projectID', $project['projectID'] ?? '') }}" required>
-                                        
+                                            <input type="text" class="form-control" id="projectID" name="projectID" pattern="^[0-9-]+$" title="Only numbers and hyphens are allowed"                                            required>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                                 <!-- Project Year with Datalist -->
-                                <div class="row g-3 mb-2 text-end">
+                            <div class="row g-3 mb-2 text-end">
                                 <div class="col-md-3 text-end">
-                                            <label for="projectYear" class="form-label">Year <span class="text-danger">*</span></label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select form-select-sm" id="projectYear" name="projectYear" required>
-                                                <option value="" disabled selected>Select Year</option>
-                                                <!-- Year options will be injected here by JavaScript -->
-                                            </select>
-                                        </div>
-                                    <div class="col-md-2 text-end">
-                                        <label for="projectFPP" class="form-label">FPP <span
-                                                class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-md-4">
-                                    <input type="text" class="form-control" id="projectFPP" name="projectFPP" value="{{ old('projectFPP', $project['projectFPP'] ?? '') }}" required>
-                                          </div>
+                                    <label for="projectYear" class="form-label">Year <span
+                                            class="text-danger">*</span></label>
                                 </div>
-                                <div class="row mb-2 g-3 text-end">
-                                    <div class="col-md-3 text-end">
-                                        <label for="projectRC" class="form-label">Responsibility Center<span
-                                                class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-md-9">
-                                    <input type="text" class="form-control" id="projectRC" name="projectRC" value="{{ old('projectRC', $project['projectRC'] ?? '') }}" required>
-                                        </div>
+                                <div class="col-md-3">
+                                    <select class="form-select form-select-sm" id="projectYear" name="projectYear" required>
+                                        <option value="" disabled selected>Select Year</option>
+                                        <!-- Year options will be injected here by JavaScript -->
+                                    </select>
                                 </div>
-                                <div class="row g-3 mb-2 text-end">
-                            <div class="col-md-3">
-                                <label for="projectLoc" class="form-label">Location
-                                    <span class="text-danger">*</span>
-                                </label>
+                                <div class="col-md-2 text-end">
+                                    <label for="projectFPP" class="form-label">FPP <span
+                                            class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" id="projectFPP" name="projectFPP" required>
+                                </div>
                             </div>
+                            <div class="row mb-2 g-3 text-end">
+                                <div class="col-md-3 text-end">
+                                    <label for="projectRC" class="form-label">Responsibility Center<span
+                                            class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="projectRC" name="projectRC" required>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-2 text-end">                            
+                                <div class="col-md-3">
+                                    <label for="projectLoc" class="form-label">Location
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                </div>
                             <div class="col-md-9 position-relative">
                                 <input type="text" class="form-control" id="projectLoc" name="projectLoc"
-                                    value="{{ old('projectLoc', $project['projectLoc'] ?? '') }}"
                                     placeholder="Select or enter location" autocomplete="off"
                                     onfocus="showLocDropdown()" oninput="showLocDropdown()" />
                                 
@@ -105,7 +106,6 @@
                                     @endforeach
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="row mb-2 g-3">
@@ -114,26 +114,28 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col">
-                            <textarea class="form-control" id="projectDescription" name="projectDescription" style="height: 100px">{{ old('projectDescription', isset($project['projectDescriptions']) ? implode("\n", $project['projectDescriptions']) : '') }}</textarea>
-                                      
+                                <textarea class="form-control" id="projectDescription" name="projectDescription"
+                                    rows="4" required></textarea>
                             </div>
                         </div>
+
                         <div class="row mb-2 g-3">
                             <div class="col-3 text-end">
                                 <label for="projectContractor" class="form-label">Contractor<span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col">
-                            <select id="projectContractor" name="projectContractor" class="form-select" onchange="toggleOtherContractor()">
-                                            <option value="">--Select Contractor--</option>
-                                            @foreach($contractors as $contractor)
-                                                <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
-                                                    {{ $contractor->name }}
-                                                </option>
-                                            @endforeach
-                                            <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
-                                        </select>
+                                <select id="projectContractor" name="projectContractor" class="form-select" onchange="toggleOtherContractor()">
+                                    <option value="">--Select Contractor--</option>
+                                    @foreach($contractors as $contractor)
+                                        <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
+                                            {{ $contractor->name }}
+                                        </option>
+                                    @endforeach
+                                    <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
+                                </select>
                             </div>
+                        </div>
                             <!-- <div class="mb-2">
                                 <label for="projectContractor" class="form-label">Contractor <span
                                         class="text-danger">*</span></label>
@@ -144,7 +146,6 @@
                                     @endforeach
                                     <option value="Others">Others: (Specify)</option>
                                 </select>-->
-                        </div>
 
                         <!-- Hidden textbox for specifying 'Others' -->
                         <!-- <div class="mb-2" id="othersContractorDiv" style="display: none;">
@@ -153,11 +154,13 @@
                                         name="othersContractor" placeholder="Enter new contractor name">
                                 </div> -->
 
-                        <div class="row mb-2 align-items-center">
+
+                                <div class="row mb-2 align-items-center">
                             <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
                                 <span class="text-danger">*</span></label>
                             <div class="col-9">
-                                <input type="text" class="form-control" id="modeOfImplementation" name="modeOfImplementation" value="{{ old('modeOfImplementation', $project['modeOfImplementation'] ?? '') }}" readonly>
+                                <input type="text" class="form-control" id="modeOfImplementation"
+                                    name="modeOfImplementation" value="By contract." readonly required>
                             </div>
                         </div>
                         <div class="row mb-2 g-3 text-end">
@@ -166,8 +169,8 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9">
-                            <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds" value="{{ old('sourceOfFunds', $project['sourceOfFunds'] ?? '') }}"
-                                            placeholder="Enter source of funds.">
+                                <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
+                                    list="sourceOfFundsList" required>
                                 <datalist id="sourceOfFundsList">
                                     @foreach($sourceOfFunds as $fund)
                                         <option value="{{ $fund->sourceOfFunds }}"></option>
@@ -215,7 +218,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
 
                         <!-- Hidden text input for 'Ongoing' -->
                         <div id="ongoingStatusContainer" class="mt-2" style="display: none;">
@@ -231,7 +234,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div> 
                         <!-- <div class="mb-2">
                                 <label for="projectSlippage" class="form-label">Slippage</label>
                                 <input type="number" class="form-control" id="projectSlippage" name="projectSlippage"

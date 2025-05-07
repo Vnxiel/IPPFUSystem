@@ -3,22 +3,23 @@
 @section('title', 'Projects Page')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid py-4" style="background-color: transparent;">
     <!-- Header Section -->
-    <div class="card mb-2 border-0 shadow-sm">
-        <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="ms-auto">
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addNewProjectModal"
-                        style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
-                    <i class="fas fa-plus-circle me-2"></i>Add New Project
-                </button>
+    <div class="card mb-1 border-0 shadow-lg" >
+        <div class="card-body p-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="ms-auto">
+                    <button class="btn btn-sm btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addNewProjectModal"
+                            style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
+                        <i class="fas fa-plus-circle me-2"></i>Add New Project
+                    </button>
+                </div>
             </div>
         </div>
-        </div>
     </div>
+
 
     <!-- Filters Section -->
     <div class="card border-0 shadow-sm mb-1">
@@ -610,6 +611,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     </script>
 
-    @include('systemAdmin.modals.add-project')
+    @include('systemAdmin.modals.Projects.add-project')
 
 @endsection

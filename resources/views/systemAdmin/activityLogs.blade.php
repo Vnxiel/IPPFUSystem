@@ -6,14 +6,13 @@
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="card mb-2 border-0 shadow-sm">
-        <div class="card-body p-4">
+        <div class="card-body p-2">
             <div class="d-flex align-items-center">
                 <div class="icon-circle me-3" style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 50%;">
-                    <i class="fas fa-history" style="font-size: 24px; color: #2196F3;"></i>
+                    <i class="fas fa-history" style="font-size: 16px; color: #2196F3;"></i>
                 </div>
                 <div>
                     <h4 class="mb-0">Activity Logs</h4>
-                    <small class="text-muted">Track all system activities and changes</small>
                 </div>
             </div>
         </div>
