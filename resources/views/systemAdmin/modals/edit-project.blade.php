@@ -47,7 +47,7 @@
                                             <label for="projectYear" class="form-label">Year <span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-md-3">
-                                            <select class="form-select form-select-sm" id="projectYear" name="projectYear" required>
+                                            <select class="form-select form-select-sm" id="projectYear" name="projectYear" value="{{ old('projectYear', $project['projectYear'] ?? '') }}" required>
                                                 <option value="" disabled selected>Select Year</option>
                                                 <!-- Year options will be injected here by JavaScript -->
                                             </select>
@@ -215,10 +215,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Hidden text input for 'Ongoing' -->
-                        <div id="ongoingStatusContainer" class="mt-2" style="display: none;">
+                        <!-- <div id="ongoingStatusContainer" class="mt-2" style="display: none;">
                             <div class="row">
                                 <div class="offset-3 col-md-9">
                                     <label for="ongoingStatus" class="form-label">Please specify percentage
@@ -232,11 +232,20 @@
                                 </div>
                             </div>
                         </div> -->
-                        <!-- <div class="mb-2">
-                                <label for="projectSlippage" class="form-label">Slippage</label>
-                                <input type="number" class="form-control" id="projectSlippage" name="projectSlippage"
-                                    placeholder="Enter slippage">
-                            </div> -->
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3 text-end">
+                                            <label for="projectSlippage" class="form-label">Slippage</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                            <input type="number" class="form-control" id="projectSlippage" name="projectSlippage"  value="{{ old('projectSlippage', $project['projectSlippage'] ?? '') }}"
+                                            placeholder="Enter slippage">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
                             <div class="col-md-12">
@@ -575,15 +584,22 @@
         }
     });
 
-    const select = document.getElementById('projectYear');
+    const select = document.getElementById("projectYear");
+    const selectedYear = "{{ old('projectYear', $project['projectYear'] ?? '') }}";
     const currentYear = new Date().getFullYear();
-    const startYear = 2015; // Set your desired start year
+    const startYear = 2000;
+
+    // Clear default if it's not actually selected
+    select.querySelector("option[value='']").selected = !selectedYear;
 
     for (let year = currentYear; year >= startYear; year--) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        select.appendChild(option);
+      const option = document.createElement("option");
+      option.value = year;
+      option.textContent = year;
+      if (year.toString() === selectedYear) {
+        option.selected = true;
+      }
+      select.appendChild(option);
     }
 </script>
         <script>

@@ -362,31 +362,32 @@ public function userLogin(Request $request)
     //When logging out it will check if the session variable exists then
     // it will retrieve the user's information, log the the activity before clearing the session data. 
     public function logout(Request $request)
-    {
-        $user = auth()->user();
-    
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-    
-        try {
-            // Log activity using current authenticated user (not session)
-            (new ActivityLogs)->userAction(
-                $user->id,
-                $user->ofmis_id,
-                $user->username,
-                $user->role,
-                'Logged out from the system.'
-            );
-        } catch (\Exception $e) {
-            Log::error('Logout activity log failed: ' . $e->getMessage());
-        }
-    
-        auth()->logout(); // End the user's auth session
-        $request->session()->invalidate(); // Kill session
-        $request->session()->regenerateToken(); // For security
-    
-        return redirect()->route('/');
+{
+    $user = auth()->user();
+
+    if (!$user) {
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
+
+    try {
+        (new ActivityLogs)->userAction(
+            $user->id,
+            $user->ofmis_id,
+            $user->username,
+            $user->role,
+            'Logged out from the system.'
+        );
+    } catch (\Exception $e) {
+        Log::error('Logout activity log failed: ' . $e->getMessage());
+    }
+
+    auth()->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    // ✅ Return JSON instead of redirect
+    return response()->json(['message' => 'Logged out successfully']);
+}
+
     
         }

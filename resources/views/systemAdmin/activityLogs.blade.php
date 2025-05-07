@@ -37,7 +37,7 @@
                         @foreach($activityLogs as $log)
                             <tr>
                                 <td>
-                                    <span class="badge bg-light text-dark">#{{ $log->id }}</span>
+                                <span class="badge bg-light text-dark log-index"></span>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -71,3 +71,11 @@
     </div>
 </div>
 @endsection
+
+<script>
+    document.querySelectorAll('.log-index').forEach((el, index) => {
+  el.textContent = `# ${index + 1}`;
+});
+
+    </script>
+

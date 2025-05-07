@@ -82,7 +82,7 @@ class GenerateProjectReport extends Controller
                 'projectVariationOrder' => $projectVariationOrder,
                 'projectFiles' => $projectFiles,
                 'userName' => $user ? $user->fullname : 'Unknown User',
-            ])->setPaper('A4', 'portrait');
+            ])->setPaper('Long', 'portrait');
 
             $sanitizedTitle = preg_replace('/[\/\\\\]/', '_', $project->projectTitle);
             return $pdf->stream("Project_{$sanitizedTitle}.pdf");

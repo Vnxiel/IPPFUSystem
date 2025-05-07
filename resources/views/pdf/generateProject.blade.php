@@ -17,8 +17,8 @@
       text-align: center;
     }
     .logo {
-      width: 100px;
-      height: auto;
+      width: 80px;
+      height: 80px;
     }
     .header-text h5, .header-text h3, .header-text h6 {
       margin: 2px 0;
@@ -79,10 +79,11 @@
     .fit-text-row td {
         padding: 1 4px;
         vertical-align: top;
-        font-size: 17px;
+        font-size: 16px;
     }
     .sub-header {
       font-weight: bold;
+      font-size: 13px;
       text-align: center;
     }
   </style>
@@ -126,7 +127,7 @@
         <tbody>
           <tr class="fit-text-row">
             <th>Project Title:</th>
-            <td colspan="3" style="font-size: 20px; font-weight: bold">{{ $project->projectTitle }}</td>
+            <td colspan="3" style="font-size: 18px; font-weight: bold">{{ $project->projectTitle }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Location:</th>
@@ -205,33 +206,33 @@
     </tr>
     <tr class="fit-text-row">
       <th>ABC:</th>
-      <td style="text-align: right;">{{ $projectFundsUtilization['orig_abc'] ?? '' }}</td>
-      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_abc'] ?? '' }}</td>
-      <td style="text-align: right;">{{ $projectFundsUtilization['actual_abc'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['orig_abc'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_abc'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['actual_abc'] ?? '--' }}</td>
     </tr>
     <tr class="fit-text-row">
       <th>Contract Amount:</th>
-      <td style="text-align: right;">{{ $projectFundsUtilization['orig_contract_amount'] ?? '' }}</td>
-      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contract_amount'] ?? '' }}</td>
-      <td style="text-align: right;">{{ $projectFundsUtilization['actual_contract_amount'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['orig_contract_amount'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contract_amount'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['actual_contract_amount'] ?? '--' }}</td>
     </tr>
     <tr class="fit-text-row">
       <th>Engineering:</th>
-      <td style="text-align: right;">{{ $projectFundsUtilization['orig_engineering'] ?? '' }}</td>
-      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_engineering'] ?? '' }}</td>
-      <td style="text-align: right;">{{ $projectFundsUtilization['actual_engineering'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['orig_engineering'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_engineering'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['actual_engineering'] ?? '--' }}</td>
     </tr>
     <tr class="fit-text-row">
       <th>MQC:</th>
-      <td style="text-align: right;">{{ $projectFundsUtilization['orig_mqc'] ?? '' }}</td>
-      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_mqc'] ?? '' }}</td>
-      <td style="text-align: right;">{{ $projectFundsUtilization['actual_mqc'] ?? '' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['orig_mqc'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_mqc'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ $projectFundsUtilization['actual_mqc'] ?? '--' }}</td>
     </tr>
       <tr class="fit-text-row">
         <th>Contingency:</th>
-        <td style="text-align: right;">{{ $projectFundsUtilization['orig_contingency'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contingency'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $projectFundsUtilization['actual_contingency'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $projectFundsUtilization['orig_contingency'] ?? '--' }}</td>
+        <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contingency'] ?? '--' }}</td>
+        <td style="text-align: right;">{{ $projectFundsUtilization['actual_contingency'] ?? '--' }}</td>
       </tr>
       <tr class="fit-text-row">
         <th>Bid Difference:</th>
@@ -323,9 +324,9 @@
     </tbody>
   </table>
 </div>
-<footer style="width: 100%; margin-top: 150px;">
+<footer style="width: 100%; margin-top: 120px; margin-left: 50px;">
   <div style="display: flex; justify-content: center; width: 100%;">
-    <div style="text-align: center; font-size: 14px;">
+    <div style="text-align: left; font-size: 14px;">
       <u>{{ $userName }}</u><br>
       Printed by
     </div>

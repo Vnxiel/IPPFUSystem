@@ -751,7 +751,7 @@ public function updateProject(Request $request, $id)
         $projectTitle = $request->input('projectTitle');
         $changeLog = implode("; ", $changes) ?: 'No changes detected.';
         $sessionData = session('loggedIn', []);
-        $action = "Updated project title: $projectTitle. Changes: $changeLog";
+        $action = "Updated project: $projectTitle. Changes: $changeLog";
 
         (new ActivityLogs)->userAction(
             $sessionData['user_id'] ?? null,

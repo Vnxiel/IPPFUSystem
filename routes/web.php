@@ -25,7 +25,8 @@ Route::controller(UserManager::class)->group(function () {
 // SYSTEM ADMIN ROUTES
 Route::middleware(['auth', 'role:System Admin'])->group(function () {
     Route::controller(UserManager::class)->group(function () {
-      
+        
+        Route::post('/logout', 'logout')->name('logout');  // Handle logout logic
         Route::get('/systemAdmin/reports', 'funds')->name('systemAdmin.funds');
         Route::get('/systemAdmin/trash', 'trash')->name('systemAdmin.trash');
         Route::get('/systemAdmin/index', 'index')->name('systemAdmin.index');

@@ -153,7 +153,7 @@
                                     <select id="projectStatus" name="projectStatus" class="form-select"
                                         onchange="toggleOngoingStatus()">
                                         <option value="">Select Status</option>
-                                        <option value="To Be Started">To Be Started</option>
+                                        <option value="Not Started">Not Started</option>
                                         <option value="Ongoing">Ongoing</option>
                                         <option value="Completed">Completed</option>
                                         <option value="Discontinued">Discontinued</option>

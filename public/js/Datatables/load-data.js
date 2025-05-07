@@ -55,7 +55,7 @@ $(document).ready(function () {
 
     if (statusFilter) {
         const statusMap = {
-            tobestarted: 'To Be Started',
+            tobestarted: 'Not Started',
             ongoing: 'Ongoing',
             completed: 'Completed',
             discontinued: 'Discontinued',
@@ -270,7 +270,7 @@ $(document).ready(function () {
                             file.actionBy || "Unknown",
                             uploadDate,
                             `<button class="btn btn-success btn-sm" onclick="downloadFile('${file.fileName}')">
-                                <i class="fa fa-download"></i>
+                                <i class="fa fa-search"></i>
                             </button>
                             <button class="btn btn-danger btn-sm delete-file-btn" data-file-id="${file.fileName}">
                                 <i class="fa fa-trash"></i>

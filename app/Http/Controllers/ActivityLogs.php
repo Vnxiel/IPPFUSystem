@@ -24,9 +24,10 @@ class ActivityLogs extends Controller
 
     public function index()
     {
-        // Get all activity logs and return them as JSON
-        $logs = activityLog::all();
+       // Get all activity logs in descending order and return them as JSON
+        $logs = ActivityLog::orderBy('created_at', 'desc')->get();
         return response()->json($logs);
+
     }
 
     public function userAction($user_id, $ofmis_id, $performedBy, $role, $action)
@@ -39,7 +40,7 @@ class ActivityLogs extends Controller
             'role' => $role,
             'action' => $action,
         ];
-
+        $logData['created_at'] = now();
         // Save the log entry in the ActivityLog model
         return ActivityLog::create($logData);
     }
