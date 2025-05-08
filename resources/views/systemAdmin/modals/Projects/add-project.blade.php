@@ -126,6 +126,20 @@
                                             <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
                                         </select>
                             </div>
+                            <div class="row mt-2">
+                                <!-- Hidden textbox for specifying 'Others' -->
+                                <div  id="othersContractorDiv"  style="display: none;">
+                                    <div class="row mb-2 g-3" >
+                                            <div class="col-3 text-end">
+                                                <label for="othersContractor" class="form-label">Specify:</label>
+                                            </div>
+                                            <div class="col-9">
+                                            <input type="text" class="form-control" id="othersContractor"
+                                                    name="othersContractor"  placeholder="Enter new contractor name">
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                             <!-- <div class="mb-2">
                                 <label for="projectContractor" class="form-label">Contractor <span
@@ -139,18 +153,7 @@
                                 </select>
                         </div> -->
 
-                        <!-- Hidden textbox for specifying 'Others' -->
-                        <div  id="othersContractorDiv"  style="display: none;">
-                            <div class="row mb-2 g-3" >
-                                    <div class="col-3 text-end">
-                                        <label for="othersContractor" class="form-label">Specify New Contractor</label>
-                                    </div>
-                                    <div class="col-9">
-                                    <input type="text" class="form-control" id="othersContractor"
-                                            name="othersContractor"  placeholder="Enter new contractor name">
-                                    </div>
-                            </div>
-                        </div>
+
                         
 
                         <div class="row mb-2 align-items-center">
@@ -206,7 +209,7 @@
                                         <select id="projectStatus" name="projectStatus" class="form-select"
                                             onchange="toggleOngoingStatus()" required>
                                             <option value="" disabled selected>Select Status</option>
-                                            <option value="Not Started"><i class="fas fa-not-equal"></i>Not Startedd
+                                            <option value="Not Started"><i class="fas fa-not-equal"></i>Not Started
                                             </option>
                                             <option value="Ongoing">Ongoing</option>
                                             <option value="Completed">Completed</option>

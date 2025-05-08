@@ -371,3 +371,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+
+function toggleOtherContractor() {
+    const contractorSelect = document.getElementById('projectContractor');
+    const othersDiv = document.getElementById('othersContractorDiv');
+    const othersInput = document.getElementById('othersContractor');
+    
+    if (contractorSelect.value === 'Others') {
+        othersDiv.style.display = 'block';
+        othersInput.required = true;
+    } else {
+        othersDiv.style.display = 'none';
+        othersInput.required = false;
+        othersInput.value = ''; // Clear the input when hidden
+    }
+}
+
+// Call the function on page load to handle initial state
+document.addEventListener('DOMContentLoaded', toggleOtherContractor);
+

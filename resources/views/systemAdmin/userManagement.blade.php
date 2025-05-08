@@ -20,36 +20,41 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="table-container table-responsive">
-            <table id="userList" class="table table-striped table-hover table-bordered projectInfo">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width:5%;">ID</th>
-                        <th style="width:30%;">Fullname</th>
-                        <th style="width:25%;">Username</th>
-                        <th style="width:15%;">Position</th>
-                        <th style="width:15%;">User Role</th>
-                        <th style="width:10%;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach ($users as $user)
-                    <tr>
-                        <td>{{ $user->id }}</td>
-                        <td>{{ $user->fullname }}</td>
-                        <td>{{ $user->username }}</td>
-                        <td>{{ $user->position }}</td>
-                        <td>{{ $user->role }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#roleModal" data-id="{{ $user->id }}">
-                                <span class="fa-solid fa-address-card"></span>
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+
+    <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-3">
+            <div class="row">
+                <div class="table-container table-responsive">
+                    <table id="userList" class="table table-striped table-hover table-bordered projectInfo">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:5%;">ID</th>
+                                <th style="width:30%;">Fullname</th>
+                                <th style="width:25%;">Username</th>
+                                <th style="width:15%;">Position</th>
+                                <th style="width:15%;">User Role</th>
+                                <th style="width:10%;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($users as $user)
+                            <tr>
+                                <td>{{ $user->id }}</td>
+                                <td>{{ $user->fullname }}</td>
+                                <td>{{ $user->username }}</td>
+                                <td>{{ $user->position }}</td>
+                                <td>{{ $user->role }}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#roleModal" data-id="{{ $user->id }}">
+                                        <span class="fa-solid fa-address-card"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

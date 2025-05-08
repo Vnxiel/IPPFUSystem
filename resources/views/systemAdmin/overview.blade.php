@@ -6,72 +6,55 @@
 <!-- Project Overview -->
 <div class="container-fluid py-4" style="background-color: transparent;">
     <!-- Header Section -->
-    <div class="card mb-3 border-0 shadow-sm" style="background-color: #f8f9fa;">
-    <div class="card-body px-4 py-3">
-        <div class="row">
-            <div class="col-12">
-                <!-- Header with Back Button -->
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="d-flex align-items-center mb-2 mb-md-0">
-                        <a class="btn btn-outline-dark btn-sm me-3 {{ Request::is('systemAdmin/projects') ? 'active' : '' }}"
-                            href="{{ url('/systemAdmin/projects') }}" title="Back to Projects">
-                            <i class="fa fa-arrow-left"></i>
-                        </a>
-                        <h4 class="m-0 text-primary fw-semibold">Project Overview</h4>
-                    </div>
+    <div class="card mb-1 border-0 shadow-lg text-center">
+    <div class="card-body p-2">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <!-- Back Button and Title -->
+            <div class="d-flex align-items-center gap-2">
+                <a class="btn btn-outline-secondary btn-sm {{ Request::is('systemAdmin/projects') ? 'active' : '' }}"
+                    href="{{ url('/systemAdmin/projects') }}">
+                    <span class="fa fa-arrow-left"></span>
+                </a>
+                <h5 class="m-0">Project Overview</h5>
+            </div>
 
-                    <!-- Action Buttons Group -->
-                    <div class="btn-group flex-wrap gap-2" role="group" aria-label="Project Actions">
-                        <button type="button" id="editProjectBtn"
-                            class="btn btn-warning btn-sm d-flex align-items-center gap-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#projectModal">
-                            <i class="fa fa-edit"></i><span>Edit</span>
-                        </button>
-
-                        <button type="button"
-                            class="btn btn-primary btn-sm d-flex align-items-center gap-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addProjectFundUtilization">
-                            <i class="fa fa-plus"></i><span>Fund</span>
-                        </button>
-
-                        <button type="button" id="fundSummaryBtn"
-                            class="btn btn-secondary btn-sm d-flex align-items-center gap-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#fundSummaryModal">
-                            <i class="fa-solid fa-check-to-slot"></i><span>Summary</span>
-                        </button>
-
-                        <button type="button" id="generateProjectBtn"
-                            class="btn btn-info btn-sm d-flex align-items-center gap-1 text-white"
-                            data-bs-toggle="modal"
-                            data-bs-target="#generateProjectModal">
-                            <i class="fa fa-download"></i><span>Report</span>
-                        </button>
-
-                        <button type="button"
-                            class="btn btn-success btn-sm d-flex align-items-center gap-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#uploadModal">
-                            <i class="fa fa-upload"></i><span>Upload</span>
-                        </button>
-
-                        <button type="button" id="trashProjectBtn"
-                            class="btn btn-danger btn-sm d-flex align-items-center gap-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#trashModal">
-                            <i class="fa fa-trash"></i><span>Archive</span>
-                        </button>
-                    </div>
-                </div>
+            <!-- Action Buttons -->
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm d-flex align-items-center gap-1" 
+                    data-bs-toggle="modal" data-bs-target="#projectModal" title="Edit Project Details">
+                    <i class="fa fa-edit"></i>
+                    <span class="d-none d-md-inline">Edit</span>
+                </button>
+                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"
+                    data-bs-target="#addProjectFundUtilization" title="Add Fund Utilization Details">
+                    <span class="fa fa-plus"></span>
+                    <span class="d-none d-md-inline">Fund Utilization</span>
+                </button>
+                <button type="button" id="fundSummaryBtn" class="btn btn-secondary btn-sm d-flex align-items-center gap-1" 
+                    data-bs-toggle="modal" data-bs-target="#fundSummaryModal" title="Fund Summary">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                    <span class="d-none d-md-inline">Fund Summary</span>
+                </button>
+                <button type="button" id="generateProjectBtn" class="btn btn-info btn-sm d-flex align-items-center gap-1" 
+                    data-bs-toggle="modal" data-bs-target="#generateProjectModal" title="Generate/Download Report">
+                    <i class="fa fa-download"></i>
+                    <span class="d-none d-md-inline">Report</span>
+                </button>
+                <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm d-flex align-items-center gap-1" 
+                    data-bs-toggle="modal" data-bs-target="#trashModal" title="Archive Project">
+                    <i class="fa fa-trash"></i>
+                    <span class="d-none d-md-inline">Archive</span>
+                </button>
+                <button type="button" class="btn btn-success btn-sm d-flex align-items-center gap-1"
+                    data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
+                    <i class="fa fa-upload"></i>
+                    <span class="d-none d-md-inline">Upload</span>
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-
-    
 
     <div class="row">
         <div class="col-md-12">
@@ -238,34 +221,49 @@
 </div>
 </div>
 
-
-
-<!-- Project Files Table -->
-<div class="container-fluid px-3">
-    <div class="col-md-12 m-1">
-        <div class="row">
-            <hr>
-            <h5 class="p-0">Project Files</h5>
-            <hr>
+<div class="container-fluid py-4">
+        <!-- Header Section -->
+        <div class="card mb-2 border-0 shadow-sm">
+            <div class="card-body p-2">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle me-3" style="background: rgba(158, 158, 158, 0.1); padding: 12px; border-radius: 50%;">
+                        <i class="fas fa-archive" style="font-size: 16px; color: #757575;"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0">Project Files</h4>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="row projectInfo">
-            <div class="table-container table-responsive">
-                <table id="projectFiles" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>File Name</th>
-                            <th>Type</th>
-                            <th>Uploaded By</th>
-                            <th>Upload Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+
+        <!-- Table Section - Main Content -->
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-2">
+                    <div class="table-responsive">
+                        <div class="row projectInfo">
+                            <div class="table-container table-responsive">
+                                <table id="projectFiles" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>File Name</th>
+                                            <th>Type</th>
+                                            <th>Uploaded By</th>
+                                            <th>Upload Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
         
 
 <script>
