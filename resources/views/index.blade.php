@@ -59,11 +59,14 @@
                                     <label class="form-check-label" for="rememberMe">Remember Me</label>
                                 </div>
                             </div>
-
                             <button type="submit" class="btn w-100" style="background-color:#006400; color:white;">Login</button>
                         </form>
-
                         </div>
+                        <div class="card-footer d-flex align-items-center" style="font-size: 0.750rem;">
+                            <span class="me-2">Forgot Password?</span>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#passwordRequestModal">Request new password.</a>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -74,4 +77,6 @@
         <script src="{{ asset('js/Account/login.js') }}"></script>
     </body>
 </html>
+
+@include('systemAdmin.modals.Account.request-newpass')
 
