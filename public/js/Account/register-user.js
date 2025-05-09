@@ -134,7 +134,7 @@ timeFrameSelect.addEventListener('change', function() {
     let selectedUserId = null; // Store the user ID globally
 
     // Open modal & fetch user role details
-    $(document).on("click", ".btn-warning", function () {
+    $(document).on("click", ".btn-outline-warning", function () {
         selectedUserId = $(this).data("id"); // Get user ID from button
 
         $.ajax({
