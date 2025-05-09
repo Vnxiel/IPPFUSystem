@@ -204,7 +204,7 @@ $(document).ready(function() {
     $('#activityLogs').DataTable({
     "aLengthMenu": [[10, 15, 25, 50, 75, 100, -1], [10, 15, 25, 50, 75, 100, "All"]],
     "pageLength": 10,
-    "order": [[3, 'desc']],  // Sorting based on the 4th column (Appropriation)
+    "order": [[0, 'desc']],  // Sorting based on the first column (date and time)
     "scrollX": true,  // Enables horizontal scrolling
     "responsive": true, // Ensures responsiveness
     autoWidth: false,   // Disable the auto width setting to make it flexible

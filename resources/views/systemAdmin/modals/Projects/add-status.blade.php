@@ -24,7 +24,6 @@
                     </div>
 
                     <!-- Percentage Input with History -->
-                  <!-- Percentage Input -->
                     <div class="mb-3 position-relative">
                         <label for="percentage" class="form-label">Percentage</label>
                         <input type="number" class="form-control" id="percentage" placeholder="Enter percentage">

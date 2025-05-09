@@ -118,7 +118,7 @@
 </nav>
 
             <!-- Content -->
-            <div class="container-fluid flex-grow-1">
+            <div class="container-fluid flex-grow-1" style="background: #F8F2DE;">
                 @yield('content')
             </div>
         </div>
@@ -146,7 +146,6 @@
         
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Account/register-user.js') }}"></script>
-        <script src="{{ asset('js/Datatables/getData.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>
@@ -156,7 +155,8 @@
         <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
-        <script src="{{ asset('js/Projects/add-set.js') }}"></script>
+        <script src="{{ asset('js/Projects/add-set.js') }}"></script> 
+        <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
         <script src="{{ asset('js/FundsUtilization/fetchFundUtilizationSummary.js') }}"></script>
         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>

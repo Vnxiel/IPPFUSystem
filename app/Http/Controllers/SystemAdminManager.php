@@ -15,22 +15,33 @@ class SystemAdminManager extends Controller
     public function index(){
     
         $contractors = Contractor::orderBy('name', 'asc')->get();
-        $staticLocations = [
+        $staticLocations = [ 
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
             'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
             'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
-    
-        $dbLocations = Project::select('projectLoc')
+        
+        $dbLocationsRaw = Project::select('projectLoc')
             ->whereNotNull('projectLoc')
             ->pluck('projectLoc')
             ->toArray();
-    
-        // Merge and remove duplicates
-        $allLocations = collect(array_merge($staticLocations, $dbLocations))
+        
+        // Extract only the municipality (first part before the comma)
+        $dbLocations = array_map(function ($loc) {
+            return trim(explode(',', $loc)[0]);
+        }, $dbLocationsRaw);
+        
+        // Extract only the municipality (first part before the comma)
+        $dbLocations = array_map(function ($loc) {
+            return trim(explode(',', $loc)[0]);
+        }, $dbLocationsRaw);
+
+        // Merge, de-duplicate, and sort
+        $locations = collect(array_merge($staticLocations, $dbLocations))
             ->unique()
             ->sort()
             ->values();
+
 
         $sourceOfFunds = Project::select('sourceOfFunds')
         ->distinct()
@@ -49,7 +60,7 @@ class SystemAdminManager extends Controller
         ->orderBy('ea')
         ->get();
 
-         return view('systemAdmin.index', compact('contractors', 'allLocations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+         return view('systemAdmin.index', compact('contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
 }
 
     public function userManagement(){
@@ -97,11 +108,12 @@ class SystemAdminManager extends Controller
     }
 
     public function viewActivityLogs(Request $request){
-        $activityLogs = activityLog::all();
-
+        
+        $activityLogs = ActivityLog::orderBy('id', 'desc')->get();
         return view('systemAdmin.activityLogs', [
             'activityLogs' => $activityLogs,
         ]);
+        
     }
 
     public function viewUserManagement(Request $request)

@@ -22,6 +22,8 @@ Route::controller(UserManager::class)->group(function () {
     Route::get('/', 'index')->name('home');
 });
 
+
+
 // SYSTEM ADMIN ROUTES
 Route::middleware(['auth', 'role:System Admin'])->group(function () {
     Route::controller(UserManager::class)->group(function () {
@@ -40,7 +42,6 @@ Route::middleware(['auth', 'role:System Admin'])->group(function () {
         Route::get('/getUserRole', 'getUserRole');
         Route::post('/changeRole', 'changeRole');
         Route::get('/systemAdmin/activityLogs', 'viewActivityLogs')->name('systemAdmin.activityLogs');
-        Route::get('/systemAdmin/modals/edit-project', 'editProject')->name('systemAdmin.editProject');
     });
 });
 

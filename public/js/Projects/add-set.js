@@ -21,13 +21,9 @@ function addOrderFields() {
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 mb-2">
+            <div class="col-md-12 mb-2">
                 <label for="${suspensionKey}Remarks" class="form-label">Suspension Remarks</label>
                 <textarea class="form-control" id="${suspensionKey}Remarks" name="${suspensionKey}Remarks"></textarea>
-            </div>
-            <div class="col-md-6 mb-2">
-                <label for="${resumeKey}Remarks" class="form-label">Resumption Remarks</label>
-                <textarea class="form-control" id="${resumeKey}Remarks" name="${resumeKey}Remarks"></textarea>
             </div>
         </div>
     `;

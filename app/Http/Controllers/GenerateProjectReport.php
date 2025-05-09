@@ -34,9 +34,12 @@ class GenerateProjectReport extends Controller
                 $projectFundsUtilization = FundsUtilization::where('project_id', $project_id)
                 ->orderBy('updated_at', 'desc')
                 ->first();
+
              $projectVariationOrder = $projectFundsUtilization
                 ? VariationOrder::where('funds_utilization_id', $projectFundsUtilization->id)->get()
                 : [];
+
+           
 
             $projectFileNames = ProjectFile::where('project_id', $project_id)
                 ->where(function ($query) {
@@ -82,7 +85,7 @@ class GenerateProjectReport extends Controller
                 'projectVariationOrder' => $projectVariationOrder,
                 'projectFiles' => $projectFiles,
                 'userName' => $user ? $user->fullname : 'Unknown User',
-            ])->setPaper('Long', 'portrait');
+            ])->setPaper([0, 0, 612, 936], 'portrait');
 
             $sanitizedTitle = preg_replace('/[\/\\\\]/', '_', $project->projectTitle);
             return $pdf->stream("Project_{$sanitizedTitle}.pdf");

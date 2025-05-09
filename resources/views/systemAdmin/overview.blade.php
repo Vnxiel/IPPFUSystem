@@ -108,9 +108,12 @@
                     <div class="col-md-4">
                         <div class="bg-light p-2 d-flex justify-content-between align-items-center">
                             <span><i class="bi bi-bar-chart-line me-2"></i><strong>Progress</strong></span>
-                            <button type="button" class="btn btn-sm btn-outline-primary" id="addStatusBtn">
-                                <i class="bi bi-plus-circle me-1"></i>Add
-                            </button>
+
+                            @if ($projectStatusData['projectStatus'] !== 'Completed')
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="addStatusBtn">
+                                    <i class="bi bi-plus-circle me-1"></i>Add
+                                </button>
+                            @endif
                         </div>
 
                         <!-- Scrollable Table Wrapper -->
@@ -145,6 +148,7 @@
                             </table>
                         </div>
                     </div>
+
 
                     <div class="col-md-12">
                         <!-- Combined Card with Two Columns -->
@@ -594,11 +598,11 @@ function showMunicipalitySuggestions(query) {
 </script>
 
     
-    @include('systemAdmin.modals.add-fund')
-    @include('systemAdmin.modals.add-status')
-    @include('systemAdmin.modals.fund-summary')
-    @include('systemAdmin.modals.edit-project')
-    @include('systemAdmin.modals.uploadFiles')
-    @include('systemAdmin.modals.generate-report')
+    @include('systemAdmin.modals.Projects.add-fund')
+    @include('systemAdmin.modals.Projects.add-status')
+    @include('systemAdmin.modals.Projects.fund-summary')
+    @include('systemAdmin.modals.Projects.edit-project')
+    @include('systemAdmin.modals.Projects.uploadFiles')
+    @include('systemAdmin.modals.Projects.generate-report')
 
 @endsection

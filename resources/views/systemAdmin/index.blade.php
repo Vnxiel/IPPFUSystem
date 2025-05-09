@@ -178,7 +178,7 @@
     </div>
 </div>
 
-@include('systemAdmin.modals.add-project')
+@include('systemAdmin.modals.Projects.add-project')
 
 <!-- DataTable Initialization -->
 <script>    

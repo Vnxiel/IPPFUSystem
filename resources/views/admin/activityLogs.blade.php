@@ -1,6 +1,7 @@
 @extends('admin.layout')
 
 @section('title', 'Activity Logs Page')
+@php use Carbon\Carbon; @endphp
 
 @section('content') 
 <div class="container-fluid py-4">
@@ -26,7 +27,7 @@
                 <table id="activityLogs" class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th style="width: 10%;" class="py-3">ID</th>
+                            <th style="width: 5%;" class="py-3">ID</th>
                             <th style="width: 20%;" class="py-3">Performed By</th>
                             <th style="width: 10%;" class="py-3">Role</th>
                             <th style="width: 40%;" class="py-3">Activity</th>
@@ -37,8 +38,8 @@
                         @foreach($activityLogs as $log)
                             <tr>
                                 <td>
-                                    <span class="badge bg-light text-dark">#{{ $log->id }}</span>
-                                </td>
+                                    <span class="badge bg-light text-dark">{{ $log->id }}</span>
+                                </td>   
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="icon-circle me-2" style="background: rgba(33, 150, 243, 0.1); padding: 8px; border-radius: 50%;">
@@ -59,9 +60,13 @@
                                 <td>
                                     <div class="d-flex align-items-center text-muted">
                                         <i class="far fa-clock me-2"></i>
-                                        {{ date('M d, Y g:i A', strtotime($log->created_at)) }}
+                                        <span data-order="{{ \Carbon\Carbon::parse($log->created_at)->format('Y-m-d H:i:s') }}">
+    {{ \Carbon\Carbon::parse($log->created_at)->format('M d, Y g:i A') }}
+</span>
+
                                     </div>
                                 </td>
+
                             </tr>
                         @endforeach
                     </tbody>
@@ -71,3 +76,11 @@
     </div>
 </div>
 @endsection
+
+<script>
+    document.querySelectorAll('.log-index').forEach((el, index) => {
+  el.textContent = `# ${index + 1}`;
+});
+
+    </script>
+

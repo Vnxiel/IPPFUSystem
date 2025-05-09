@@ -260,23 +260,28 @@ if ($existing) {
         ->orderBy('created_at', 'desc')
         ->get();
         $contractors = Contractor::orderBy('name', 'asc')->get();
-        $staticLocations = [
+        $staticLocations = [ 
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
             'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
             'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
-    
-        $dbLocations = Project::select('projectLoc')
+        
+        $dbLocationsRaw = Project::select('projectLoc')
             ->whereNotNull('projectLoc')
             ->pluck('projectLoc')
             ->toArray();
-    
-        // Merge and remove duplicates
-        $allLocations = collect(array_merge($staticLocations, $dbLocations))
+        
+        // Extract only the municipality (first part before the comma)
+        $dbLocations = array_map(function ($loc) {
+            return trim(explode(',', $loc)[0]);
+        }, $dbLocationsRaw);
+        
+        // Merge, de-duplicate, and sort
+        $locations = collect(array_merge($staticLocations, $dbLocations))
             ->unique()
             ->sort()
             ->values();
-
+        
         $sourceOfFunds = Project::select('sourceOfFunds')
         ->distinct()
         ->whereNotNull('sourceOfFunds')
@@ -312,7 +317,7 @@ if ($existing) {
         ];
     });
 
-    return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'allLocations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+    return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
 }
 
     
@@ -389,7 +394,28 @@ if ($existing) {
     {
         try {
             $contractors = Contractor::orderBy('name')->get();
-            $locations = Project::select('projectLoc')->distinct()->whereNotNull('projectLoc')->orderBy('projectLoc')->get();
+            $staticLocations = [ 
+                'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
+                'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
+                'Villaverde', 'Ambaguio', 'Santa Fe'
+            ];
+            
+            $dbLocationsRaw = Project::select('projectLoc')
+                ->whereNotNull('projectLoc')
+                ->pluck('projectLoc')
+                ->toArray();
+            
+            // Extract only the municipality (first part before the comma)
+            $dbLocations = array_map(function ($loc) {
+                return trim(explode(',', $loc)[0]);
+            }, $dbLocationsRaw);
+            
+            // Merge, de-duplicate, and sort
+            $locations = collect(array_merge($staticLocations, $dbLocations))
+                ->unique()
+                ->sort()
+                ->values();
+        
             $sourceOfFunds = Project::select('sourceOfFunds')->distinct()->whereNotNull('sourceOfFunds')->orderBy('sourceOfFunds')->get();
             $projectYear = Project::select('projectYear')->distinct()->whereNotNull('projectYear')->orderBy('projectYear')->get();
             $projectEA = Project::select('ea')->distinct()->whereNotNull('ea')->orderBy('ea')->get();

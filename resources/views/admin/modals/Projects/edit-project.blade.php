@@ -85,22 +85,10 @@
                                 <div id="projectLocDropdown"
                                     class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                     style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                    
-                                    @foreach($locations as $locationObj)
-                                        @php
-                                            $locName = trim($locationObj->projectLoc);
-                                            // Match only locations in Nueva Vizcaya
-                                            if (str_ends_with($locName, 'Nueva Vizcaya')) {
-                                                // Remove "Nueva Vizcaya" if already present to avoid duplication
-                                                $municipality = trim(str_replace(', Nueva Vizcaya', '', $locName));
-                                                $formatted = $municipality . ', Nueva Vizcaya';
-                                            } else {
-                                                $formatted = $locName . ', Nueva Vizcaya';
-                                            }
-                                        @endphp
+                                    @foreach($locations as $location)
                                         <button type="button" class="list-group-item list-group-item-action"
-                                            onclick="selectLoc('{{ $formatted }}')">
-                                            {{ $formatted }}
+                                            onclick="selectLoc('{{ $location }}')">
+                                            {{ $location }}
                                         </button>
                                     @endforeach
                                 </div>
@@ -485,63 +473,51 @@
                                         </div>
 
                                       <!-- Order Fields -->
-<div id="orderContainer" class="col-12">
-    @php
-        // Extract remarks data at the top level so it's accessible in the view
-        $remarksData = $project['remarksData'] ?? [];
+                                    <div id="orderContainer" class="col-12">
+                                        @php
+                                            // Extract remarks data at the top level so it's accessible in the view
+                                            $remarksData = $project['remarksData'] ?? [];
 
-        $orders = collect($project['orderDetails'] ?? [])
-            ->filter(fn($val, $key) => preg_match('/suspensionOrderNo\d+/', $key))
-            ->keys()
-            ->map(function ($suspKey) use ($project) {
-                $index = preg_replace('/\D/', '', $suspKey);
-                $resumeKey = 'resumeOrderNo' . $index;
+                                            $orders = collect($project['orderDetails'] ?? [])
+                                                ->filter(fn($val, $key) => preg_match('/suspensionOrderNo\d+/', $key))
+                                                ->keys()
+                                                ->map(function ($suspKey) use ($project) {
+                                                    $index = preg_replace('/\D/', '', $suspKey);
+                                                    $resumeKey = 'resumeOrderNo' . $index;
 
-                $suspensionValue = old($suspKey, $project['orderDetails'][$suspKey] ?? '');
-                $resumeValue = old($resumeKey, $project['orderDetails'][$resumeKey] ?? '');
+                                                    $suspensionValue = old($suspKey, $project['orderDetails'][$suspKey] ?? '');
+                                                    $resumeValue = old($resumeKey, $project['orderDetails'][$resumeKey] ?? '');
 
-                return [
-                    'index' => $index,
-                    'suspensionKey' => $suspKey,
-                    'resumeKey' => $resumeKey,
-                    'suspensionValue' => $suspensionValue,
-                    'resumeValue' => $resumeValue,
-                ];
-            })
-            ->filter(fn($order) => $order['index'] == 1 || !empty($order['suspensionValue']) || !empty($order['resumeValue']));
-    @endphp
+                                                    return [
+                                                        'index' => $index,
+                                                        'suspensionKey' => $suspKey,
+                                                        'resumeKey' => $resumeKey,
+                                                        'suspensionValue' => $suspensionValue,
+                                                        'resumeValue' => $resumeValue,
+                                                    ];
+                                                })
+                                                ->filter(fn($order) => $order['index'] == 1 || !empty($order['suspensionValue']) || !empty($order['resumeValue']));
+                                        @endphp
 
-    @foreach ($orders as $order)
-        <div class="row">
-            <div class="col-md-6 mb-2">
-                <label for="{{ $order['suspensionKey'] }}" class="form-label">Suspension Order No. {{ $order['index'] }}</label>
-                <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}" name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
-            </div>
-            <div class="col-md-6 mb-2">
-                <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order No. {{ $order['index'] }}</label>
-                <input type="date" class="form-control" id="{{ $order['resumeKey'] }}" name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-2">
-                <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">Suspension Remarks</label>
-                <textarea 
-                    class="form-control" 
-                    id="suspensionOrderNo{{ $order['index'] }}Remarks" 
-                    name="suspensionOrderNo{{ $order['index'] }}Remarks"
-                    value="{{ $remarksData[$order['index']]['suspensionOrderRemarks'] ?? '' }}"></textarea>
-            </div>
-            <div class="col-md-6 mb-2">
-                <label for="resumeOrderNo{{ $order['index'] }}Remarks" class="form-label">Resumption Remarks</label>
-                <textarea 
-                    class="form-control" 
-                    id="resumeOrderNo{{ $order['index'] }}Remarks" 
-                    name="resumeOrderNo{{ $order['index'] }}Remarks"
-                    value="{{ $remarksData[$order['index']]['resumeOrderRemarks'] ?? '' }}"></textarea>
-            </div>
-        </div>
-    @endforeach
-</div>
+                                        @foreach ($orders as $order)
+                                            <div class="row">
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="{{ $order['suspensionKey'] }}" class="form-label">Suspension Order No. {{ $order['index'] }}</label>
+                                                    <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}" name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
+                                                </div>
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order No. {{ $order['index'] }}</label>
+                                                    <input type="date" class="form-control" id="{{ $order['resumeKey'] }}" name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 mb-2">
+                                                    <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">Suspension Remarks</label>
+                                                    <textarea class="form-control" id="suspensionOrderNo{{ $order['index'] }}Remarks" name="suspensionOrderNo{{ $order['index'] }}Remarks">{{ $remarksData[(string) $order['index']]['suspensionOrderRemarks'] ?? '' }}</textarea>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
 
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
@@ -565,15 +541,19 @@
                 </div>
             </div>
         </div>
-        <script>
-           function showLocDropdown() {
-        document.getElementById('projectLocDropdown').style.display = 'block';
+<script>
+          function showLocDropdown() {
+        const dropdown = document.getElementById('projectLocDropdown');
+        if (dropdown) {
+            dropdown.style.display = 'block';
+        }
     }
 
     function selectLoc(value) {
-        document.getElementById('projectLoc').value = value;
+        document.getElementById('projectLoc').value = value + ', Nueva Vizcaya';
         document.getElementById('projectLocDropdown').style.display = 'none';
     }
+
 
     // Optional: Close dropdown if clicked outside
     document.addEventListener('click', function (e) {

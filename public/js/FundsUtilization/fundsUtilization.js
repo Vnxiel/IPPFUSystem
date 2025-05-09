@@ -1,12 +1,80 @@
+function formatNumber(num) {
+  if (!num) return '';
+  const parts = num.toString().split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return parts.join('.');
+}
+
+function cleanNumber(val) {
+  return val.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+}
+
+function formatInput(input) {
+  const raw = cleanNumber(input.value);
+  if (!raw) return;
+  const floatVal = parseFloat(raw).toFixed(2);
+  input.value = '₱' + formatNumber(floatVal);
+}
+
+function initAmountInputs() {
+  const amountInputs = document.querySelectorAll('.amount-input');
+
+  amountInputs.forEach(input => {
+      formatInput(input); // Initial formatting
+
+      input.addEventListener('input', function () {
+          const raw = cleanNumber(this.value);
+          const [intPart, decimalPart] = raw.split('.');
+          let formatted = formatNumber(intPart || '');
+          if (decimalPart !== undefined) {
+              formatted += '.' + decimalPart.slice(0, 2);
+          }
+          this.value = '₱' + formatted;
+      });
+
+      input.addEventListener('blur', function () {
+          formatInput(this);
+      });
+
+      input.addEventListener('focus', function () {
+          this.value = cleanNumber(this.value);
+      });
+  });
+}
+
+// Run on DOM load
+initAmountInputs();
+
+// Also re-run when the modal is shown (Bootstrap example)
+const modal = document.getElementById('addProjectFundUtilization'); // Change to your actual modal ID
+if (modal) {
+  modal.addEventListener('shown.bs.modal', function () {
+      initAmountInputs(); // re-format input when modal is shown
+  });
+}
+
+// Clean values before form submission
+const form = document.getElementById("addFundUtilization");
+if (form) {
+  form.addEventListener("submit", function () {
+      document.querySelectorAll('.amount-input').forEach(input => {
+          input.value = cleanNumber(input.value);
+      });
+  });
+}
+
 const formatter = new Intl.NumberFormat('en-PH', {
   style: 'currency',
   currency: 'PHP',
   minimumFractionDigits: 2
 });
 
+
 function parseCurrency(value) {
-  return parseFloat((value || '0').replace(/[₱,]/g, '')) || 0;
+  if (!value) return 0;
+  return parseFloat(value.replace(/[₱,]/g, '').trim()) || 0;
 }
+
 
 function formatCurrency(value) {
   return formatter.format(value);
@@ -16,14 +84,14 @@ function calculateTotalExpenditures() {
   const final = parseCurrency(document.querySelector('input[name="amountFinal"]')?.value);
   const eng = parseCurrency(document.querySelector('input[name="amountEng"]')?.value);
   const mqc = parseCurrency(document.querySelector('input[name="amountMqc"]')?.value);
-  // const mobi = parseCurrency(document.querySelector('input[name="amountMobi"]')?.value);
+  const mobi = parseCurrency(document.querySelector('input[name="amountMobi"]')?.value);
 
   let partials = 0;
   document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
     partials += parseCurrency(input.value);
   });
 
-  const total = final + eng + mqc + partials;
+  const total = final + eng + mqc + mobi + partials;
 
   const totalField = document.querySelector('input[name="amountTotal"]');
   if (totalField) totalField.value = formatCurrency(total);
@@ -51,7 +119,7 @@ function calculateMobilization() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function attachInputListeners() {
   const fieldNames = ['amountFinal', 'amountEng', 'amountMqc', 'amountMobi'];
 
   fieldNames.forEach(name => {
@@ -62,15 +130,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
     input.addEventListener('input', calculateTotalExpenditures);
   });
+}
 
-  const billingsTableBody = document.getElementById('billingsTableBody');
-  const observer = new MutationObserver(() => {
-    document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
-      input.removeEventListener('input', calculateTotalExpenditures); // safety
-      input.addEventListener('input', calculateTotalExpenditures);
-    });
+document.addEventListener('DOMContentLoaded', () => {
+  attachInputListeners();
+
+  const billingObserver = new MutationObserver(() => {
+    attachInputListeners();
   });
-  observer.observe(billingsTableBody, { childList: true });
+
+  billingObserver.observe(document.getElementById('billingsTableBody'), {
+    childList: true,
+    subtree: true
+  });
 
   document.getElementById('orig_appropriation')?.addEventListener('input', calculateTotalExpenditures);
 
@@ -88,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const project_id = sessionStorage.getItem("project_id");
     if (project_id) {
       loadFundUtilization(project_id);
+      fetchPreviousAppropriationData(project_id)
     }
   });
 
@@ -134,10 +207,16 @@ document.addEventListener('DOMContentLoaded', function () {
       actual_appropriation: document.getElementById('actual_appropriation').value,
       summary: {
         mobilization: {
-          date: document.querySelector('[name="dateMobi"]').value,
-          amount: document.querySelector('[name="amountMobi"]').value,
-          remarks: document.querySelector('[name="remMobi"]').value
-        },
+          percent: document.getElementById('percentMobi')?.value || '',
+          date: document.querySelector('[name="dateMobi"]')?.value || '',
+          amount: document.querySelector('[name="amountMobi"]')?.value || '',
+          remarks: document.querySelector('[name="remMobi"]')?.value || '',
+          remaining: {
+            date: document.querySelector('[name="dateMobi2"]')?.value || '',
+            amount: document.querySelector('[name="amountMobi2"]')?.value || '',
+            remarks: document.querySelector('[name="remMobi2"]')?.value || ''
+          }
+        },      
         final: {
           date: document.querySelector('[name="dateFinal"]').value,
           amount: document.querySelector('[name="amountFinal"]').value,
@@ -218,7 +297,7 @@ function addVOFields() {
 
   rowNames.forEach((name, index) => {
     const cell = document.createElement('td');
-    cell.innerHTML = `<input type="text" class="form-control amount-input" id="vo_${name}_${voCount}" name="vo_${name}_${voCount}" placeholder="₱0.00">`;
+    cell.innerHTML = `<input type="text" class="form-control amount-input" id="vo_${name}_${voCount}" name="vo_${name}_${voCount}" >`;
     const cells = rows[index].querySelectorAll('td');
     rows[index].insertBefore(cell, cells[cells.length - 1]);
   });
@@ -256,6 +335,53 @@ function updateVOButtonsState() {
 // Call updateVOButtonsState initially to set the correct state
 document.addEventListener('DOMContentLoaded', updateVOButtonsState);
 
+function fetchPreviousAppropriationData(project_id) {
+  if (!project_id) return;
+
+  fetch(`/fund-utilization/${project_id}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        const previousData = data.previousData || [];
+
+        const origList = document.getElementById('orig_appropriation_list');
+        const voList = document.getElementById('vo_appropriation_list');
+        const actualList = document.getElementById('actual_appropriation_list');
+
+        origList.innerHTML = '';
+        voList.innerHTML = '';
+        actualList.innerHTML = '';
+
+        const formatter = new Intl.NumberFormat('en-PH', {
+          style: 'currency',
+          currency: 'PHP',
+          minimumFractionDigits: 2
+        });
+
+        // Use Set to ensure unique values
+        const origValues = new Set();
+        const voValues = new Set();
+        const actualValues = new Set();
+
+        previousData.forEach(entry => {
+          if (entry.orig_appropriation && !origValues.has(entry.orig_appropriation)) {
+            origValues.add(entry.orig_appropriation);
+            origList.innerHTML += `<option value="${formatter.format(entry.orig_appropriation)}">`;
+          }
+          if (entry.vo_appropriation && !voValues.has(entry.vo_appropriation)) {
+            voValues.add(entry.vo_appropriation);
+            voList.innerHTML += `<option value="${formatter.format(entry.vo_appropriation)}">`;
+          }
+          if (entry.actual_appropriation && !actualValues.has(entry.actual_appropriation)) {
+            actualValues.add(entry.actual_appropriation);
+            actualList.innerHTML += `<option value="${formatter.format(entry.actual_appropriation)}">`;
+          }
+        });
+      }
+    })
+    .catch(err => console.error('Failed to fetch previous appropriations:', err));
+}
+ 
 function loadFundUtilization(project_id) {
   fetch(`/fund-utilization/${project_id}`)
     .then(res => res.json())
@@ -265,21 +391,21 @@ function loadFundUtilization(project_id) {
         const vos = data.variationOrders || [];
 
         document.getElementById('projectTitleFU').value = data.projectTitle ?? '';
-        document.getElementById('orig_abc').value = fu.orig_abc ?? '';
-        document.getElementById('orig_contract_amount').value = fu.orig_contract_amount ?? '';
-        document.getElementById('orig_engineering').value = fu.orig_engineering ?? '';
-        document.getElementById('orig_mqc').value = fu.orig_mqc ?? '';
-        document.getElementById('orig_bid').value = fu.orig_bid ?? '';
-        document.getElementById('orig_contingency').value = fu.orig_contingency ?? '';
-        document.getElementById('orig_appropriation').value = fu.orig_appropriation ?? '';
+        document.getElementById('orig_abc').value = formatCurrency(fu.orig_abc);
+        document.getElementById('orig_contract_amount').value = formatCurrency(fu.orig_contract_amount);
+        document.getElementById('orig_engineering').value = formatCurrency(fu.orig_engineering);
+        document.getElementById('orig_mqc').value = formatCurrency(fu.orig_mqc);
+        document.getElementById('orig_bid').value = formatCurrency(fu.orig_bid);
+        document.getElementById('orig_contingency').value = formatCurrency(fu.orig_contingency);
+        document.getElementById('orig_appropriation').value = formatCurrency(fu.orig_appropriation);
 
-        document.getElementById('actual_abc').value = fu.actual_abc ?? '';
-        document.getElementById('actual_contract_amount').value = fu.actual_contract_amount ?? '';
-        document.getElementById('actual_engineering').value = fu.actual_engineering ?? '';
-        document.getElementById('actual_mqc').value = fu.actual_mqc ?? '';
-        document.getElementById('actual_bid').value = fu.actual_bid ?? '';
-        document.getElementById('actual_contingency').value = fu.actual_contingency ?? '';
-        document.getElementById('actual_appropriation').value = fu.actual_appropriation ?? '';
+        document.getElementById('actual_abc').value = formatCurrency(fu.actual_abc);
+        document.getElementById('actual_contract_amount').value = formatCurrency(fu.actual_contract_amount);
+        document.getElementById('actual_engineering').value = formatCurrency(fu.actual_engineering);
+        document.getElementById('actual_mqc').value = formatCurrency(fu.actual_mqc);
+        document.getElementById('actual_bid').value = formatCurrency(fu.actual_bid);
+        document.getElementById('actual_contingency').value = formatCurrency(fu.actual_contingency);
+        document.getElementById('actual_appropriation').value = formatCurrency(fu.actual_appropriation);
 
         let maxVO = 1;
         vos.forEach(vo => {
@@ -304,9 +430,15 @@ function loadFundUtilization(project_id) {
         });
 
         const summary = fu.summary || {};
-        document.querySelector('[name="dateMobi"]').value = summary.mobilization?.date || '';
-        document.querySelector('[name="amountMobi"]').value = summary.mobilization?.amount || '';
-        document.querySelector('[name="remMobi"]').value = summary.mobilization?.remarks || '';
+        
+        const mobi = summary.mobilization || {};
+        const mobiPercent = mobi.percent || '';
+        document.getElementById('percentMobi').value = mobiPercent;
+        renderMobilizationRows(mobiPercent, mobi);  // ✅ This ensures inputs exist
+        
+        // ✅ Now safe to set values because inputs have been rendered
+        
+        document.getElementById('percentMobi').dispatchEvent(new Event('input'));          
         document.querySelector('[name="dateFinal"]').value = summary.final?.date || '';
         document.querySelector('[name="amountFinal"]').value = summary.final?.amount || '';
         document.querySelector('[name="remFinal"]').value = summary.final?.remarks || '';
@@ -320,7 +452,7 @@ function loadFundUtilization(project_id) {
         document.querySelector('[name="remTotal"]').value = summary.totalExpenditures?.remarks || '';
         document.querySelector('[name="amountSavings"]').value = summary.totalSavings?.amount || '';
         document.querySelector('[name="remSavings"]').value = summary.totalSavings?.remarks || '';
-
+          
         const billings = fu.partial_billings || [];
 
         const billingsBody = document.getElementById('billingsTableBody');
@@ -329,20 +461,80 @@ function loadFundUtilization(project_id) {
           billingCount = 0;
           billings.forEach((billing) => {
             billingCount++;
+            const formattedAmount = formatCurrency(parseCurrency(billing.amount ?? '0'));
             const row = document.createElement('tr');
             row.innerHTML = `
-              <td>${billingCount} Partial Billing </td>
+              <td>${billingCount}st Partial Billing </td>
               <td><input type="date" class="form-control amount-input" name="datePart${billingCount}" value="${billing.date ?? ''}"></td>
-              <td><input type="text" class="form-control amount-input" name="amountPart${billingCount}" value="${billing.amount ?? ''}" placeholder="₱0.00"></td>
+              <td><input type="text" class="form-control amount-input" name="amountPart${billingCount}" value="${formattedAmount}" ></td>
               <td><input type="text" class="form-control amount-input" name="remPart${billingCount}" value="${billing.remarks ?? ''}"></td>
             `;
             billingsBody.appendChild(row);
           });
         }
+        
       }
     });
-
-
+    
+    const percentInput = document.getElementById('percentMobi');
+    const mobiTableBody = document.getElementById('mobilizationRows');
+    const maxPercent = 15;
+    const contractAmount = 1000000; // Example contract amount (set this to the actual contract amount)
+    
+    percentInput.setAttribute('max', maxPercent);
+    
+    function renderMobilizationRows(percentValue, existing = {}) {
+      let percent = parseFloat(percentValue) || maxPercent;
+    
+      if (percent > maxPercent) {
+        percent = maxPercent;
+      }
+    
+      mobiTableBody.innerHTML = '';
+    
+      const firstPercent = Math.min(percent, maxPercent);
+      const remainingPercent = Math.max(0, maxPercent - firstPercent);
+    
+      // Calculate the mobilization amounts
+      const mobilizationAmount = (firstPercent / 100) * contractAmount;
+      const remainingMobilizationAmount = (remainingPercent / 100) * contractAmount;
+    
+      // First mobilization row
+      const row1 = document.createElement('tr');
+      row1.innerHTML = `
+        <td>${firstPercent}% Mobilization</td>
+        <td><input type="date" class="form-control" name="dateMobi" value="${existing.date || ''}"></td>
+        <td><input type="text" class="form-control amount-input" name="amountMobi" value="${mobilizationAmount || ''}" ></td>
+        <td><input type="text" class="form-control" name="remMobi" value="${existing.remarks || ''}"></td>
+      `;
+      mobiTableBody.appendChild(row1);
+    
+      // Remaining mobilization row
+      if (remainingPercent > 0) {
+        const rem = existing.remaining || {};
+        const row2 = document.createElement('tr');
+        row2.innerHTML = `
+          <td>${remainingPercent}% Remaining Mobilization</td>
+          <td><input type="date" class="form-control" name="dateMobi2" value="${rem.date || ''}"></td>
+          <td><input type="text" class="form-control amount-input" name="amountMobi2" value="${remainingMobilizationAmount || ''}" ></td>
+          <td><input type="text" class="form-control" name="remMobi2" value="${rem.remarks || ''}"></td>
+        `;
+        mobiTableBody.appendChild(row2);
+      }
+    }
+    
+    // Re-render on percent input change
+    percentInput.addEventListener('input', function () {
+      if (this.value > maxPercent) {
+        this.value = maxPercent;
+      }
+      renderMobilizationRows(this.value);
+    });
+    
+    // Initial render with blank values
+    renderMobilizationRows(percentInput.value);
+    
+    
   //input event for mobilization amount. as per client ask to add to put input text box for mobilization
   document.getElementById('percentMobi').addEventListener('input', function () {
     const percent = parseFloat(this.value) || 0;
@@ -369,11 +561,6 @@ const formatter = new Intl.NumberFormat('en-PH', {
   currency: 'PHP',
   minimumFractionDigits: 2,
 });
-
-// Utility: convert "₱1,000.00" -> 1000
-function parseCurrency(val) {
-  return parseFloat((val || '0').replace(/[₱,]/g, '')) || 0;
-}
 
 // Utility: convert number -> "₱1,000.00"
 function formatCurrency(val) {
@@ -418,18 +605,6 @@ function calculateSavings(totalExpenditures) {
   if (savingsInput) savingsInput.value = formatCurrency(savings);
 }
 
-// Calculate mobilization as % of contract
-function calculateMobilization() {
-  const percent = parseFloat(document.getElementById('percentMobi')?.value || '0');
-  const contractAmount = parseCurrency(document.getElementById('orig_contract_amount')?.value || '0');
-  const mobiAmount = contractAmount * (percent / 100);
-
-  const mobiInput = document.querySelector('input[name="amountMobi"]');
-  if (mobiInput) mobiInput.value = formatCurrency(mobiAmount);
-
-  calculateTotalExpenditures(); // Recalculate after updating mobi
-}
-
 // Setup all event listeners after DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   const fieldNames = ['amountFinal', 'amountEng', 'amountMqc', 'amountMobi'];
@@ -470,4 +645,6 @@ document.addEventListener('DOMContentLoaded', () => {
   percentMobi?.addEventListener('input', calculateMobilization);
   origContract?.addEventListener('input', calculateMobilization);
 });
+
+
 }

@@ -22,16 +22,22 @@ class AdminManager extends Controller
             'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
     
-        $dbLocations = Project::select('projectLoc')
+        $dbLocationsRaw = Project::select('projectLoc')
             ->whereNotNull('projectLoc')
             ->pluck('projectLoc')
             ->toArray();
     
-        // Merge and remove duplicates
-        $allLocations = collect(array_merge($staticLocations, $dbLocations))
-            ->unique()
-            ->sort()
-            ->values();
+        // Extract only the municipality (first part before the comma)
+            $dbLocations = array_map(function ($loc) {
+                return trim(explode(',', $loc)[0]);
+            }, $dbLocationsRaw);
+
+            // Merge, de-duplicate, and sort
+            $locations = collect(array_merge($staticLocations, $dbLocations))
+                ->unique()
+                ->sort()
+                ->values();
+
 
         $sourceOfFunds = Project::select('sourceOfFunds')
         ->distinct()
@@ -50,7 +56,7 @@ class AdminManager extends Controller
         ->orderBy('ea')
         ->get();
 
-         return view('admin.index', compact('contractors', 'allLocations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+         return view('admin.index', compact('contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
 }
 
 
@@ -75,8 +81,13 @@ public function projects()
         ->pluck('projectLoc')
         ->toArray();
 
-    // Merge and remove duplicates
-    $allLocations = collect(array_merge($staticLocations, $dbLocations))
+    // Extract only the municipality (first part before the comma)
+    $dbLocations = array_map(function ($loc) {
+        return trim(explode(',', $loc)[0]);
+    }, $dbLocationsRaw);
+
+    // Merge, de-duplicate, and sort
+    $locations = collect(array_merge($staticLocations, $dbLocations))
         ->unique()
         ->sort()
         ->values();
@@ -115,7 +126,7 @@ public function projects()
         ];
     });
 
-    return view('admin.projects', compact('mappedProjects', 'contractors', 'allLocations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+    return view('admin.projects', compact('mappedProjects', 'contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
 }
 
     public function activityLogs() {

@@ -87,7 +87,7 @@
                                 <div id="projectLocDropdown"
                                     class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                     style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                    @foreach($allLocations as $location)
+                                    @foreach($locations as $location)
                                         <button type="button" class="list-group-item list-group-item-action"
                                             onclick="selectLoc('{{ $location }}')">
                                             {{ $location }}
@@ -158,7 +158,7 @@
                                 <span class="text-danger">*</span></label>
                             <div class="col-9">
                                 <input type="text" class="form-control" id="modeOfImplementation"
-                                    name="modeOfImplementation" value="By contract." readonly required>
+                                    name="modeOfImplementation" value="By contract." readonly>
                             </div>
                         </div>
                         <div class="row mb-2 g-3 text-end">
@@ -206,7 +206,7 @@
                                         <select id="projectStatus" name="projectStatus" class="form-select"
                                             onchange="toggleOngoingStatus()" required>
                                             <option value="" disabled selected>Select Status</option>
-                                            <option value="Not Started"><i class="fas fa-not-equal"></i>Not Startedd
+                                            <option value="Not Started"><i class="fas fa-not-equal"></i>Not Started
                                             </option>
                                             <option value="Ongoing">Ongoing</option>
                                             <option value="Completed">Completed</option>
@@ -299,16 +299,15 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
-                                <label for="contractAmount" class="form-label">Contract Amount</label>
+                        <div class="col-3 text-end">
+                                <label for="abc" class="form-label">ABC</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="contractAmount"
-                                        name="contractAmount">
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
                                 </div>
                             </div>
                             <div class="col-3 text-end">
@@ -325,15 +324,15 @@
 
                         <div class="row mb-2">
                             <div class="col-3 text-end">
-                                <label for="abc" class="form-label">ABC</label>
+                                <label for="contractAmount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                    <input type="text" class="form-control currency-input" id="contractAmount"
+                                        name="contractAmount">
                                 </div>
                             </div>
-
                             <div class="col-3 text-end">
                                 <label for="mqc" class="form-label">MQC</label>
                             </div>
@@ -352,7 +351,7 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="bid" name="bid">
+                                    <input type="text" class="form-control currency-input" id="bid" name="bid" readonly>
                                 </div>
                              </div>
                             <div class="col-3 text-end">
@@ -476,36 +475,32 @@
                             </div>
 
                             <div class="row">
-    <!-- Order pair container -->
-    <div id="orderContainer" class="col-12">
-        <div class="row mt-2 mb-2 order-set" id="orderSet1">
-            <!-- Suspension and Resumption Order Row -->
-            <div class="row mb-2">
-                <div class="col-md-6 mb-2">
-                    <label for="suspensionOrderNo1" class="form-label">Suspension Order No. 1</label>
-                    <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="resumeOrderNo1" class="form-label">Resumption Order No. 1</label>
-                    <input type="date" class="form-control" id="resumeOrderNo1" name="resumeOrderNo1">
-                </div>
-            </div>
+                                <!-- Order pair container -->
+                                <div id="orderContainer" class="col-12">
+                                    <div class="row mt-2 mb-2 order-set" id="orderSet1">
+                                        <!-- Suspension and Resumption Order Row -->
+                                        <div class="row mb-2">
+                                            <div class="col-md-6 mb-2">
+                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No. 1</label>
+                                                <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No. 1</label>
+                                                <input type="date" class="form-control" id="resumeOrderNo1" name="resumeOrderNo1">
+                                            </div>
+                                        </div>
 
-            <!-- Remarks Row -->
-            <div class="row mb-2">
-                <div class="col-md-6 mb-2">
-                    <label for="suspensionOrderNo1Remarks" class="form-label">Suspension Remarks</label>
-                    <textarea class="form-control" id="suspensionOrderNo1Remarks" name="suspensionOrderNo1Remarks" rows="2"></textarea>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="resumeOrderNo1Remarks" class="form-label">Resumption Remarks</label>
-                    <textarea class="form-control" id="resumeOrderNo1Remarks" name="resumeOrderNo1Remarks" rows="2"></textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+                                        <!-- Remarks Row -->
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 mb-2">
+                                                <label for="suspensionOrderNo1Remarks" class="form-label">Suspension Remarks</label>
+                                                <textarea class="form-control" id="suspensionOrderNo1Remarks" name="suspensionOrderNo1Remarks" rows="2"></textarea>
+                                            </div>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </fieldset>
                     <div class="modal-footer bg-light">
@@ -523,6 +518,119 @@
 </div>
 </div>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    function parseCurrency(value) {
+        return parseFloat((value || '0').replace(/[₱,]/g, '')) || 0;
+    }
+
+    function showError(fieldLabel) {
+        Swal.fire({
+        icon: 'warning',
+        title: 'Limit Exceeded',
+        text: `${fieldLabel} exceeds the Appropriation!`
+        });
+    }
+
+    const fieldGroups = [
+        { label: 'ABC', ids: ['abc'] },
+        { label: 'Contract Amount', ids: ['contractAmount'] },
+        { label: 'Engineering', ids: ['engineering'] },
+        { label: 'MQC', ids: ['mqc'] },
+        { label: 'Contingency', ids: ['contingency'] },
+        { label: 'Bid Difference', ids: ['bid'] },
+        { label: 'Appropriation', ids: ['appropriation'] } // Note: 'orig_appropriation' is the base limit
+    ];
+
+    fieldGroups.forEach(group => {
+        group.ids.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('blur', function () {
+            const appropriationValue = parseCurrency(document.getElementById('appropriation').value);
+            const inputValue = parseCurrency(input.value);
+
+            console.log(`Checking ${group.label} [${id}]: ${inputValue} vs Appropriation: ${appropriationValue}`);
+
+            if (inputValue > appropriationValue) {
+                console.warn(`✖ ${group.label} [${id}] exceeds appropriation`);
+                showError(group.label);
+                input.value = '';
+            } else {
+                console.log(`✔ ${group.label} [${id}] is within limit`);
+            }
+            });
+        }
+        });
+    });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const projectYear = document.getElementById('projectYear');
+        const sourceOfFundsInput = document.getElementById('sourceOfFunds');
+        const otherFundContainer = document.getElementById('otherFundContainer');
+
+        function validateSourceOfFunds() {
+            const selectedYear = projectYear.value;
+            const fundValue = sourceOfFundsInput.value.trim();
+            const isOther = fundValue.toLowerCase().includes('other');
+
+            if (!selectedYear) return;
+
+            // Toggle Other Fund input
+            otherFundContainer.style.display = isOther ? 'block' : 'none';
+
+            // Validate year prefix
+            if (fundValue && !fundValue.startsWith(selectedYear)) {
+                sourceOfFundsInput.setCustomValidity(`The Source of Fund must start with "${selectedYear}"`);
+                sourceOfFundsInput.reportValidity();
+            } else {
+                sourceOfFundsInput.setCustomValidity('');
+            }
+        }
+
+        // Attach validation on input and year change
+        sourceOfFundsInput.addEventListener('input', validateSourceOfFunds);
+        projectYear.addEventListener('change', validateSourceOfFunds);
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const yearSelect = document.getElementById('projectYear');
+
+        const dateInputs = [
+            'noaIssuedDate', 'noaReceivedDate',
+            'ntpIssuedDate', 'ntpReceivedDate',
+            'officialStart', 'targetCompletion',
+            'completionDate', 'revisedCompletionDate'
+        ];
+
+        // Populate year dropdown (e.g., last 10 years + current)
+        const currentYear = new Date().getFullYear();
+        for (let i = currentYear; i >= currentYear - 10; i--) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            yearSelect.appendChild(option);
+        }
+
+        yearSelect.addEventListener('change', function () {
+            const selectedYear = this.value;
+
+            if (selectedYear) {
+                const minDate = `${selectedYear}-01-01`;
+                const maxDate = `${selectedYear}-12-31`;
+
+                dateInputs.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.min = minDate;
+                        input.max = maxDate;
+                        input.value = ''; // Clear value if out of range
+                    }
+                });
+            }
+        });
+    });
+
     function showLocDropdown() {
         const dropdown = document.getElementById('projectLocDropdown');
         if (dropdown) {
@@ -558,12 +666,39 @@
 
     document.querySelectorAll('.currency-input').forEach(input => {
     input.addEventListener('input', () => {
-        let value = input.value.replace(/[^0-9.]/g, '');
-        let parts = value.split('.');
-        let intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        let decimalPart = parts[1] ? '.' + parts[1].slice(0, 2) : '';
-        input.value = intPart + decimalPart;
+        let value = input.value;
+
+        // Remove all non-digit and non-dot characters
+        value = value.replace(/[^0-9.]/g, '');
+
+        // If more than one dot, keep only the first
+        const firstDot = value.indexOf('.');
+        if (firstDot !== -1) {
+            const beforeDot = value.substring(0, firstDot);
+            const afterDot = value.substring(firstDot + 1).replace(/\./g, '');
+            value = beforeDot + '.' + afterDot;
+        }
+
+        // Split into integer and decimal parts
+        let [intPart, decimalPart] = value.split('.');
+
+        // Remove leading zeros, unless input is just "0" or "0.x"
+        if (intPart.length > 1 && intPart.startsWith('0')) {
+            intPart = intPart.replace(/^0+/, '') || '0';
+        }
+
+        // Format integer part with commas
+        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        // Keep up to two decimal digits
+        if (decimalPart !== undefined) {
+            decimalPart = decimalPart.slice(0, 2);
+            input.value = `${intPart}.${decimalPart}`;
+        } else {
+            input.value = intPart;
+        }
     });
+
 });
 
 document.querySelector('form').addEventListener('submit', () => {
@@ -584,4 +719,27 @@ document.querySelectorAll('.currency-input').forEach(input => {
     });
 });
 
+
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const ongoingStatusInput = document.getElementById('ongoingStatus');
+
+    ongoingStatusInput.addEventListener('blur', function () {
+      const value = parseFloat(this.value.trim());
+
+      if (isNaN(value) || value < 1 || value > 100) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid Percentage',
+          text: 'Please enter a value between 1 and 100.',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          this.value = '';
+          this.focus();
+        });
+      }
+    });
+  });
 </script>

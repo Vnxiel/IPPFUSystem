@@ -13,32 +13,41 @@ class FundsUtilizationController extends Controller
 {
     public function getFundUtilization($project_id)
     {
-        $fundUtilization = FundsUtilization::where('project_id', $project_id)->orderBy('updated_at', 'desc')->first();
+        $fundUtilization = FundsUtilization::where('project_id', $project_id)
+            ->orderBy('updated_at', 'desc')
+            ->first();
+    
+        $previousData = FundsUtilization::where('project_id', $project_id)
+            ->orderBy('updated_at', 'desc')
+            ->take(3)
+            ->get();
+    
         $variationOrders = [];
-
+    
         if ($fundUtilization) {
             $variationOrders = VariationOrder::where('funds_utilization_id', $fundUtilization->id)
-                                             ->orderBy('vo_number')
-                                             ->get();
+                ->orderBy('vo_number')
+                ->get();
         }
-
+    
         $project = Project::find($project_id);
-
+    
         if (!$project) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Project not found.'
             ]);
         }
-
+    
         return response()->json([
             'status' => 'success',
             'data' => $fundUtilization,
             'variationOrders' => $variationOrders,
             'projectTitle' => $project->projectTitle ?? '',
+            'previousData' => $previousData
         ]);
     }
-    public function storeFundUtilization(Request $request)
+     public function storeFundUtilization(Request $request)
     {
         DB::beginTransaction();
     
@@ -74,10 +83,30 @@ class FundsUtilizationController extends Controller
                 'actual_appropriation' => $this->cleanMoney($fundData['actual_appropriation'] ?? null),
                 'totalExpenditure' => $this->cleanMoney($fundData['total_expenditure'] ?? null),
                 'totalSavings' => $this->cleanMoney($fundData['total_savings'] ?? null),
-                'summary' => collect($summary)->map(function ($item) {
-                    $item['amount'] = isset($item['amount']) ? $this->cleanMoney($item['amount']) : null;
+                'summary' => collect($summary)->map(function ($item, $key) {
+                    if (isset($item['amount'])) {
+                        $item['amount'] = $this->cleanMoney($item['amount']);
+                    }
+                
+                    // Optionally sanitize 'percent' to float (if needed)
+                    // Inside your ->map() for summary
+                    if ($key === 'mobilization') {
+                        if (isset($item['percent'])) {
+                            $item['percent'] = floatval($item['percent']);
+                        }
+
+                        if (isset($item['amount'])) {
+                            $item['amount'] = $this->cleanMoney($item['amount']);
+                        }
+
+                        if (isset($item['remaining']['amount'])) {
+                            $item['remaining']['amount'] = $this->cleanMoney($item['remaining']['amount']);
+                        }
+                    }
+
+                
                     return $item;
-                })->toArray(),
+                })->toArray(),                
                 
                 'partial_billings' => collect($partialBillings)->map(function ($item) {
                     $item['amount'] = isset($item['amount']) ? $this->cleanMoney($item['amount']) : null;

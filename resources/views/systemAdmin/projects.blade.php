@@ -3,149 +3,162 @@
 @section('title', 'Projects Page')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid py-4" style="background-color: transparent;">
     <!-- Header Section -->
-    <div class="card mb-2 border-0 shadow-sm">
-        <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="ms-auto">
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addNewProjectModal"
-                        style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
-                    <i class="fas fa-plus-circle me-2"></i>Add New Project
-                </button>
+    <div class="card mb-1 border-0 shadow-lg">
+        <div class="card-body p-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="ms-auto">
+                    <button class="btn btn-sm btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addNewProjectModal"
+                            style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
+                        <i class="fas fa-plus-circle me-2"></i>Add New Project
+                    </button>
+                </div>
             </div>
-        </div>
         </div>
     </div>
 
-    <!-- Filters Section -->
-    <div class="card border-0 shadow-sm mb-1">
-        <div class="card-body p-2">
-            <h5 class="mb-3" style="color: #2c3e50; font-weight: 600;">
-                <i class="fas fa-filter me-2"></i>Filter Projects
-            </h5>
-            <div class="row g-3">
-               <!-- Location Dropdown -->
-                    <div class="col-md-3">
+    <div class="row g-3 ">
+        <!-- Filters Section - Left Sidebar -->
+        <div class="col-md-2">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-filter me-2 text-primary"></i>
+                        <h6 class="mb-0 fw-bold">Filters</h6>
+                    </div>
+
+                    <!-- View All Projects Checkbox -->
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
+                        <label class="form-check-label fw-semibold" for="view_all_checkbox">
+                            View All
+                        </label>
+                    </div>
+
+                    <!-- Clear Filters Button -->
+                    <button type="button" class="btn btn-outline-secondary btn-sm w-100 mb-3" onclick="clearFilters()">
+                        <i class="fas fa-undo-alt me-1"></i>Clear
+                    </button>
+
+                    <!-- Filter Dropdowns -->
+                    <div class="vstack gap-2">
+                        <!-- Location Filter -->
                         <div class="form-floating">
-                            <select class="form-select" id="location_filter" name="location_filter">
+                            <select class="form-select form-select-sm" id="location_filter" name="location_filter">
                                 <option value="" selected disabled>Select Location</option>
                                 <option value="">All Location</option>
-                                @foreach($allLocations as $location)
+                                @foreach($locations as $location)
                                     <option value="{{ $location }}">{{ $location }}</option>
                                 @endforeach
                             </select>
-                            <label for="location_filter">
-                                <i class="bi bi-geo-alt me-2"></i>Location
-                            </label>
+                            <label><i class="bi bi-geo-alt me-1"></i>Location</label>
                         </div>
-                    </div>
 
-
-
-                <!-- Contractor Dropdown -->
-                    <div class="col-md-3">
+                        <!-- Contractor Filter -->
                         <div class="form-floating">
-                            <select id="contractor_filter" name="contractor" class="form-select">
+                            <select id="contractor_filter" name="contractor" class="form-select form-select-sm">
                                 <option value="" selected disabled>Select Contractor</option>
-                                <option value="" >All Contractor</option>
+                                <option value="">All Contractor</option>
                                 @foreach($contractors as $contractor)
                                     <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
                                 @endforeach
                             </select>
-                            <label for="contractor_filter">
-                                <i class="bi bi-person-workspace me-2"></i>Contractor
-                            </label>
+                            <label><i class="bi bi-person-workspace me-1"></i>Contractor</label>
+                        </div>
+
+                        <!-- Amount Filter -->
+                        <div class="form-floating">
+                            <input type="text" class="form-control form-control-sm" id="amount_filter" name="amount_filter"
+                                placeholder="Enter amount">
+                            <label><i class="fas fa-peso-sign me-1"></i>Amount</label>
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div class="form-floating">
+                            <select id="status_filter" class="form-select form-select-sm">
+                                <option value="">Select Status</option>
+                                <option value="Not Started">Not Started</option>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Discontinued">Discontinued</option>
+                                <option value="Suspended">Suspended</option>
+                            </select>
+                            <label><i class="bi bi-info-circle me-1"></i>Status</label>
                         </div>
                     </div>
-
-                <!-- Amount Filter -->
-                <div class="col-md-3">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="amount_filter" name="amount_filter"
-                            placeholder="Enter amount">
-                        <label for="amount_filter">
-                            <i class="fas fa-peso-sign me-2"></i>Amount
-                        </label>
-                    </div>
                 </div>
-
-                <!-- Status Filter -->
-                <div class="col-md-3">
-                    <div class="form-floating">
-                        <select id="status_filter" class="form-select">
-                            <option value="">Select Status</option>
-                            <option value="All">All</option>
-                            <option value="Not Started">Not Started</option>
-                            <option value="Ongoing">Ongoing</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Discontinued">Discontinued</option>
-                            <option value="Suspended">Suspended</option>
-                        </select>
-                        <label for="status_filter">
-                            <i class="bi bi-info-circle me-2"></i>Status
-                        </label>
-                    </div>
-                </div>
-                <!-- View All Projects Checkbox -->
-            <div class="col-md-3 d-flex align-items-end">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
-                    <label class="form-check-label fw-semibold" for="view_all_checkbox">
-                        View All Projects
-                    </label>
-                </div>
-            </div>
-
             </div>
         </div>
-    </div>
 
-
-            <div class="col-md-12 m-2">
-
-                <div class="row">
-                    <div class="table-container table-responsive">
-                        <table id="projects" class="table table-striped table-hover table-bordered" style="width:100%;">
+        <!-- Table Section - Main Content -->
+        <div class="col-md-10">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-2">
+                    <div class="table-responsive">
+                        <table id="projects" class="table table-hover table-bordered table-sm mb-0" style="width:100%; font-size: 1rem;">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width:15%">Project Title</th>
-                                    <th style="width:5%">Location</th>
-                                    <th style="width:5%">Status</th>
-                                    <th style="width:5%">Contract Amount</th>
-                                    <th style="width:5%">Contractor</th>
-                                    <th style="width:5%">Duration</th>
-                                    <th style="width:5%">Action</th>
+                                    <th style="width:25%">
+                                        <small>Project Title</small>
+                                    </th>
+                                    <th style="width:21%">
+                                        <small>Location</small>
+                                    </th>
+                                    <th style="width:8%">
+                                        <small>Status</small>
+                                    </th>
+                                    <th style="width:15%">
+                                        <small>Contract Amount</small>
+                                    </th>
+                                    <th style="width:15%">
+                                        <small>Contractor</small>
+                                    </th>
+                                    <th style="width:8%">
+                                        <small>Duration</small>
+                                    </th>
+                                    <th style="width:8%">
+                                        <small>Action</small>
+                                    </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="small">
                                 @forelse($mappedProjects as $project)
                                     <tr>
-                                        <td>{{ $project['title'] }}</td>
-                                        <td>{{ $project['location'] }}</td>
-                                        <td>{{ $project['status'] }}</td>
-                                        <td>₱{{ $project['amount'] }}</td>
-                                        <td>{{ $project['contractor'] }}</td>
-                                        <td>{{ $project['duration'] }}</td>
+                                        <td class="small">{{ $project['title'] }}</td>
+                                        <td class="small">{{ $project['location'] }}</td>
+                                        <td class="small">{{ $project['status'] }}</td>
+                                        <td class="small">₱{{ $project['amount'] }}</td>
+                                        <td class="small">{{ $project['contractor'] }}</td>
+                                        <td class="small">{{ $project['duration'] }}</td>
                                         <td>
-                                            <button class="btn btn-primary btn-sm overview-btn" data-id="{{ $project['id'] }}">Overview</button>
+                                            <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
+                                                data-id="{{ $project['id'] }}">
+                                                <i class="fas fa-eye fa-sm"></i>
+                                                <small>View</small>
+                                            </button>
+                                            <!-- <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
+                                                data-id="{{ $project['id'] }}">
+                                                <i class="fas fa-eye fa-sm"></i>
+                                                <small>View</small>
+                                            </button> -->
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center">There are no currently added projects.</td>
+                                        <td colspan="7" class="text-center small">There are no currently added projects.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
-
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -610,6 +623,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     </script>
 
-    @include('systemAdmin.modals.add-project')
+    @include('systemAdmin.modals.Projects.add-project')
 
 @endsection
