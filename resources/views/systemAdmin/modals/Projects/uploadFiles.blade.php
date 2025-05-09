@@ -20,8 +20,6 @@
                             <!-- Image Preview -->
                           <!-- File Previews -->
                             <div id="imagePreviewContainer" class="row g-2 mt-3"></div>
-
-
                             <button type="submit" class="btn btn-primary w-100">Upload</button>
                         </form>
                     </div>
