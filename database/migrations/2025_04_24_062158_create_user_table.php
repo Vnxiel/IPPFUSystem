@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('ofmis_id')->unique(); // External system ID
             $table->string('fullname', 500);
             $table->string('position');
-            $table->string('email', 500);
+            $table->string('email', 500)->nullable();
             $table->string('username')->unique();
             $table->string('password', 500);
             $table->string('role');
