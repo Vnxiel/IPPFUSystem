@@ -341,14 +341,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="container-fluid py-1">
         <!-- Header Section -->
         <div class="card mb-2 border-0 shadow-sm">
             <div class="card-body p-2">
