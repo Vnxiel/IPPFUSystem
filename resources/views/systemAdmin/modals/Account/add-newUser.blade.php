@@ -39,6 +39,14 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="mb-3">
+                                                <label for="email" class="form-label fw-bolder">Email:</label>
+                                                <input type="email" class="form-control" name="email" id="email" placeholder="Email Address" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
                                                 <label for="username" class="form-label fw-bolder">Username:</label>
                                                 <input type="text" class="form-control" name="username" id="username" placeholder="Username">
                                             </div>

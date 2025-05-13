@@ -23,23 +23,37 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4">
                 <div class="table-responsive">
-                    <table id="trashList" class="table table-hover align-middle mb-0">
+                    <table id="trashList" class="table table-hover table-bordered table-sm mb-0"
+                       style="width:100%; font-size: 1rem; white-space: nowrap;">
                         <thead class="table-light">
                             <tr>
-                                <th style="width: 25%;">Project Title</th>
-                                <th style="width: 15%;">Location</th>
-                                <th style="width: 15%;">Status</th>
-                                <th style="width: 10%;">Contract Amount</th>
-                                <th style="width: 15%;">Contractor</th>
-                                <th style="width: 12%;">Duration</th>
-                                <th style="width: 8%;">Action</th>
+                                <th style="width: 25%; white-space: nowrap;">Project Title</th>
+                                <th style="width: 15%; white-space: nowrap;">Location</th>
+                                <th style="width: 15%; white-space: nowrap;">Status</th>
+                                <th style="width: 10%; white-space: nowrap;">Contract Amount</th>
+                                <th style="width: 15%; white-space: nowrap;">Contractor</th>
+                                <th style="width: 12%; white-space: nowrap;">Duration</th>
+                                <th style="width: 8%; white-space: nowrap;">Action</th>
                             </tr>   
                         </thead>
                         <tbody>
-                                    <tr>
-                                        <td colspan="7" class="text-center">Loading projects...</td>
-                                    </tr>
-                                </tbody>
+                            @forelse($projects as $project)
+                                <tr>
+                                    <td>{{ $project['title'] }}</td>
+                                    <td>{{ $project['location'] }}</td>
+                                    <td>{{ $project['status'] }}</td>
+                                    <td>₱{{ $project['amount'] }}</td>
+                                    <td>{{ $project['contractor'] }}</td>
+                                    <td>{{ $project['duration'] }}</td>
+                                    <td>{!! $project['action'] !!}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">No trashed projects found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+
                     </table>
                 </div>
             </div>

@@ -26,6 +26,7 @@ $(document).ready(function() {
                 ofmis_id: $('#ofmis_id').val(),
                 fullname: $('#fullname').val(),
                 position: $('#position').val(),
+                email: $('#email').val(),
                 username: $('#username').val(),
                 password: $('#password').val(),
                 password_confirmation: $('#password_confirmation').val(),
@@ -134,7 +135,7 @@ timeFrameSelect.addEventListener('change', function() {
     let selectedUserId = null; // Store the user ID globally
 
     // Open modal & fetch user role details
-    $(document).on("click", ".btn-warning", function () {
+    $(document).on("click", ".btn-outline-warning", function () {
         selectedUserId = $(this).data("id"); // Get user ID from button
 
         $.ajax({

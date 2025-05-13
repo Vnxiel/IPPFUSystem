@@ -7,7 +7,6 @@ $(document).ready(function () {
     let dataTable = null;
 
     if (hasData) {
-        // Initialize DataTable first
         dataTable = $('#projects').DataTable({
             responsive: true,
             scrollX: true,
@@ -22,118 +21,63 @@ $(document).ready(function () {
             fixedColumns: { leftColumns: 1 }
         });
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const statusFilter = urlParams.get('page');
-        console.log('[URL PARAM] page =', statusFilter);
-        
-        if (statusFilter) {
-            const statusMap = {
-                tobestarted: 'Not Started',
-                ongoing: 'Ongoing',
-                completed: 'Completed',
-                discontinued: 'Discontinued',
-                suspended: 'Suspended'
-            };
-        
-            const actualStatus = statusMap[statusFilter.toLowerCase()];
-            console.log('[MAPPED STATUS]', actualStatus);
-        
-            if (actualStatus) {
-                $('#status_filter').val(actualStatus); // Set value
-                console.log('[SETTING FILTER] status_filter set to:', $('#status_filter').val());
-        
-                setTimeout(() => {
-                    console.log('[DRAW TRIGGER] Executing DataTable draw');
-                    dataTable.draw();
-        
-                    const filteredRows = dataTable.rows({ filter: 'applied' }).data().length;
-                    console.log('[FILTERED ROW COUNT]', filteredRows);
-        
-                    if (filteredRows === 0) {
-                        dataTable.clear().draw();
-                        $('#projects tbody').html(`
-                            <tr>
-                                <td colspan="8" class="text-center">There are no currently ${actualStatus.toLowerCase()} projects.</td>
-                            </tr>
-                        `);
-                    } else {
-                        console.log('[FILTER WORKED] Filtered projects shown.');
-                    }
-                }, 500); // Slight delay to ensure DOM settles
-            } else {
-                console.warn('[STATUS MAP FAIL] No match for:', statusFilter);
-            }
-        }
-        
-
-
-        // Restore and highlight previously selected project
+        // Highlighting logic
         const highlightedId = localStorage.getItem('highlighted_project_id');
         const savedPage = localStorage.getItem('highlighted_project_page');
 
         if (highlightedId && savedPage !== null && savedPage !== 'preserve') {
+            const targetPage = parseInt(savedPage);
             $('#projects').on('draw.dt', function highlightRow() {
                 $('#projects').off('draw.dt', highlightRow);
-
                 const newRow = $('#projects tbody tr').filter((_, el) => $(el).data('id') == highlightedId);
                 if (newRow.length) {
                     newRow.addClass('table-success focus-highlight');
-                    $('html, body').animate({ scrollTop: newRow.offset().top - 100 }, 500);
+                    $('html, body').animate({
+                        scrollTop: newRow.offset().top - 100
+                    }, 500);
                 }
             });
-
-            dataTable.page(parseInt(savedPage)).draw('page');
+            dataTable.page(targetPage).draw('page');
         }
 
         $("#projects-container").show();
     }
 
-    // Custom filtering logic this is not the same with the url filter do not 
-    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-        if (!dataTable) return true;
-    
-        const viewAll = $('#view_all_checkbox').is(':checked');
-        if (viewAll) return true;
-    
-        const location = ($('#location_filter').val() || '').toLowerCase().trim();
-        const contractor = ($('#contractor_filter').val() || '').toLowerCase().trim();
-        const amountInput = $('#amount_filter').val().replace(/[₱,]/g, '');
-        const maxAmount = parseFloat(amountInput) || null;
-        const status = ($('#status_filter').val() || '').toLowerCase().trim();
-    
-        const rowLocation = (data[2] || '').toLowerCase().trim();
-        const rowStatus = (data[3] || '').toLowerCase().trim(); // IMPORTANT
-        const rowAmount = parseFloat((data[4] || '').replace(/[₱,]/g, '')) || 0;
-        const rowContractor = (data[5] || '').toLowerCase().trim();
-    
-        console.log(`[FILTER] status="${status}" vs row="${rowStatus}"`);
-    
-        return (!location || rowLocation.includes(location)) &&
-               (!contractor || rowContractor.includes(contractor)) &&
-               (!maxAmount || rowAmount <= maxAmount) &&
-               (!status || rowStatus.includes(status));
+    // Filters
+    $('#location_filter, #contractor_filter, #amount_filter, #status_filter').on('input change', function () {
+        filterProjects();
     });
-    
-    
 
-    // Debounced filter triggers
-    if (dataTable) {
-        let filterTimer;
-        $('#location_filter, #contractor_filter, #amount_filter, #status_filter, #view_all_checkbox').on('input change', function () {
-            clearTimeout(filterTimer);
-            filterTimer = setTimeout(() => {
-                dataTable.draw();
-            }, 150);
-        });
+    // URL-based status filtering (uses dropdown + DataTables)
+    const urlParams = new URLSearchParams(window.location.search);
+    const statusFilter = urlParams.get('page');
+    if (statusFilter && !localStorage.getItem('highlighted_project_id')) {
+        const statusMap = {
+            tobestarted: 'Not Started',
+            ongoing: 'Ongoing',
+            completed: 'Completed',
+            discontinued: 'Discontinued',
+            suspended: 'Suspended'
+        };
+        const actualStatus = statusMap[statusFilter.toLowerCase()];
+        if (actualStatus) {
+            $('#status_filter').val(actualStatus).trigger('change');
+
+            // Delay check for "no results"
+            setTimeout(() => {
+                if ($('#projects tbody tr:visible').length === 0) {
+                    dataTable.clear().draw();
+                    $('#projects tbody').html(`
+                        <tr>
+                            <td colspan="8" class="text-center">There are no currently ${statusFilter.toLowerCase()} projects.</td>
+                        </tr>
+                    `);
+                }
+            }, 300);
+        }
     }
 
-    // Highlight clicked row
-    $(document).on('click', '#projects tbody tr', function () {
-        $('#projects tbody tr').removeClass('focus-highlight');
-        $(this).addClass('focus-highlight');
-    });
-
-    // Overview button click
+    // Project click
     $(document).on('click', '.overview-btn', function () {
         const projectId = $(this).data('id');
         const pageNumber = dataTable ? dataTable.page() : 0;
@@ -156,18 +100,27 @@ $(document).ready(function () {
         }
     });
 
-    // Format amount input with commas
-    $('#amount_filter').on('input', function () {
-        let input = $(this).val().replace(/[^0-9.]/g, '');
-        if (input) {
-            let parts = input.split('.');
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            $(this).val(parts.join('.'));
-        }
+    // Remove highlight on click
+    $(document).on('click', '#projects tbody tr', function () {
+        $('#projects tbody tr').removeClass('focus-highlight');
+        $(this).addClass('focus-highlight');
     });
+
+    // Error alert helper
+    function showError(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: message,
+            timer: 10000,
+            showConfirmButton: false,
+        });
+        $("#projects-container").hide();
+    }
 });
 
-// Add highlight CSS to head
+
+// Add a style class for better visibility (inject this into your CSS)
 $('<style>')
     .prop('type', 'text/css')
     .html(`

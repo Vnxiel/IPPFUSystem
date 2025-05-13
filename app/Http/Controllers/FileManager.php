@@ -108,16 +108,16 @@ class FileManager extends Controller
 }
 
 
-    // Get Files by Project ID
-    public function getFiles($project_id)
-    {
-        $files = ProjectFile::where('project_id', $project_id)->orderBy('created_at', 'desc')->get();
+        // Get Files by Project ID
+        public function getFiles($project_id)
+        {
+            $files = ProjectFile::where('project_id', $project_id)->orderBy('created_at', 'desc')->get();
 
-        return response()->json([
-            'status' => 'success',
-            'files' => $files
-        ]);
-    }
+            return response()->json([
+                'status' => 'success',
+                'files' => $files
+            ]);
+        }
 
     // Delete File
     public function delete($fileName)

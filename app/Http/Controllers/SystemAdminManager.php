@@ -71,6 +71,7 @@ class SystemAdminManager extends Controller
         $validator = Validator::make($request->all(), [ 
             'ofmis_id' => 'required|unique:users,ofmis_id',
             'fullname' => 'required|min:3',
+            'email' => 'required',
             'position' => 'required',
             'username' => 'required|unique:users,username',
             'password' => 'required|min:6|confirmed',
@@ -89,6 +90,7 @@ class SystemAdminManager extends Controller
             $user->role = $request->role; 
             $user->fullname = $request->fullname; 
             $user->position = $request->position;
+            $user->email = $request->email;
             $user->username = $request->username;
             $user->password = Hash::make($request->password);
             $user->time_frame = 'Permanent';

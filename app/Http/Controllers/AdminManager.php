@@ -25,7 +25,7 @@ class AdminManager extends Controller
         $dbLocationsRaw = Project::select('projectLoc')
             ->whereNotNull('projectLoc')
             ->pluck('projectLoc')
-            ->toArray();
+            ->toArray();    
     
         // Extract only the municipality (first part before the comma)
             $dbLocations = array_map(function ($loc) {
@@ -75,16 +75,16 @@ public function projects()
         'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
         'Villaverde', 'Ambaguio', 'Santa Fe'
     ];
+    $dbLocationsRaw = Project::select('projectLoc')
+    ->whereNotNull('projectLoc')
+    ->pluck('projectLoc')
+    ->toArray();    
 
-    $dbLocations = Project::select('projectLoc')
-        ->whereNotNull('projectLoc')
-        ->pluck('projectLoc')
-        ->toArray();
-
-    // Extract only the municipality (first part before the comma)
+// Extract only the municipality (first part before the comma)
     $dbLocations = array_map(function ($loc) {
         return trim(explode(',', $loc)[0]);
     }, $dbLocationsRaw);
+
 
     // Merge, de-duplicate, and sort
     $locations = collect(array_merge($staticLocations, $dbLocations))

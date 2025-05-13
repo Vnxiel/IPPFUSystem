@@ -17,10 +17,10 @@ function clearFilters() {
     // Hide the dropdown if it exists
     if (locationDropdown) locationDropdown.style.display = 'none';
 
-    // Re-run filtering logic if defined
-    if (typeof filterProjects === 'function') {
-        filterProjects();
+    // Re-apply filtering using the updated (now cleared) inputs
+    if (typeof filterProjects === 'function' && typeof dataTable !== 'undefined' && dataTable !== null) {
+        filterProjects(dataTable);
     } else {
-        console.warn('filterProjects() is not defined.');
+        console.warn('Cannot apply filters: either filterProjects() or dataTable is not available.');
     }
 }

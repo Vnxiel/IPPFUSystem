@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PasswordChanged;
 use App\Models\User;
 use App\Models\ActivityLog;
 use App\Http\Controllers\ActivityLogs;
@@ -363,36 +365,93 @@ public function userLogin(Request $request)
         // 3. Otherwise, show the system‑admin overview
         return view('systemAdmin.overview', compact('contractors'));
     }
+
+    public function requestPasswordChange(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'reason' => 'required|string',
+        ]);
+
+        $user = User::where('username', $request->username)->first();
+
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User not found.']);
+        }
+
+        $user->request_pass = 1;
+        $user->reason = $request->reason;
+        $user->save();
+
+
+        // You could also log or store the reason somewhere if needed.
+        return response()->json(['success' => true]);
+    }
+
+    public function getPasswordRequests()
+    {
+        $requests = User::where('request_pass', 1)
+            ->select('username', 'email', 'reason')
+            ->get();
+
+        return response()->json($requests);
+    }
+
+    public function changeUserPassword(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'new_password' => 'required|min:6|same:confirm_password'
+        ]);
+
+        $user = User::find($request->user_id);
+        $user->password = Hash::make($request->new_password);
+        $user->request_pass = 0;
+        $user->reason = null;
+        $user->save();
+
+        \Log::info('Starting password change for user: ' . $request->user_id);
+
+            try {
+                Mail::to($user->email)->send(new PasswordChanged($user, $request->new_password));
+                \Log::info('Email sent to: ' . $user->email);
+            } catch (\Exception $e) {
+                \Log::error('Email failed: ' . $e->getMessage());
+            }
+
+        return response()->json(['success' => true]);
+    }
+
     
     //When logging out it will check if the session variable exists then
     // it will retrieve the user's information, log the the activity before clearing the session data. 
     public function logout(Request $request)
-{
-    $user = auth()->user();
+        {
+            $user = auth()->user();
 
-    if (!$user) {
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
 
-    try {
-        (new ActivityLogs)->userAction(
-            $user->id,
-            $user->ofmis_id,
-            $user->username,
-            $user->role,
-            'Logged out from the system.'
-        );
-    } catch (\Exception $e) {
-        Log::error('Logout activity log failed: ' . $e->getMessage());
-    }
+            try {
+                (new ActivityLogs)->userAction(
+                    $user->id,
+                    $user->ofmis_id,
+                    $user->username,
+                    $user->role,
+                    'Logged out from the system.'
+                );
+            } catch (\Exception $e) {
+                Log::error('Logout activity log failed: ' . $e->getMessage());
+            }
 
-    auth()->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-    // ✅ Return JSON instead of redirect
-    return response()->json(['message' => 'Logged out successfully']);
-}
+            // ✅ Return JSON instead of redirect
+            return response()->json(['message' => 'Logged out successfully']);
+        }
 
     
         }

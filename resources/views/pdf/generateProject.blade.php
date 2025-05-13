@@ -269,10 +269,10 @@
         <td style="text-align: right;">{{ $summary['mobilization']['remarks'] ?? '' }}</td>
       </tr>
       <tr class="fit-text-row">
-        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $partialBillings['date'] ?? '' }}</td>
         <td>1st Partial Billing</td>
-        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $partialBillings['amount'] ?? '' }}</td>
+        <td style="text-align: right;">{{ $partialBillings['remarks'] ?? '' }}</td>
       </tr>
       <tr class="fit-text-row">
         <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>

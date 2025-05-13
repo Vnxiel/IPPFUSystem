@@ -276,7 +276,7 @@ if ($existing) {
             return trim(explode(',', $loc)[0]);
         }, $dbLocationsRaw);
         
-        // Merge, de-duplicate, and sort
+        // Merge and remove duplicates
         $locations = collect(array_merge($staticLocations, $dbLocations))
             ->unique()
             ->sort()
@@ -320,39 +320,37 @@ if ($existing) {
     return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
 }
 
-    
-    public function fetchTrashedProjects()
-    {
-        try {
-            // Kunin lang ang mga projects na may `is_hidden = 1`
-            $projects = Project::where('is_hidden', 1)
-                ->orderBy('created_at', 'desc')
-                ->get()
-                ->map(function ($project) {
-                    return [
-                        'title' => $project->projectTitle ?? 'N/A',
-                        'location' => $project->projectLoc ?? 'N/A',
-                        'status' => $project->projectStatus ?? 'N/A',
-                      'amount' => number_format((float) preg_replace('/[^\d.]/', '', $project->contractAmount), 2),
+        public function fetchTrashedProjects()
+        {
+            try {
+                $projects = Project::where('is_hidden', 1)
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+                    ->map(function ($project) {
+                        $amount = optional($project->fundsUtilization)->orig_contract_amount;
+                        $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
 
-                        'contractor' => (strtolower($project->projectContractor) === 'others')
-                            ? ($project->othersContractor ?? 'N/A')
-                            : ($project->projectContractor ?? 'N/A'),
-                        'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
-                        'action' => '<button class="btn btn-primary btn-sm restore-btn" data-id="' . $project->id . '">Restore</button>',
-                    ];
-                });
-    
-            return response()->json(['status' => 'success', 'projects' => $projects]);
-        } catch (\Exception $e) {
-            \Log::error('Error fetching trashed projects: ' . $e->getMessage());
-    
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error fetching trashed projects. Please try again.'
-            ], 500);
+                        return [
+                            'title' => $project->projectTitle ?? 'N/A',
+                            'location' => $project->projectLoc ?? 'N/A',
+                            'status' => $project->projectStatus ?? 'N/A',
+                            'amount' => $formattedAmount,
+                            'contractor' => (strtolower($project->projectContractor) === 'others')
+                                ? ($project->othersContractor ?? 'N/A')
+                                : ($project->projectContractor ?? 'N/A'),
+                            'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
+                            'action' => '<button class="btn btn-primary btn-sm restore-btn" data-id="' . $project->id . '">Restore</button>',
+                        ];
+                    });
+
+                return view('systemAdmin.trash', compact('projects'));
+            } catch (\Exception $e) {
+                \Log::error('Error fetching trashed projects: ' . $e->getMessage());
+
+                return back()->with('error', 'Failed to load trashed projects. Please try again.');
+            }
         }
-    }
+
     
         public function restoreProject(Request $request, $id)
     {
@@ -567,77 +565,73 @@ if ($existing) {
         }
     }
     
-    
+    public function getProjectSummary()
+    {
+        try {
+            Log::info('Fetching project summary...');
 
-    
-    
-public function getProjectSummary()
-{
-    try {
-        Log::info('Fetching project summary...');
+            if (!Schema::hasTable('projects')) {
+                Log::error('Error: Table "projects" does not exist.');
+                return response()->json(['status' => 'error', 'message' => 'Database table not found.']);
+            }
 
-        if (!Schema::hasTable('projects')) {
-            Log::error('Error: Table "projects" does not exist.');
-            return response()->json(['status' => 'error', 'message' => 'Database table not found.']);
+            // Only consider projects that are not hidden
+            $visibleProjects = Project::where('is_hidden', '!=', 1);
+
+            $totalProjects = $visibleProjects->count();
+            $ongoingProjects = $visibleProjects->clone()->where('projectStatus', 'Ongoing')->count();
+            $completedProjects = $visibleProjects->clone()->where('projectStatus', 'Completed')->count();
+            $discontinuedProjects = $visibleProjects->clone()->where('projectStatus', 'Cancelled')->count();
+            $toBeStartedProjects = $visibleProjects->clone()->where('projectStatus', 'Not Started')->count();
+            $suspendedProjects = $visibleProjects->clone()->where('projectStatus', 'Suspended')->count();
+
+            $projects = $visibleProjects->get();
+            
+            $totalBudget = 0;
+            $totalUsed = 0;
+            
+            foreach ($projects as $project) {
+                // Try to find a FundsUtilization entry for this project
+                $funds = FundsUtilization::where('project_id', $project->id)->first();
+            
+                // Use FundsUtilization values if available, otherwise fallback to Project values
+                $abc = $funds ? $funds->orig_abc : $project->abc;
+                $contractAmount = $funds ? $funds->orig_contract_amount : $project->contractAmount;
+            
+                $totalBudget += (float) preg_replace('/[^0-9.]/', '', $abc ?? '0');
+                $totalUsed += (float) preg_replace('/[^0-9.]/', '', $contractAmount ?? '0');
+            }
+            
+            $remainingBalance = max($totalBudget - $totalUsed, 0);
+            
+            $recentProjects = $visibleProjects->orderBy('created_at', 'desc')->limit(5)->get();
+
+            Log::info('Project summary fetched successfully.');
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'totalProjects' => $totalProjects,
+                    'ongoingProjects' => $ongoingProjects,
+                    'completedProjects' => $completedProjects,
+                    'discontinuedProjects' => $discontinuedProjects,
+                    'toBeStartedProjects' => $toBeStartedProjects,
+                    'suspendedProjects' => $suspendedProjects,
+                    'totalBudget' => number_format($totalBudget, 2),
+                    'totalUsed' => number_format($totalUsed, 2),
+                    'remainingBalance' => number_format($remainingBalance, 2),
+                    'recentProjects' => $recentProjects
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching project summary: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error fetching project summary.',
+                'error_details' => $e->getMessage()
+            ]);
         }
-
-        // Only consider projects that are not hidden
-        $visibleProjects = Project::where('is_hidden', '!=', 1);
-
-        $totalProjects = $visibleProjects->count();
-        $ongoingProjects = $visibleProjects->clone()->where('projectStatus', 'Ongoing')->count();
-        $completedProjects = $visibleProjects->clone()->where('projectStatus', 'Completed')->count();
-        $discontinuedProjects = $visibleProjects->clone()->where('projectStatus', 'Cancelled')->count();
-        $toBeStartedProjects = $visibleProjects->clone()->where('projectStatus', 'Not Started')->count();
-        $suspendedProjects = $visibleProjects->clone()->where('projectStatus', 'Suspended')->count();
-
-        $projects = $visibleProjects->get();
-        
-        $totalBudget = 0;
-        $totalUsed = 0;
-        
-        foreach ($projects as $project) {
-            // Try to find a FundsUtilization entry for this project
-            $funds = FundsUtilization::where('project_id', $project->id)->first();
-        
-            // Use FundsUtilization values if available, otherwise fallback to Project values
-            $abc = $funds ? $funds->orig_abc : $project->abc;
-            $contractAmount = $funds ? $funds->orig_contract_amount : $project->contractAmount;
-        
-            $totalBudget += (float) preg_replace('/[^0-9.]/', '', $abc ?? '0');
-            $totalUsed += (float) preg_replace('/[^0-9.]/', '', $contractAmount ?? '0');
-        }
-        
-        $remainingBalance = max($totalBudget - $totalUsed, 0);
-        
-        $recentProjects = $visibleProjects->orderBy('created_at', 'desc')->limit(5)->get();
-
-        Log::info('Project summary fetched successfully.');
-
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'totalProjects' => $totalProjects,
-                'ongoingProjects' => $ongoingProjects,
-                'completedProjects' => $completedProjects,
-                'discontinuedProjects' => $discontinuedProjects,
-                'toBeStartedProjects' => $toBeStartedProjects,
-                'suspendedProjects' => $suspendedProjects,
-                'totalBudget' => number_format($totalBudget, 2),
-                'totalUsed' => number_format($totalUsed, 2),
-                'remainingBalance' => number_format($remainingBalance, 2),
-                'recentProjects' => $recentProjects
-            ]
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Error fetching project summary: ' . $e->getMessage());
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Error fetching project summary.',
-            'error_details' => $e->getMessage()
-        ]);
     }
-}
 
 
 public function updateProject(Request $request, $id)

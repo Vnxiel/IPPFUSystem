@@ -15,7 +15,7 @@ class User extends Authenticatable
     use Notifiable;
     protected $table = 'users'; 
     protected $fillable = [
-        'ofmis_id', 'fullname', 'position', 'username', 'password', 'role', 'time_frame', 'time_limit', 'temp_role',  'created_at',
+        'ofmis_id', 'fullname', 'position', 'email', 'username', 'password', 'role', 'reason', 'time_frame', 'time_limit', 'temp_role',  'created_at',
     ];
     
     protected $dates = ['created_at']; // if you want to handle date fields correctly

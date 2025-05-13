@@ -45,18 +45,17 @@
 
                     <!-- Filter Dropdowns -->
                     <div class="vstack gap-2">
-                        <!-- Location Filter -->
+                       <!-- Location Filter -->
                         <div class="form-floating">
                             <select class="form-select form-select-sm" id="location_filter" name="location_filter">
                                 <option value="" selected disabled>Select Location</option>
                                 <option value="">All Location</option>
                                 @foreach($locations as $location)
-                                    <option value="{{ $location }}">{{ $location }}</option>
+                                    <option value="{{ $location }}, Nueva Vizcaya">{{ $location }}, Nueva Vizcaya</option>
                                 @endforeach
                             </select>
                             <label><i class="bi bi-geo-alt me-1"></i>Location</label>
                         </div>
-
                         <!-- Contractor Filter -->
                         <div class="form-floating">
                             <select id="contractor_filter" name="contractor" class="form-select form-select-sm">

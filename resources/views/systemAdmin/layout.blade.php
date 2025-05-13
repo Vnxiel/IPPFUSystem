@@ -146,6 +146,8 @@
         
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Account/register-user.js') }}"></script>
+        <script src="{{ asset('js/Account/fetch-pass_requests.js') }}"></script>
+        <script src="{{ asset('js/Account/change-new_pass.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>

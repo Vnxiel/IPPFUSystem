@@ -1,24 +1,19 @@
-function filterProjects() {
-    var table = $('#projects').DataTable();
-
+function filterProjects(dataTable) {
     const viewAll = $('#view_all_checkbox').is(':checked');
-
+    
     if (viewAll) {
-        // Show all rows unconditionally
-        table.rows().every(function () {
-            $(this.node()).show();
-        });
+        dataTable.search('').draw(); // Reset any search
         return;
     }
 
-    // Get filter values safely
     const location = ($('#location_filter').val() || '').toLowerCase();
     const contractor = ($('#contractor_filter').val() || '').toLowerCase();
     const rawAmount = $('#amount_filter').val();
     const amount = rawAmount ? rawAmount.replace(/[₱,]/g, '') : '';
     const status = ($('#status_filter').val() || '').toLowerCase();
 
-    table.rows().every(function () {
+    // Filtering data in the DataTable based on the input values
+    dataTable.rows().every(function () {
         const data = this.data();
         const rowLocation = (data[1] || '').toLowerCase();
         const rowStatus = (data[2] || '').toLowerCase();
@@ -31,20 +26,13 @@ function filterProjects() {
             (!amount || rowAmount <= parseFloat(amount)) &&
             (!status || rowStatus.includes(status));
 
-        $(this.node()).toggle(match);
-    });
-}
-
-
-
-$(document).ready(function () {
-    $('#amount_filter').on('input', function () {
-        let input = $(this).val().replace(/[^0-9.]/g, ''); // Remove non-numeric characters
-        if (input) {
-            let parts = input.split('.');
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas
-            $(this).val(parts.join('.'));
+        // Show or hide the row based on the match
+        if (match) {
+            $(this.node()).show();
+        } else {
+            $(this.node()).hide();
         }
     });
-});
 
+    dataTable.draw(); // Redraw DataTable after filtering
+}

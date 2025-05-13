@@ -251,7 +251,7 @@
                                     </div>
                                     <div class="col-9">
                                         <input type="text" class="form-control" id="ea" name="ea" list="eaList"
-                                            placeholder="Enter E.A. Fullname">
+                                            placeholder="Enter E.A. Fullname" required>
                                         <datalist id="eaList">
                                             @foreach($projectEA as $ea)
                                                 <option value="{{ $ea->ea }}"></option>
@@ -265,13 +265,13 @@
                                 <label for="ea_position" class="form-label">Position</label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control" id="ea_position" name="ea_position">
+                                <input type="text" class="form-control" id="ea_position" name="ea_position" required>
                             </div>
                             <div class="col-3 text-end">
                                 <label for="ea_monthlyRate" class="form-label">Monthly Rate</label>
                             </div>
                             <div class="col-3">
-                                <input type="number" class="form-control" id="ea_monthlyRate" name="ea_monthlyRate">
+                                <input type="number" class="form-control" id="ea_monthlyRate" name="ea_monthlyRate" required>
                             </div>
                         </div>
                     </fieldset>
@@ -307,7 +307,7 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc" required>
                                 </div>
                             </div>
                             <div class="col-3 text-end">
@@ -317,7 +317,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="engineering"
-                                        name="engineering">
+                                        name="engineering" required>
                                 </div>
                             </div>
                         </div>
@@ -330,7 +330,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="contractAmount"
-                                        name="contractAmount">
+                                        name="contractAmount" required>
                                 </div>
                             </div>
                             <div class="col-3 text-end">
@@ -339,7 +339,7 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc">
+                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc" required>
                                 </div>
                             </div>
                         </div>
@@ -377,13 +377,13 @@
                                     <label for="noaIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
+                                    <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate" required>
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="noaReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate">
+                                    <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate" required>
                                 </div>
                             </div>
 
@@ -517,6 +517,25 @@
 </div>
 </div>
 </div>
+
+<script>
+    // Function to allow only numbers and hyphen
+    function restrictInput(event) {
+        const regex = /^[0-9-]*$/;
+        const value = event.target.value;
+        if (!regex.test(value)) {
+            event.target.value = value.replace(/[^0-9-]/g, ''); // Remove invalid characters
+        }
+    }
+
+    // Get the input fields
+    const projectFPP = document.getElementById('projectFPP');
+    const projectRC = document.getElementById('projectRC');
+
+    // Add input event listeners to restrict characters
+    projectFPP.addEventListener('input', restrictInput);
+    projectRC.addEventListener('input', restrictInput);
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     function parseCurrency(value) {

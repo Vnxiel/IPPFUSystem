@@ -14,24 +14,22 @@ use App\Http\Controllers\GenerateProjectReport;
 
 // PUBLIC ROUTES
 Route::controller(UserManager::class)->group(function () {
-
     // Handle login (POST request)
     Route::post('/login', 'userLogin')->name('login');  // Handle login logic
     Route::get('/FirstUserRegistration/register', 'goToRegister')->name('FirstUserRegistration.register');
     Route::post('/registerSystemAdmin', 'registerSystemAdmin')->name('registerSystemAdmin');
     Route::get('/', 'index')->name('home');
+    Route::post('/logout', 'logout')->name('logout');  // Handle logout logic
+    Route::post('/password/request', 'requestPasswordChange')->name('systemAdmin.requestPass');
+    Route::get('/password/requests/fetch', 'getPasswordRequests');
+    Route::post('/password/change-password', 'changeUserPassword');
+
 });
 
-
-
-// SYSTEM ADMIN ROUTES
-Route::middleware(['auth', 'role:System Admin'])->group(function () {
+    // SYSTEM ADMIN ROUTES
+    Route::middleware(['auth', 'role:System Admin'])->group(function () {
     Route::controller(UserManager::class)->group(function () {
-        
-        Route::post('/logout', 'logout')->name('logout');  // Handle logout logic
-        Route::get('/systemAdmin/reports', 'funds')->name('systemAdmin.funds');
-        Route::get('/systemAdmin/trash', 'trash')->name('systemAdmin.trash');
-        Route::get('/systemAdmin/index', 'index')->name('systemAdmin.index');
+       
     });
 
     Route::controller(SystemAdminManager::class)->group(function () {
@@ -92,6 +90,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/projects/trash/{project_id}', 'trashProject')->name('projects.trash');
         Route::put('/projects/restore/{project_id}', 'restoreProject')->name('projects.restore');
         Route::post('/project-status/addStatus', 'addStatus');
+        Route::get('/systemAdmin/trash', 'fetchTrashedProjects')->name('systemAdmin.trash');
+
     });
     
   
