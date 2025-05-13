@@ -156,6 +156,7 @@
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/add-set.js') }}"></script>
+        <script src="{{ asset('js/Projects/projects-setup.js') }}"></script>
         <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
