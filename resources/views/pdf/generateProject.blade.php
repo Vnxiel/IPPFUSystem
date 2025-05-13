@@ -261,6 +261,10 @@
       @php
         $summary = $projectFundsUtilization['summary'] ?? [];
       @endphp
+      @php
+        $partialBillings = $projectFundsUtilization['partialBillings'] ?? [];
+      @endphp
+
 
       <tr class="fit-text-row">
         <td style="text-align: right;">{{ $summary['mobilization']['date'] ?? '' }}</td>
