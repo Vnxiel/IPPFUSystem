@@ -130,7 +130,7 @@
                 <!-- Budget Cards -->
                 <div class="row g-2 mb-5">
                     <!-- Total Budget Allocated -->
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <div class="card h-100" style="border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                             <div class="card-body d-flex flex-column p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
@@ -142,10 +142,10 @@
                                 <div id="totalBudget" style="font-size: 28px; font-weight: bold; color: #2c3e50; margin-top: auto;">₱0</div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Total Budget Used -->
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <div class="card h-100" style="border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                             <div class="card-body d-flex flex-column p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
@@ -157,10 +157,10 @@
                                 <div id="totalUsed" style="font-size: 28px; font-weight: bold; color: #2c3e50; margin-top: auto;">₱0</div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Remaining Balance -->
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <div class="card h-100" style="border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                             <div class="card-body d-flex flex-column p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
@@ -171,7 +171,7 @@
                                 </div>
                                 <div id="remainingBalance" style="font-size: 28px; font-weight: bold; color: #2c3e50; margin-top: auto;">₱0</div>
                             </div> 
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

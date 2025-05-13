@@ -10,7 +10,7 @@
                     aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('projects.addProject') }}" id="addProjectForm" method="POST">
+                <form action="{{ route('projects.addProject') }}" id="addProjectForm" method="POST">
                     @csrf
                     <fieldset class="border p-3 mb-4 rounded shadow-sm">
                         <legend class="float-none w-auto px-3 fw-bold text-primary">
@@ -40,7 +40,8 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="projectID" name="projectID" pattern="^[0-9-]+$" title="Only numbers and hyphens are allowed"                                            required>
+                                        <input type="text" class="form-control" id="projectID" name="projectID"
+                                            pattern="^[0-9-]+$" title="Only numbers and hyphens are allowed" required>
                                     </div>
                                 </div>
                             </div>
@@ -116,32 +117,33 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col">
-                                        <select id="projectContractor" name="projectContractor" class="form-select" onchange="toggleOtherContractor()">
-                                            <option value="">--Select Contractor--</option>
-                                            @foreach($contractors as $contractor)
-                                                <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
-                                                    {{ $contractor->name }}
-                                                </option>
-                                            @endforeach
-                                            <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
-                                        </select>
+                                <select id="projectContractor" name="projectContractor" class="form-select"
+                                    onchange="toggleOtherContractor()">
+                                    <option value="">--Select Contractor--</option>
+                                    @foreach($contractors as $contractor)
+                                        <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
+                                            {{ $contractor->name }}
+                                        </option>
+                                    @endforeach
+                                    <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
+                                </select>
                             </div>
                             <div class="row mt-2">
                                 <!-- Hidden textbox for specifying 'Others' -->
-                                <div  id="othersContractorDiv"  style="display: none;">
-                                    <div class="row mb-2 g-3" >
-                                            <div class="col-3 text-end">
-                                                <label for="othersContractor" class="form-label">Specify:</label>
-                                            </div>
-                                            <div class="col-9">
+                                <div id="othersContractorDiv" style="display: none;">
+                                    <div class="row mb-2 g-3">
+                                        <div class="col-3 text-end">
+                                            <label for="othersContractor" class="form-label">Specify:</label>
+                                        </div>
+                                        <div class="col-9">
                                             <input type="text" class="form-control" id="othersContractor"
-                                                    name="othersContractor"  placeholder="Enter new contractor name">
-                                            </div>
+                                                name="othersContractor" placeholder="Enter new contractor name">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                            <!-- <div class="mb-2">
+                        <!-- <div class="mb-2">
                                 <label for="projectContractor" class="form-label">Contractor <span
                                         class="text-danger">*</span></label>
                                 <select id="projectContractor" name="projectContractor" class="form-select">
@@ -154,16 +156,9 @@
                         </div> -->
 
 
-                        
 
-                        <div class="row mb-2 align-items-center">
-                            <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
-                                <span class="text-danger">*</span></label>
-                            <div class="col-9">
-                                <input type="text" class="form-control" id="modeOfImplementation"
-                                    name="modeOfImplementation" value="By contract." readonly required>
-                            </div>
-                        </div>
+
+
                         <div class="row mb-2 g-3 text-end">
                             <div class="col-md-3 text-end">
                                 <label for="sourceOfFunds" class="form-label">Source of Fund <span
@@ -244,27 +239,29 @@
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
                             <div class="col-md-12">
-                                <div class="row mb-2">
-                                    <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span
-                                            class="text-danger">*</span></label>
-                                </div>
-                                <d class="row mb-2 align-items-center">
+
+                                <div class="row mb-2 align-items-center">
                                     <div class="col-3 text-end">
-                                        <label for="ea" class="form-label">E.A. Fullname<span
-                                        class="text-danger">*</span></label>
+                                        <div class="row mb-2">
+                                            <label for="ea" class="form-label">Project Engineer Assigned <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <!-- <label for="ea" class="form-label">E.A. Fullname<span
+                                        class="text-danger">*</span></label> -->
                                     </div>
                                     <div class="col-9">
                                         <input type="text" class="form-control" id="ea" name="ea" list="eaList"
-                                            placeholder="Enter E.A. Fullname">
+                                            placeholder="Enter Engineer Assigned">
                                         <datalist id="eaList">
                                             @foreach($projectEA as $ea)
                                                 <option value="{{ $ea->ea }}"></option>
                                             @endforeach
                                         </datalist>
                                     </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
+                        <!-- <div class="row mb-2">
                             <div class="col-3 text-end">
                                 <label for="ea_position" class="form-label">Position<span
                                         class="text-danger">*</span></label>
@@ -282,7 +279,7 @@
                                     <input type="text" class="form-control currency-input" id="ea_monthlyRate" name="ea_monthlyRate">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </fieldset>
 
                     <!-- Contract Details Section -->
@@ -363,18 +360,19 @@
                                     <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="bid" name="bid">
                                 </div>
-                             </div>
+                            </div>
                             <div class="col-3 text-end">
                                 <label for="bid" class="form-label">Contingency</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" name="contingency" class="form-control currency-input" id="contingency">
+                                    <input type="text" name="contingency" class="form-control currency-input"
+                                        id="contingency">
                                 </div>
                             </div>
                         </div>
-                        
+
 
 
                         <div class="row">
@@ -417,29 +415,29 @@
                                     <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate">
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <!-- <div class="row mb-2">
                                 <div class="col-3 text-end">
                                     <label for="officialStart" class="form-label">Official Start<span
-                                        class="text-danger">*</span></label>
+                                            class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="officialStart" name="officialStart">
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="targetCompletion" class="form-label">Target Completion Date<span
-                                        class="text-danger">*</span></label>
+                                            class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="targetCompletion"
                                         name="targetCompletion">
                                 </div>
-                            </div>
+                            </div> -->
 
 
-                            <div class="row mb-2">
+                            <!-- <div class="row mb-2">
                                 <div class="col-3 text-end">
                                     <label for="completionDate" class="form-label">Completion Date<span
-                                        class="text-danger">*</span>
+                                            class="text-danger">*</span>
                                     </label>
                                 </div>
                                 <div class="col-3">
@@ -454,7 +452,7 @@
                                     <input type="date" class="form-control" id="revisedCompletionDate"
                                         name="revisedCompletionDate">
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </fieldset>
 
@@ -467,15 +465,93 @@
                             </div> 
                         </div> -->
 
-
-                    <fieldset class="border p-3 mb-4 rounded shadow-sm">
+                    <!-- Implementation Details -->
+                    <div class="border p-3 mb-4 rounded shadow-sm">
                         <legend class="float-none w-auto px-3 fw-bold text-primary">
                             <i class="fas fa-info-circle me-2"></i>Implementation Details
                         </legend>
 
                         <div class="container">
+                            <div class="row mb-2 align-items-center">
+                                <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
+                                    <span class="text-danger">*</span></label>
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="modeOfImplementation"
+                                        name="modeOfImplementation" value="By contract." readonly required>
+                                </div>
+                            </div>
+                            <!-- Bagong add -->
+                            <div class="row mb-2 align-items-center">
+                                <div class="col-3 text-end">
+                                    <label for="" class="form-label">Original Starting Date
+                                    <span class="text-danger">*</span></label>
+                                </div>                        
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id="officialStart" name="officialStart">
+                                </div>
+                                <div class="col-3 mb-2 text-end">
+                                    <label for="" class="form-label">Target Completion Date
+                                        <span class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-3">
+                                        <input type="date" class="form-control" id="targetCompletion"
+                                        name="targetCompletion">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 mb-2 text-end">
+                                    <label for="" class="form-label">Actual Date of Completion
+                                        <span class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-9">
+                                    <input type="date" style="background-color: lightgray;" class="form-control"
+                                        id="completionDate" name="completionDate">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Order pair container -->
+                                <div id="orderContainer" class="col-12 ">
+                                    <div class="row mt-2 mb-2 order-set" id="orderSet1">
+                                        <!-- Suspension and Resumption Order Row -->
+                                        <div class="row mb-2">
+                                            <div class="col-md-6 mb-2">
+                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No.
+                                                    1</label>
+                                                <input type="date" class="form-control" id="suspensionOrderNo1"
+                                                    name="suspensionOrderNo1">
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No.
+                                                    1</label>
+                                                <input type="date" class="form-control" id="resumeOrderNo1"
+                                                    name="resumeOrderNo1">
+                                            </div>
+                                        </div>
+
+                                        <!-- Remarks Row -->
+                                        <div class="row mb-2">
+                                            <div class="col-md-6 mb-2">
+                                                <label for="suspensionOrderNo1Remarks" class="form-label">Suspension
+                                                    Remarks</label>
+                                                <textarea class="form-control" id="suspensionOrderNo1Remarks"
+                                                    name="suspensionOrderNo1Remarks" rows="2"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="resumeOrderNo1Remarks" class="form-label">Resumption
+                                                    Remarks</label>
+                                                <textarea class="form-control" id="resumeOrderNo1Remarks"
+                                                    name="resumeOrderNo1Remarks" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row text-end">
-                                <div class="offset-10 col-2 text-center mb-0">
+                                <div class="col-md-10">
+                                    <hr>
+                                </div>
+                                <div class="col-2 text-center mb-2">
                                     <button type="button" class="btn btn-outline-primary btn-sm mr-1"
                                         onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top"
                                         title="Add Suspension and Resumption Order">
@@ -487,38 +563,43 @@
                                     </button>
                                 </div>
                             </div>
-
+                            <div class="row mb-2">
+                                <div class="col-3 text-end">
+                                    <label for="" class="form-label">Revised Target Date
+                                    <span class="text-danger">*</span></label>
+                                </div>                        
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id=""
+                                        name="">
+                                </div>
+                                <div class="col-3 text-end">
+                                    <label for="" class="form-label">Revised Completion Date
+                                    <span class="text-danger">*</span></label>
+                                </div>                        
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id=""
+                                        name="">
+                                </div>
+                            </div>
                             <div class="row">
-    <!-- Order pair container -->
-    <div id="orderContainer" class="col-12">
-        <div class="row mt-2 mb-2 order-set" id="orderSet1">
-            <!-- Suspension and Resumption Order Row -->
-            <div class="row mb-2">
-                <div class="col-md-6 mb-2">
-                    <label for="suspensionOrderNo1" class="form-label">Suspension Order No. 1</label>
-                    <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="resumeOrderNo1" class="form-label">Resumption Order No. 1</label>
-                    <input type="date" class="form-control" id="resumeOrderNo1" name="resumeOrderNo1">
-                </div>
-            </div>
-
-            <!-- Remarks Row -->
-            <div class="row mb-2">
-                <div class="col-md-6 mb-2">
-                    <label for="suspensionOrderNo1Remarks" class="form-label">Suspension Remarks</label>
-                    <textarea class="form-control" id="suspensionOrderNo1Remarks" name="suspensionOrderNo1Remarks" rows="2"></textarea>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="resumeOrderNo1Remarks" class="form-label">Resumption Remarks</label>
-                    <textarea class="form-control" id="resumeOrderNo1Remarks" name="resumeOrderNo1Remarks" rows="2"></textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+                                <div class="col-3 text-end">
+                                    <label for="" class="form-label">Extension Date
+                                    <span class="text-danger">*</span></label>
+                                </div>                        
+                                <div class="col-3">
+                                    <input type="number" class="form-control" id=""
+                                        name="">
+                                </div>
+                                <div class="col-3 text-end">
+                                    <label for="revisedCompletionDate" class="form-label">Revised Completion
+                                        Date</label>
+                                </div>
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id="revisedCompletionDate"
+                                        name="revisedCompletionDate">
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </fieldset>
                     <div class="modal-footer bg-light">
@@ -530,8 +611,8 @@
                         </button>
                     </div>
                 </form>
+            </div>
         </div>
     </div>
-</div>
 </div>
 </div>

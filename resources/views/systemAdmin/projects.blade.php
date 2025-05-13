@@ -20,140 +20,152 @@
         </div>
     </div>
 
-    <div class="row g-3 ">
-        <!-- Filters Section - Left Sidebar -->
-        <div class="col-md-2">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-3">
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-filter me-2 text-primary"></i>
-                        <h6 class="mb-0 fw-bold">Filters</h6>
-                    </div>
-
+    <!-- Filters Section -->
+    <div class="card border-0 shadow-sm mb-1">
+        <div class="card-body p-1">
+            <div class="d-flex align-items-center justify-content-between mb-1" style="color: #2c3e50; font-weight: 600;">
+                <h6 class="mb-0">
+                    <i class="fas fa-filter me-2"></i>Filter Projects
+                </h6>
+                <div class="d-flex align-items-center">
                     <!-- View All Projects Checkbox -->
-                    <div class="form-check mb-3">
+                    <div class="form-check me-1">
                         <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
                         <label class="form-check-label fw-semibold" for="view_all_checkbox">
-                            View All
+                            View All Projects
                         </label>
                     </div>
-
                     <!-- Clear Filters Button -->
-                    <button type="button" class="btn btn-outline-secondary btn-sm w-100 mb-3" onclick="clearFilters()">
-                        <i class="fas fa-undo-alt me-1"></i>Clear
-                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="clearFilters()">Clear</button>
+                </div>
+            </div>
 
-                    <!-- Filter Dropdowns -->
-                    <div class="vstack gap-2">
-                        <!-- Location Filter -->
+            <div class="row g-3">
+               <!-- Location Dropdown -->
+                    <div class="col-md-3">
                         <div class="form-floating">
-                            <select class="form-select form-select-sm" id="location_filter" name="location_filter">
+                            <select class="form-select" id="location_filter" name="location_filter">
                                 <option value="" selected disabled>Select Location</option>
                                 <option value="">All Location</option>
                                 @foreach($allLocations as $location)
                                     <option value="{{ $location }}">{{ $location }}</option>
                                 @endforeach
                             </select>
-                            <label><i class="bi bi-geo-alt me-1"></i>Location</label>
+                            <label for="location_filter">
+                                <i class="bi bi-geo-alt me-2"></i>Location
+                            </label>
                         </div>
+                    </div>
 
-                        <!-- Contractor Filter -->
+                <!-- Contractor Dropdown -->
+                    <div class="col-md-3">
                         <div class="form-floating">
-                            <select id="contractor_filter" name="contractor" class="form-select form-select-sm">
+                            <select id="contractor_filter" name="contractor" class="form-select">
                                 <option value="" selected disabled>Select Contractor</option>
-                                <option value="">All Contractor</option>
+                                <option value="" >All Contractor</option>
                                 @foreach($contractors as $contractor)
                                     <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
                                 @endforeach
                             </select>
-                            <label><i class="bi bi-person-workspace me-1"></i>Contractor</label>
+                            <label for="contractor_filter">
+                                <i class="bi bi-person-workspace me-2"></i>Contractor
+                            </label>
                         </div>
+                    </div>
 
-                        <!-- Amount Filter -->
-                        <div class="form-floating">
-                            <input type="text" class="form-control form-control-sm" id="amount_filter" name="amount_filter"
-                                placeholder="Enter amount">
-                            <label><i class="fas fa-peso-sign me-1"></i>Amount</label>
-                        </div>
+                <!-- Amount Filter -->
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="amount_filter" name="amount_filter"
+                            placeholder="Enter amount"> <!-- Keep this non-empty -->
+                        <label for="amount_filter">
+                            <i class="fas fa-peso-sign me-2"></i>Amount
+                        </label>
+                    </div>
+                </div>
 
-                        <!-- Status Filter -->
-                        <div class="form-floating">
-                            <select id="status_filter" class="form-select form-select-sm">
-                                <option value="">Select Status</option>
-                                <option value="Not Yet Started">Not Started</option>
-                                <option value="Ongoing">Ongoing</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Discontinued">Discontinued</option>
-                                <option value="Suspended">Suspended</option>
-                            </select>
-                            <label><i class="bi bi-info-circle me-1"></i>Status</label>
-                        </div>
+
+                <!-- Status Filter -->
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <select id="status_filter" class="form-select">
+                            <option value="">Select Status</option>
+                            <option value="To Be Started">To Be Started</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Discontinued">Discontinued</option>
+                            <option value="Suspended">Suspended</option>
+                        </select>
+                        <label for="status_filter">
+                            <i class="bi bi-info-circle me-2"></i>Status
+                        </label>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Table Section - Main Content -->
-        <div class="col-md-10">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-2">
-                    <div class="table-responsive">
-                        <table id="projects" class="table table-hover table-bordered table-sm mb-0" style="width:100%; font-size: 1rem;">
-                            <thead class="table-light">
+
+    <!-- Table Section - Main Content -->
+    <div class="row px-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-2">
+                <div class="table-responsive">
+                    <table id="projects" class="table table-hover table-bordered table-sm mb-0" style="width:100%; font-size: 1rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:25%">
+                                    <small>Project Title</small>
+                                </th>
+                                <th style="width:21%">
+                                    <small>Location</small>
+                                </th>
+                                <th style="width:8%">
+                                    <small>Status</small>
+                                </th>
+                                <th style="width:15%">
+                                    <small>Contract Amount</small>
+                                </th>
+                                <th style="width:15%">
+                                    <small>Contractor</small>
+                                </th>
+                                <th style="width:8%">
+                                    <small>Duration</small>
+                                </th>
+                                <th style="width:8%">
+                                    <small>Action</small>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            @forelse($mappedProjects as $project)
                                 <tr>
-                                    <th style="width:25%">
-                                        <small>Project Title</small>
-                                    </th>
-                                    <th style="width:21%">
-                                        <small>Location</small>
-                                    </th>
-                                    <th style="width:8%">
-                                        <small>Status</small>
-                                    </th>
-                                    <th style="width:15%">
-                                        <small>Contract Amount</small>
-                                    </th>
-                                    <th style="width:15%">
-                                        <small>Contractor</small>
-                                    </th>
-                                    <th style="width:8%">
-                                        <small>Duration</small>
-                                    </th>
-                                    <th style="width:8%">
-                                        <small>Action</small>
-                                    </th>
+                                    <td class="small">{{ $project['title'] }}</td>
+                                    <td class="small">{{ $project['location'] }}</td>
+                                    <td class="small">{{ $project['status'] }}</td>
+                                    <td class="small">₱{{ $project['amount'] }}</td>
+                                    <td class="small">{{ $project['contractor'] }}</td>
+                                    <td class="small">{{ $project['duration'] }}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
+                                            data-id="{{ $project['id'] }}">
+                                            <i class="fas fa-eye fa-sm"></i>
+                                            <small>View</small>
+                                        </button>
+                                        <!-- <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
+                                            data-id="{{ $project['id'] }}">
+                                            <i class="fas fa-eye fa-sm"></i>
+                                            <small>View</small>
+                                        </button> -->
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="small">
-                                @forelse($mappedProjects as $project)
-                                    <tr>
-                                        <td class="small">{{ $project['title'] }}</td>
-                                        <td class="small">{{ $project['location'] }}</td>
-                                        <td class="small">{{ $project['status'] }}</td>
-                                        <td class="small">₱{{ $project['amount'] }}</td>
-                                        <td class="small">{{ $project['contractor'] }}</td>
-                                        <td class="small">{{ $project['duration'] }}</td>
-                                        <td>
-                                            <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
-                                                data-id="{{ $project['id'] }}">
-                                                <i class="fas fa-eye fa-sm"></i>
-                                                <small>View</small>
-                                            </button>
-                                            <!-- <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
-                                                data-id="{{ $project['id'] }}">
-                                                <i class="fas fa-eye fa-sm"></i>
-                                                <small>View</small>
-                                            </button> -->
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center small">There are no currently added projects.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center small">There are no currently added projects.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

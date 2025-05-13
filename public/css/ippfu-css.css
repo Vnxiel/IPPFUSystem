@@ -84,3 +84,21 @@ tbody tr:first-child td {
     transform: scale(0.97);
     transition: transform 0.1s ease;
 }
+
+.font-base {
+    font-size: 1rem; /* equals 16px by default */
+    font-weight: bold;
+    color: #6c757d; /* Bootstrap muted */
+    display: block;
+}
+
+.font-base span {
+    font-weight: normal;
+    color: black;
+}
+
+.legend-text {
+    font-size: 1.15rem; /* slightly larger than 1rem (18.4px if root is 16px) */
+    font-weight: bold;
+    color: #333;
+}
