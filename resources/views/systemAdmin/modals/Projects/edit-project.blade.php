@@ -253,7 +253,8 @@
                                 </div>
                                 <div class="row mb-2 align-items-center">
                                     <div class="col-3 text-end">
-                                        <label for="ea" class="form-label">E.A. Fullname</label>
+                                        <label for="ea" class="form-label">E.A. Fullname<span
+                                        class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-9">
                                         <input type="text" class="form-control" id="ea" name="ea" value="{{ old('ea', $project['ea'] ?? '') }}">
@@ -268,16 +269,21 @@
                         </div>
                         <div class="row mb-2">
                             <div class="col-3 text-end">
-                                <label for="ea_position" class="form-label">Position</label>
+                                <label for="ea_position" class="form-label">Position<span
+                                        class="text-danger">*</span></label>
                             </div>
                             <div class="col-3">
                                 <input type="text" class="form-control" id="ea_position" name="ea_position" value="{{ old('ea_position', $project['ea_position'] ?? '') }}">
                             </div>
                             <div class="col-3 text-end">
-                                <label for="ea_monthlyRate" class="form-label">Monthly Rate</label>
+                                <label for="ea_monthlyRate" class="form-label">Monthly Rate<span
+                                        class="text-danger">*</span></label>
                             </div>
                             <div class="col-3">
-                                <input type="number" class="form-control" id="ea_monthlyRate" name="ea_monthlyRate" value="{{ old('ea_monthlyRate', $project['ea_monthlyRate'] ?? '') }}">
+                                <div class="input-group">
+                                    <span class="input-group-text">₱</span>
+<input type="text" class="form-control currency-input" id="ea_monthlyRate" name="ea_monthlyRate" value="{{ old('ea_monthlyRate', $project['ea_monthlyRate'] ?? '') }}">
+                                </div>
                             </div>
                         </div>
                     </fieldset>
@@ -416,7 +422,8 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="officialStart" class="form-label">Official Start</label>
+                                    <label for="officialStart" class="form-label">Official Start<span
+                                        class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="officialStart" name="officialStart" value="{{ old('officialStart', $project['officialStart'] ?? '') }}">
@@ -432,7 +439,8 @@
 
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="completionDate" class="form-label">Completion Date</label>
+                                    <label for="completionDate" class="form-label">Completion Date<span
+                                        class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="completionDate" name="completionDate" value="{{ old('completionDate', $project['completionDate'] ?? '') }}">
