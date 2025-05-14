@@ -85,11 +85,24 @@ tbody tr:first-child td {
     transition: transform 0.1s ease;
 }
 
-.font-base {
-    font-size: 1rem; /* equals 16px by default */
+.font-title-overview{
+    font-size: 1rem; 
     font-weight: bold;
-    color: #6c757d; /* Bootstrap muted */
     display: block;
+}
+
+.font-base {
+    font-size: 0.850rem; 
+    font-weight: bold;
+    /* color: #6c757d;  */
+    display: block;
+}
+
+.font-base p{
+    font-size: 0.850rem; 
+    font-weight: bold;
+    display: block;
+    margin: 3px;    
 }
 
 .font-base span {
@@ -97,8 +110,12 @@ tbody tr:first-child td {
     color: black;
 }
 
+.font-content{
+    font-size: 0.850rem; 
+}
+
 .legend-text {
-    font-size: 1.15rem; /* slightly larger than 1rem (18.4px if root is 16px) */
+    font-size: 1.15rem; 
     font-weight: bold;
     color: #333;
 }

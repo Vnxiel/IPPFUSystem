@@ -12,7 +12,7 @@
             <div class="modal-body">
                 <form action="{{ route('projects.addProject') }}" id="addProjectForm" method="POST">
                     @csrf
-                    <fieldset class="border p-3 mb-4 rounded shadow-sm">
+                    <div class="border p-3 mb-4 rounded shadow-sm">
                         <legend class="float-none w-auto px-3 fw-bold text-primary">
                             <i class="fas fa-info-circle me-2"></i>Project Profile
                         </legend>
@@ -238,18 +238,11 @@
                             </div> -->
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                            <div class="col-md-12">
-
-                                <div class="row mb-2 align-items-center">
                                     <div class="col-3 text-end">
-                                        <div class="row mb-2">
-                                            <label for="ea" class="form-label">Project Engineer Assigned <span
+                                        <label for="ea" class="form-label">Project Engineer <span
                                                     class="text-danger">*</span></label>
-                                        </div>
-                                        <!-- <label for="ea" class="form-label">E.A. Fullname<span
-                                        class="text-danger">*</span></label> -->
                                     </div>
-                                    <div class="col-9">
+                                    <div class="col-4">
                                         <input type="text" class="form-control" id="ea" name="ea" list="eaList"
                                             placeholder="Enter Engineer Assigned">
                                         <datalist id="eaList">
@@ -258,18 +251,20 @@
                                             @endforeach
                                         </datalist>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <div class="row mb-2">
-                            <div class="col-3 text-end">
-                                <label for="ea_position" class="form-label">Position<span
-                                        class="text-danger">*</span></label>
-                            </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" id="ea_position" name="ea_position">
-                            </div>
-                            <div class="col-3 text-end">
+
+                                    <div class="col-1 text-end">
+                                        <label for="ea_position" class="form-label">Position<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-4">
+                                        <select class="form-select" id="ea_position" name="ea_position" required>
+                                            <option value="" disabled selected>Select Position</option>
+                                            <option value="Engineer Aid">Engineer Aid</option>
+                                            <option value="Engineer Assistant">Engineer Assistant</option>
+                                            <option value="Engineer I">Engineer I</option>
+                                        </select>
+                                    </div>
+                            <!-- <div class="col-3 text-end">
                                 <label for="ea_monthlyRate" class="form-label">Monthly Rate<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -278,8 +273,8 @@
                                     <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="ea_monthlyRate" name="ea_monthlyRate">
                                 </div>
-                            </div>
-                        </div> -->
+                            </div> -->
+                        </div>
                     </fieldset>
 
                     <!-- Contract Details Section -->
@@ -608,3 +603,37 @@
     </div>
 </div>
 </div>
+
+<script>
+    // ========= Year Dropdown ========= //
+document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('projectYear');
+    if (select) {
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 2015; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            select.appendChild(option);
+        }
+    }
+});
+
+    function showLocDropdown() {
+        document.getElementById('projectLocDropdown').style.display = 'block';
+    }
+
+    function selectLoc(value) {
+        document.getElementById('projectLoc').value = value;
+        document.getElementById('projectLocDropdown').style.display = 'none';
+    }
+
+    // Optional: Close dropdown if clicked outside
+    document.addEventListener('click', function (e) {
+        const input = document.getElementById('projectLoc');
+        const dropdown = document.getElementById('projectLocDropdown');
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+</script>

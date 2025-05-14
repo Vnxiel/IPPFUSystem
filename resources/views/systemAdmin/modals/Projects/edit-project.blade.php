@@ -25,8 +25,7 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
-                                        <textarea class="form-control" id="projectTitle" name="projectTitle" rows="3"
-                                            value="{{ old('projectTitle', $project['projectTitle'] ?? '') }}"
+                                        <textarea class="form-control" row="3" id="projectTitle" name="projectTitle" value="{{ old('projectTitle', $project['projectTitle'] ?? '') }}"
                                             required></textarea>
 
                                     </div>
@@ -251,27 +250,34 @@
                                     placeholder="Enter slippage">
                             </div> -->
                         <div class="row">
-                            <!-- Engineer Assigned (E.A) with Datalist -->
-                            <div class="row mb-2 align-items-center">
-                                <div class="col-3 text-end">
-                                    <div class="row mb-2">
-                                        <label for="ea" class="form-label">Project Engineer Assigned <span
-                                                class="text-danger">*</span></label>
+                                                                <div class="col-3 text-end">
+                                        <label for="ea" class="form-label">Project Engineer <span
+                                                    class="text-danger">*</span></label>
                                     </div>
-                                    <!-- <label for="ea" class="form-label">E.A. Fullname<span
-                                        class="text-danger">*</span></label> -->
+                                    <div class="col-4">
+                                        <input type="text" class="form-control" id="ea" name="ea" list="eaList"
+                                            placeholder="Enter Engineer Assigned">
+                                        <datalist id="eaList">
+                                            @foreach($projectEA as $ea)
+                                                <option value="{{ $ea->ea }}"></option>
+                                            @endforeach
+                                        </datalist>
+                                    </div>
+
+                                    <div class="col-1 text-end">
+                                        <label for="ea" class="form-label">Position<span
+                                                class="text-danger"  list="eaList">*</span></label>
+                                    </div>
+                                    <div class="col-4">
+                                        <select class="form-select" id="ea" name="ea" value="{{ old('ea', $project['ea'] ?? '') }}"required>
+                                            <option value="" disabled selected>Select Position</option>
+                                            <option value="Engineer Aid">Engineer Aid</option>
+                                            <option value="Engineer Assistant">Engineer Assistant</option>
+                                            <option value="Engineer I">Engineer I</option>
+                                        </select>
+                                    </div>
+                                    
                                 </div>
-                                <div class="col-9">
-                                    <input type="text" class="form-control" id="ea" name="ea"
-                                        value="{{ old('ea', $project['ea'] ?? '') }}">
-                                    <datalist id="eaList">
-                                        @foreach($projectEA as $ea)
-                                            <option value="{{ $ea->ea }}"></option>
-                                        @endforeach
-                                    </datalist>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- <div class="row mb-2">
                             <div class="col-3 text-end">
