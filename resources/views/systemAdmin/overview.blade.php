@@ -6,7 +6,7 @@
 <!-- Project Overview -->
 <div class="container-fluid py-4" style="background-color: transparent;">
     <!-- Header Section -->
-    <div class="card mb-4 border-0 shadow-lg text-center">
+    <div class="card mb-1 border-0 shadow-lg text-center">
         <div class="card-body p-2">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
                 <!-- Back Button and Title -->
@@ -56,45 +56,45 @@
                     </div>
 
                     <div class="card-body">
-                        <div class="row gy-2">
+                        <div class="row gy-2 mb-2">
                             <!-- Column 1 -->
                             <div class="col-md-4">
-                                <div class="mb-2">
+                                <div class="mb-1">
                                     <strong class="text-muted d-block" style="font-size: 16px;">Project ID: <span style="font-weight: normal; font-size: 16px; color: black;">{{ $project['projectID'] ?? 'N/A' }}</span></strong>
                                 </div>
-                                <div class="mb-2">
+                                <div class="mb-1">
                                     <strong class="font-base">Location: <span style="font-weight: normal; font-size: 16px; color: black;">{{ $project['projectLoc'] ?? 'N/A' }}</span></strong>
                                 </div>
-                                <div class="mb-2">
+                                <div class="mb-1">
                                     <strong class="font-base">Contractor: <span style="font-weight: normal; color: black;">
                                         {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
                                     </span></strong>
                                 </div>
-                                <div class="mb-2">
+                                <div class="mb-1">
                                     <strong class="font-base">Project Year: <span style="font-weight: normal; font-size: 16px; color: black;">{{ $project['projectYear'] ?? 'N/A' }}</span></strong>
                                 </div>
-                                <div class="mb-2">
+                                <div class="mb-1">
                                     <strong class="font-base">Project FPP: <span style="font-weight: normal; font-size: 16px; color: black;">{{ $project['projectFPP'] ?? 'N/A' }}</span></strong>
                                 </div>
                             </div>
 
                             <!-- Column 2 -->
                             <div class="col-md-4">
-                                <div class="mb-2">
+                                <div class="mb-1">
                                     <strong class="font-base">Source of Fund: <span style="font-weight: normal; color: black;">
                                         {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
                                     </span></strong>
                                 </div>
-                                <div class="mb-2">
+                                <div class="mb-1">
                                     <strong class="font-base">Responsibility Center: <span style="font-weight: normal; font-size: 16px; color: black;">{{ $project['projectRC'] ?? 'N/A' }}</span></strong>
                                 </div>
-                                <div class="mb-2 d-flex align-items-center">
-                                    <strong class="text-muted me-2" style="font-size: 16px;">Status: <span class="badge bg-success me-2" style="font-weight: normal;">{{ $project['projectStatus'] ?? 'N/A' }}</span>
+                                <div class="mb-1 d-flex align-items-center">
+                                    <strong class="font-base" style="font-size: 16px;">Status: <span class="badge bg-success text-white me-2" style="font-weight: normal;">{{ $project['projectStatus'] ?? 'N/A' }}</span>
                                     <small>{{ $project['ongoingStatus'] ?? '' }}</small></strong>
                                 </div>
-                                <div class="mb-2">
-                                    <strong class="text-muted me-2" style="font-size: 16px;">Slippage:</strong>
-                                    <span class="badge bg-danger ms-2">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
+                                <div class="mb-1 d-flex align-items-center">
+                                    <strong class="font-base me-2" style="font-size: 16px;">Slippage:</strong>
+                                    <span class="badge bg-danger">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
                                 </div>
                             </div>
 
@@ -160,16 +160,16 @@
                             <div class="col-md-6">
                                 <fieldset class="border p-3 mb-4 rounded shadow-sm h-100">
                                     <legend class="legend-text">Implementation Details</legend>
-                                    <div class="mb-2">
+                                    <div class="mb-1">
                                         <strong class="font-base">Implementation Mode: <span style="font-weight: normal; color: black;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</span></strong>
                                     </div>
-                                    <div class="mb-2">
+                                    <div class="mb-1">
                                         <strong class="font-base">Original Starting Date: <span style="font-weight: normal; color: black;">{{ $project['originalStartDate'] ?? 'N/A' }}</span></strong>
                                     </div>
-                                    <div class="mb-2">
+                                    <div class="mb-1">
                                         <strong class="font-base">Target Completion Date: <span style="font-weight: normal; color: black;">{{ $project['targetCompletionDate'] ?? 'N/A' }}</span></strong>
                                     </div>
-                                    <div class="mb-2">
+                                    <div class="mb-1">
                                         <strong class="font-base">Actual Date of Completion: <span style="font-weight: normal; color: black;">{{ $project['actualCompletionDate'] ?? 'N/A' }}</span></strong>
                                     </div>
 
@@ -189,7 +189,7 @@
                                         @endphp
 
                                         @if (!$type || $shouldShow)
-                                            <div class="d-flex gap-2 mb-2">
+                                            <div class="d-flex gap-2 mb-1">
                                                 <span class="text-muted" style="width: 200px;">{{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:</span>
                                                 <span class="fw-medium">{{ $value ?? 'N/A' }}</span>
                                             </div>
@@ -201,7 +201,7 @@
                                         'Revised Target Completion' => 'revisedTargetCompletion',
                                         'Completion Date' => 'completionDate'
                                     ] as $label => $key)
-                                        <div class="d-flex gap-2 mb-2">
+                                        <div class="d-flex gap-2 mb-1">
                                             <span class="text-muted" style="width: 180px;">{{ $label }}:</span>
                                             <span class="fw-medium">{{ $project[$key] ?? 'N/A' }}</span>
                                         </div>

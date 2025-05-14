@@ -25,7 +25,10 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="projectTitle" name="projectTitle" value="{{ old('projectTitle', $project['projectTitle'] ?? '') }}" required>
+                                        <textarea class="form-control" id="projectTitle" name="projectTitle" rows="3"
+                                            value="{{ old('projectTitle', $project['projectTitle'] ?? '') }}"
+                                            required></textarea>
+
                                     </div>
                                 </div>
                             </div>
@@ -39,7 +42,9 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="projectID" name="projectID" pattern="^[0-9-]+$" title="Only numbers and hyphens are allowed" value="{{ old('projectID', $project['projectID'] ?? '') }}" required>
+                                        <input type="text" class="form-control" id="projectID" name="projectID"
+                                            pattern="^[0-9-]+$" title="Only numbers and hyphens are allowed"
+                                            value="{{ old('projectID', $project['projectID'] ?? '') }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +56,8 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-3">
-                                <select class="form-select form-select-sm" id="projectYear" name="projectYear" value="{{ old('projectYear', $project['projectYear'] ?? '') }}" required>
+                                <select class="form-select form-select-sm" id="projectYear" name="projectYear"
+                                    value="{{ old('projectYear', $project['projectYear'] ?? '') }}" required>
                                     <option value="" disabled selected>Select Year</option>
                                     <!-- Year options will be injected here by JavaScript -->
                                 </select>
@@ -61,7 +67,8 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="projectFPP" name="projectFPP" value="{{ old('projectFPP', $project['projectFPP'] ?? '') }}" required>
+                                <input type="text" class="form-control" id="projectFPP" name="projectFPP"
+                                    value="{{ old('projectFPP', $project['projectFPP'] ?? '') }}" required>
                             </div>
                         </div>
                         <div class="row mb-2 g-3 text-end">
@@ -70,7 +77,8 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="projectRC" name="projectRC" value="{{ old('projectRC', $project['projectRC'] ?? '') }}" required>
+                                <input type="text" class="form-control" id="projectRC" name="projectRC"
+                                    value="{{ old('projectRC', $project['projectRC'] ?? '') }}" required>
                             </div>
                         </div>
                         <div class="row g-3 mb-2 text-end">
@@ -91,21 +99,21 @@
                                     style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
 
                                     @foreach($locations as $locationObj)
-                                    @php
-                                    $locName = trim($locationObj->projectLoc);
-                                    // Match only locations in Nueva Vizcaya
-                                    if (str_ends_with($locName, 'Nueva Vizcaya')) {
-                                    // Remove "Nueva Vizcaya" if already present to avoid duplication
-                                    $municipality = trim(str_replace(', Nueva Vizcaya', '', $locName));
-                                    $formatted = $municipality . ', Nueva Vizcaya';
-                                    } else {
-                                    $formatted = $locName . ', Nueva Vizcaya';
-                                    }
-                                    @endphp
-                                    <button type="button" class="list-group-item list-group-item-action"
-                                        onclick="selectLoc('{{ $formatted }}')">
-                                        {{ $formatted }}
-                                    </button>
+                                        @php
+                                            $locName = trim($locationObj->projectLoc);
+                                            // Match only locations in Nueva Vizcaya
+                                            if (str_ends_with($locName, 'Nueva Vizcaya')) {
+                                                // Remove "Nueva Vizcaya" if already present to avoid duplication
+                                                $municipality = trim(str_replace(', Nueva Vizcaya', '', $locName));
+                                                $formatted = $municipality . ', Nueva Vizcaya';
+                                            } else {
+                                                $formatted = $locName . ', Nueva Vizcaya';
+                                            }
+                                        @endphp
+                                        <button type="button" class="list-group-item list-group-item-action"
+                                            onclick="selectLoc('{{ $formatted }}')">
+                                            {{ $formatted }}
+                                        </button>
                                     @endforeach
                                 </div>
                             </div>
@@ -117,7 +125,8 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col">
-                                <textarea class="form-control" id="projectDescription" name="projectDescription" style="height: 100px">{{ old('projectDescription', isset($project['projectDescriptions']) ? implode("\n", $project['projectDescriptions']) : '') }}</textarea>
+                                <textarea class="form-control" id="projectDescription" name="projectDescription"
+                                    style="height: 100px">{{ old('projectDescription', isset($project['projectDescriptions']) ? implode("\n", $project['projectDescriptions']) : '') }}</textarea>
 
                             </div>
                         </div>
@@ -128,12 +137,13 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col">
-                                <select id="projectContractor" name="projectContractor" class="form-select" onchange="toggleOtherContractor()">
+                                <select id="projectContractor" name="projectContractor" class="form-select"
+                                    onchange="toggleOtherContractor()">
                                     <option value="">--Select Contractor--</option>
                                     @foreach($contractors as $contractor)
-                                    <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
-                                        {{ $contractor->name }}
-                                    </option>
+                                        <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
+                                            {{ $contractor->name }}
+                                        </option>
                                     @endforeach
                                     <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
                                 </select>
@@ -158,25 +168,19 @@
                                 </div> -->
 
 
-                        <div class="row mb-2 align-items-center">
-                            <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
-                                <span class="text-danger">*</span></label>
-                            <div class="col-9">
-                                <input type="text" class="form-control" id="modeOfImplementation"
-                                    name="modeOfImplementation" value="By contract." readonly required>
-                            </div>
-                        </div>
+
                         <div class="row mb-2 g-3 text-end">
                             <div class="col-md-3 text-end">
                                 <label for="sourceOfFunds" class="form-label">Source of Fund <span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds" value="{{ old('sourceOfFunds', $project['sourceOfFunds'] ?? '') }}"
+                                <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
+                                    value="{{ old('sourceOfFunds', $project['sourceOfFunds'] ?? '') }}"
                                     placeholder="Enter source of funds.">
                                 <datalist id="sourceOfFundsList">
                                     @foreach($sourceOfFunds as $fund)
-                                    <option value="{{ $fund->sourceOfFunds }}"></option>
+                                        <option value="{{ $fund->sourceOfFunds }}"></option>
                                     @endforeach
                                 </datalist>
                                 <div id="otherFundContainer" class="mt-2" style="display: none;">
@@ -194,14 +198,16 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input type="number" class="form-control" id="projectContractDays" name="projectContractDays" min="0" value="{{ old('projectContractDays', $project['projectContractDays'] ?? '') }}">
+                                        <input type="number" class="form-control" id="projectContractDays"
+                                            name="projectContractDays" min="0"
+                                            value="{{ old('projectContractDays', $project['projectContractDays'] ?? '') }}">
 
 
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="row mb-2 align-items-center">
+                        <div class="row mb-2 align-items-center">
                             <div class="col-md-12 ">
                                 <div class="row align-items-center">
                                     <div class="col-md-3 text-end">
@@ -222,7 +228,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>-->
+                        </div>
 
                         <!-- Hidden text input for 'Ongoing' -->
                         <div id="ongoingStatusContainer" class="mt-2" style="display: none;">
@@ -246,34 +252,35 @@
                             </div> -->
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                            <div class="col-md-12">
-                                <div class="row mb-2">
-                                    <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span
-                                            class="text-danger">*</span></label>
+                            <div class="row mb-2 align-items-center">
+                                <div class="col-3 text-end">
+                                    <div class="row mb-2">
+                                        <label for="ea" class="form-label">Project Engineer Assigned <span
+                                                class="text-danger">*</span></label>
+                                    </div>
+                                    <!-- <label for="ea" class="form-label">E.A. Fullname<span
+                                        class="text-danger">*</span></label> -->
                                 </div>
-                                <div class="row mb-2 align-items-center">
-                                    <div class="col-3 text-end">
-                                        <label for="ea" class="form-label">E.A. Fullname<span
-                                        class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="ea" name="ea" value="{{ old('ea', $project['ea'] ?? '') }}">
-                                        <datalist id="eaList">
-                                            @foreach($projectEA as $ea)
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="ea" name="ea"
+                                        value="{{ old('ea', $project['ea'] ?? '') }}">
+                                    <datalist id="eaList">
+                                        @foreach($projectEA as $ea)
                                             <option value="{{ $ea->ea }}"></option>
-                                            @endforeach
-                                        </datalist>
-                                    </div>
+                                        @endforeach
+                                    </datalist>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
+
+                        <!-- <div class="row mb-2">
                             <div class="col-3 text-end">
                                 <label for="ea_position" class="form-label">Position<span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control" id="ea_position" name="ea_position" value="{{ old('ea_position', $project['ea_position'] ?? '') }}">
+                                <input type="text" class="form-control" id="ea_position" name="ea_position"
+                                    value="{{ old('ea_position', $project['ea_position'] ?? '') }}">
                             </div>
                             <div class="col-3 text-end">
                                 <label for="ea_monthlyRate" class="form-label">Monthly Rate<span
@@ -282,10 +289,11 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-<input type="text" class="form-control currency-input" id="ea_monthlyRate" name="ea_monthlyRate" value="{{ old('ea_monthlyRate', $project['ea_monthlyRate'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="ea_monthlyRate"
+                                        name="ea_monthlyRate"
+                                        value="{{ old('ea_monthlyRate', $project['ea_monthlyRate'] ?? '') }}">
                                 </div>
-                            </div>
-                        </div>
+                            </div> -->
                     </fieldset>
 
                     <!-- Contract Details Section -->
@@ -293,6 +301,8 @@
                         <legend class="float-none w-auto px-3 fw-bold text-primary">
                             <i class="fas fa-file-contract me-2"></i>Contract Details
                         </legend>
+
+
 
                         <div class="row g-3 mb-2">
                             <div class="col-md-12">
@@ -304,7 +314,10 @@
                                     <div class="col">
                                         <div class="input-group">
                                             <span class="input-group-text">₱</span>
-                                            <input type="text" class="form-control currency-input" id="appropriation" name="appropriation" value="{{ old('appropriation', $project['funds']['orig_appropriation'] ?? '') }}" required>
+                                            <input type="text" class="form-control currency-input" id="appropriation"
+                                                name="appropriation"
+                                                value="{{ old('appropriation', $project['funds']['orig_appropriation'] ?? '') }}"
+                                                required>
                                         </div>
                                     </div>
                                 </div>
@@ -318,7 +331,9 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount" value="{{ old('contractAmount', $project['funds']['orig_contract_amount'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="contractAmount"
+                                        name="contractAmount"
+                                        value="{{ old('contractAmount', $project['funds']['orig_contract_amount'] ?? '') }}">
 
                                 </div>
                             </div>
@@ -328,7 +343,9 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="engineering" name="engineering" value="{{ old('engineering', $project['funds']['orig_engineering'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="engineering"
+                                        name="engineering"
+                                        value="{{ old('engineering', $project['funds']['orig_engineering'] ?? '') }}">
 
                                 </div>
                             </div>
@@ -341,7 +358,8 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc" value="{{ old('abc', $project['funds']['orig_abc'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc"
+                                        value="{{ old('abc', $project['funds']['orig_abc'] ?? '') }}">
                                 </div>
                             </div>
 
@@ -351,7 +369,8 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc" value="{{ old('mqc', $project['funds']['orig_mqc'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc"
+                                        value="{{ old('mqc', $project['funds']['orig_mqc'] ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -363,7 +382,8 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="bid" name="bid" value="{{ old('bid', $project['funds']['orig_bid'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="bid" name="bid"
+                                        value="{{ old('bid', $project['funds']['orig_bid'] ?? '') }}">
                                 </div>
                             </div>
                             <div class="col-3 text-end">
@@ -372,7 +392,9 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="contingency" name="contingency" value="{{ old('contingency', $project['funds']['orig_contingency'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="contingency"
+                                        name="contingency"
+                                        value="{{ old('contingency', $project['funds']['orig_contingency'] ?? '') }}">
 
                                 </div>
                             </div>
@@ -390,13 +412,15 @@
                                     <label for="noaIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate" value="{{ old('noaIssuedDate', $project['noaIssuedDate'] ?? '') }}">
+                                    <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate"
+                                        value="{{ old('noaIssuedDate', $project['noaIssuedDate'] ?? '') }}">
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="noaReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate" value="{{ old('noaReceivedDate', $project['noaReceivedDate'] ?? '') }}">
+                                    <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate"
+                                        value="{{ old('noaReceivedDate', $project['noaReceivedDate'] ?? '') }}">
                                 </div>
                             </div>
 
@@ -411,46 +435,15 @@
                                     <label for="ntpIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate" value="{{ old('ntpIssuedDate', $project['ntpIssuedDate'] ?? '') }}">
+                                    <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate"
+                                        value="{{ old('ntpIssuedDate', $project['ntpIssuedDate'] ?? '') }}">
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="ntpReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate" value="{{ old('ntpReceivedDate', $project['ntpReceivedDate'] ?? '') }}">
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-3 text-end">
-                                    <label for="officialStart" class="form-label">Official Start<span
-                                        class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-3">
-                                    <input type="date" class="form-control" id="officialStart" name="officialStart" value="{{ old('officialStart', $project['officialStart'] ?? '') }}">
-                                </div>
-                                <div class="col-3 text-end">
-                                    <label for="targetCompletion" class="form-label">Target Completion Date</label>
-                                </div>
-                                <div class="col-3">
-                                    <input type="date" class="form-control" id="targetCompletion" name="targetCompletion" value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
-                                </div>
-                            </div>
-
-
-                            <div class="row mb-2">
-                                <div class="col-3 text-end">
-                                    <label for="completionDate" class="form-label">Completion Date<span
-                                        class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-3">
-                                    <input type="date" class="form-control" id="completionDate" name="completionDate" value="{{ old('completionDate', $project['completionDate'] ?? '') }}">
-                                </div>
-                                <div class="col-3 text-end">
-                                    <label for="revisedCompletionDate" class="form-label">Revised Completion
-                                        Date</label>
-                                </div>
-                                <div class="col-3">
-                                    <input type="date" class="form-control" id="revisedCompletionDate" name="revisedCompletionDate" value="{{ old('revisedCompletionDate', $project['revisedCompletionDate'] ?? '') }}">
+                                    <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate"
+                                        value="{{ old('ntpReceivedDate', $project['ntpReceivedDate'] ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -471,13 +464,117 @@
                             <i class="fas fa-info-circle me-2"></i>Implementation Details
                         </legend>
 
-                        <d class="container">
-                            <div class="row align-items-center">
+                        <div class="container">
+                            <div class="row mb-2 align-items-center">
+                                <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of
+                                    Implementation
+                                    <span class="text-danger">*</span></label>
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="modeOfImplementation"
+                                        name="modeOfImplementation" value="By contract." readonly required>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-3 text-end">
+                                    <label for="officialStart" class="form-label">Original Starting Date <span
+                                            class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id="officialStart" name="officialStart"
+                                        value="{{ old('officialStart', $project['officialStart'] ?? '') }}">
+                                </div>
+                                <div class="col-3 text-end">
+                                    <label for="targetCompletion" class="form-label">Target Completion Date</label>
+                                </div>
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id="targetCompletion"
+                                        name="targetCompletion"
+                                        value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3 mb-2 text-end">
+                                    <label for="" class="form-label">Actual Date of Completion
+                                        <span class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-9">
+                                    <input type="date" style="background-color: lightgray;" class="form-control"
+                                        id="completionDate" name="completionDate">
+                                </div>
+                            </div>
+
+                            <div class="row align-items-center">                               
+
+                                <!-- Order Fields -->
+                                <div id="orderContainer" class="col-12">
+                                    @php
+                                        // Extract remarks data at the top level so it's accessible in the view
+                                        $remarksData = $project['remarksData'] ?? [];
+
+                                        $orders = collect($project['orderDetails'] ?? [])
+                                            ->filter(fn($val, $key) => preg_match('/suspensionOrderNo\d+/', $key))
+                                            ->keys()
+                                            ->map(function ($suspKey) use ($project) {
+                                                $index = preg_replace('/\D/', '', $suspKey);
+                                                $resumeKey = 'resumeOrderNo' . $index;
+
+                                                $suspensionValue = old($suspKey, $project['orderDetails'][$suspKey] ?? '');
+                                                $resumeValue = old($resumeKey, $project['orderDetails'][$resumeKey] ?? '');
+
+                                                return [
+                                                    'index' => $index,
+                                                    'suspensionKey' => $suspKey,
+                                                    'resumeKey' => $resumeKey,
+                                                    'suspensionValue' => $suspensionValue,
+                                                    'resumeValue' => $resumeValue,
+                                                ];
+                                            })
+                                            ->filter(fn($order) => $order['index'] == 1 || !empty($order['suspensionValue']) || !empty($order['resumeValue']));
+                                    @endphp
+
+                                    @foreach ($orders as $order)
+                                        <div class="row">
+                                            <div class="col-md-6 mb-2">
+                                                <label for="{{ $order['suspensionKey'] }}" class="form-label">Suspension
+                                                    Order No. {{ $order['index'] }}</label>
+                                                <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}"
+                                                    name="{{ $order['suspensionKey'] }}"
+                                                    value="{{ $order['suspensionValue'] }}">
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order
+                                                    No. {{ $order['index'] }}</label>
+                                                <input type="date" class="form-control" id="{{ $order['resumeKey'] }}"
+                                                    name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-2">
+                                                <label for="suspensionOrderNo{{ $order['index'] }}Remarks"
+                                                    class="form-label">Suspension Remarks</label>
+                                                <textarea class="form-control"
+                                                    id="suspensionOrderNo{{ $order['index'] }}Remarks"
+                                                    name="suspensionOrderNo{{ $order['index'] }}Remarks"
+                                                    value="{{ $remarksData[$order['index']]['suspensionOrderRemarks'] ?? '' }}"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="resumeOrderNo{{ $order['index'] }}Remarks"
+                                                    class="form-label">Resumption Remarks</label>
+                                                <textarea class="form-control"
+                                                    id="resumeOrderNo{{ $order['index'] }}Remarks"
+                                                    name="resumeOrderNo{{ $order['index'] }}Remarks"
+                                                    value="{{ $remarksData[$order['index']]['resumeOrderRemarks'] ?? '' }}"></textarea>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
                                 <!-- Add/Remove Order Buttons -->
                                 <div class="col-md-10">
                                     <hr>
                                 </div>
-                                <div class="col-2 text-center mb-0">
+                                <div class="col-2 text-center mb-2">
                                     <button type="button" class="btn btn-outline-primary btn-sm mr-1"
                                         onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top"
                                         title="Add Suspension and Resumption Order">
@@ -489,74 +586,37 @@
                                         <span class="fa-solid fa-circle-minus"></span>
                                     </button>
                                 </div>
-
-                                <!-- Order Fields -->
-                                <div id="orderContainer" class="col-12">
-                                    @php
-                                    // Extract remarks data at the top level so it's accessible in the view
-                                    $remarksData = $project['remarksData'] ?? [];
-
-                                    $orders = collect($project['orderDetails'] ?? [])
-                                    ->filter(fn($val, $key) => preg_match('/suspensionOrderNo\d+/', $key))
-                                    ->keys()
-                                    ->map(function ($suspKey) use ($project) {
-                                    $index = preg_replace('/\D/', '', $suspKey);
-                                    $resumeKey = 'resumeOrderNo' . $index;
-
-                                    $suspensionValue = old($suspKey, $project['orderDetails'][$suspKey] ?? '');
-                                    $resumeValue = old($resumeKey, $project['orderDetails'][$resumeKey] ?? '');
-
-                                    return [
-                                    'index' => $index,
-                                    'suspensionKey' => $suspKey,
-                                    'resumeKey' => $resumeKey,
-                                    'suspensionValue' => $suspensionValue,
-                                    'resumeValue' => $resumeValue,
-                                    ];
-                                    })
-                                    ->filter(fn($order) => $order['index'] == 1 || !empty($order['suspensionValue']) || !empty($order['resumeValue']));
-                                    @endphp
-
-                                    @foreach ($orders as $order)
-                                    <div class="row">
-                                        <div class="col-md-6 mb-2">
-                                            <label for="{{ $order['suspensionKey'] }}" class="form-label">Suspension Order No. {{ $order['index'] }}</label>
-                                            <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}" name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order No. {{ $order['index'] }}</label>
-                                            <input type="date" class="form-control" id="{{ $order['resumeKey'] }}" name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-2">
-                                            <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">Suspension Remarks</label>
-                                            <textarea
-                                                class="form-control"
-                                                id="suspensionOrderNo{{ $order['index'] }}Remarks"
-                                                name="suspensionOrderNo{{ $order['index'] }}Remarks"
-                                                value="{{ $remarksData[$order['index']]['suspensionOrderRemarks'] ?? '' }}"></textarea>
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="resumeOrderNo{{ $order['index'] }}Remarks" class="form-label">Resumption Remarks</label>
-                                            <textarea
-                                                class="form-control"
-                                                id="resumeOrderNo{{ $order['index'] }}Remarks"
-                                                name="resumeOrderNo{{ $order['index'] }}Remarks"
-                                                value="{{ $remarksData[$order['index']]['resumeOrderRemarks'] ?? '' }}"></textarea>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
                             </div>
 
-
+                            <div class="row mb-2">
+                                <div class="col-3 text-end">
+                                    <label for="" class="form-label">Revised Target Date
+                                    <span class="text-danger">*</span></label>
+                                </div>                        
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id=""
+                                        name="">
+                                </div>
+                                <div class="col-3 text-end">
+                                    <label for="revisedCompletionDate" class="form-label">Revised Completion
+                                        Date</label>
+                                </div>
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id="revisedCompletionDate"
+                                        name="revisedCompletionDate"
+                                        value="{{ old('revisedCompletionDate', $project['revisedCompletionDate'] ?? '') }}">
+                                </div>
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 mb-2">
+                                <div class="col-md-3">
                                     <label for="timeExtension" class="form-label">Time Extension</label>
-                                    <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <input type="text" class="form-control" id="timeExtension" name="timeExtension"
+                                        value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
                                 </div>
                             </div>
+                        </div>
                     </fieldset>
 
                     <!-- Modal Footer -->
@@ -573,6 +633,7 @@
         </div>
     </div>
 </div>
+</div>
 <script>
     function showLocDropdown() {
         document.getElementById('projectLocDropdown').style.display = 'block';
@@ -584,7 +645,7 @@
     }
 
     // Optional: Close dropdown if clicked outside
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         const input = document.getElementById('projectLoc');
         const dropdown = document.getElementById('projectLocDropdown');
         if (!input.contains(e.target) && !dropdown.contains(e.target)) {

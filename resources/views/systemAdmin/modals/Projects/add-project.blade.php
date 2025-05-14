@@ -590,14 +590,6 @@
                                     <input type="number" class="form-control" id=""
                                         name="">
                                 </div>
-                                <div class="col-3 text-end">
-                                    <label for="revisedCompletionDate" class="form-label">Revised Completion
-                                        Date</label>
-                                </div>
-                                <div class="col-3">
-                                    <input type="date" class="form-control" id="revisedCompletionDate"
-                                        name="revisedCompletionDate">
-                                </div>
                             </div>
                         </div>
                         </div>

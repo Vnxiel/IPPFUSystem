@@ -14,6 +14,7 @@ function clearFilters() {
     if (statusFilter) statusFilter.value = '';
     if (viewAllCheckbox) viewAllCheckbox.checked = false;
 
+
     // Hide the dropdown if it exists
     if (locationDropdown) locationDropdown.style.display = 'none';
 

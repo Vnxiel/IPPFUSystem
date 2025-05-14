@@ -29,10 +29,10 @@
                 </h6>
                 <div class="d-flex align-items-center">
                     <!-- View All Projects Checkbox -->
-                    <div class="form-check me-1">
+                    <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
                         <label class="form-check-label fw-semibold" for="view_all_checkbox">
-                            View All Projects
+                            View All
                         </label>
                     </div>
                     <!-- Clear Filters Button -->
@@ -172,7 +172,7 @@
     </div>
 </div>
 
-    <script>
+      <script>
 document.addEventListener('DOMContentLoaded', function () {
     const locationInput = document.getElementById('location_filter');
     const dropdown = document.getElementById('locationDropdown');
@@ -565,36 +565,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const targetCompletionInput = document.getElementById("targetCompletion");
-            const timeExtensionInput = document.getElementById("timeExtension");
-            const revisedTargetInput = document.getElementById("revisedTargetCompletion");
-            const completionDateInput = document.getElementById("completionDate");
+    const targetCompletionInput = document.getElementById("targetCompletion");
+    const revisedCompletionDateInput = document.getElementById("revisedCompletionDate");
+    const completionDateInput = document.getElementById("completionDate");
 
-            function updateDates() {
-                const targetDateValue = targetCompletionInput.value;
-                const timeExtension = parseInt(timeExtensionInput.value);
+    function updateDates() {
+        const targetDateValue = targetCompletionInput.value;
 
-                if (targetDateValue && !isNaN(timeExtension) && timeExtension > 0) {
-                    const targetDate = new Date(targetDateValue);
-                    const revisedDate = new Date(targetDate);
-                    revisedDate.setDate(targetDate.getDate() + timeExtension);
+        if (targetDateValue) {
+            revisedCompletionDateInput.value = targetDateValue;
+            completionDateInput.value = targetDateValue;
 
-                    const formatted = revisedDate.toISOString().split('T')[0];
+            revisedCompletionDateInput.readOnly = true;
+            completionDateInput.readOnly = true;
+        } else {
+            revisedCompletionDateInput.readOnly = false;
+            completionDateInput.readOnly = false;
+        }
+    }
 
-                    revisedTargetInput.value = formatted;
-                    completionDateInput.value = formatted;
+    targetCompletionInput.addEventListener("change", updateDates);
+});
 
-                    revisedTargetInput.readOnly = true;
-                    completionDateInput.readOnly = true;
-                } else {
-                    revisedTargetInput.readOnly = false;
-                    completionDateInput.readOnly = false;
-                }
-            }
-
-            targetCompletionInput.addEventListener("change", updateDates);
-            timeExtensionInput.addEventListener("input", updateDates);
-        });
     </script>
 
 
