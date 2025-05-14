@@ -23,9 +23,9 @@
         <div class="row mt-1">
             <div class="col-12">
                 <!-- Project Status Cards -->
-                <div class="row g-2 mb-5">
+                <div class="row g-3 mb-5 justify-content-center">
                    <!-- Total Projects -->
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-6 col-lg-4">                        
                         <a href="/systemAdmin/projects" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                  <div class="card-body d-flex flex-column p-4">
@@ -42,7 +42,7 @@
                     </div>
 
                     <!-- Started Projects -->
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-6 col-lg-4">
                         <a href="/systemAdmin/projects?page=tobestarted" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                              <div class="card-body d-flex flex-column p-4">
@@ -59,7 +59,7 @@
                     </div>
 
                     <!-- On-going Projects -->
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-6 col-lg-4">
                         <a href="/systemAdmin/projects?page=ongoing" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
@@ -76,7 +76,7 @@
                     </div>
 
                     <!-- Completed Projects -->
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-6 col-lg-4">
                         <a href="/systemAdmin/projects?page=completed" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                             <div class="card-body d-flex flex-column p-4">
@@ -93,7 +93,7 @@
                     </div>
 
                     <!-- Discontinued Projects -->
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-6 col-lg-4">
                         <a href="/systemAdmin/projects?page=discontinued" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
@@ -110,7 +110,7 @@
                     </div>
 
                     <!-- Suspended Projects -->
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-6 col-lg-4">
                         <a href="/systemAdmin/projects?page=suspended" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
@@ -128,7 +128,7 @@
 
 
                 <!-- Budget Cards -->
-                <div class="row g-2 mb-5">
+                <!-- <div class="row g-2 mb-5"> -->
                     <!-- Total Budget Allocated -->
                     <!-- <div class="col-md-4">
                         <div class="card h-100" style="border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
