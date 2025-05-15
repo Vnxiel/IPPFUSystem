@@ -1,10 +1,12 @@
 function filterProjects(dataTable) {
     const viewAll = $('#view_all_checkbox').is(':checked');
-    
+
     if (viewAll) {
         dataTable.search('').draw(); // Reset any search
+        $('#view_all_checkbox').prop('checked', false); // Uncheck the checkbox
         return;
     }
+    
 
     const location = ($('#location_filter').val() || '').toLowerCase();
     const contractor = ($('#contractor_filter').val() || '').toLowerCase();

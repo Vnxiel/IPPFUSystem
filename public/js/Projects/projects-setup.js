@@ -23,6 +23,19 @@ function selectLoc(value) {
     document.getElementById('projectLocDropdown').style.display = 'none';
 }
 
+function appendNuevaVizcaya() {
+    const input = document.getElementById('projectLoc');
+    let value = input.value;
+
+    // Remove ', Nueva Vizcaya' if already present
+    value = value.replace(/,\s*Nueva Vizcaya\s*$/i, '');
+
+    // Re-append it
+    if (value.trim() !== '') {
+        input.value = value.trim() + ', Nueva Vizcaya';
+    }
+}
+
 document.addEventListener('click', function (event) {
     const dropdown = document.getElementById('projectLocDropdown');
     const input = document.getElementById('projectLoc');

@@ -66,9 +66,9 @@ $(document).ready(function () {
         
 
         // AFTER dataTable is initialized
-$('#clear_filters_btn').on('click', function () {
-    clearFilters();
-});
+        $('#clear_filters_btn').on('click', function () {
+            clearFilters();
+        });
 
         // Restore and highlight previously selected project
         const highlightedId = localStorage.getItem('highlighted_project_id');

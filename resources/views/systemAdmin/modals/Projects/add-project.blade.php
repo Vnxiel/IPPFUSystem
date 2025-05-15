@@ -82,9 +82,11 @@
                                 </label>
                             </div>
                             <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="projectLoc" name="projectLoc"
+                            <input type="text" class="form-control" id="projectLoc" name="projectLoc"
                                     placeholder="Select or enter location" autocomplete="off"
-                                    onfocus="showLocDropdown()" oninput="showLocDropdown()" />
+                                    oninput="filterLocations()" onblur="finalizeLocation()" onfocus="showLocDropdown()" />
+
+
                                 <!-- Place dropdown outside input -->
                                 <div id="projectLocDropdown"
                                     class="list-group position-absolute w-100 shadow-sm bg-white rounded"
@@ -805,23 +807,67 @@ function updateBidDifference() {
             dropdown.style.display = 'none';
         }
     });
-    function showLocDropdown() {
-        document.getElementById('projectLocDropdown').style.display = 'block';
-    }
 
-    function selectLoc(value) {
-        document.getElementById('projectLoc').value = value;
-        document.getElementById('projectLocDropdown').style.display = 'none';
-    }
+    function filterLocations() {
+    const input = document.getElementById('projectLoc');
+    const dropdown = document.getElementById('projectLocDropdown');
+    const buttons = dropdown.getElementsByTagName('button');
 
-    // Optional: Close dropdown if clicked outside
-    document.addEventListener('click', function (e) {
-        const input = document.getElementById('projectLoc');
-        const dropdown = document.getElementById('projectLocDropdown');
-        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.style.display = 'none';
+    // Remove existing ", Nueva Vizcaya" before filtering
+    const filter = input.value.toLowerCase().replace(/,\s*nueva\s*vizcaya\s*$/i, '').trim();
+
+    let anyVisible = false;
+
+    for (let i = 0; i < buttons.length; i++) {
+        const txt = buttons[i].textContent || buttons[i].innerText;
+        if (txt.toLowerCase().startsWith(filter)) {
+            buttons[i].style.display = '';
+            anyVisible = true;
+        } else {
+            buttons[i].style.display = 'none';
         }
-    });
+    }
+
+    dropdown.style.display = anyVisible ? 'block' : 'none';
+}
+
+function finalizeLocation() {
+    const input = document.getElementById('projectLoc');
+    let value = input.value.trim();
+
+    // Remove any existing ", Nueva Vizcaya"
+    value = value.replace(/,\s*nueva\s*vizcaya\s*$/i, '');
+
+    if (value !== '') {
+        input.value = value + ', Nueva Vizcaya';
+    }
+}
+
+function selectLoc(value) {
+    const input = document.getElementById('projectLoc');
+    input.value = value + ', Nueva Vizcaya';
+    document.getElementById('projectLocDropdown').style.display = 'none';
+}
+
+function showLocDropdown() {
+    const dropdown = document.getElementById('projectLocDropdown');
+    const buttons = dropdown.getElementsByTagName('button');
+
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].style.display = '';
+    }
+
+    dropdown.style.display = 'block';
+}
+
+// Optional: hide dropdown if clicked outside
+document.addEventListener('click', function (e) {
+    const input = document.getElementById('projectLoc');
+    const dropdown = document.getElementById('projectLocDropdown');
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});
 
     document.querySelectorAll('.currency-input').forEach(input => {
     input.addEventListener('input', () => {
