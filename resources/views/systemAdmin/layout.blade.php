@@ -171,6 +171,10 @@
     <script src="{{ asset('js/Projects/add-set.js') }}"></script>
     <script src="{{ asset('js/Projects/projects-setup.js') }}"></script>
     <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
+    <script src="{{ asset('js/Filters/location-search.js') }}"></script>
+    <script src="{{ asset('js/Filters/contractor-search.js') }}"></script>
+    <script src="{{ asset('js/Filters/sourceOfFund-search.js') }}"></script>
+    <script src="{{ asset('js/Filters/engineer-search.js') }}"></script>  
     <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
     <script src="{{ asset('js/FundsUtilization/fetchFundUtilizationSummary.js') }}"></script>
     <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>

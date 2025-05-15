@@ -81,21 +81,27 @@
                                 </label>
                             </div>
                             <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="projectLoc" name="projectLoc"
-                                    placeholder="Select or enter location" autocomplete="off"
-                                    onfocus="showLocDropdown()" oninput="showLocDropdown()" />
-                                <!-- Place dropdown outside input -->
+                                <input type="text"
+                                        class="form-control"
+                                        id="projectLoc"
+                                        name="projectLoc"
+                                        placeholder="Select or enter location"
+                                        autocomplete="off"
+                                        oninput="showLocDropdown()"  />
+
                                 <div id="projectLocDropdown"
                                     class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                     style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                     @foreach($allLocations as $location)
-                                        <button type="button" class="list-group-item list-group-item-action"
+                                        <button type="button"
+                                            class="list-group-item list-group-item-action"
                                             onclick="selectLoc('{{ $location }}')">
                                             {{ $location }}
                                         </button>
                                     @endforeach
                                 </div>
                             </div>
+
                         </div>
 
 
@@ -113,35 +119,30 @@
 
                         <div class="row mb-2 g-3">
                             <div class="col-3 text-end">
-                                <label for="projectContractor" class="form-label">Contractor<span
-                                        class="text-danger">*</span></label>
-                            </div>
-                            <div class="col">
-                                <select id="projectContractor" name="projectContractor" class="form-select"
-                                    onchange="toggleOtherContractor()">
-                                    <option value="">--Select Contractor--</option>
-                                    @foreach($contractors as $contractor)
-                                        <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
-                                            {{ $contractor->name }}
-                                        </option>
-                                    @endforeach
-                                    <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
-                                </select>
-                            </div>
-                            <div class="row mt-2">
-                                <!-- Hidden textbox for specifying 'Others' -->
-                                <div id="othersContractorDiv" style="display: none;">
-                                    <div class="row mb-2 g-3">
-                                        <div class="col-3 text-end">
-                                            <label for="othersContractor" class="form-label">Specify:</label>
-                                        </div>
-                                        <div class="col-9">
-                                            <input type="text" class="form-control" id="othersContractor"
-                                                name="othersContractor" placeholder="Enter new contractor name">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
+    </div>
+    <div class="col position-relative">
+        <input type="text"
+            id="projectContractor"
+            name="projectContractor"
+            class="form-control"
+            placeholder="Select or enter contractor"
+            autocomplete="off"
+            oninput="showContractorDropdown()" />
+
+        <div id="projectContractorDropdown"
+            class="list-group position-absolute w-100 shadow-sm bg-white rounded mt-1"
+            style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+            @foreach($contractors as $contractor)
+                <button type="button"
+                    class="list-group-item list-group-item-action"
+                    onclick="selectContractor(@json($contractor->name))">
+                    {{ $contractor->name }}
+                </button>
+            @endforeach
+        </div>
+    </div>
+
                         </div>
                         <!-- <div class="mb-2">
                                 <label for="projectContractor" class="form-label">Contractor <span
@@ -161,24 +162,32 @@
 
                         <div class="row mb-2 g-3 text-end">
                             <div class="col-md-3 text-end">
-                                <label for="sourceOfFunds" class="form-label">Source of Fund <span
-                                        class="text-danger">*</span></label>
+                                <label for="sourceOfFunds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
                             </div>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
-                                    list="sourceOfFundsList" required>
-                                <datalist id="sourceOfFundsList">
+                            <div class="col-md-9 position-relative">
+                                <input type="text"
+                                    class="form-control"
+                                    id="sourceOfFunds"
+                                    name="sourceOfFunds"
+                                    placeholder="Select or enter fund source"
+                                    autocomplete="off"
+                                    required
+                                    oninput="showFundDropdown()" />
+
+                                <div id="sourceOfFundsDropdown"
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded mt-1"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                     @foreach($sourceOfFunds as $fund)
-                                        <option value="{{ $fund->sourceOfFunds }}"></option>
+                                        <button type="button"
+                                            class="list-group-item list-group-item-action"
+                                            onclick="selectFund(@json($fund->sourceOfFunds))">
+                                            {{ $fund->sourceOfFunds }}
+                                        </button>
                                     @endforeach
-                                </datalist>
-                                <div id="otherFundContainer" class="mt-2" style="display: none;">
-                                    <label for="otherFund" class="form-label">Please specify:</label>
-                                    <input type="text" id="otherFund" name="otherFund" class="form-control"
-                                        placeholder="Enter fund source">
                                 </div>
                             </div>
                         </div>
+
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
@@ -217,7 +226,7 @@
                         </div>
 
                         <!-- Hidden text input for 'Ongoing' -->
-                        <div id="ongoingStatusContainer" class="mt-2" style="display: none;">
+                        <div id="ongoingStatusContainer" class="mt-2 mb-2" style="display: none;">
                             <div class="row">
                                 <div class="offset-3 col-md-9">
                                     <label for="ongoingStatus" class="form-label">Please specify percentage
@@ -238,19 +247,31 @@
                             </div> -->
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                                    <div class="col-3 text-end">
-                                        <label for="ea" class="form-label">Project Engineer <span
-                                                    class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input type="text" class="form-control" id="ea" name="ea" list="eaList"
-                                            placeholder="Enter Engineer Assigned">
-                                        <datalist id="eaList">
-                                            @foreach($projectEA as $ea)
-                                                <option value="{{ $ea->ea }}"></option>
-                                            @endforeach
-                                        </datalist>
-                                    </div>
+                            <div class="col-3 text-end">
+                                <label for="ea" class="form-label">Project Engineer <span class="text-danger">*</span></label>
+                            </div>
+                            <div class="col-4 position-relative">
+                                <input type="text"
+                                    class="form-control"
+                                    id="ea"
+                                    name="ea"
+                                    placeholder="Enter Engineer Assigned"
+                                    autocomplete="off"
+                                    oninput="showEaDropdown()" />
+
+                                <div id="eaDropdown"
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded mt-1"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                    @foreach($projectEA as $ea)
+                                        <button type="button"
+                                            class="list-group-item list-group-item-action"
+                                            onclick="selectEa(@json($ea->ea))">
+                                            {{ $ea->ea }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+
 
                                     <div class="col-1 text-end">
                                         <label for="ea_position" class="form-label">Position<span
@@ -619,21 +640,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-    function showLocDropdown() {
-        document.getElementById('projectLocDropdown').style.display = 'block';
-    }
+    // function showLocDropdown() {
+    //     document.getElementById('projectLocDropdown').style.display = 'block';
+    // }
 
-    function selectLoc(value) {
-        document.getElementById('projectLoc').value = value;
-        document.getElementById('projectLocDropdown').style.display = 'none';
-    }
+    // function selectLoc(value) {
+    //     document.getElementById('projectLoc').value = value;
+    //     document.getElementById('projectLocDropdown').style.display = 'none';
+    // }
 
-    // Optional: Close dropdown if clicked outside
-    document.addEventListener('click', function (e) {
-        const input = document.getElementById('projectLoc');
-        const dropdown = document.getElementById('projectLocDropdown');
-        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
+    // // Optional: Close dropdown if clicked outside
+    // document.addEventListener('click', function (e) {
+    //     const input = document.getElementById('projectLoc');
+    //     const dropdown = document.getElementById('projectLocDropdown');
+    //     if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+    //         dropdown.style.display = 'none';
+    //     }
+    // });
 </script>

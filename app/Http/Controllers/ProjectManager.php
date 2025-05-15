@@ -251,7 +251,7 @@ if ($existing) {
     }
 
     public function viewProjects()
-{
+    {
     $projects = Project::select('id', 'projectTitle', 'projectLoc', 'projectStatus', 'projectContractor', 'othersContractor', 'projectContractDays')
         ->with('fundsUtilization')
         ->where(function ($query) {
