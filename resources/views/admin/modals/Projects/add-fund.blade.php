@@ -262,8 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const appropriationValue = parseCurrency(document.getElementById('orig_appropriation').value);
           const inputValue = parseCurrency(input.value);
 
-          console.log(`Checking ${group.label} [${id}]: ${inputValue} vs Appropriation: ${appropriationValue}`);
-
+      
           if (inputValue > appropriationValue) {
             console.warn(`✖ ${group.label} [${id}] exceeds appropriation`);
             showError(group.label);

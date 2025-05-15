@@ -1,3 +1,4 @@
+
 function formatNumber(num) {
   if (!num) return '';
   const parts = num.toString().split('.');
@@ -77,8 +78,16 @@ function parseCurrency(value) {
 
 
 function formatCurrency(value) {
-  return formatter.format(value);
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+
+  const num = parseFloat(value);
+  if (isNaN(num)) return '';
+
+  return formatter.format(num);
 }
+
 
 function calculateTotalExpenditures() {
   const final = parseCurrency(document.querySelector('input[name="amountFinal"]')?.value);
@@ -275,22 +284,21 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// Add this global so it works outside the event listener
 function addVOFields() {
   if (voCount >= 3) return; // Limit to 3 VOs
 
   voCount++;
   document.getElementById('voCount').value = voCount;
 
-  const table = document.querySelector('.table.table-bordered');
+  const table = document.getElementById('editableFundTable'); // ⬅️ Target correct table
   const headerRow = table.querySelector('thead tr');
   const newHeader = document.createElement('th');
   newHeader.textContent = `V.O. ${voCount}`;
   headerRow.insertBefore(newHeader, headerRow.children[headerRow.children.length - 1]);
 
   const rowNames = [
-    'abc', 'contract_amount', 'engineering',
-    'mqc', 'contingency', 'bid', 'appropriation'
+    'appropriation', 'contract_amount', 'abc',
+    'bid', 'engineering', 'mqc', 'contingency'
   ];
 
   const rows = table.querySelectorAll('tbody tr');
@@ -298,12 +306,14 @@ function addVOFields() {
   rowNames.forEach((name, index) => {
     const cell = document.createElement('td');
     cell.innerHTML = `<input type="text" class="form-control amount-input" id="vo_${name}_${voCount}" name="vo_${name}_${voCount}" >`;
+
     const cells = rows[index].querySelectorAll('td');
-    rows[index].insertBefore(cell, cells[cells.length - 1]);
+    rows[index].insertBefore(cell, cells[cells.length - 1]); // Insert before 'Actual' column
   });
 
-  updateVOButtonsState();
+  updateVOButtonsState(); // Optional: disable button if max reached
 }
+
 
 function removeLastVOFields() {
   if (voCount > 1) {
@@ -389,8 +399,8 @@ function loadFundUtilization(project_id) {
       if (data.status === 'success') {
         const fu = data.data || {};
         const vos = data.variationOrders || [];
-
         document.getElementById('projectTitleFU').value = data.projectTitle ?? '';
+
         document.getElementById('orig_abc').value = formatCurrency(fu.orig_abc);
         document.getElementById('orig_contract_amount').value = formatCurrency(fu.orig_contract_amount);
         document.getElementById('orig_engineering').value = formatCurrency(fu.orig_engineering);
@@ -398,7 +408,7 @@ function loadFundUtilization(project_id) {
         document.getElementById('orig_bid').value = formatCurrency(fu.orig_bid);
         document.getElementById('orig_contingency').value = formatCurrency(fu.orig_contingency);
         document.getElementById('orig_appropriation').value = formatCurrency(fu.orig_appropriation);
-
+        
         document.getElementById('actual_abc').value = formatCurrency(fu.actual_abc);
         document.getElementById('actual_contract_amount').value = formatCurrency(fu.actual_contract_amount);
         document.getElementById('actual_engineering').value = formatCurrency(fu.actual_engineering);
@@ -406,53 +416,53 @@ function loadFundUtilization(project_id) {
         document.getElementById('actual_bid').value = formatCurrency(fu.actual_bid);
         document.getElementById('actual_contingency').value = formatCurrency(fu.actual_contingency);
         document.getElementById('actual_appropriation').value = formatCurrency(fu.actual_appropriation);
-
+        
+        // Handle VOs
         let maxVO = 1;
         vos.forEach(vo => {
-          maxVO = Math.max(maxVO, vo.vo_number);
+            maxVO = Math.max(maxVO, vo.vo_number);
         });
-
+        
         for (let i = voCount + 1; i <= maxVO; i++) {
-          addVOFields();
+            addVOFields();
         }
-
+        
         voCount = maxVO;
         document.getElementById('voCount').value = voCount;
-
-        vos.forEach(vo => {
-          document.getElementById(`vo_abc_${vo.vo_number}`).value = vo.vo_abc ?? '';
-          document.getElementById(`vo_contract_amount_${vo.vo_number}`).value = vo.vo_contract_amount ?? '';
-          document.getElementById(`vo_engineering_${vo.vo_number}`).value = vo.vo_engineering ?? '';
-          document.getElementById(`vo_mqc_${vo.vo_number}`).value = vo.vo_mqc ?? '';
-          document.getElementById(`vo_bid_${vo.vo_number}`).value = vo.vo_bid ?? '';
-          document.getElementById(`vo_contingency_${vo.vo_number}`).value = vo.vo_contingency ?? '';
-          document.getElementById(`vo_appropriation_${vo.vo_number}`).value = vo.vo_appropriation ?? '';
-        });
-
-        const summary = fu.summary || {};
         
+        vos.forEach(vo => {
+            document.getElementById(`vo_abc_${vo.vo_number}`).value = formatCurrency(vo.vo_abc ?? '');
+            document.getElementById(`vo_contract_amount_${vo.vo_number}`).value = formatCurrency(vo.vo_contract_amount ?? '');
+            document.getElementById(`vo_engineering_${vo.vo_number}`).value = formatCurrency(vo.vo_engineering ?? '');
+            document.getElementById(`vo_mqc_${vo.vo_number}`).value = formatCurrency(vo.vo_mqc ?? '');
+            document.getElementById(`vo_bid_${vo.vo_number}`).value = formatCurrency(vo.vo_bid ?? '');
+            document.getElementById(`vo_contingency_${vo.vo_number}`).value = formatCurrency(vo.vo_contingency ?? '');
+            document.getElementById(`vo_appropriation_${vo.vo_number}`).value = formatCurrency(vo.vo_appropriation ?? '');
+        });
+        
+        // Summary section
+        const summary = fu.summary || {};
         const mobi = summary.mobilization || {};
         const mobiPercent = mobi.percent || '';
         document.getElementById('percentMobi').value = mobiPercent;
-        renderMobilizationRows(mobiPercent, mobi);  // ✅ This ensures inputs exist
+        renderMobilizationRows(mobiPercent, mobi);
         
-        // ✅ Now safe to set values because inputs have been rendered
+        document.getElementById('percentMobi').dispatchEvent(new Event('input'));
         
-        document.getElementById('percentMobi').dispatchEvent(new Event('input'));          
         document.querySelector('[name="dateFinal"]').value = summary.final?.date || '';
-        document.querySelector('[name="amountFinal"]').value = summary.final?.amount || '';
+        document.querySelector('[name="amountFinal"]').value = formatCurrency(summary.final?.amount || '');
         document.querySelector('[name="remFinal"]').value = summary.final?.remarks || '';
         document.querySelector('[name="dateEng"]').value = summary.engineering?.date || '';
-        document.querySelector('[name="amountEng"]').value = summary.engineering?.amount || '';
+        document.querySelector('[name="amountEng"]').value = formatCurrency(summary.engineering?.amount || '');
         document.querySelector('[name="remEng"]').value = summary.engineering?.remarks || '';
         document.querySelector('[name="dateMqc"]').value = summary.mqc?.date || '';
-        document.querySelector('[name="amountMqc"]').value = summary.mqc?.amount || '';
+        document.querySelector('[name="amountMqc"]').value = formatCurrency(summary.mqc?.amount || '');
         document.querySelector('[name="remMqc"]').value = summary.mqc?.remarks || '';
-        document.querySelector('[name="amountTotal"]').value = summary.totalExpenditures?.amount || '';
+        document.querySelector('[name="amountTotal"]').value = formatCurrency(summary.totalExpenditures?.amount || '');
         document.querySelector('[name="remTotal"]').value = summary.totalExpenditures?.remarks || '';
-        document.querySelector('[name="amountSavings"]').value = summary.totalSavings?.amount || '';
+        document.querySelector('[name="amountSavings"]').value = formatCurrency(summary.totalSavings?.amount || '');
         document.querySelector('[name="remSavings"]').value = summary.totalSavings?.remarks || '';
-          
+         
         const billings = fu.partial_billings || [];
 
         const billingsBody = document.getElementById('billingsTableBody');
@@ -508,19 +518,6 @@ function loadFundUtilization(project_id) {
         <td><input type="text" class="form-control" name="remMobi" value="${existing.remarks || ''}"></td>
       `;
       mobiTableBody.appendChild(row1);
-    
-      // Remaining mobilization row
-      if (remainingPercent > 0) {
-        const rem = existing.remaining || {};
-        const row2 = document.createElement('tr');
-        row2.innerHTML = `
-          <td>${remainingPercent}% Remaining Mobilization</td>
-          <td><input type="date" class="form-control" name="dateMobi2" value="${rem.date || ''}"></td>
-          <td><input type="text" class="form-control amount-input" name="amountMobi2" value="${remainingMobilizationAmount || ''}" ></td>
-          <td><input type="text" class="form-control" name="remMobi2" value="${rem.remarks || ''}"></td>
-        `;
-        mobiTableBody.appendChild(row2);
-      }
     }
     
     // Re-render on percent input change
@@ -577,7 +574,6 @@ function getPartialBillingTotal() {
   return total;
 }
 
-// Compute total expenditures and inject into DOM
 function calculateTotalExpenditures() {
   const final = parseCurrency(document.querySelector('input[name="amountFinal"]')?.value || '0');
   const eng = parseCurrency(document.querySelector('input[name="amountEng"]')?.value || '0');
@@ -593,8 +589,35 @@ function calculateTotalExpenditures() {
     totalInput.dispatchEvent(new Event('input')); // Trigger input event for savings calculation
   }
 
-  calculateSavings(total); // pass total expenditures
+  calculateSavings(total); // Pass total expenditures
+
+  // === Validations ===
+  const origAppropriation = parseCurrency(document.getElementById('orig_appropriation')?.value || '0');
+  const savingsInput = document.querySelector('input[name="amountSavings"]');
+  const savings = parseCurrency(savingsInput?.value || '0');
+
+  // Check if expenditures exceed appropriation
+  if (total > origAppropriation) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Expenditure Exceeded',
+      text: 'Total Expenditures cannot exceed the Original Appropriation!',
+    });
+    if (totalInput) totalInput.value = '';
+    if (savingsInput) savingsInput.value = '';
+  }
+
+  // Check if savings is negative
+  if (savings < 0) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Negative Savings',
+      text: 'Total Savings cannot be a negative amount!',
+    });
+    if (savingsInput) savingsInput.value = '';
+  }
 }
+
 
 // Compute savings = appropriation - expenditures
 function calculateSavings(totalExpenditures) {

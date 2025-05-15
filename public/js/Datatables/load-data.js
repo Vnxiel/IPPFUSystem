@@ -1,10 +1,12 @@
+// ✅ Global scope
+var dataTable = null;
+
 $(document).ready(function () {
     $("#projects-container").hide();
 
     const hasData = $('#projects tbody tr').length > 0 &&
         !$('#projects tbody tr td').first().attr('colspan');
 
-    let dataTable = null;
 
     if (hasData) {
         // Initialize DataTable first
@@ -24,7 +26,6 @@ $(document).ready(function () {
 
         const urlParams = new URLSearchParams(window.location.search);
         const statusFilter = urlParams.get('page');
-        console.log('[URL PARAM] page =', statusFilter);
         
         if (statusFilter) {
             const statusMap = {
@@ -36,18 +37,16 @@ $(document).ready(function () {
             };
         
             const actualStatus = statusMap[statusFilter.toLowerCase()];
-            console.log('[MAPPED STATUS]', actualStatus);
         
             if (actualStatus) {
                 $('#status_filter').val(actualStatus); // Set value
-                console.log('[SETTING FILTER] status_filter set to:', $('#status_filter').val());
-        
+             
                 setTimeout(() => {
-                    console.log('[DRAW TRIGGER] Executing DataTable draw');
+                
                     dataTable.draw();
         
                     const filteredRows = dataTable.rows({ filter: 'applied' }).data().length;
-                    console.log('[FILTERED ROW COUNT]', filteredRows);
+                   
         
                     if (filteredRows === 0) {
                         dataTable.clear().draw();
@@ -66,6 +65,10 @@ $(document).ready(function () {
         }
         
 
+        // AFTER dataTable is initialized
+$('#clear_filters_btn').on('click', function () {
+    clearFilters();
+});
 
         // Restore and highlight previously selected project
         const highlightedId = localStorage.getItem('highlighted_project_id');
@@ -87,28 +90,36 @@ $(document).ready(function () {
 
         $("#projects-container").show();
     }
-
-    // Custom filtering logic this is not the same with the url filter do not 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         if (!dataTable) return true;
     
         const viewAll = $('#view_all_checkbox').is(':checked');
         if (viewAll) return true;
     
-        const location = ($('#location_filter').val() || '').toLowerCase().trim();
-        const contractor = ($('#contractor_filter').val() || '').toLowerCase().trim();
+        // Normalizer removes accents and diacritics like ñ, é, ü, etc.
+        function normalize(str) {
+            return (str || '')
+                .normalize("NFD")                         // Separate accent marks
+                .replace(/[\u0300-\u036f]/g, "")          // Remove accents
+                .toLowerCase()
+                .trim();
+        }
+    
+        const location = normalize($('#location_filter').val());
+        const contractor = normalize($('#contractor_filter').val());
         const amountInput = $('#amount_filter').val().replace(/[₱,]/g, '');
         const maxAmount = parseFloat(amountInput) || null;
-        const status = ($('#status_filter').val() || '').toLowerCase().trim();
+        const status = normalize($('#status_filter').val());
     
-        const rowLocation = (data[2] || '').toLowerCase().trim();
-        const rowStatus = (data[3] || '').toLowerCase().trim(); // IMPORTANT
+        // Extract just the town before the comma
+        const rowLocation = normalize((data[2] || '').split(',')[0]);
+        const rowStatus = normalize(data[3]);
         const rowAmount = parseFloat((data[4] || '').replace(/[₱,]/g, '')) || 0;
-        const rowContractor = (data[5] || '').toLowerCase().trim();
+        const rowContractor = normalize(data[5]);
     
-        console.log(`[FILTER] status="${status}" vs row="${rowStatus}"`);
+        
     
-        return (!location || rowLocation.includes(location)) &&
+        return (!location || rowLocation === location) &&
                (!contractor || rowContractor.includes(contractor)) &&
                (!maxAmount || rowAmount <= maxAmount) &&
                (!status || rowStatus.includes(status));
@@ -128,10 +139,34 @@ $(document).ready(function () {
     }
 
     // Highlight clicked row
-    $(document).on('click', '#projects tbody tr', function () {
+    $(document).on('click', '#projects tbody tr', function (event) {
+        // Avoid triggering when clicking on the button inside the row
+        if ($(event.target).closest('button').length) return;
+
         $('#projects tbody tr').removeClass('focus-highlight');
         $(this).addClass('focus-highlight');
+
+        const projectId = $(this).data('id');
+        const pageNumber = dataTable ? dataTable.page() : 0;
+
+        sessionStorage.setItem('project_id', projectId);
+        localStorage.setItem('highlighted_project_id', projectId);
+        localStorage.setItem('highlighted_project_page', pageNumber);
+
+        const role = localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
+        const urlMap = {
+            'Admin': `/admin/overview/${projectId}`,
+            'System Admin': `/systemAdmin/overview/${projectId}`,
+            'Staff': `/staff/overview/${projectId}`
+        };
+
+        if (urlMap[role]) {
+            window.location.href = urlMap[role];
+        } else {
+            alert("Unauthorized: Unknown role.");
+        }
     });
+
 
     // Overview button click
     $(document).on('click', '.overview-btn', function () {

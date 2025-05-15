@@ -186,7 +186,7 @@
             </tr>
           <tr class="fit-text-row">
             <th>Official Start:</th>
-            <td colspan="3">{{ $project->officialStart }}</td>
+            <td colspan="3">{{ $project->originalStartDate }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Target Completion:</th>

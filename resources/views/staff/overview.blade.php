@@ -509,7 +509,7 @@ function showMunicipalitySuggestions(query) {
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const contractDaysInput = document.getElementById("projectContractDays");
-    const startDateInput = document.getElementById("officialStart");
+    const startDateInput = document.getElementById("originalStartDate");
     const completionDateInput = document.getElementById("targetCompletion");
 
     function calculateCompletionDate() {

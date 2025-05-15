@@ -51,45 +51,12 @@ $(document).ready(function () {
                     text: "0% progress is not allowed."
                 });
             }
-            
-
-        if (percentage === 100 && progress.trim().toLowerCase() !== "completed") {
-            return Swal.fire({
-                icon: "warning",
-                title: "Status Mismatch",
-                text: 'Progress must be set to "Completed" if percentage is 100%.'
-            });
-        }
-
-        if (progress.trim().toLowerCase() === "completed" && percentage < 100) {
-            return Swal.fire({
-                icon: "warning",
-                title: "Percentage Mismatch",
-                text: 'Percentage must be 100% if progress is marked "Completed".'
-            });
-        }
 
         const latestStatus = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
 
         if (latestStatus.percentage !== undefined) {
             const lastDate = new Date(latestStatus.date).toISOString().split("T")[0];
             const newDate = new Date(date).toISOString().split("T")[0];
-
-            if (latestStatus.percentage === 100) {
-                return Swal.fire({
-                    icon: "error",
-                    title: "Invalid Status",
-                    text: "Cannot add updates after project is already completed (100%)."
-                });
-            }
-
-            if (percentage <= latestStatus.percentage) {
-                return Swal.fire({
-                    icon: "error",
-                    title: "Invalid Percentage",
-                    text: "New percentage must be greater than the last recorded percentage."
-                });
-            }
 
             if (newDate <= lastDate) {
                 return Swal.fire({

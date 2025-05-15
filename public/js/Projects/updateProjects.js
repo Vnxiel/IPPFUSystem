@@ -19,7 +19,7 @@ $(document).ready(function () {
         let fieldIDs = [
             "projectTitle", "projectLoc", "projectID", "projectContractor", "sourceOfFunds", "modeOfImplementation",
             "projectDescription", "projectContractDays", "noticeOfAward",
-            "noticeToProceed", "officialStart", "targetCompletion", "timeExtension", "revisedTargetCompletion",
+            "noticeToProceed", "originalStartDate", "targetCompletion", "timeExtension", "revisedTargetCompletion",
             "completionDate", "abc", "contractAmount", "engineering", "mqc", "contingency", "bid", "appropriation",
             "noaIssuedDate", "noaReceivedDate", "ntpIssuedDate", "ntpReceivedDate", "totalExpenditure", "projectSlippage", "ea", "ea_position", "ea_monthlyRate", "othersContractor", "projectYear", "projectFPP", "projectRC"
         ];

@@ -51,10 +51,13 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-3">
-                                <select class="form-select form-select-sm" id="projectYear" name="projectYear" required>
+                                <select class="form-select form-select-sm" id="projectYearSelect" name="projectYearSelect" required>
                                     <option value="" disabled selected>Select Year</option>
                                     <!-- Year options will be injected here by JavaScript -->
                                 </select>
+
+                                <!-- Hidden input for custom year -->
+                                <input type="number" class="form-control form-control-sm mt-2" id="customYearInput" name="projectYear" placeholder="Enter Year" style="display: none;" min="1900" max="2100">
                             </div>
                             <div class="col-md-2 text-end">
                                 <label for="projectFPP" class="form-label">FPP <span
@@ -110,47 +113,26 @@
                             </div>
                         </div>
 
-                        <div class="row mb-2 g-3">
-                            <div class="col-3 text-end">
-                                <label for="projectContractor" class="form-label">Contractor<span
-                                        class="text-danger">*</span></label>
+                        <!-- Contractor Input with Dynamic Suggestions -->
+                        <div class="row g-3 mb-2 text-end">
+                            <div class="col-md-3">
+                                <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
-                            <div class="col">
-                                        <select id="projectContractor" name="projectContractor" class="form-select" onchange="toggleOtherContractor()">
-                                            <option value="">--Select Contractor--</option>
-                                            @foreach($contractors as $contractor)
-                                                <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
-                                                    {{ $contractor->name }}
-                                                </option>
-                                            @endforeach
-                                            <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
-                                        </select>
-                            </div>
-                        </div>
-                            <!-- <div class="mb-2">
-                                <label for="projectContractor" class="form-label">Contractor <span
-                                        class="text-danger">*</span></label>
-                                <select id="projectContractor" name="projectContractor" class="form-select">
-                                    <option value="">--Select Contractor--</option>
-                                    @foreach($contractors as $contractor)
-                                        <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
-                                    @endforeach
-                                    <option value="Others">Others: (Specify)</option>
-                                </select>
-                        </div> -->
+                            <div class="col-md-9 position-relative">
+                                <input type="text" class="form-control" id="projectContractor" name="projectContractor"
+                                    placeholder="Select or enter contractor name" autocomplete="off"
+                                    value="{{ old('projectContractor', $project['projectContractor'] ?? '') }}"
+                                    oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
 
-                        <!-- Hidden textbox for specifying 'Others' -->
-                        <div  id="othersContractorDiv"  style="display: none;">
-                            <div class="row mb-2 g-3" >
-                                    <div class="col-3 text-end">
-                                        <label for="othersContractor" class="form-label">Specify New Contractor</label>
-                                    </div>
-                                    <div class="col-9">
-                                    <input type="text" class="form-control" id="othersContractor"
-                                            name="othersContractor"  placeholder="Enter new contractor name">
-                                    </div>
+                                <!-- Container for dynamically inserted buttons -->
+                                <div id="projectContractorDropdown"
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                </div>
                             </div>
                         </div>
+
+
                         
 
                         <div class="row mb-2 align-items-center">
@@ -174,11 +156,6 @@
                                         <option value="{{ $fund->sourceOfFunds }}"></option>
                                     @endforeach
                                 </datalist>
-                                <div id="otherFundContainer" class="mt-2" style="display: none;">
-                                    <label for="otherFund" class="form-label">Please specify:</label>
-                                    <input type="text" id="otherFund" name="otherFund" class="form-control"
-                                        placeholder="Enter fund source">
-                                </div>
                             </div>
                         </div>
                         <div class="row mb-2 align-items-center">
@@ -251,7 +228,7 @@
                                     </div>
                                     <div class="col-9">
                                         <input type="text" class="form-control" id="ea" name="ea" list="eaList"
-                                            placeholder="Enter E.A. Fullname">
+                                            placeholder="Enter E.A. Fullname" required>
                                         <datalist id="eaList">
                                             @foreach($projectEA as $ea)
                                                 <option value="{{ $ea->ea }}"></option>
@@ -265,13 +242,13 @@
                                 <label for="ea_position" class="form-label">Position</label>
                             </div>
                             <div class="col-3">
-                                <input type="text" class="form-control" id="ea_position" name="ea_position">
+                                <input type="text" class="form-control" id="ea_position" name="ea_position" required>
                             </div>
                             <div class="col-3 text-end">
                                 <label for="ea_monthlyRate" class="form-label">Monthly Rate</label>
                             </div>
                             <div class="col-3">
-                                <input type="number" class="form-control" id="ea_monthlyRate" name="ea_monthlyRate">
+                                <input type="number" class="form-control" id="ea_monthlyRate" name="ea_monthlyRate" required>
                             </div>
                         </div>
                     </fieldset>
@@ -307,7 +284,7 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc" required>
                                 </div>
                             </div>
                             <div class="col-3 text-end">
@@ -317,7 +294,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="engineering"
-                                        name="engineering">
+                                        name="engineering" required>
                                 </div>
                             </div>
                         </div>
@@ -330,7 +307,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="contractAmount"
-                                        name="contractAmount">
+                                        name="contractAmount" required>
                                 </div>
                             </div>
                             <div class="col-3 text-end">
@@ -339,7 +316,7 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc">
+                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc" required>
                                 </div>
                             </div>
                         </div>
@@ -351,7 +328,7 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="bid" name="bid" disabled>
+                                    <input type="text" class="form-control currency-input" id="bid" name="bid" readonly>
                                 </div>
                              </div>
                             <div class="col-3 text-end">
@@ -377,13 +354,13 @@
                                     <label for="noaIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
+                                    <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate" required>
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="noaReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate">
+                                    <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate" required>
                                 </div>
                             </div>
 
@@ -409,10 +386,10 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="officialStart" class="form-label">Official Start</label>
+                                    <label for="originalStartDate" class="form-label">Official Start</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="officialStart" name="officialStart">
+                                    <input type="date" class="form-control" id="originalStartDate" name="originalStartDate">
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="targetCompletion" class="form-label">Target Completion Date</label>
@@ -475,33 +452,32 @@
                             </div>
 
                             <div class="row">
-    <!-- Order pair container -->
-    <div id="orderContainer" class="col-12">
-        <div class="row mt-2 mb-2 order-set" id="orderSet1">
-            <!-- Suspension and Resumption Order Row -->
-            <div class="row mb-2">
-                <div class="col-md-6 mb-2">
-                    <label for="suspensionOrderNo1" class="form-label">Suspension Order No. 1</label>
-                    <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="resumeOrderNo1" class="form-label">Resumption Order No. 1</label>
-                    <input type="date" class="form-control" id="resumeOrderNo1" name="resumeOrderNo1">
-                </div>
-            </div>
+                                <!-- Order pair container -->
+                                <div id="orderContainer" class="col-12">
+                                    <div class="row mt-2 mb-2 order-set" id="orderSet1">
+                                        <!-- Suspension and Resumption Order Row -->
+                                        <div class="row mb-2">
+                                            <div class="col-md-6 mb-2">
+                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No. 1</label>
+                                                <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No. 1</label>
+                                                <input type="date" class="form-control" id="resumeOrderNo1" name="resumeOrderNo1">
+                                            </div>
+                                        </div>
 
-            <!-- Remarks Row -->
-            <div class="row mb-2">
-                <div class="col-md-12 mb-2">
-                    <label for="suspensionOrderNo1Remarks" class="form-label">Suspension Remarks</label>
-                    <textarea class="form-control" id="suspensionOrderNo1Remarks" name="suspensionOrderNo1Remarks" rows="2"></textarea>
-                </div>
-            
-            </div>
-        </div>
-    </div>
-</div>
-
+                                        <!-- Remarks Row -->
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 mb-2">
+                                                <label for="suspensionOrderNo1Remarks" class="form-label">Suspension Remarks</label>
+                                                <textarea class="form-control" id="suspensionOrderNo1Remarks" name="suspensionOrderNo1Remarks" rows="2"></textarea>
+                                            </div>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </fieldset>
                     <div class="modal-footer bg-light">
@@ -518,55 +494,155 @@
 </div>
 </div>
 </div>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  function parseCurrency(value) {
-    return parseFloat((value || '0').replace(/[₱,]/g, '')) || 0;
-  }
+    const select = document.getElementById('projectYearSelect');
+    const customInput = document.getElementById('customYearInput');
+    const currentYear = new Date().getFullYear();
 
-  function showError(fieldLabel) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Limit Exceeded',
-      text: `${fieldLabel} exceeds the Appropriation!`
+    // Populate 15 years
+    for (let i = 0; i < 15; i++) {
+        const year = currentYear + i;
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        select.appendChild(option);
+    }
+
+    // Add "Other" option
+    const otherOption = document.createElement('option');
+    otherOption.value = 'other';
+    otherOption.textContent = 'Other (Enter manually)';
+    select.appendChild(otherOption);
+
+    // Handle selection change
+    select.addEventListener('change', function () {
+        if (this.value === 'other') {
+            customInput.style.display = 'block';
+            customInput.required = true;
+            select.name = 'projectYearSelect';  // Optional: ignore select on submit
+        } else {
+            customInput.style.display = 'none';
+            customInput.required = false;
+            customInput.value = '';
+            select.name = 'projectYear';  // Make sure selected value gets submitted
+        }
     });
-  }
+</script>
 
-  const fieldGroups = [
-    { label: 'ABC', ids: ['abc'] },
-    { label: 'Contract Amount', ids: ['contractAmount'] },
-    { label: 'Engineering', ids: ['engineering'] },
-    { label: 'MQC', ids: ['mqc'] },
-    { label: 'Contingency', ids: ['contingency'] },
-    { label: 'Bid Difference', ids: ['bid'] },
-    { label: 'Appropriation', ids: ['appropriation'] } // Note: 'orig_appropriation' is the base limit
-  ];
 
-  fieldGroups.forEach(group => {
-    group.ids.forEach(id => {
-      const input = document.getElementById(id);
-      if (input) {
-        input.addEventListener('blur', function () {
-          const appropriationValue = parseCurrency(document.getElementById('appropriation').value);
-          const inputValue = parseCurrency(input.value);
+<script>
+    const contractorInput = document.getElementById('projectContractor');
+    const dropdown = document.getElementById('projectContractorDropdown');
 
-          console.log(`Checking ${group.label} [${id}]: ${inputValue} vs Appropriation: ${appropriationValue}`);
+    // Store contractor names in JavaScript for easier manipulation
+    const contractorNames = [
+        @foreach($contractors as $contractor)
+            "{{ $contractor->name }}",
+        @endforeach
+    ];
 
-          if (inputValue > appropriationValue) {
-            console.warn(`✖ ${group.label} [${id}] exceeds appropriation`);
-            showError(group.label);
-            input.value = '';
-          } else {
-            console.log(`✔ ${group.label} [${id}] is within limit`);
-          }
+    function filterAndReorderContractors() {
+        const inputValue = contractorInput.value.toLowerCase();
+        const matches = contractorNames
+            .map(name => ({
+                name,
+                score: name.toLowerCase().startsWith(inputValue) ? 0 : 
+                       name.toLowerCase().includes(inputValue) ? 1 : 2
+            }))
+            .filter(item => item.score < 2)
+            .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+
+        dropdown.innerHTML = '';
+        matches.forEach(item => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'list-group-item list-group-item-action';
+            button.textContent = item.name;
+            button.onclick = () => selectContractor(item.name);
+            dropdown.appendChild(button);
         });
-      }
+
+        dropdown.style.display = matches.length ? 'block' : 'none';
+    }
+
+    function selectContractor(name) {
+        contractorInput.value = name;
+        dropdown.style.display = 'none';
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!contractorInput.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
     });
-  });
-});
 </script>
 
 <script>
+    
+    // Function to allow only numbers and hyphen
+    function restrictInput(event) {
+        const regex = /^[0-9-]*$/;
+        const value = event.target.value;
+        if (!regex.test(value)) {
+            event.target.value = value.replace(/[^0-9-]/g, ''); // Remove invalid characters
+        }
+    }
+
+    // Get the input fields
+    const projectFPP = document.getElementById('projectFPP');
+    const projectRC = document.getElementById('projectRC');
+
+    // Add input event listeners to restrict characters
+    projectFPP.addEventListener('input', restrictInput);
+    projectRC.addEventListener('input', restrictInput);
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    function parseCurrency(value) {
+        return parseFloat((value || '0').replace(/[₱,]/g, '')) || 0;
+    }
+
+    function showError(fieldLabel) {
+        Swal.fire({
+        icon: 'warning',
+        title: 'Limit Exceeded',
+        text: `${fieldLabel} exceeds the Appropriation!`
+        });
+    }
+
+    const fieldGroups = [
+        { label: 'ABC', ids: ['abc'] },
+        { label: 'Contract Amount', ids: ['contractAmount'] },
+        { label: 'Engineering', ids: ['engineering'] },
+        { label: 'MQC', ids: ['mqc'] },
+        { label: 'Contingency', ids: ['contingency'] },
+        { label: 'Bid Difference', ids: ['bid'] },
+        { label: 'Appropriation', ids: ['appropriation'] } // Note: 'orig_appropriation' is the base limit
+    ];
+
+    fieldGroups.forEach(group => {
+        group.ids.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('blur', function () {
+            const appropriationValue = parseCurrency(document.getElementById('appropriation').value);
+            const inputValue = parseCurrency(input.value);
+
+          
+            if (inputValue > appropriationValue) {
+                console.warn(`✖ ${group.label} [${id}] exceeds appropriation`);
+                showError(group.label);
+                input.value = '';
+            } else {
+                console.log(`✔ ${group.label} [${id}] is within limit`);
+            }
+            });
+        }
+        });
+    });
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         const projectYear = document.getElementById('projectYear');
         const sourceOfFundsInput = document.getElementById('sourceOfFunds');
@@ -595,16 +671,25 @@ document.addEventListener("DOMContentLoaded", function () {
         sourceOfFundsInput.addEventListener('input', validateSourceOfFunds);
         projectYear.addEventListener('change', validateSourceOfFunds);
     });
-</script>
 
-<script>
     document.addEventListener('DOMContentLoaded', function () {
         const yearSelect = document.getElementById('projectYear');
+        const select = document.getElementById('projectYear');
+        const currentYear = new Date().getFullYear();
+        const startYear = 2015; // Set your desired start year
+
+    for (let year = currentYear; year >= startYear; year--) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        select.appendChild(option);
+    }
+
 
         const dateInputs = [
             'noaIssuedDate', 'noaReceivedDate',
             'ntpIssuedDate', 'ntpReceivedDate',
-            'officialStart', 'targetCompletion',
+            'originalStartDate', 'targetCompletion',
             'completionDate', 'revisedCompletionDate'
         ];
 
@@ -635,9 +720,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-</script>
 
-<script>
+
     function showLocDropdown() {
         const dropdown = document.getElementById('projectLocDropdown');
         if (dropdown) {
@@ -650,17 +734,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('projectLocDropdown').style.display = 'none';
     }
 
-    const select = document.getElementById('projectYear');
-    const currentYear = new Date().getFullYear();
-    const startYear = 2015; // Set your desired start year
-
-    for (let year = currentYear; year >= startYear; year--) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        select.appendChild(option);
-    }
-
+    
     // Hide when clicking outside
     document.addEventListener('click', function (event) {
         const dropdown = document.getElementById('projectLocDropdown');
@@ -673,12 +747,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll('.currency-input').forEach(input => {
     input.addEventListener('input', () => {
-        let value = input.value.replace(/[^0-9.]/g, '');
-        let parts = value.split('.');
-        let intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        let decimalPart = parts[1] ? '.' + parts[1].slice(0, 2) : '';
-        input.value = intPart + decimalPart;
+        let value = input.value;
+
+        // Remove all non-digit and non-dot characters
+        value = value.replace(/[^0-9.]/g, '');
+
+        // If more than one dot, keep only the first
+        const firstDot = value.indexOf('.');
+        if (firstDot !== -1) {
+            const beforeDot = value.substring(0, firstDot);
+            const afterDot = value.substring(firstDot + 1).replace(/\./g, '');
+            value = beforeDot + '.' + afterDot;
+        }
+
+        // Split into integer and decimal parts
+        let [intPart, decimalPart] = value.split('.');
+
+        // Remove leading zeros, unless input is just "0" or "0.x"
+        if (intPart.length > 1 && intPart.startsWith('0')) {
+            intPart = intPart.replace(/^0+/, '') || '0';
+        }
+
+        // Format integer part with commas
+        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        // Keep up to two decimal digits
+        if (decimalPart !== undefined) {
+            decimalPart = decimalPart.slice(0, 2);
+            input.value = `${intPart}.${decimalPart}`;
+        } else {
+            input.value = intPart;
+        }
     });
+
 });
 
 document.querySelector('form').addEventListener('submit', () => {
@@ -698,5 +799,28 @@ document.querySelectorAll('.currency-input').forEach(input => {
         input.value = isNaN(value) ? '' : value.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     });
 });
-</script>
 
+
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const ongoingStatusInput = document.getElementById('ongoingStatus');
+
+    ongoingStatusInput.addEventListener('blur', function () {
+      const value = parseFloat(this.value.trim());
+
+      if (isNaN(value) || value < 1 || value > 100) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid Percentage',
+          text: 'Please enter a value between 1 and 100.',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          this.value = '';
+          this.focus();
+        });
+      }
+    });
+  });
+</script>

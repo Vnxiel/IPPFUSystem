@@ -88,7 +88,7 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr) {
-                console.log(xhr.responseText); // Debugging
+               
                 Swal.fire({
                     icon: "error",
                     title: "Server Error!",

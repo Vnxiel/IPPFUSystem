@@ -404,12 +404,12 @@
                                 <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate" value="{{ old('ntpReceivedDate', $project['ntpReceivedDate'] ?? '') }}">
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <!-- <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="officialStart" class="form-label">Official Start</label>
+                                    <label for="originalStartDate" class="form-label">Official Start</label>
                                 </div>
                                 <div class="col-3">
-                                <input type="date" class="form-control" id="officialStart" name="officialStart" value="{{ old('officialStart', $project['officialStart'] ?? '') }}">
+                                <input type="date" class="form-control" id="originalStartDate" name="originalStartDate" value="{{ old('originalStartDate', $project['originalStartDate'] ?? '') }}">
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="targetCompletion" class="form-label">Target Completion Date</label>
@@ -434,7 +434,7 @@
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="revisedCompletionDate" name="revisedCompletionDate" value="{{ old('revisedCompletionDate', $project['revisedCompletionDate'] ?? '') }}">
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </fieldset>
 

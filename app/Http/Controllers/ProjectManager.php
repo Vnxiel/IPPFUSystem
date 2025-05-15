@@ -29,7 +29,7 @@ class ProjectManager extends Controller
         'projectTitle' => 'required|string',
         'projectLoc' => 'required|string',
         'projectID' => 'required|string',
-        'projectYear' => 'required|integer|max:2100|min:1900',
+        'projectYear' => 'integer',
         'projectFPP' => 'required|string',
         'projectRC' => 'required|string',
         'projectContractor' => 'required|string',
@@ -44,16 +44,16 @@ class ProjectManager extends Controller
         'noaReceivedDate' => 'nullable|date',
         'ntpIssuedDate' => 'nullable|date',
         'ntpReceivedDate' => 'nullable|date',
-        'officialStart' => 'required|date',
+        'originalStartDate' => 'required|date',
         'targetCompletion' => 'required|date',
         'timeExtension' => 'nullable|integer',
         'revisedCompletionDate' => 'nullable|date',
+        'revisedTargetDate' => 'nullable|date',
         'completionDate' => 'required|date',
         'projectSlippage' => 'nullable|string',
         'othersContractor' => 'nullable|string',
         'ea' => 'required|string',
         'ea_position' => 'required|string',
-        'ea_monthlyRate' => 'required|string',
     ]);
 
     if ($validator->fails()) {
@@ -653,7 +653,7 @@ public function updateProject(Request $request, $id)
             'noaReceivedDate' => 'nullable|date',
             'ntpIssuedDate' => 'nullable|date',
             'ntpReceivedDate' => 'nullable|date',
-            'officialStart' => 'required|date',
+            'originalStartDate' => 'required|date',
             'targetCompletion' => 'required|date',
             'timeExtension' => 'nullable|integer',
             'revisedCompletionDate' => 'nullable|date',
@@ -707,7 +707,7 @@ public function updateProject(Request $request, $id)
                 'sourceOfFunds', 'otherFund', 'modeOfImplementation',
                 'projectStatus', 'ongoingStatus', 'projectContractDays',
                 'noaIssuedDate', 'noaReceivedDate', 'ntpIssuedDate', 'ntpReceivedDate',
-                'officialStart', 'targetCompletion', 'timeExtension',
+                'originalStartDate', 'targetCompletion', 'timeExtension',
                 'revisedCompletionDate', 'completionDate', 'projectSlippage',
                 'othersContractor', 'ea', 'ea_position', 'ea_monthlyRate', 'projectYear', 'projectFPP', 'projectRC',
                 'suspensionRemarks'
@@ -853,19 +853,7 @@ public function addStatus(Request $request)
         $latestStatus = ProjectStatus::where('project_id', $request->project_id)
             ->orderByDesc('date')
             ->orderByDesc('percentage')
-            ->first();
-
-        if ($latestStatus) {
-            if (
-                strtotime($request->date) < strtotime($latestStatus->date) ||
-                $request->percentage < $latestStatus->percentage
-            ) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'The new status must have a later date and higher or equal percentage.'
-                ], 422);
-            }
-        }
+            ->first(); 
 
         DB::beginTransaction();
 

@@ -5,9 +5,30 @@
   <title>IPPFU</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: "Times New Roman", Times, serif;
-    }
+  @page {
+    margin: 20mm 15mm 30mm 15mm;
+  }
+
+  body {
+    font-family: "Times New Roman", Times, serif;
+    position: relative;
+    margin-bottom: 60px; /* make room for the footer */
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .printed-by {
+    display: inline-block;
+    text-align: left;
+  }
+
     .header-table {
       width: 100%;
       margin-bottom: 2px;
@@ -186,7 +207,7 @@
             </tr>
           <tr class="fit-text-row">
             <th>Official Start:</th>
-            <td colspan="3">{{ $project->officialStart }}</td>
+            <td colspan="3">{{ $project->originalStartDate }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Target Completion:</th>
@@ -262,8 +283,8 @@
         $summary = $projectFundsUtilization['summary'] ?? [];
       @endphp
       @php
-        $partialBillings = $projectFundsUtilization['partialBillings'] ?? [];
-      @endphp
+  $partialBillings = $projectFundsUtilization['partial_billings'] ?? [];
+@endphp
 
 
       <tr class="fit-text-row">
@@ -272,31 +293,26 @@
         <td style="text-align: right;">{{ $summary['mobilization']['amount'] ?? '' }}</td>
         <td style="text-align: right;">{{ $summary['mobilization']['remarks'] ?? '' }}</td>
       </tr>
-      <tr class="fit-text-row">
-        <td style="text-align: right;">{{ $partialBillings['date'] ?? '' }}</td>
-        <td>1st Partial Billing</td>
-        <td style="text-align: right;">{{ $partialBillings['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $partialBillings['remarks'] ?? '' }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
-        <td>2nd Partial Billing</td>
-        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
-        <td>3rd Partial Billing</td>
-        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
-        <td>4th Partial Billing</td>
-        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
-      </tr>
-      <tr class="fit-text-row">
+      @php
+  function ordinal($number) {
+    $ends = ['th','st','nd','rd','th','th','th','th','th','th'];
+    if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
+      return $number . 'th';
+    } else {
+      return $number . $ends[$number % 10];
+    }
+  }
+@endphp
+
+@foreach ($partialBillings as $index => $billing)
+<tr class="fit-text-row">
+  <td style="text-align: right;">{{ $billing['date'] ?? '' }}</td>
+  <td>{{ ordinal($index + 1) }} Partial Billing</td>
+  <td style="text-align: right;">{{ $billing['amount'] ?? '' }}</td>
+  <td style="text-align: right;">{{ $billing['remarks'] ?? '' }}</td>
+</tr>
+@endforeach
+<tr class="fit-text-row">
         <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
         <td>Final Billing</td>
         <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
@@ -328,14 +344,10 @@
     </tbody>
   </table>
 </div>
-<footer style="width: 100%; margin-top: 120px; margin-left: 50px;">
-  <div style="display: flex; justify-content: center; width: 100%;">
-    <div style="text-align: left; font-size: 14px;">
-      <u>{{ $userName }}</u><br>
-      Printed by
-    </div>
+<footer>
+  <div class="printed-by">
+    Printed by:  <u>{{ $userName }}</u> on {{ $printedAt }}
   </div>
 </footer>
-
 </body>
 </html>

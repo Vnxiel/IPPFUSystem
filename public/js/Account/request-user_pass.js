@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    console.log("JS loaded ✅"); // Debug
 
     $('#requestPassForm').on('submit', function(e) {
         e.preventDefault(); // ✅ Prevent native submission

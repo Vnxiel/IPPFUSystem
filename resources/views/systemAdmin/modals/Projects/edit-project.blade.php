@@ -236,39 +236,32 @@
 
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                            <div class="col-md-12">
-                                <div class="row mb-2">
-                                    <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span
+                            <div class="col-3 text-end">
+                                <label for="ea" class="form-label">Project Engineer <span
                                             class="text-danger">*</span></label>
-                                </div>
-                                <d class="row mb-2 align-items-center">
-                                    <div class="col-3 text-end">
-                                        <label for="ea" class="form-label">E.A. Fullname</label>
-                                    </div>
-                                    <div class="col-9">
-                                       <input type="text" class="form-control" id="ea" name="ea" value="{{ old('ea', $project['ea'] ?? '') }}">
-                                        
-                                        <datalist id="eaList">
-                                            @foreach($projectEA as $ea)
-                                                <option value="{{ $ea->ea }}"></option>
-                                            @endforeach
-                                        </datalist>
-                                    </div>
                             </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-3 text-end">
-                                <label for="ea_position" class="form-label">Position</label>
+                            <div class="col-4">
+                                <input type="text" class="form-control" id="ea" name="ea" list="eaList" value="{{ old('ea', $project['ea'] ?? '') }}"
+                                    placeholder="Enter Engineer Assigned">
+                                <datalist id="eaList">
+                                    @foreach($projectEA as $ea)
+                                        <option value="{{ $ea->ea }}"></option>
+                                    @endforeach
+                                </datalist>
                             </div>
-                            <div class="col-3">
-                                 <input type="text" class="form-control" id="ea_position" name="ea_position" value="{{ old('ea_position', $project['ea_position'] ?? '') }}">
+
+                            <div class="col-1 text-end">
+                                <label for="ea_position" class="form-label">Position<span
+                                        class="text-danger">*</span></label>
                             </div>
-                            <div class="col-3 text-end">
-                                <label for="ea_monthlyRate" class="form-label">Monthly Rate</label>
+                            <div class="col-4">
+                                <select class="form-select" id="ea_position" name="ea_position" value="{{ old('ea_position', $project['ea_position'] ?? '') }}" required>
+                                    <option value="" disabled selected>Select Position</option>
+                                    <option value="Engineer Aid">Engineer Aid</option>
+                                    <option value="Engineer Assistant">Engineer Assistant</option>
+                                    <option value="Engineer I">Engineer I</option>
+                                </select>
                             </div>
-                            <div class="col-3">
-                              <input type="number" class="form-control" id="ea_monthlyRate" name="ea_monthlyRate" value="{{ old('ea_monthlyRate', $project['ea_monthlyRate'] ?? '') }}">
-                             </div>
                         </div>
                     </fieldset>
 
@@ -404,12 +397,12 @@
                                 <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate" value="{{ old('ntpReceivedDate', $project['ntpReceivedDate'] ?? '') }}">
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <!-- <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="officialStart" class="form-label">Official Start</label>
+                                    <label for="originalStartDate" class="form-label">Official Start</label>
                                 </div>
                                 <div class="col-3">
-                                <input type="date" class="form-control" id="officialStart" name="officialStart" value="{{ old('officialStart', $project['officialStart'] ?? '') }}">
+                                <input type="date" class="form-control" id="originalStartDate" name="originalStartDate" value="{{ old('originalStartDate', $project['originalStartDate'] ?? '') }}">
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="targetCompletion" class="form-label">Target Completion Date</label>
@@ -417,10 +410,10 @@
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="targetCompletion" name="targetCompletion" value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
                                 </div>
-                            </div>
+                            </div> -->
 
 
-                            <div class="row mb-2">
+                            <!-- <div class="row mb-2">
                                 <div class="col-3 text-end">
                                     <label for="completionDate" class="form-label">Completion Date</label>
                                 </div>
@@ -434,7 +427,7 @@
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="revisedCompletionDate" name="revisedCompletionDate" value="{{ old('revisedCompletionDate', $project['revisedCompletionDate'] ?? '') }}">
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </fieldset>
 
@@ -446,86 +439,166 @@
                                     id="revisedTargetCompletion" name="revisedTargetCompletion">
                             </div> 
                         </div> -->
+<!-- Implementation Details Section -->
+<fieldset class="border p-3 mb-4 rounded shadow-sm">
+    <legend class="float-none w-auto px-3 fw-bold text-primary">
+        <i class="fas fa-info-circle me-2"></i>Implementation Details
+    </legend>
 
-                            <!-- Implementation Details Section -->
-                            <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                <legend class="float-none w-auto px-3 fw-bold text-primary">
-                                    <i class="fas fa-info-circle me-2"></i>Implementation Details
-                                </legend>
+    <div class="container">
+        <div class="row mb-2 align-items-center">
+            <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
+                <span class="text-danger">*</span></label>
+            <div class="col-9">
+                <input type="text" class="form-control" id="modeOfImplementation"
+                    name="modeOfImplementation" value="By contract." readonly required>
+            </div>
+        </div>
 
-                                <div class="container">
-                                    <div class="row align-items-center">
-                                        <!-- Add/Remove Order Buttons -->
-                                        <div class="col-md-10">
-                                            <hr>
-                                        </div>
-                                        <div class="col-2 text-center mb-0">
-                                            <button type="button" class="btn btn-outline-primary btn-sm mr-1"
-                                                onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Add Suspension and Resumption Order">
-                                                <span class="fa-solid fa-square-plus"></span>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-danger btn-sm"
-                                                onclick="removeLastOrderFields()" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="Remove Suspension and Resumption Order">
-                                                <span class="fa-solid fa-circle-minus"></span>
-                                            </button>
-                                        </div>
+        <!-- Original and Target Dates -->
+        <div class="row mb-2 align-items-center">
+            <div class="col-3 text-end">
+                <label class="form-label">Original Starting Date <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-3">
+                <input type="date" class="form-control" id="originalStartDate" name="originalStartDate"
+                    value="{{ old('originalStartDate', $project['originalStartDate'] ?? '') }}">
+            </div>
+            <div class="col-3 text-end">
+                <label class="form-label">Target Completion Date <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-3">
+                <input type="date" class="form-control" id="targetCompletion" name="targetCompletion"
+                    value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
+            </div>
+        </div>
 
-                                      <!-- Order Fields -->
-                                    <div id="orderContainer" class="col-12">
-                                        @php
-                                            // Extract remarks data at the top level so it's accessible in the view
-                                            $remarksData = $project['remarksData'] ?? [];
+        <div class="row">
+            <div class="col-3 mb-2 text-end">
+                <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-9">
+                <input type="date" class="form-control" id="completionDate" name="completionDate"
+                    value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
+                    style="background-color: lightgray;">
+            </div>
+        </div>
 
-                                            $orders = collect($project['orderDetails'] ?? [])
-                                                ->filter(fn($val, $key) => preg_match('/suspensionOrderNo\d+/', $key))
-                                                ->keys()
-                                                ->map(function ($suspKey) use ($project) {
-                                                    $index = preg_replace('/\D/', '', $suspKey);
-                                                    $resumeKey = 'resumeOrderNo' . $index;
+        <!-- Add/Remove Order Buttons -->
+        <div class="row align-items-center">
+            <div class="col-md-10"><hr></div>
+            <div class="col-2 text-center mb-0">
+                <button type="button" class="btn btn-outline-primary btn-sm mr-1"
+                    onclick="addOrderFields()" title="Add Suspension and Resumption Order">
+                    <span class="fa-solid fa-square-plus"></span>
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-sm"
+                    onclick="removeLastOrderFields()" title="Remove Suspension and Resumption Order">
+                    <span class="fa-solid fa-circle-minus"></span>
+                </button>
+            </div>
 
-                                                    $suspensionValue = old($suspKey, $project['orderDetails'][$suspKey] ?? '');
-                                                    $resumeValue = old($resumeKey, $project['orderDetails'][$resumeKey] ?? '');
+            <!-- Orders -->
+            <div id="orderContainer" class="col-12">
+                @php
+                    $remarksData = $project['remarksData'] ?? [];
+                    $orders = collect($project['orderDetails'] ?? [])
+                        ->filter(fn($val, $key) => preg_match('/suspensionOrderNo\d+/', $key))
+                        ->keys()
+                        ->map(function ($suspKey) use ($project) {
+                            $index = preg_replace('/\D/', '', $suspKey);
+                            $resumeKey = 'resumeOrderNo' . $index;
+                            return [
+                                'index' => $index,
+                                'suspensionKey' => $suspKey,
+                                'resumeKey' => $resumeKey,
+                                'suspensionValue' => old($suspKey, $project['orderDetails'][$suspKey] ?? ''),
+                                'resumeValue' => old($resumeKey, $project['orderDetails'][$resumeKey] ?? '')
+                            ];
+                        })
+                        ->filter(fn($order) => !empty($order['suspensionValue']) || !empty($order['resumeValue']));
+                @endphp
 
-                                                    return [
-                                                        'index' => $index,
-                                                        'suspensionKey' => $suspKey,
-                                                        'resumeKey' => $resumeKey,
-                                                        'suspensionValue' => $suspensionValue,
-                                                        'resumeValue' => $resumeValue,
-                                                    ];
-                                                })
-                                                ->filter(fn($order) => $order['index'] == 1 || !empty($order['suspensionValue']) || !empty($order['resumeValue']));
-                                        @endphp
+                @foreach ($orders as $order)
+                    <div class="row">
+                        <div class="col-md-3 mb-3 text-end">
+                            <label for="{{ $order['suspensionKey'] }}" class="form-label">
+                                Suspension Order No. {{ $order['index'] }}
+                            </label>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}"
+                                name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
+                        </div>
+                        <div class="col-md-3 mb-3 text-end">
+                            <label for="{{ $order['resumeKey'] }}" class="form-label">
+                                Resumption Order No. {{ $order['index'] }}
+                            </label>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" id="{{ $order['resumeKey'] }}"
+                                name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
+                        </div>
+                        <div class="row mt-1 mb-2">
+                            <div class="col-md-3 mb-3 text-end">
+                                <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">
+                                    Suspension Remarks
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <textarea class="form-control"
+                                    id="suspensionOrderNo{{ $order['index'] }}Remarks"
+                                    name="suspensionOrderNo{{ $order['index'] }}Remarks">
+                                    {{ $remarksData[(string) $order['index']]['suspensionOrderRemarks'] ?? '' }}
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
 
-                                        @foreach ($orders as $order)
-                                            <div class="row">
-                                                <div class="col-md-6 mb-2">
-                                                    <label for="{{ $order['suspensionKey'] }}" class="form-label">Suspension Order No. {{ $order['index'] }}</label>
-                                                    <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}" name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
-                                                </div>
-                                                <div class="col-md-6 mb-2">
-                                                    <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order No. {{ $order['index'] }}</label>
-                                                    <input type="date" class="form-control" id="{{ $order['resumeKey'] }}" name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 mb-2">
-                                                    <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">Suspension Remarks</label>
-                                                    <textarea class="form-control" id="suspensionOrderNo{{ $order['index'] }}Remarks" name="suspensionOrderNo{{ $order['index'] }}Remarks">{{ $remarksData[(string) $order['index']]['suspensionOrderRemarks'] ?? '' }}</textarea>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
+        @if($orders->isNotEmpty())
+            <!-- Revised Dates and Extension -->
+            <div class="row mb-2">
+                <div class="col-3 text-end">
+                    <label for="revisedTargetDate" class="form-label">Revised Target Date
+                        <span class="text-danger">*</span>
+                    </label>
+                </div>
+                <div class="col-3">
+                    <input type="date" class="form-control" id="revisedTargetDate"
+                        name="revisedTargetDate"
+                        value="{{ old('revisedTargetDate', $project['revisedTargetDate'] ?? '') }}">
+                </div>
+                <div class="col-3 text-end">
+                    <label for="revisedCompletionDate" class="form-label">Revised Completion Date
+                        <span class="text-danger">*</span>
+                    </label>
+                </div>
+                <div class="col-3">
+                    <input type="date" class="form-control" id="revisedCompletionDate"
+                        name="revisedCompletionDate"
+                        value="{{ old('revisedCompletionDate', $project['revisedCompletionDate'] ?? '') }}">
+                </div>
+            </div>
 
-                                <div class="row">
-                                    <div class="col-md-6 mb-2">
-                                        <label for="timeExtension" class="form-label">Time Extension</label>
-                                        <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
-                                    </div>
-                                </div>
-                            </fieldset>
+            <div class="row">
+                <div class="col-3 text-end">
+                    <label for="timeExtension" class="form-label">Extension Date
+                        <span class="text-danger">*</span>
+                    </label>
+                </div>
+                <div class="col-3">
+                    <input type="number" class="form-control" id="timeExtension"
+                        name="timeExtension"
+                        value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
+                </div>
+            </div>
+        @endif
+    </div>
+</fieldset>
+
 
                             <!-- Modal Footer -->
                             <div class="modal-footer bg-light">

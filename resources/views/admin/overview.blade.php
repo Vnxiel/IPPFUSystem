@@ -9,10 +9,11 @@
     <div class="row">
         <div class="col-md-12 d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center gap-2">
-                <a class="btn btn-outline-secondary btn-sm {{ Request::is('admin/projects') ? 'active' : '' }}"
-                    href="{{ url('/admin/projects') }}">
+                <a id="back-to-projects" class="btn btn-outline-secondary btn-sm"
+                        href="{{ url('/admin/projects') }}">
                     <span class="fa fa-arrow-left"></span>
                 </a>
+
                 <h5 class="m-0">Project Overview</h5>
             </div>
 
@@ -56,50 +57,50 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-light border-bottom">
+                <div class="card-header bg-light border-bottom mx-4">
                     <h4 class="mb-0">{{ $project['projectTitle'] ?? 'N/A' }}</h4>
                 </div>
             <div class="card-body">
                 <div class="row gy-4">
                     <!-- Column 1 -->
                     <div class="col-md-4">
-                        <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;" >Project ID: <span style="font-weight: normal; font-size: 18px; color: black;">{{ $project['projectID'] ?? 'N/A' }}</span></strong>
+                        <div class="mb-2 mx-4">
+                            <strong class="d-block">Project ID: <span style="font-weight: normal;">{{ $project['projectID'] ?? 'N/A' }}</span></strong>
                         </div>
-                        <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;">Location:  <span style="font-weight: normal; font-size: 18px; color: black;">{{ $project['projectLoc'] ?? 'N/A' }}</span></strong>
+                        <div class="mb-2 mx-4">
+                            <strong class="d-block">Location:  <span style="font-weight: normal;">{{ $project['projectLoc'] ?? 'N/A' }}</span></strong>
                            
                         </div>
-                        <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;">Contractor:  <span style="font-weight: normal; color: black;">
+                        <div class="mb-2 mx-4">
+                            <strong class="d-block">Contractor:  <span style="font-weight: normal;">
                                 {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
                             </span></strong>
                         </div>
-                        <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;">Project Year:  <span style="font-weight: normal; font-size: 18px; color: black;">{{ $project['projectYear'] ?? 'N/A' }}</span></strong>  
+                        <div class="mb-2 mx-4">
+                            <strong class="d-block">Project Year:  <span style="font-weight: normal;">{{ $project['projectYear'] ?? 'N/A' }}</span></strong>  
                         </div>
-                        <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;">Project FPP:  <span style="font-weight: normal; font-size: 18px; color: black;">{{ $project['projectFPP'] ?? 'N/A' }}</span></strong>  
+                        <div class="mb-2 mx-4">
+                            <strong class="d-block">Project FPP:  <span style="font-weight: normal;">{{ $project['projectFPP'] ?? 'N/A' }}</span></strong>  
                         </div>
                     </div>
 
                     <!-- Column 2 -->
                     <div class="col-md-4">
                         <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;">Implementation Mode:  <span style="font-weight: normal; color: black;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</span></strong>
+                            <strong class="d-block">Implementation Mode:  <span style="font-weight: normal;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</span></strong>
                         </div>
                         <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;">Source of Fund:  <span style="font-weight: normal; color: black;">
+                            <strong class="d-block">Source of Fund:  <span style="font-weight: normal;">
                                 {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
                             </span></strong>
                            
                         </div>
                         <div class="mb-2">
-                            <strong class="text-muted d-block" style="font-size: 18px;">Responsibility Center:  <span style="font-weight: normal; font-size: 18px; color: black;">{{ $project['projectRC'] ?? 'N/A' }}</span></strong>  
+                            <strong class="d-block">Responsibility Center:  <span style="font-weight: normal;">{{ $project['projectRC'] ?? 'N/A' }}</span></strong>  
                         </div>
                         <div class="mb-2 d-flex align-items-center">
-                            <strong class="text-muted me-2" style="font-size: 18px;">Status:  <span class="badge bg-success me-2" style="font-weight: normal;">{{ $project['projectStatus'] ?? 'N/A' }}</span>
-                            <small >{{ $project['ongoingStatus'] ?? '' }}</small></strong>
+                            <strong class=" me-2">Status:  <span class="badge bg-success me-2" style="font-weight: normal;">{{ $project['projectStatus'] ?? 'N/A' }}</span>
+                            <small style="font-weight: normal;">{{ $project['ongoingStatus'] ?? '' }}</small></strong>
                            
                         </div>
                     </div>
@@ -108,9 +109,12 @@
                     <div class="col-md-4">
                         <div class="bg-light p-2 d-flex justify-content-between align-items-center">
                             <span><i class="bi bi-bar-chart-line me-2"></i><strong>Progress</strong></span>
-                            <button type="button" class="btn btn-sm btn-outline-primary" id="addStatusBtn">
-                                <i class="bi bi-plus-circle me-1"></i>Add
-                            </button>
+
+                            @if ($projectStatusData['projectStatus'] !== 'Completed')
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="addStatusBtn">
+                                    <i class="bi bi-plus-circle me-1"></i>Add
+                                </button>
+                            @endif
                         </div>
 
                         <!-- Scrollable Table Wrapper -->
@@ -145,6 +149,7 @@
                             </table>
                         </div>
                     </div>
+
 
                     <div class="col-md-12">
                         <!-- Combined Card with Two Columns -->
@@ -190,8 +195,8 @@
 
                                               @if (!$type || $shouldShow)
                                                 <div class="d-flex gap-2 mb-2">
-                                                    <span class="text-muted" style="width: 200px;">{{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:</span>
-                                                    <span class="fw-medium">{{ $value ?? 'N/A' }}</span>
+                                                    <span style="width: 200px;">{{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:</span>
+                                                    <span>{{ $value ?? 'N/A' }}</span>
                                                 </div>
                                                 
                                             @endif
@@ -203,8 +208,8 @@
                                             'Completion Date' => 'completionDate'
                                         ] as $label => $key)
                                             <div class="d-flex gap-2 mb-2">
-                                                <span class="text-muted" style="width: 180px;">{{ $label }}:</span>
-                                                <span class="fw-medium">{{ $project[$key] ?? 'N/A' }}</span>
+                                                <span  style="width: 180px;">{{ $label }}:</span>
+                                                <span>{{ $project[$key] ?? 'N/A' }}</span>
                                             </div>
                                         @endforeach
                                     </div>
@@ -225,22 +230,25 @@
     <div class="col-md-12 m-1">
         <div class="row">
             <hr>
-            <h5 class="p-0">Project Files</h5>
+            <h5 class="p-0 mx-3">Project Files</h5>
             <hr>
         </div>
         <div class="row projectInfo">
             <div class="table-container table-responsive">
-                <table id="projectFiles" class="table table-striped">
+                <table id="projectFiles" class="table table-hover table-bordered table-sm mb-0"
+                       style="width:100%; font-size: 1rem; white-space: nowrap;">
                     <thead>
                         <tr>
-                            <th>File Name</th>
-                            <th>Type</th>
-                            <th>Uploaded By</th>
-                            <th>Upload Date</th>
-                            <th>Actions</th>
+                            <th style="white-space: nowrap;">File Name</th>
+                            <th style="white-space: nowrap;">Type</th>
+                            <th style="white-space: nowrap;">Uploaded By</th>
+                            <th style="white-space: nowrap;">Upload Date</th>
+                            <th style="white-space: nowrap;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                       </tbody>
+
                 </table>
             </div>
         </div>
@@ -249,6 +257,16 @@
         
 
 <script>
+    // Store the project ID in sessionStorage before going back
+    document.getElementById('back-to-projects').addEventListener('click', function () {
+        const projectId = '{{ $project->id ?? null }}';
+        if (projectId) {
+            localStorage.setItem('highlighted_project_id', projectId);
+            // Optional: Reset scroll on reload to prevent jumping to page 1
+            localStorage.setItem('highlighted_project_page', 'preserve');
+        }
+    });
+
    // Function to toggle the visibility of the 'otherFundContainer' when 'Others' is selected in 'Source of Fund'
 function toggleOtherFund() {
     const sourceOfFunds = document.getElementById("sourceOfFunds").value;
@@ -538,7 +556,7 @@ function showMunicipalitySuggestions(query) {
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const contractDaysInput = document.getElementById("projectContractDays");
-    const startDateInput = document.getElementById("officialStart");
+    const startDateInput = document.getElementById("originalStartDate");
     const completionDateInput = document.getElementById("targetCompletion");
 
     function calculateCompletionDate() {
@@ -594,11 +612,11 @@ function showMunicipalitySuggestions(query) {
 </script>
 
     
-    @include('admin.modals.Projects.add-fund')
-    @include('admin.modals.Projects.add-status')
-    @include('admin.modals.Projects.fund-summary')
-    @include('admin.modals.Projects.edit-project')
-    @include('admin.modals.Projects.uploadFiles')
-    @include('admin.modals.Projects.generate-report')
+    @include('systemAdmin.modals.Projects.add-fund')
+    @include('systemAdmin.modals.Projects.add-status')
+    @include('systemAdmin.modals.Projects.fund-summary')
+    @include('systemAdmin.modals.Projects.edit-project')
+    @include('systemAdmin.modals.Projects.uploadFiles')
+    @include('systemAdmin.modals.Projects.generate-report')
 
 @endsection

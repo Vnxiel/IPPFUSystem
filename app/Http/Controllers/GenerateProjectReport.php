@@ -34,10 +34,24 @@ class GenerateProjectReport extends Controller
                 $projectFundsUtilization = FundsUtilization::where('project_id', $project_id)
                 ->orderBy('updated_at', 'desc')
                 ->first();
+                if ($projectFundsUtilization) {
+                    Log::info('Funds Utilization found for Project ID ' . $project_id . ':', $projectFundsUtilization->toArray());
+                } else {
+                    Log::info('No Funds Utilization found for Project ID ' . $project_id);
+                }
 
              $projectVariationOrder = $projectFundsUtilization
                 ? VariationOrder::where('funds_utilization_id', $projectFundsUtilization->id)->get()
                 : [];
+
+                Log::info('Variation Orders count: ' . count($projectVariationOrder));
+                if (!empty($projectVariationOrder)) {
+                    foreach ($projectVariationOrder as $vo) {
+                        Log::info('Variation Order:', $vo->toArray());
+                    }
+                }
+
+                
 
            
 
@@ -85,6 +99,7 @@ class GenerateProjectReport extends Controller
                 'projectVariationOrder' => $projectVariationOrder,
                 'projectFiles' => $projectFiles,
                 'userName' => $user ? $user->fullname : 'Unknown User',
+                'printedAt' => now()->format('F j, Y g:i A'),
             ])->setPaper([0, 0, 612, 936], 'portrait');
 
             $sanitizedTitle = preg_replace('/[\/\\\\]/', '_', $project->projectTitle);

@@ -21,8 +21,8 @@
     </div>
 
     <div class="row g-3 ">
-        <!-- Filters Section - Left Sidebar -->
-        <div class="col-md-2">
+       <!-- Filters Section - Left Sidebar -->
+       <div class="col-md-2">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center mb-3">
@@ -45,17 +45,18 @@
 
                     <!-- Filter Dropdowns -->
                     <div class="vstack gap-2">
-                       <!-- Location Filter -->
+                        <!-- Location Filter -->
                         <div class="form-floating">
                             <select class="form-select form-select-sm" id="location_filter" name="location_filter">
                                 <option value="" selected disabled>Select Location</option>
                                 <option value="">All Location</option>
                                 @foreach($locations as $location)
-                                    <option value="{{ $location }}, Nueva Vizcaya">{{ $location }}, Nueva Vizcaya</option>
+                                    <option value="{{ $location }}">{{ $location }}</option>
                                 @endforeach
                             </select>
                             <label><i class="bi bi-geo-alt me-1"></i>Location</label>
                         </div>
+
                         <!-- Contractor Filter -->
                         <div class="form-floating">
                             <select id="contractor_filter" name="contractor" class="form-select form-select-sm">
@@ -79,7 +80,7 @@
                         <div class="form-floating">
                             <select id="status_filter" class="form-select form-select-sm">
                                 <option value="">Select Status</option>
-                                <option value="Not Yet Started">Not Started</option>
+                                <option value="Not Started">Not Started</option>
                                 <option value="Ongoing">Ongoing</option>
                                 <option value="Completed">Completed</option>
                                 <option value="Discontinued">Discontinued</option>
@@ -91,69 +92,52 @@
                 </div>
             </div>
         </div>
-
-        <!-- Table Section - Main Content -->
-        <div class="col-md-10">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-2">
-                    <div class="table-responsive">
-                        <table id="projects" class="table table-hover table-bordered table-sm mb-0" style="width:100%; font-size: 1rem;">
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width:25%">
-                                        <small>Project Title</small>
-                                    </th>
-                                    <th style="width:21%">
-                                        <small>Location</small>
-                                    </th>
-                                    <th style="width:8%">
-                                        <small>Status</small>
-                                    </th>
-                                    <th style="width:15%">
-                                        <small>Contract Amount</small>
-                                    </th>
-                                    <th style="width:15%">
-                                        <small>Contractor</small>
-                                    </th>
-                                    <th style="width:8%">
-                                        <small>Duration</small>
-                                    </th>
-                                    <th style="width:8%">
-                                        <small>Action</small>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="small">
-                                @forelse($mappedProjects as $project)
-                                    <tr>
-                                        <td class="small">{{ $project['title'] }}</td>
-                                        <td class="small">{{ $project['location'] }}</td>
-                                        <td class="small">{{ $project['status'] }}</td>
-                                        <td class="small">₱{{ $project['amount'] }}</td>
-                                        <td class="small">{{ $project['contractor'] }}</td>
-                                        <td class="small">{{ $project['duration'] }}</td>
-                                        <td>
-                                            <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
-                                                data-id="{{ $project['id'] }}">
-                                                <i class="fas fa-eye fa-sm"></i>
-                                                <small>View</small>
-                                            </button>
-                                            <!-- <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
-                                                data-id="{{ $project['id'] }}">
-                                                <i class="fas fa-eye fa-sm"></i>
-                                                <small>View</small>
-                                            </button> -->
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center small">There are no currently added projects.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<!-- Table Section - Main Content -->
+<div class="col-md-10">
+    <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2">
+            <!-- Force horizontal scroll if needed -->
+            <div class="table-responsive" style="overflow-x: auto;">
+                <table id="projects" 
+                       class="table table-hover table-bordered table-sm mb-0"
+                       style="width:100%; font-size: 1rem; white-space: nowrap;">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:4%; white-space: nowrap;"><small>ID</small></th>
+                            <th style="width:23%; white-space: nowrap;"><small>Project Title</small></th>
+                            <th style="width:21%; white-space: nowrap;"><small>Location</small></th>
+                            <th style="width:8%; white-space: nowrap;"><small>Status</small></th>
+                            <th style="width:13%; white-space: nowrap;"><small>Contract Amount</small></th>
+                            <th style="width:15%; white-space: nowrap;"><small>Contractor</small></th>
+                            <th style="width:8%; white-space: nowrap;"><small>Duration</small></th>
+                            <th style="width:8%; white-space: nowrap;"><small>Action</small></th>
+                        </tr>
+                    </thead>
+                    <tbody class="small">
+                        @forelse($mappedProjects as $project)
+                            <tr data-id="{{ $project['id'] }}">
+                                <td class="small text-muted">{{ $project['id'] }}</td>
+                                <td class="small">{{ $project['title'] }}</td>
+                                <td class="small">{{ $project['location'] }}</td>
+                                <td class="small">{{ $project['status'] }}</td>
+                                <td class="small">₱{{ $project['amount'] }}</td>
+                                <td class="small">{{ $project['contractor'] }}</td>
+                                <td class="small">{{ $project['duration'] }}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm overview-btn w-100 py-1 px-2" 
+                                            data-id="{{ $project['id'] }}">
+                                        <i class="fas fa-eye fa-sm"></i>
+                                        <small>View</small>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="text-center small">There are no currently added projects.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -284,23 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // Handle "Ongoing Status" Selection Toggle
-        function toggleOngoingStatus() {
-            let statusSelect = document.getElementById("projectStatus");
-            let ongoingContainer = document.getElementById("ongoingStatusContainer");
-            let ongoingDate = document.getElementById("ongoingDate");
-
-            if (statusSelect.value === "Ongoing") {
-                ongoingContainer.style.display = "block";
-
-                // Set the ongoingDate to today's date
-                let today = new Date().toISOString().split('T')[0];
-                ongoingDate.value = today;
-            } else {
-                ongoingContainer.style.display = "none";
-                ongoingDate.value = ""; // Clear the date when status is not "Ongoing"
-            }
-        }
+        
 
     </script>
 
@@ -529,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const contractDaysInput = document.getElementById("projectContractDays");
-            const startDateInput = document.getElementById("officialStart");
+            const startDateInput = document.getElementById("originalStartDate");
             const completionDateInput = document.getElementById("targetCompletion");
 
             function calculateCompletionDate() {
@@ -552,36 +520,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const targetCompletionInput = document.getElementById("targetCompletion");
-            const timeExtensionInput = document.getElementById("timeExtension");
-            const revisedTargetInput = document.getElementById("revisedTargetCompletion");
-            const completionDateInput = document.getElementById("completionDate");
+    const targetCompletionInput = document.getElementById("targetCompletion");
+    const revisedCompletionDateInput = document.getElementById("revisedCompletionDate");
+    const completionDateInput = document.getElementById("completionDate");
 
-            function updateDates() {
-                const targetDateValue = targetCompletionInput.value;
-                const timeExtension = parseInt(timeExtensionInput.value);
+    function updateDates() {
+        const targetDateValue = targetCompletionInput.value;
 
-                if (targetDateValue && !isNaN(timeExtension) && timeExtension > 0) {
-                    const targetDate = new Date(targetDateValue);
-                    const revisedDate = new Date(targetDate);
-                    revisedDate.setDate(targetDate.getDate() + timeExtension);
+        if (targetDateValue) {
+            revisedCompletionDateInput.value = targetDateValue;
+            completionDateInput.value = targetDateValue;
 
-                    const formatted = revisedDate.toISOString().split('T')[0];
+            revisedCompletionDateInput.readOnly = true;
+            completionDateInput.readOnly = true;
+        } else {
+            revisedCompletionDateInput.readOnly = false;
+            completionDateInput.readOnly = false;
+        }
+    }
 
-                    revisedTargetInput.value = formatted;
-                    completionDateInput.value = formatted;
+    targetCompletionInput.addEventListener("change", updateDates);
+});
 
-                    revisedTargetInput.readOnly = true;
-                    completionDateInput.readOnly = true;
-                } else {
-                    revisedTargetInput.readOnly = false;
-                    completionDateInput.readOnly = false;
-                }
-            }
-
-            targetCompletionInput.addEventListener("change", updateDates);
-            timeExtensionInput.addEventListener("input", updateDates);
-        });
     </script>
 
 
@@ -622,6 +582,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     </script>
 
-    @include('admin.modals.Projects.add-project')
+    @include('systemAdmin.modals.Projects.add-project')
 
 @endsection

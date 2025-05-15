@@ -3,7 +3,11 @@ $(document).ready(function () {
     // DOM Manipulations and Event Listeners
     // ================================
 document.addEventListener("DOMContentLoaded", function () {
+
+    
+      // ================================
     // Project Location Suggestions
+    // ================================
     const input = document.getElementById("projectLoc");
     const suggestionsBox = document.getElementById("suggestionsBoxs");
     
@@ -72,8 +76,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
     }
+    // ================================
     // Contractor 'Others' toggle
-    document.addEventListener("DOMContentLoaded", function () {
+    // ================================
         const contractorSelect = document.getElementById("projectContractor");
         const othersContractorDiv = document.getElementById("othersContractorDiv");
         const othersContractorInput = document.getElementById("othersContractor");
@@ -88,9 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         }
-    });
-    
-    document.addEventListener("DOMContentLoaded", function () {
+
         const projectStatusSelect = document.getElementById("projectStatus");
         const ongoingStatusContainer = document.getElementById("ongoingStatusContainer");
     
@@ -109,8 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         }
-    });
-    
 
     // Currency Formatting
     const currencyFields = ['abc', 'contractAmount', 'engineering', 'mqc', 'contingency', 'bid', 'appropriation'];
@@ -219,21 +220,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const officialStart = document.getElementById('officialStart');
+    const originalStartDate = document.getElementById('originalStartDate');
     const contractDays = document.getElementById('projectContractDays');
     const targetCompletion = document.getElementById('targetCompletion');
 
     function updateTargetCompletion() {
-        if (officialStart.value && contractDays.value) {
-            const start = new Date(officialStart.value);
+        if (originalStartDate.value && contractDays.value) {
+            const start = new Date(originalStartDate.value);
             start.setDate(start.getDate() + parseInt(contractDays.value) - 1);
             targetCompletion.value = start.toISOString().split('T')[0];
         }
     }
 
-    officialStart.addEventListener('change', updateTargetCompletion);
+    originalStartDate.addEventListener('change', updateTargetCompletion);
     contractDays.addEventListener('input', updateTargetCompletion);
 });
+
     // ================================
     // Form Submission Logic
     // ================================

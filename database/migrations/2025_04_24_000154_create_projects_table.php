@@ -25,14 +25,14 @@ return new class extends Migration
             $table->string('projectFPP');
 
 
-            $table->date('officialStart');
-            $table->date('targetCompletion');
+            $table->date('originalStartDate');
+            $table->date('targetCompletionDate');
             $table->string('timeExtension')->nullable();
-            $table->string('revisedTargetCompletion')->nullable();
-            $table->string('completionDate');
+            $table->date('revisedTargetCompletion')->nullable();
+            $table->date('completionDate');
 
-            $table->date('originalExpiryDate')->nullable();
-            $table->date('revisedExpiryDate')->nullable();
+            $table->date('revisedTargetDate')->nullable();
+            $table->date('revisedCompletionDate')->nullable();
             $table->date('noaIssuedDate')->nullable();
             $table->date('noaReceivedDate')->nullable();
             $table->date('ntpIssuedDate')->nullable();
@@ -42,8 +42,6 @@ return new class extends Migration
             $table->string('totalExpenditure')->nullable();
             $table->string('ea')->nullable();
             $table->string('ea_position')->nullable();
-            $table->string('ea_monthlyRate')->nullable();
-            $table->string('contractCost')->nullable();
             $table->string('othersContractor')->nullable();
             $table->string('projectStatus')->nullable();
             $table->string('ongoingStatus')->nullable();

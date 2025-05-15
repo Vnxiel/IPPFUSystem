@@ -57,7 +57,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/projects') ? 'fw-bold text-white' : '' }}"
+                        <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systeadminmAdmin/projects') ? 'fw-bold text-white' : '' }}"
                            style="{{ Request::is('admin/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
                            href="{{ url('/admin/projects') }}">
                            <i class="fas fa-project-diagram me-2"></i>Projects
@@ -78,8 +78,13 @@
                         </a>
                         <ul class="dropdown-menu border-0 shadow-sm mt-2">
                             <li>
-                                <a class="dropdown-item py-2 {{ Request::is('admin/trash') ? 'fw-bold text-primary' : '' }}" href="{{ url('/systemAdmin/trash') }}">
+                                <a class="dropdown-item py-2 {{ Request::is('admin/trash') ? 'fw-bold text-primary' : '' }}" href="{{ url('/admin/trash') }}">
                                     <i class="fas fa-archive me-2"></i>Archive
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 {{ Request::is('admin/activityLogs') ? 'fw-bold text-primary' : '' }}" href="{{ url('/admin/activityLogs') }}">
+                                    <i class="fas fa-history me-2"></i>Activity Logs
                                 </a>
                             </li>
                         </ul>
@@ -141,6 +146,8 @@
         
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Account/register-user.js') }}"></script>
+        <script src="{{ asset('js/Account/fetch-pass_requests.js') }}"></script>
+        <script src="{{ asset('js/Account/change-new_pass.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>

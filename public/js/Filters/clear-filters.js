@@ -1,26 +1,14 @@
 function clearFilters() {
-    // Get filter inputs safely
-    const locationFilter = document.getElementById('location_filter');
-    const contractorFilter = document.getElementById('contractor_filter');
-    const amountFilter = document.getElementById('amount_filter');
-    const statusFilter = document.getElementById('status_filter');
-    const viewAllCheckbox = document.getElementById('view_all_checkbox');
-    const locationDropdown = document.getElementById('locationDropdown');
+    $('#location_filter').val('');
+    $('#contractor_filter').val('');
+    $('#amount_filter').val('');
+    $('#status_filter').val('');
+    $('#view_all_checkbox').prop('checked', true);
+    $('#locationDropdown').hide();
 
-    // Clear input values if they exist
-    if (locationFilter) locationFilter.value = '';
-    if (contractorFilter) contractorFilter.value = '';
-    if (amountFilter) amountFilter.value = '';
-    if (statusFilter) statusFilter.value = '';
-    if (viewAllCheckbox) viewAllCheckbox.checked = false;
-
-    // Hide the dropdown if it exists
-    if (locationDropdown) locationDropdown.style.display = 'none';
-
-    // Re-apply filtering using the updated (now cleared) inputs
-    if (typeof filterProjects === 'function' && typeof dataTable !== 'undefined' && dataTable !== null) {
-        filterProjects(dataTable);
+    if (typeof dataTable !== 'undefined' && dataTable !== null) {
+        dataTable.draw(); // Triggers your custom filtering logic
     } else {
-        console.warn('Cannot apply filters: either filterProjects() or dataTable is not available.');
+        console.warn('DataTable is not available.');
     }
 }

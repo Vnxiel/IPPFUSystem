@@ -61,8 +61,8 @@
                                     <div class="d-flex align-items-center text-muted">
                                         <i class="far fa-clock me-2"></i>
                                         <span data-order="{{ \Carbon\Carbon::parse($log->created_at)->format('Y-m-d H:i:s') }}">
-    {{ \Carbon\Carbon::parse($log->created_at)->format('M d, Y g:i A') }}
-</span>
+                                        {{ \Carbon\Carbon::parse($log->created_at)->format('M d, Y g:i A') }}
+                                    </span>
 
                                     </div>
                                 </td>

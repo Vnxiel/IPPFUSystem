@@ -15,8 +15,8 @@ class Project extends Model
     // Fillable fields for mass assignment
     protected $fillable = [
         'projectID', 'projectTitle', 'projectLoc', 'projectYear', 'projectFPP', 'projectRC', 'projectContractor', 'sourceOfFunds', 'otherFund',
-        'modeOfImplementation', 'projectContractDays', 'officialStart', 'targetCompletion',
-        'timeExtension', 'revisedTargetCompletion', 'completionDate', 'projectStatus', 'ongoingStatus',
+        'modeOfImplementation', 'projectContractDays', 'originalStartDate', 'targetCompletion',
+        'timeExtension', 'revisedTargetDate', 'revisedCompletionDate', 'completionDate', 'projectStatus', 'ongoingStatus',
         'abc', 'contractAmount', 'engineering', 'mqc', 'contingency', 'bid', 'appropriation',
         'directOrIndirectCost', 'revisedContractCost', 'originalExpiryDate', 'revisedExpiryDate',
         'noaIssuedDate', 'noaReceivedDate', 'ntpIssuedDate', 'ntpReceivedDate',

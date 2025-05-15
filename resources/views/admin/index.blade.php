@@ -43,7 +43,7 @@
 
                     <!-- Started Projects -->
                     <div class="col-md-4">
-                        <a href="/admin/projects?page=notyetstarted" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/admin/projects?page=tobestarted" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                              <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -125,54 +125,6 @@
                             </div>
                         </a>
                     </div>
-
-
-                <!-- Budget Cards -->
-                <div class="row g-2 mb-5">
-                    <!-- Total Budget Allocated -->
-                    <div class="col-md-4">
-                        <div class="card h-100" style="border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
-                            <div class="card-body d-flex flex-column p-4">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <div style="font-weight: 600; font-size: 16px; color: #2c3e50;">Budget Allocated</div>
-                                    <div class="icon-circle" style="background: rgba(0, 150, 136, 0.1); padding: 12px; border-radius: 50%;">
-                                        <i class="fas fa-hand-holding-usd" style="font-size: 28px; color: #009688;"></i>
-                                    </div>
-                                </div>
-                                <div id="totalBudget" style="font-size: 28px; font-weight: bold; color: #2c3e50; margin-top: auto;">₱0</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Total Budget Used -->
-                    <div class="col-md-4">
-                        <div class="card h-100" style="border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
-                            <div class="card-body d-flex flex-column p-4">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <div style="font-weight: 600; font-size: 16px; color: #2c3e50;">Budget Used</div>
-                                    <div class="icon-circle" style="background: rgba(63, 81, 181, 0.1); padding: 12px; border-radius: 50%;">
-                                        <i class="fas fa-money-bill-wave" style="font-size: 28px; color: #3F51B5;"></i>
-                                    </div>
-                                </div>
-                                <div id="totalUsed" style="font-size: 28px; font-weight: bold; color: #2c3e50; margin-top: auto;">₱0</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Remaining Balance -->
-                    <div class="col-md-4">
-                        <div class="card h-100" style="border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
-                            <div class="card-body d-flex flex-column p-4">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <div style="font-weight: 600; font-size: 16px; color: #2c3e50;">Remaining Balance</div>
-                                    <div class="icon-circle" style="background: rgba(96, 125, 139, 0.1); padding: 12px; border-radius: 50%;">
-                                        <i class="fas fa-wallet" style="font-size: 28px; color: #607D8B;"></i>
-                                    </div>
-                                </div>
-                                <div id="remainingBalance" style="font-size: 28px; font-weight: bold; color: #2c3e50; margin-top: auto;">₱0</div>
-                            </div> 
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -204,11 +156,7 @@
            
               
 
-                // Budget Values
-                document.getElementById("totalBudget").textContent = `₱${summary.totalBudget ?? '0.00'}`;
-                document.getElementById("totalUsed").textContent = `₱${summary.totalUsed ?? '0.00'}`;
-                document.getElementById("remainingBalance").textContent = `₱${summary.remainingBalance ?? '0.00'}`;
-            } else {
+           } else {
                 console.error("Invalid summary data received.");
             }
         })
