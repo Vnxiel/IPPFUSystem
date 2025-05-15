@@ -25,7 +25,8 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
-                                        <textarea class="form-control" row="3" id="projectTitle" name="projectTitle" value="{{ old('projectTitle', $project['projectTitle'] ?? '') }}"
+                                        <textarea class="form-control" row="3" id="projectTitle" name="projectTitle"
+                                            value="{{ old('projectTitle', $project['projectTitle'] ?? '') }}"
                                             required></textarea>
 
                                     </div>
@@ -110,7 +111,7 @@
                                             }
                                         @endphp
                                         <button type="button" class="list-group-item list-group-item-action"
-                                            onclick="selectLoc('{{ $formatted }}')">
+                                            onmousedown="selectLoc('{{ $formatted }}')">
                                             {{ $formatted }}
                                         </button>
                                     @endforeach
@@ -135,37 +136,23 @@
                                 <label for="projectContractor" class="form-label">Contractor<span
                                         class="text-danger">*</span></label>
                             </div>
-                            <div class="col">
-                                <select id="projectContractor" name="projectContractor" class="form-select"
-                                    onchange="toggleOtherContractor()">
-                                    <option value="">--Select Contractor--</option>
+                            <div class="col position-relative">
+                                <input type="text" class="form-control" id="projectContractor" name="projectContractor"
+                                    value="{{ old('projectContractor', $project['projectContractor'] ?? '') }}"
+                                    placeholder="Select or enter contractor" autocomplete="off"
+                                    onfocus="showContractorDropdown()" oninput="showContractorDropdown()" />
+                                <div id="projectContractorDropdown"
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                     @foreach($contractors as $contractor)
-                                        <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
+                                        <button type="button" class="list-group-item list-group-item-action"
+                                            onclick="selectContractor('{{ $contractor->name }}')">
                                             {{ $contractor->name }}
-                                        </option>
+                                        </button>
                                     @endforeach
-                                    <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
-                                </select>
+                                </div>
                             </div>
                         </div>
-                        <!-- <div class="mb-2">
-                                <label for="projectContractor" class="form-label">Contractor <span
-                                        class="text-danger">*</span></label>
-                                <select id="projectContractor" name="projectContractor" class="form-select">
-                                    <option value="">--Select Contractor--</option>
-                                    @foreach($contractors as $contractor)
-                                        <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
-                                    @endforeach
-                                    <option value="Others">Others: (Specify)</option>
-                                </select>-->
-
-                        <!-- Hidden textbox for specifying 'Others' -->
-                        <!-- <div class="mb-2" id="othersContractorDiv" style="display: none;">
-                                    <label for="othersContractor" class="form-label">Specify New Contractor</label>
-                                    <input type="text" class="form-control" id="othersContractor"
-                                        name="othersContractor" placeholder="Enter new contractor name">
-                                </div> -->
-
 
 
                         <div class="row mb-2 g-3 text-end">
@@ -173,22 +160,24 @@
                                 <label for="sourceOfFunds" class="form-label">Source of Fund <span
                                         class="text-danger">*</span></label>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-9 position-relative">
                                 <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
                                     value="{{ old('sourceOfFunds', $project['sourceOfFunds'] ?? '') }}"
-                                    placeholder="Enter source of funds.">
-                                <datalist id="sourceOfFundsList">
+                                    placeholder="Enter source of funds" autocomplete="off" onfocus="showFundDropdown()"
+                                    oninput="showFundDropdown()" />
+                                <div id="sourceOfFundsDropdown"
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                     @foreach($sourceOfFunds as $fund)
-                                        <option value="{{ $fund->sourceOfFunds }}"></option>
+                                        <button type="button" class="list-group-item list-group-item-action"
+                                            onclick="selectFund('{{ $fund->sourceOfFunds }}')">
+                                            {{ $fund->sourceOfFunds }}
+                                        </button>
                                     @endforeach
-                                </datalist>
-                                <div id="otherFundContainer" class="mt-2" style="display: none;">
-                                    <label for="otherFund" class="form-label">Please specify:</label>
-                                    <input type="text" id="otherFund" name="otherFund" class="form-control"
-                                        placeholder="Enter fund source">
                                 </div>
                             </div>
                         </div>
+
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
@@ -249,35 +238,44 @@
                                 <input type="number" class="form-control" id="projectSlippage" name="projectSlippage"
                                     placeholder="Enter slippage">
                             </div> -->
-                        <div class="row">
-                                                                <div class="col-3 text-end">
-                                        <label for="ea" class="form-label">Project Engineer <span
-                                                    class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input type="text" class="form-control" id="ea" name="ea" list="eaList"
-                                            placeholder="Enter Engineer Assigned">
-                                        <datalist id="eaList">
-                                            @foreach($projectEA as $ea)
-                                                <option value="{{ $ea->ea }}"></option>
-                                            @endforeach
-                                        </datalist>
-                                    </div>
+                        <div class="row g-3 mb-2">
+                            <div class="col-3 text-end">
+                                <label for="eaInput" class="form-label">Project Engineer <span
+                                        class="text-danger">*</span></label>
+                            </div>
+                            <div class="col-4 position-relative">
+                                <input type="text" class="form-control" id="eaInput" name="ea" autocomplete="off"
+                                    placeholder="Enter Project Engineer" value="{{ old('ea', $project['ea'] ?? '') }}"
+                                    onfocus="showEADropdown()" oninput="showEADropdown()" />
 
-                                    <div class="col-1 text-end">
-                                        <label for="ea" class="form-label">Position<span
-                                                class="text-danger"  list="eaList">*</span></label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-select" id="ea" name="ea" value="{{ old('ea', $project['ea'] ?? '') }}"required>
-                                            <option value="" disabled selected>Select Position</option>
-                                            <option value="Engineer Aid">Engineer Aid</option>
-                                            <option value="Engineer Assistant">Engineer Assistant</option>
-                                            <option value="Engineer I">Engineer I</option>
-                                        </select>
-                                    </div>
-                                    
+                                <div id="eaDropdown"
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display:none; max-height:180px; overflow-y:auto; z-index:1050;">
+                                    @foreach($projectEA as $eaObj)
+                                        <button type="button" class="list-group-item list-group-item-action"
+                                            onclick="selectEA('{{ $eaObj->ea }}')">
+                                            {{ $eaObj->ea }}
+                                        </button>
+                                    @endforeach
                                 </div>
+                            </div>
+
+
+                            <div class="col-1 text-end">
+                                <label for="ea" class="form-label">Position<span class="text-danger"
+                                        list="eaList">*</span></label>
+                            </div>
+                            <div class="col-4">
+                                <select class="form-select" id="ea" name="ea"
+                                    value="{{ old('ea', $project['ea'] ?? '') }}" required>
+                                    <option value="" disabled selected>Select Position</option>
+                                    <option value="Engineer Aid">Engineer Aid</option>
+                                    <option value="Engineer Assistant">Engineer Assistant</option>
+                                    <option value="Engineer I">Engineer I</option>
+                                </select>
+                            </div>
+
+                        </div>
 
                         <!-- <div class="row mb-2">
                             <div class="col-3 text-end">
@@ -510,7 +508,7 @@
                                 </div>
                             </div>
 
-                            <div class="row align-items-center">                               
+                            <div class="row align-items-center">
 
                                 <!-- Order Fields -->
                                 <div id="orderContainer" class="col-12">
@@ -596,12 +594,10 @@
 
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="" class="form-label">Revised Target Date
-                                    <span class="text-danger">*</span></label>
-                                </div>                        
+                                    <label for="" class="form-label">Revised Target Date</label>
+                                </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id=""
-                                        name="">
+                                    <input type="date" class="form-control" id="" name="">
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="revisedCompletionDate" class="form-label">Revised Completion
@@ -614,7 +610,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 text-end">
                                     <label for="timeExtension" class="form-label">Time Extension</label>
                                 </div>
                                 <div class="col-md-3 mb-2">
@@ -678,4 +674,143 @@
             document.getElementById(inputId).focus();
         }
     }
+
+    const fundInput = document.getElementById('sourceOfFunds');
+    const fundDropdown = document.getElementById('sourceOfFundsDropdown');
+    const fundItems = fundDropdown.getElementsByTagName('button');
+    let selectedIndexFund = -1;
+
+    function showFundDropdown() {
+        const filter = fundInput.value.toLowerCase().trim();
+        let anyVisible = false;
+
+        for (let i = 0; i < fundItems.length; i++) {
+            const text = fundItems[i].textContent.toLowerCase().trim();
+            const match = text.startsWith(filter);
+            fundItems[i].style.display = match ? '' : 'none';
+            if (match) anyVisible = true;
+        }
+
+        fundDropdown.style.display = (filter.length > 0 && anyVisible) ? 'block' : 'none';
+        selectedIndexFund = -1;
+    }
+
+    function selectFund(value) {
+        fundInput.value = value.trim();
+        fundDropdown.style.display = 'none';
+    }
+
+    function updateActiveFund(visibleItems) {
+        visibleItems.forEach((item, i) => {
+            item.classList.toggle('active', i === selectedIndexFund);
+        });
+    }
+
+    fundInput.addEventListener('focus', showFundDropdown);
+    fundInput.addEventListener('input', showFundDropdown);
+
+    fundInput.addEventListener('keydown', function (e) {
+        const visibleItems = Array.from(fundItems).filter(item => item.style.display !== 'none');
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (selectedIndexFund < visibleItems.length - 1) selectedIndexFund++;
+            updateActiveFund(visibleItems);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (selectedIndexFund > 0) selectedIndexFund--;
+            updateActiveFund(visibleItems);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (visibleItems[selectedIndexFund]) {
+                selectFund(visibleItems[selectedIndexFund].textContent);
+            } else if (visibleItems.length === 1) {
+                selectFund(visibleItems[0].textContent);
+            }
+        } else if (e.key === 'Escape') {
+            fundDropdown.style.display = 'none';
+        }
+    });
+
+    Array.from(fundItems).forEach(item => {
+        item.addEventListener('mousedown', function (e) {
+            e.preventDefault(); // prevent blur before click
+            selectFund(this.textContent);
+        });
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!fundInput.contains(e.target) && !fundDropdown.contains(e.target)) {
+            fundDropdown.style.display = 'none';
+        }
+    });
+
+
+
+
+    const eaInput = document.getElementById('eaInput');
+    const eaDropdown = document.getElementById('eaDropdown');
+    const eaItems = eaDropdown.getElementsByTagName('button');
+    let eaSelectedIndex = -1;
+
+    function showEADropdown() {
+        const filter = eaInput.value.toLowerCase().trim();
+        let anyVisible = false;
+
+        for (let i = 0; i < eaItems.length; i++) {
+            const text = eaItems[i].textContent.toLowerCase().trim();
+            const match = text.startsWith(filter);
+            eaItems[i].style.display = match ? '' : 'none';
+            if (match) anyVisible = true;
+        }
+
+        eaDropdown.style.display = (filter.length > 0 && anyVisible) ? 'block' : 'none';
+        eaSelectedIndex = -1;
+    }
+
+    function selectEA(value) {
+        eaInput.value = value.trim();
+        eaDropdown.style.display = 'none';
+    }
+
+    eaInput.addEventListener('keydown', function (e) {
+        const visibleItems = Array.from(eaItems).filter(item => item.style.display !== 'none');
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (eaSelectedIndex < visibleItems.length - 1) eaSelectedIndex++;
+            updateEAActive(visibleItems);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (eaSelectedIndex > 0) eaSelectedIndex--;
+            updateEAActive(visibleItems);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+
+            if (visibleItems.length === 1 && eaSelectedIndex === -1) {
+                // Only one visible option and none selected, pick it automatically
+                selectEA(visibleItems[0].textContent);
+            } else if (visibleItems[eaSelectedIndex]) {
+                // Normal case: selected index is valid
+                selectEA(visibleItems[eaSelectedIndex].textContent);
+            }
+        } else if (e.key === 'Escape') {
+            eaDropdown.style.display = 'none';
+        }
+    });
+
+
+    function updateEAActive(visibleItems) {
+        visibleItems.forEach((item, i) => {
+            item.classList.toggle('active', i === eaSelectedIndex);
+        });
+    }
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!eaInput.contains(e.target) && !eaDropdown.contains(e.target)) {
+            eaDropdown.style.display = 'none';
+        }
+    });
+
 </script>

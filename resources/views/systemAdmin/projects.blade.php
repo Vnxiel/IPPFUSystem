@@ -29,12 +29,14 @@
                 </h6>
                 <div class="d-flex align-items-center">
                     <!-- View All Projects Checkbox -->
-                    <div class="form-check mb-3">
+                    <div class="form-check mb-3 mr-1">
                         <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
                         <label class="form-check-label fw-semibold" for="view_all_checkbox">
                             View All
                         </label>
                     </div>
+                    <!-- Add spacing between checkbox and button -->
+                    <span style="width: 12px; display: inline-block;"></span>
                     <!-- Clear Filters Button -->
                     <button type="button" class="btn btn-sm btn-secondary" onclick="clearFilters()">Clear</button>
                 </div>

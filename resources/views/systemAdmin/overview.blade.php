@@ -51,7 +51,7 @@
                         <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm d-flex align-items-center gap-1"
                                 data-bs-toggle="modal" data-bs-target="#projectModal" title="Edit Project Details">
                             <i class="fa fa-edit"></i>
-                            <span class="d-none d-md-inline">Edit</span>
+                            <span class="d-none d-md-inline">Edit Project</span>
                         </button>
                     </div>
 
@@ -82,9 +82,9 @@
                                     <div class="col-md-8">
                                         <span style="font-weight: normal; color: black;">
                                         {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
-                                    </span>
+                                        </span>
                                     </div>
-                                </div>
+                                </div>                                
                                 <div class="row">
                                     <div class="col-md-4 text-end">
                                         <p class="d-block">Project Year: </p>
@@ -101,10 +101,26 @@
                                         <span style="font-weight: normal; color: black;">{{ $project['projectFPP'] ?? 'N/A' }}</span>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-4 text-end">
+                                        <p class="d-block">Project Engineer: </p>
+                                    </div>
+                                    <div class="col-8">
+                                        <p style="font-weight: normal; color: black;">Name here <br> Position</p>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Column 2 -->
                             <div class="col-md-4 font-base">
+                                <div class="row">
+                                    <div class="col-md-5 text-end">
+                                        <p class="d-block">Contract Days:</p>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <p>---</p>
+                                    </div>
+                                </div>    
                                 <div class="row">
                                     <div class="col-5 text-end">
                                         <p class="d-block">Source of Fund: </p>
@@ -139,7 +155,7 @@
                                     <div class="col-md-7">
                                         <span class="badge bg-danger text-white">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
                                     </div>
-                                </div>                             
+                                </div>                                                          
                             </div>
 
                             <!-- Column 3 - Progress Table -->
@@ -281,8 +297,25 @@
                                         </div>                                        
                                     @endforeach
                                     </div>
-                                </fieldset>
-                                
+                                    </div>
+                                    </div>
+                                </fieldset>                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="cmdd-6 font-base">
+                                <fieldset class="border p-3 mb-4 rounded shadow-sm h-100">
+                                    <legend="legend-text">Implementation Details</legend>
+                                    <div class="row">
+                                        <div class="col-md-5 text-end">
+                                            <p class="d-block">Implementation Mode:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p style="font-weight: normal; color: black;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</p>                                        
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -303,7 +336,7 @@
                             <div class="card-body">
                                 <div class="row gy-1">
                                     <!-- Cost Breakdown -->
-                                    <fieldset class="border p-3 mb-2 rounded shadow-sm">
+                                    <fieldset class="border p-3 mb-0 rounded shadow-sm">
                                         <legend class="legend-text">Cost Breakdown</legend>
                                             <div class="table-responsive">
                                                 <table class="table table-bordered table-striped text-center align-middle">
@@ -379,12 +412,12 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                            </fieldset>
-                                        </div>
+                                         </fieldset>
+                                     </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                </div>
 
 
                         <!-- file Management -->
