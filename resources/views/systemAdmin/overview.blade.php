@@ -224,7 +224,7 @@
                                         <div class="col-md-5 text-end">
                                             <p class="d-block">Implementation Mode:</p>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-7">
                                             <p style="font-weight: normal; color: black;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</p>                                        
                                         </div>
                                     </div>
@@ -232,7 +232,7 @@
                                         <div class="col-md-5 text-end">
                                             <p class="font-base">Original Starting Date:</p>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-7">
                                             <p style="font-weight: normal; color: black;">{{ $project['originalStartDate'] ?? 'N/A' }}</p>                                        
                                         </div>
                                     </div>
@@ -240,16 +240,15 @@
                                         <div class="col-md-5 text-end">
                                             <p class="font-base">Target Completion Date:</p>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-7">
                                             <p style="font-weight: normal; color: black;">{{ $project['targetCompletionDate'] ?? 'N/A' }}</p>                                    
                                         </div>
-                                        <div class="mb-1">
                                     </div>
                                     <div class="row">
                                         <div class="col-md-5 text-end">
                                             <p class="font-base">Actual Date of Completion:</p>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-7">
                                             <p style="font-weight: normal; color: black;">{{ $project['actualCompletionDate'] ?? 'N/A' }}</p>                                        
                                         </div>
                                     </div>
@@ -274,7 +273,7 @@
                                                 <div class="col-md-5 text-end">
                                                     <p class="font-base">{{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:</p>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-7">
                                                     <p style="font-weight: normal; color: black;">{{ $value ?? 'N/A' }}</p>                                        
                                                 </div>
                                             </div>
@@ -291,31 +290,12 @@
                                             <div class="col-md-5 text-end">
                                                 <p class="font-base">{{ $label }}:</p>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-7">
                                                 <p style="font-weight: normal; color: black;">{{ $project[$key] ?? 'N/A' }}</p>                                        
                                             </div>
                                         </div>                                        
                                     @endforeach
-                                    </div>
-                                    </div>
-                                    </div>
                                 </fieldset>                                
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="cmdd-6 font-base">
-                                <fieldset class="border p-3 mb-4 rounded shadow-sm h-100">
-                                    <legend="legend-text">Implementation Details</legend>
-                                    <div class="row">
-                                        <div class="col-md-5 text-end">
-                                            <p class="d-block">Implementation Mode:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p style="font-weight: normal; color: black;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</p>                                        
-                                        </div>
-                                    </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -413,14 +393,14 @@
                                                     </table>
                                                 </div>
                                          </fieldset>
-                                     </div>
+                                  </div>
                                     </div>
                                 </div>
                             </div>
-                </div>
+                        </div>
 
 
-                        <!-- file Management -->
+                        <!-- file Manment -->
                         <div class="row font-content">
                             <div class="col-md-12">
                                 <div class="card border-0 shadow-sm h-100">
@@ -434,7 +414,7 @@
                                             </div>
                                         </div>
                                         <button type="button" class="btn btn-success btn-sm d-flex align-items-center gap-1"
-                                      agem   data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
+                                            data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
                                             <i class="fa fa-upload"></i>
                                             <span class="d-none d-md-inline">Upload</span>
                                         </button>
