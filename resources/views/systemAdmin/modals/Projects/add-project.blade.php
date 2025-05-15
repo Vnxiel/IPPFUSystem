@@ -581,16 +581,14 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="" class="form-label">Revised Target Date
-                                    <span class="text-danger">*</span></label>
+                                    <label for="" class="form-label">Revised Target Date  </label>                                 
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id=""
                                         name="">
                                 </div>
                                 <div class="col-3 text-end">
-                                    <label for="" class="form-label">Revised Completion Date
-                                    <span class="text-danger">*</span></label>
+                                    <label for="" class="form-label">Revised Completion Date</label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id=""
@@ -599,8 +597,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-3 text-end">
-                                    <label for="" class="form-label">Extension Date
-                                    <span class="text-danger">*</span></label>
+                                    <label for="" class="form-label">Extension Date</label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="number" class="form-control" id=""
