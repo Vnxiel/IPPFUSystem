@@ -57,105 +57,152 @@
 
                     <div class="card-body font-content">
                         <div class="row gy-2 mb-2">
-                            <!-- Column 1 -->
-                            <div class="col-md-4 font-base">
+                            <div class="col-md-8 font-base">
+                                <!-- Column 1 -->
                                 <div class="row">
-                                    <div class="col-md-4 text-end">
-                                        <p class="d-block">Project ID: </p>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <span style="font-weight: normal;color: black;">{{ $project['projectID'] ?? 'N/A' }}</span>
-                                    </div>
-                                </div>  
-                                <div class="row">
-                                    <div class="col-md-4 text-end">
-                                        <p class="d-block">Location:</p>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <span style="font-weight: normal;color: black;">{{ $project['projectLoc'] ?? 'N/A' }}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 text-end">
-                                        <p class="d-block">Contractor:</p>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <span style="font-weight: normal; color: black;">
-                                        {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
-                                        </span>
-                                    </div>
-                                </div>                                
-                                <div class="row">
-                                    <div class="col-md-4 text-end">
-                                        <p class="d-block">Project Year: </p>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <span style="font-weight: normal; color: black;">{{ $project['projectYear'] ?? 'N/A' }}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-4 text-end">
-                                        <p class="d-block">Project FPP: </p>
-                                    </div>
-                                    <div class="col-8">
-                                        <span style="font-weight: normal; color: black;">{{ $project['projectFPP'] ?? 'N/A' }}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-4 text-end">
-                                        <p class="d-block">Project Engineer: </p>
-                                    </div>
-                                    <div class="col-8">
-                                        <p style="font-weight: normal; color: black;">Name here <br> Position</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2 -->
-                            <div class="col-md-4 font-base">
-                                <div class="row">
-                                    <div class="col-md-5 text-end">
-                                        <p class="d-block">Contract Days:</p>
-                                    </div>
-                                    <div class="col-md-7">
-                                        <p>---</p>
-                                    </div>
-                                </div>    
-                                <div class="row">
-                                    <div class="col-5 text-end">
-                                        <p class="d-block">Source of Fund: </p>
-                                    </div>
-                                    <div class="col-md-7">
-                                        <span style="font-weight: normal; color: black;">
-                                        {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-5 text-end">
-                                        <p class="d-block">Responsibility Center:</p>                                    
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-4 text-end">
+                                                <p class="d-block">Project ID: </p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span style="font-weight: normal;color: black;">{{ $project['projectID'] ?? 'N/A' }}</span>
+                                            </div>
+                                        </div>  
+                                        <div class="row">
+                                            <div class="col-md-4 text-end">
+                                                <p class="d-block">Location:</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span style="font-weight: normal;color: black;">{{ $project['projectLoc'] ?? 'N/A' }}</span>
+                                            </div>
                                         </div>
-                                    <div class="col-md-7">
-                                         <span style="font-weight: normal; color: black;">{{ $project['projectRC'] ?? 'N/A' }}</span>
+                                        <div class="row">
+                                            <div class="col-md-4 text-end">
+                                                <p class="d-block">Contractor:</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span style="font-weight: normal; color: black;">
+                                                {{ ($project['projectContractor'] ?? '') === 'Others' ? ($project['othersContractor'] ?? 'N/A') : ($project['projectContractor'] ?? 'N/A') }}
+                                                </span>
+                                            </div>
+                                        </div>                                
+                                        <div class="row">
+                                            <div class="col-md-4 text-end">
+                                                <p class="d-block">Project Year: </p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span style="font-weight: normal; color: black;">{{ $project['projectYear'] ?? 'N/A' }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 text-end">
+                                                <p class="d-block">Project FPP: </p>
+                                            </div>
+                                            <div class="col-8">
+                                                <span style="font-weight: normal; color: black;">{{ $project['projectFPP'] ?? 'N/A' }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 text-end">
+                                                <p class="d-block">Project Engineer: </p>
+                                            </div>
+                                            <div class="col-8">
+                                                <p style="font-weight: normal; color: black;">Name here <br> Position</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-5 text-end">
-                                        <p class="d-block">Status: </p>                                        
+                                    <!-- Column 2 -->
+                                    <div class="col-md-6 font-base">
+                                        <div class="row">
+                                            <div class="col-md-5 text-end">
+                                                <p class="d-block">Contract Days:</p>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <p>---</p>
+                                            </div>
+                                        </div>    
+                                        <div class="row">
+                                            <div class="col-5 text-end">
+                                                <p class="d-block">Source of Fund: </p>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <span style="font-weight: normal; color: black;">
+                                                {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-5 text-end">
+                                                <p class="d-block">Responsibility Center:</p>                                    
+                                                </div>
+                                            <div class="col-md-7">
+                                                <span style="font-weight: normal; color: black;">{{ $project['projectRC'] ?? 'N/A' }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-5 text-end">
+                                                <p class="d-block">Status: </p>                                        
+                                            </div>
+                                            <div class="col-md-7">
+                                                <span class="badge bg-success text-white me-2" style="font-weight: normal;">{{ $project['projectStatus'] ?? 'N/A' }}</span>
+                                            <small>{{ $project['ongoingStatus'] ?? '' }}</small>                                    
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-5 text-end">
+                                                <p class="d-block">Slippage:</p>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <span class="badge bg-danger text-white">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
+                                            </div>
+                                        </div>                                                     
                                     </div>
-                                    <div class="col-md-7">
-                                        <span class="badge bg-success text-white me-2" style="font-weight: normal;">{{ $project['projectStatus'] ?? 'N/A' }}</span>
-                                    <small>{{ $project['ongoingStatus'] ?? '' }}</small>                                    
-                                    </div>
-                                </div>
-                                 <div class="row">
-                                    <div class="col-md-5 text-end">
-                                        <p class="d-block">Slippage:</p>
-                                    </div>
-                                    <div class="col-md-7">
-                                        <span class="badge bg-danger text-white">{{ $project['projectSlippage'] ?? 'N/A' }}</span>
-                                    </div>
-                                </div>                                                          
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <p class="font-base">Notice of Award</p>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-end">
+                                                    <p class="font-base">Issued Date:</p>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <p style="font-weight: normal; color: black;">---</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-end">
+                                                    <p class="font-base">Received Date:</p>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <p style="font-weight: normal; color: black;">---</p>                                            
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <p class="font-base">Notice to Proceed</p>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-end">
+                                                    <p class="font-base">Issued Date:</p>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <p style="font-weight: normal; color: black;">---</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-end">
+                                                    <p class="font-base">Received Date:</p>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <p style="font-weight: normal; color: black;">---</p>                                            
+                                                </div>
+                                            </div>
+                                        </div>                                   
+                                    </div>                                    
+                                </div>                                    
                             </div>
 
                             <!-- Column 3 - Progress Table -->
@@ -198,7 +245,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </div>                                                       
                         </div>
 
                         <div class="row">
