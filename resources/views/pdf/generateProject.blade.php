@@ -180,7 +180,7 @@
           </tr>
           <tr class="fit-text-row">
             <th>Appropriation:</th>
-            <td colspan="3">{{ number_format((float) $project->appropriation, 2) }}</td>
+            <td colspan="3">{{ number_format((float) $projectFundsUtilization['orig_appropriation'], 2) }}</td>
 
           </tr>
           <tr class="fit-text-row">
@@ -197,7 +197,7 @@
                 <td colspan="2" style="border-left: none;"><em>Received Date</em></td>
             </tr>
             <tr class="fit-text-row">
-                <th rowspan="2">Notice to Proceed::</th>
+                <th rowspan="2">Notice to Proceed:</th>
                 <td style="border-right: none;">{{ $project->ntpIssuedDate }}</td>
                 <td colspan="2" style="border-left: none;"><em>Issued Date</em></td>
             </tr>
@@ -205,18 +205,68 @@
                 <td style="border-right: none;">{{ $project->ntpReceivedDate }}</td>
                 <td colspan="2" style="border-left: none;"><em>Received Date</em></td>
             </tr>
-          <tr class="fit-text-row">
-            <th>Official Start:</th>
-            <td colspan="3">{{ $project->originalStartDate }}</td>
-          </tr>
-          <tr class="fit-text-row">
-            <th>Target Completion:</th>
-            <td colspan="3">{{ $project->targetCompletion }}</td>
-          </tr>
-          <tr class="fit-text-row">
-            <th>Completion Date:</th>
-            <td colspan="3">{{ $project->completionDate }}</td>
-          </tr>
+            @php
+              // Collect suspension/resume pairs
+              $orderPairs = [];
+              foreach ($project->getAttributes() as $key => $value) {
+                  if (preg_match('/^suspensionOrderNo(\d+)$/', $key, $matches)) {
+                      $index = $matches[1];
+                      $susp = $value;
+                      $resumeKey = "resumeOrderNo{$index}";
+                      $resume = $project->{$resumeKey} ?? null;
+
+                      if (!empty($susp) || !empty($resume)) {
+                          $orderPairs[] = [
+                              'index' => $index,
+                              'suspension' => $susp,
+                              'resume' => $resume
+                          ];
+                      }
+                  }
+              }
+
+              $hasSuspension = count($orderPairs) > 0;
+            @endphp
+
+            <tr class="fit-text-row">
+              <th>Original Start Date:</th>
+              <td colspan="3">{{ $project->originalStartDate ?? 'N/A' }}</td>
+            </tr>
+            <tr class="fit-text-row">
+              <th>Original Target Completion:</th>
+              <td colspan="3">{{ $project->targetCompletion ?? 'N/A' }}</td>
+            </tr>
+            <tr class="fit-text-row">
+              <th>Actual Completion Date:</th>
+              <td colspan="3">{{ $project->completionDate ?? 'N/A' }}</td>
+            </tr>
+
+            @if ($hasSuspension)
+              @foreach ($orderPairs as $pair)
+                <tr class="fit-text-row">
+                  <th>Suspension Order No. {{ $pair['index'] }}</th>
+                  <td colspan="3">{{ $pair['suspension'] ?? 'N/A' }}</td>
+                </tr>
+                <tr class="fit-text-row">
+                  <th>Resume Order No. {{ $pair['index'] }}</th>
+                  <td colspan="3">{{ $pair['resume'] ?? 'N/A' }}</td>
+                </tr>
+              @endforeach
+
+        <tr class="fit-text-row">
+          <th>Time Extension:</th>
+          <td colspan="3">{{ $project->timeExtension ?? 'N/A' }}</td>
+        </tr>
+        <tr class="fit-text-row">
+          <th>Revised Target Completion:</th>
+          <td colspan="3">{{ $project->revisedTargetDate ?? 'N/A' }}</td>
+        </tr>
+        <tr class="fit-text-row">
+          <th>Revised Completion Date:</th>
+          <td colspan="3">{{ $project->revisedCompletionDate ?? 'N/A' }}</td>
+        </tr>
+      @endif
+
 
         <!-- ABC Section -->
     <tr class="fit-text-row sub-header">
@@ -239,34 +289,38 @@
       </tr>
     <tr class="fit-text-row">
       <th>Engineering:</th>
-      <td style="text-align: right;">{{ $projectFundsUtilization['orig_engineering'] ?? '--' }}</td>
-      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_engineering'] ?? '--' }}</td>
-      <td style="text-align: right;">{{ $projectFundsUtilization['actual_engineering'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['orig_engineering']) ? number_format($projectFundsUtilization['orig_engineering'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectVariationOrder[0]['vo_engineering']) ? number_format($projectVariationOrder[0]['vo_engineering'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_engineering']) ? number_format($projectFundsUtilization['actual_engineering'], 2) : '--' }}</td>
     </tr>
+  
     <tr class="fit-text-row">
       <th>MQC:</th>
-      <td style="text-align: right;">{{ $projectFundsUtilization['orig_mqc'] ?? '--' }}</td>
-      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_mqc'] ?? '--' }}</td>
-      <td style="text-align: right;">{{ $projectFundsUtilization['actual_mqc'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['orig_mqc']) ? number_format($projectFundsUtilization['orig_mqc'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectVariationOrder[0]['vo_mqc']) ? number_format($projectVariationOrder[0]['vo_mqc'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_mqc']) ? number_format($projectFundsUtilization['actual_mqc'], 2) : '--' }}</td>
     </tr>
-      <tr class="fit-text-row">
-        <th>Contingency:</th>
-        <td style="text-align: right;">{{ $projectFundsUtilization['orig_contingency'] ?? '--' }}</td>
-        <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contingency'] ?? '--' }}</td>
-        <td style="text-align: right;">{{ $projectFundsUtilization['actual_contingency'] ?? '--' }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <th>Bid Difference:</th>
-        <td style="text-align: right;">{{ $projectFundsUtilization['orig_bid'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_bid'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $projectFundsUtilization['actual_bid'] ?? '' }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <th>Appropriation:</th>
-        <td style="text-align: right;">{{ $projectFundsUtilization['orig_appropriation'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_appropriation'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $projectFundsUtilization['actual_appropriation'] ?? '' }}</td>
-      </tr>
+  
+    <tr class="fit-text-row">
+      <th>Contingency:</th>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['orig_contingency']) ? number_format($projectFundsUtilization['orig_contingency'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectVariationOrder[0]['vo_contingency']) ? number_format($projectVariationOrder[0]['vo_contingency'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_contingency']) ? number_format($projectFundsUtilization['actual_contingency'], 2) : '--' }}</td>
+    </tr>
+    
+    <tr class="fit-text-row">
+      <th>Bid Difference:</th>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['orig_bid']) ? number_format($projectFundsUtilization['orig_bid'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectVariationOrder[0]['vo_bid']) ? number_format($projectVariationOrder[0]['vo_bid'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_bid']) ? number_format($projectFundsUtilization['actual_bid'], 2) : '--' }}</td>
+    </tr>
+     
+    <tr class="fit-text-row">
+      <th>Appropriation:</th>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['orig_appropriation']) ? number_format($projectFundsUtilization['orig_appropriation'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectVariationOrder[0]['vo_appropriation']) ? number_format($projectVariationOrder[0]['vo_appropriation'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_appropriation']) ? number_format($projectFundsUtilization['actual_appropriation'], 2) : '--' }}</td>
+    </tr>
 
       <!-- Blank row for spacing -->
       <tr><td colspan="4"></td></tr>
@@ -283,17 +337,20 @@
         $summary = $projectFundsUtilization['summary'] ?? [];
       @endphp
       @php
-  $partialBillings = $projectFundsUtilization['partial_billings'] ?? [];
-@endphp
+        $partialBillings = $projectFundsUtilization['partial_billings'] ?? [];
+      @endphp
 
 
       <tr class="fit-text-row">
-        <td style="text-align: right;">{{ $summary['mobilization']['date'] ?? '' }}</td>
-        <td>15% Mobilization</td>
-        <td style="text-align: right;">{{ $summary['mobilization']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['mobilization']['remarks'] ?? '' }}</td>
-      </tr>
-      @php
+  <td style="text-align: right;">{{ $summary['mobilization']['date'] ?? '' }}</td>
+  <td>15% Mobilization</td>
+  <td style="text-align: right;">
+    {{ isset($summary['mobilization']['amount']) ? number_format($summary['mobilization']['amount'], 2) : '' }}
+  </td>
+  <td style="text-align: right;">{{ $summary['mobilization']['remarks'] ?? '' }}</td>
+</tr>
+
+@php
   function ordinal($number) {
     $ends = ['th','st','nd','rd','th','th','th','th','th','th'];
     if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
@@ -308,39 +365,56 @@
 <tr class="fit-text-row">
   <td style="text-align: right;">{{ $billing['date'] ?? '' }}</td>
   <td>{{ ordinal($index + 1) }} Partial Billing</td>
-  <td style="text-align: right;">{{ $billing['amount'] ?? '' }}</td>
+  <td style="text-align: right;">
+    {{ isset($billing['amount']) ? number_format($billing['amount'], 2) : '' }}
+  </td>
   <td style="text-align: right;">{{ $billing['remarks'] ?? '' }}</td>
 </tr>
 @endforeach
-<tr class="fit-text-row">
-        <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
-        <td>Final Billing</td>
-        <td style="text-align: right;">{{ $summary['final']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <td style="text-align: right;">{{ $summary['engineering']['date'] ?? '' }}</td>
-        <td>Engineering</td>
-        <td style="text-align: right;">{{ $summary['engineering']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['engineering']['remarks'] ?? '' }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <td style="text-align: right;">{{ $summary['mqc']['date'] ?? '' }}</td>
-        <td>MQC</td>
-        <td style="text-align: right;">{{ $summary['mqc']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['mqc']['remarks'] ?? '' }}</td>
-      </tr>
 
-      <tr class="fit-text-row">
-        <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL EXPENDITURES</td>
-        <td style="text-align: right;">{{ $summary['totalExpenditures']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['totalExpenditures']['remarks'] ?? '' }}</td>
-      </tr>
-      <tr class="fit-text-row">
-        <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL SAVINGS</td>
-        <td style="text-align: right;">{{ $summary['totalSavings']['amount'] ?? '' }}</td>
-        <td style="text-align: right;">{{ $summary['totalSavings']['remarks'] ?? '' }}</td>
-      </tr>
+<tr class="fit-text-row">
+  <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
+  <td>Final Billing</td>
+  <td style="text-align: right;">
+    {{ isset($summary['final']['amount']) ? number_format($summary['final']['amount'], 2) : '' }}
+  </td>
+  <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
+</tr>
+
+<tr class="fit-text-row">
+  <td style="text-align: right;">{{ $summary['engineering']['date'] ?? '' }}</td>
+  <td>Engineering</td>
+  <td style="text-align: right;">
+    {{ isset($summary['engineering']['amount']) ? number_format($summary['engineering']['amount'], 2) : '' }}
+  </td>
+  <td style="text-align: right;">{{ $summary['engineering']['remarks'] ?? '' }}</td>
+</tr>
+
+<tr class="fit-text-row">
+  <td style="text-align: right;">{{ $summary['mqc']['date'] ?? '' }}</td>
+  <td>MQC</td>
+  <td style="text-align: right;">
+    {{ isset($summary['mqc']['amount']) ? number_format($summary['mqc']['amount'], 2) : '' }}
+  </td>
+  <td style="text-align: right;">{{ $summary['mqc']['remarks'] ?? '' }}</td>
+</tr>
+
+<tr class="fit-text-row">
+  <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL EXPENDITURES</td>
+  <td style="text-align: right;">
+    {{ isset($summary['totalExpenditures']['amount']) ? number_format($summary['totalExpenditures']['amount'], 2) : '' }}
+  </td>
+  <td style="text-align: right;">{{ $summary['totalExpenditures']['remarks'] ?? '' }}</td>
+</tr>
+
+<tr class="fit-text-row">
+  <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL SAVINGS</td>
+  <td style="text-align: right;">
+    {{ isset($summary['totalSavings']['amount']) ? number_format($summary['totalSavings']['amount'], 2) : '' }}
+  </td>
+  <td style="text-align: right;">{{ $summary['totalSavings']['remarks'] ?? '' }}</td>
+</tr>
+
     </tbody>
   </table>
 </div>

@@ -11,19 +11,30 @@ function addOrderFields() {
     newSet.id = `orderSet${orderCount}`;
     newSet.innerHTML = `
         <div class="row">
-            <div class="col-md-6 mb-2">
-                <label for="${suspensionKey}" class="form-label">Suspension Order No. ${orderCount}</label>
-                <input type="date" class="form-control" id="${suspensionKey}" name="${suspensionKey}">
+            <div class="col-3 text-end">
+                <label for="${suspensionKey}" class="form-label">Suspension Order No. ${orderCount}
+                <span class="text-danger">*</span></label>
+            </div>   
+            <div class="col-md-3 mb-2">
+               <input type="date" class="form-control" id="${suspensionKey}" name="${suspensionKey}">
             </div>
-            <div class="col-md-6 mb-2">
-                <label for="${resumeKey}" class="form-label">Resumption Order No. ${orderCount}</label>
+            <div class="col-3 text-end">
+                <label for="${resumeKey}" class="form-label">Resume Order No. ${orderCount}
+                <span class="text-danger">*</span></label>
+            </div>   
+            <div class="col-md-3 mb-2">
                 <input type="date" class="form-control" id="${resumeKey}" name="${resumeKey}">
             </div>
+           
         </div>
-        <div class="row">
-            <div class="col-md-12 mb-2">
-                <label for="${suspensionKey}Remarks" class="form-label">Suspension Remarks</label>
-                <textarea class="form-control" id="${suspensionKey}Remarks" name="${suspensionKey}Remarks"></textarea>
+        <div class="row mt-1 mb-2">
+            <div class="col-md-3 mb-3 text-end">
+                <label for="${suspensionKey}Remarks" class="form-label">Suspension
+                    Remarks</label>
+            </div>
+            <div class="col-9">
+                <textarea class="form-control" id="${suspensionKey}Remarks"
+                name="${suspensionKey}Remarks" rows="2"></textarea>
             </div>
         </div>
     `;

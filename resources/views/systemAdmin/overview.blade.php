@@ -64,7 +64,7 @@
                             <strong class="d-block">Project FPP:  <span style="font-weight: normal;">{{ $project['projectFPP'] ?? 'N/A' }}</span></strong>  
                         </div>
                         <div class="mb-2 mx-4">
-                            <strong class="d-block">Project Engineer: <span style="font-weight: normal;">{{ $project['ea'] ?? 'N/A' }}</span></br><span style="font-weight: normal; margin-left:160px;">{{ $project['ea_position'] ?? 'N/A' }}</span></strong>  
+                            <strong class="d-block">Project Engineer: <span style="font-weight: normal;">{{ $project['ea'] ?? 'N/A' }}</span> - <span style="font-weight: normal;">{{ $project['ea_position'] ?? 'N/A' }}</span></strong>  
                         </div>
                     </div>
 
@@ -157,303 +157,340 @@
                     </div>
 
                     <div class="col-md-12">
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-light py-2">
-            <h6 class="fw-bold m-0">Project Description & Implementation Details</h6>
-        </div>
-        <div class="card-body">
-            <div class="row g-3">
-                <!-- Left Column: Project Description -->
-                <div class="col-md-6">
-                    <fieldset class="border p-3 rounded shadow-sm h-100">
-                        <legend class="float-none w-auto px-2 fw-bold text-primary">Project Description</legend>
-                        <ul class="list-unstyled ps-3 mb-3">
-                            @foreach ($project['projectDescriptions'] ?? [] as $desc)
-                                <li class="mb-1">• {{ $desc }}</li>
-                            @endforeach
-                        </ul>
-                    </fieldset>
-                </div>
-
-                <!-- Right Column: Implementation Details -->
-                <div class="col-md-6 font-base">
-                    <fieldset class="border p-3 rounded shadow-sm h-100">
-                        <legend class="float-none w-auto px-2 fw-bold text-primary">Implementation Details</legend>
-
-                        @php
-                            $details = [
-                                'Implementation Mode' => $project['modeOfImplementation'] ?? 'N/A',
-                                'Original Starting Date' => $project['originalStartDate'] ?? 'N/A',
-                                'Target Completion Date' => $project['targetCompletionDate'] ?? 'N/A',
-                                'Actual Date of Completion' => $project['actualCompletionDate'] ?? 'N/A',
-                            ];
-                        @endphp
-
-                        @foreach ($details as $label => $value)
-                            <div class="row mb-2">
-                                <div class="col-md-5 text-end">
-                                    <p class="mb-0">{{ $label }}:</p>
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-light py-2">
+                                    <h6 class="fw-bold m-0">Project Description & Implementation Details</h6>
                                 </div>
-                                <div class="col-md-7">
-                                    <p class="mb-0" style="font-weight: normal; color: black;">{{ $value }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-
-                        @foreach ($project['orderDetails'] as $field => $value)
-                            @php
-                                preg_match('/(suspensionOrderNo|resumeOrderNo)(\d+)/', $field, $matches);
-                                $type = $matches[1] ?? null;
-                                $index = isset($matches[2]) ? (int)$matches[2] : null;
-
-                                $suspKey = 'suspensionOrderNo' . $index;
-                                $resumeKey = 'resumeOrderNo' . $index;
-
-                                $suspensionValue = $project['orderDetails'][$suspKey] ?? null;
-                                $resumeValue = $project['orderDetails'][$resumeKey] ?? null;
-
-                                $shouldShow = $index === 1 || !empty($suspensionValue) || !empty($resumeValue);
-                            @endphp
-
-                            @if (!$type || $shouldShow)
-                                <div class="row mb-2">
-                                    <div class="col-md-5 text-end">
-                                        <p class="mb-0">
-                                            {{ ucwords(str_replace(['suspensionOrderNo', 'resumeOrderNo'], ['Suspension Order No. ', 'Resume Order No. '], $field)) }}:
-                                        </p>
-                                    </div>
-                                    <div class="col-md-7">
-                                        <p class="mb-0" style="font-weight: normal; color: black;">{{ $value ?? 'N/A' }}</p>
-                                    </div>
-                                </div>
-                            @endif
-                        @endforeach
-
-                        @foreach ([
-                            'Time Extension' => 'timeExtension',
-                            'Revised Target Completion' => 'revisedTargetCompletion',
-                            'Completion Date' => 'completionDate'
-                        ] as $label => $key)
-                            <div class="row mb-2">
-                                <div class="col-md-5 text-end">
-                                    <p class="mb-0">{{ $label }}:</p>
-                                </div>
-                                <div class="col-md-7">
-                                    <p class="mb-0" style="font-weight: normal; color: black;">{{ $project[$key] ?? 'N/A' }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </fieldset>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-                </div>
-                
-                                <div class="col-md-12">
-                                    <!-- Combined Card with Two Columns -->
-                                    <div class="card shadow-sm">
-                                        <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">   
-                                            <h6 class="fw-bold m-0">Funds Summary</h6>                            
-                                            <button class="btn btn-primary btn-sm d-flex align-items-center gap-2 ms-auto" 
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#addProjectFundUtilization" 
-                                                title="Add Fund Utilization Details">
-                                                <i class="fa fa-plus"></i>
-                                                <span class="d-none d-md-inline">Add Fund Utilization</span>
-                                            </button>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <!-- Left Column: Project Description -->
+                                        <div class="col-md-6">
+                                            <fieldset class="border p-3 rounded shadow-sm h-100">
+                                                <legend class="float-none w-auto px-2 fw-bold text-primary">Project Description</legend>
+                                                <ul class="list-unstyled ps-3 mb-3">
+                                                    @foreach ($project['projectDescriptions'] ?? [] as $desc)
+                                                        <li class="mb-1">• {{ $desc }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </fieldset>
                                         </div>
-                                    
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                  <!-- Cost Breakdown -->
-                                                    <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Cost Breakdown</legend>
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered table-striped text-center align-middle" id="costBreakdownTable">
-                                                        <thead class="table-light">
-                                                            <tr>
-                                                            <th>Category</th>
-                                                            <th>Original</th>
-                                                            <!-- V.O. headers will be dynamically inserted here -->
-                                                            <th id="voHeadersPlaceholder"></th>
-                                                            <th>Actual</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                            <td>Appropriation</td>
-                                                            <td id="orig_appropriation_view"></td>
-                                                            <!-- Dynamic VO cells for Appropriation -->
-                                                            <!-- Each <td> will be appended inside this cell -->
-                                                            <td class="vo_cells_row" data-field="appropriation"></td>
-                                                            <td id="actual_appropriation_view"></td>
-                                                            </tr>
-                                                            <tr>
-                                                            <td>Contract Amount</td>
-                                                            <td id="orig_contract_amount_view"></td>
-                                                            <td class="vo_cells_row" data-field="contract_amount"></td>
-                                                            <td id="actual_contract_amount_view"></td>
-                                                            </tr>
-                                                            <tr>
-                                                            <td>ABC</td>
-                                                            <td id="orig_abc_view"></td>
-                                                            <td class="vo_cells_row" data-field="abc"></td>
-                                                            <td id="actual_abc_view"></td>
-                                                            </tr>
-                                                            <tr>
-                                                            <td>Bid Difference</td>
-                                                            <td id="orig_bid_view"></td>
-                                                            <td class="vo_cells_row" data-field="bid"></td>
-                                                            <td id="actual_bid_view"></td>
-                                                            </tr>
-                                                            <tr>
-                                                            <td>Engineering</td>
-                                                            <td id="orig_engineering_view"></td>
-                                                            <td class="vo_cells_row" data-field="engineering"></td>
-                                                            <td id="actual_engineering_view"></td>
-                                                            </tr>
-                                                            <tr>
-                                                            <td>MQC</td>
-                                                            <td id="orig_mqc_view"></td>
-                                                            <td class="vo_cells_row" data-field="mqc"></td>
-                                                            <td id="actual_mqc_view"></td>
-                                                            </tr>
-                                                            <tr>
-                                                            <td>Contingency</td>
-                                                            <td id="orig_contingency_view"></td>
-                                                            <td class="vo_cells_row" data-field="contingency"></td>
-                                                            <td id="actual_contingency_view"></td>
-                                                            </tr>
-                                                        </tbody>
-                                                        </table>
-                                                    </div>
-                                                    </fieldset>
 
-
-                                                </div>
-                                                
-                                        <!-- Right Column: Implementation Details -->
                                         <div class="col-md-6 font-base">
-                                            <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                            <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Utilization Summary</legend>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">% Mobilization</label>
-                                                <div class="form-control" id="percentMobi_view">0.00%</div>
+                                        <fieldset class="border p-3 rounded shadow-sm h-100">
+                                            <legend class="float-none w-auto px-2 fw-bold text-primary">Implementation Details</legend>
+
+                                            {{-- Row: Implementation Mode --}}
+                                            <div class="row mb-3">
+                                                <div class="col-md-4 text-end fw-bold">Implementation Mode:</div>
+                                                <div class="col-md-8">{{ $project['modeOfImplementation'] ?? 'N/A' }}</div>
+                                            </div>
+                                            {{-- Row: NOA--}}
+                                            <div class="row mb-3">
+                                                <div class="col-md-12 text-center fw-bold">Notice of Award</div>                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-4 text-end fw-bold">Issued Date:</div>
+                                                <div class="col-md-2">{{ $project['noaIssuedDate'] ?? 'N/A' }}</div>
+                                                <div class="col-md-4 text-end fw-bold">Received Date:</div>
+                                                <div class="col-md-2">{{ $project['noaReceivedDate'] ?? 'N/A' }}</div>
+                                            </div>
+                                            {{-- Row: NTP--}}
+                                            <div class="row mb-3">
+                                                <div class="col-md-12 text-center fw-bold">Notice to Proceed</div>                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-4 text-end fw-bold">Issued Date:</div>
+                                                <div class="col-md-2">{{ $project['ntpIssuedDate'] ?? 'N/A' }}</div>
+                                                <div class="col-md-4 text-end fw-bold">Received Date:</div>
+                                                <div class="col-md-2">{{ $project['ntpReceivedDate'] ?? 'N/A' }}</div>
                                             </div>
 
+                                        
+
+                                            {{-- Row: Original Start Date & Target Completion Date --}}
+                                            <div class="row mb-3">
+                                                <div class="col-md-4 text-end fw-bold">Original Starting Date:</div>
+                                                <div class="col-md-2">{{ $project['originalStartDate'] ?? 'N/A' }}</div>
+                                                <div class="col-md-4 text-end fw-bold">Target Completion Date:</div>
+                                                <div class="col-md-2">{{ $project['targetCompletion'] ?? 'N/A' }}</div>
+                                            </div>
+
+                                            {{-- Row: Actual Completion Date --}}
+                                            <div class="row mb-3">
+                                                <div class="col-md-5 text-end fw-bold">Actual Date of Completion:</div>
+                                                <div class="col-md-6">{{ $project['completionDate'] ?? 'N/A' }}</div>
+                                            </div>
+                                            @php
+                                                $hasSuspension = false;
+
+                                                // Decode suspension remarks JSON
+                                                $remarksData = json_decode($project['suspensionRemarks'], true) ?? [];
+
+                                                // Collect available suspension indices
+                                                $indices = [];
+                                                foreach ($project as $key => $val) {
+                                                    if (preg_match('/(?:suspensionOrderNo|resumeOrderNo)(\d+)/', $key, $matches)) {
+                                                        $indices[] = (int)$matches[1];
+                                                    }
+                                                }
+                                                $uniqueIndices = array_unique($indices);
+                                                sort($uniqueIndices);
+                                            @endphp
+
+                                            @foreach ($uniqueIndices as $index)
+                                                @php
+                                                    $suspKey = "suspensionOrderNo{$index}";
+                                                    $resumeKey = "resumeOrderNo{$index}";
+
+                                                    $suspensionValue = $project[$suspKey] ?? null;
+                                                    $resumeValue = $project[$resumeKey] ?? null;
+                                                    $remarks = $remarksData[$index]['suspensionOrderRemarks'] ?? null;
+
+                                                    $shouldShow = isset($suspensionValue) || isset($resumeValue) || isset($remarks);
+
+                                                    if ($shouldShow) $hasSuspension = true;
+                                                @endphp
+
+                                                @if ($shouldShow)
+                                                    {{-- Row: Suspension and Resume Order --}}
+                                                    <div class="row mb-3">  
+                                                        <div class="col-md-4 text-end fw-bold">Suspension Order No. {{ $index }}:</div>
+                                                        <div class="col-md-2">{{ $suspensionValue ?? 'N/A' }}</div>
+                                                        <div class="col-md-4 text-end fw-bold">Resume Order No. {{ $index }}:</div>
+                                                        <div class="col-md-2">{{ $resumeValue ?? 'N/A' }}</div>
+                                                    </div>
+
+                                                    {{-- Row: Suspension Remarks --}}
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-4 text-end fw-bold">Suspension Remarks:</div>
+                                                        <div class="col-md-8">{{ $remarks ?? 'N/A' }}</div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+
+
+                                            {{-- Time Extension, Revised Target & Completion Dates --}}
+                                            @if ($hasSuspension)
+                                                <div class="row mb-3">
+                                                    <div class="col-md-4 text-end fw-bold">Time Extension:</div>
+                                                    <div class="col-md-8">{{ $project['timeExtension'] ?? 'N/A' }}</div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-md-4 text-end fw-bold">Revised Target Completion:</div>
+                                                    <div class="col-md-2">{{ $project['revisedTargetDate'] ?? 'N/A' }}</div>
+                                                    <div class="col-md-4 text-end fw-bold">Revised Completion Date:</div>
+                                                    <div class="col-md-2">{{ $project['revisedCompletionDate'] ?? 'N/A' }}</div>
+                                                </div>
+                                            @endif
+                                        </fieldset>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                        <div class="col-md-12">
+                            <!-- Combined Card with Two Columns -->
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">   
+                                    <h6 class="fw-bold m-0">Funds Summary</h6>                            
+                                    <button class="btn btn-primary btn-sm d-flex align-items-center gap-2 ms-auto" 
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#addProjectFundUtilization" 
+                                        title="Add Fund Utilization Details">
+                                        <i class="fa fa-plus"></i>
+                                        <span class="d-none d-md-inline">Add Fund Utilization</span>
+                                    </button>
+                                </div>
+                            
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <!-- Cost Breakdown -->
+                                            <fieldset class="border p-3 mb-4 rounded shadow-sm">
+                                            <legend class="float-none w-auto px-2 fw-bold text-primary">Cost Breakdown</legend>
                                             <div class="table-responsive">
-                                                <table class="table table-bordered table-striped text-center align-middle">
+                                                <table class="table table-bordered table-striped text-center align-middle" id="costBreakdownTable">
                                                 <thead class="table-light">
                                                     <tr>
                                                     <th>Category</th>
-                                                    <th>Date</th>
-                                                    <th>Amount</th>
-                                                    <th>Remarks</th>
+                                                    <th>Original</th>
+                                                    <!-- V.O. headers will be dynamically inserted here -->
+                                                    <th id="voHeadersPlaceholder"></th>
+                                                    <th>Actual</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                    <td>Mobilization</td>
-                                                    <td id="dateMobi_view"></td>
-                                                    <td id="amountMobi_view"></td>
-                                                    <td id="remMobi_view"></td>
+                                                    <td>Appropriation</td>
+                                                    <td id="orig_appropriation_view"></td>
+                                                    <!-- Dynamic VO cells for Appropriation -->
+                                                    <!-- Each <td> will be appended inside this cell -->
+                                                    <td class="vo_cells_row" data-field="appropriation"></td>
+                                                    <td id="actual_appropriation_view"></td>
                                                     </tr>
                                                     <tr>
-                                                    <tbody id="partialBillingsRows"></tbody>
+                                                    <td>Contract Amount</td>
+                                                    <td id="orig_contract_amount_view"></td>
+                                                    <td class="vo_cells_row" data-field="contract_amount"></td>
+                                                    <td id="actual_contract_amount_view"></td>
                                                     </tr>
-                                            
                                                     <tr>
-                                                    <td>Final Billing</td>
-                                                    <td id="dateFinal_view"></td>
-                                                    <td id="amountFinal_view"></td>
-                                                    <td id="remFinal_view"></td>
+                                                    <td>ABC</td>
+                                                    <td id="orig_abc_view"></td>
+                                                    <td class="vo_cells_row" data-field="abc"></td>
+                                                    <td id="actual_abc_view"></td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>Bid Difference</td>
+                                                    <td id="orig_bid_view"></td>
+                                                    <td class="vo_cells_row" data-field="bid"></td>
+                                                    <td id="actual_bid_view"></td>
                                                     </tr>
                                                     <tr>
                                                     <td>Engineering</td>
-                                                    <td id="dateEng_view"></td>
-                                                    <td id="amountEng_view"></td>
-                                                    <td id="remEng_view"></td>
+                                                    <td id="orig_engineering_view"></td>
+                                                    <td class="vo_cells_row" data-field="engineering"></td>
+                                                    <td id="actual_engineering_view"></td>
                                                     </tr>
                                                     <tr>
                                                     <td>MQC</td>
-                                                    <td id="dateMqc_view"></td>
-                                                    <td id="amountMqc_view"></td>
-                                                    <td id="remMqc_view"></td>
+                                                    <td id="orig_mqc_view"></td>
+                                                    <td class="vo_cells_row" data-field="mqc"></td>
+                                                    <td id="actual_mqc_view"></td>
                                                     </tr>
-                                                    <tr class="fw-bold">
-                                                    <td>Total Expenditures</td>
-                                                    <td>-</td>
-                                                    <td id="amountTotal_view"></td>
-                                                    <td id="remTotal_view"></td>
-                                                    </tr>
-                                                    <tr class="fw-bold">
-                                                    <td>Total Savings</td>
-                                                    <td>-</td>
-                                                    <td id="amountSavings_view"></td>
-                                                    <td id="remSavings_view"></td>
+                                                    <tr>
+                                                    <td>Contingency</td>
+                                                    <td id="orig_contingency_view"></td>
+                                                    <td class="vo_cells_row" data-field="contingency"></td>
+                                                    <td id="actual_contingency_view"></td>
                                                     </tr>
                                                 </tbody>
                                                 </table>
                                             </div>
                                             </fieldset>
+
+
                                         </div>
+                                        
+                                <!-- Right Column: Implementation Details -->
+                                <div class="col-md-6 font-base">
+                                    <fieldset class="border p-3 mb-4 rounded shadow-sm">
+                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Utilization Summary</legend>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">% Mobilization</label>
+                                        <div class="form-control" id="percentMobi_view">0.00%</div>
                                     </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped text-center align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                            <th>Category</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                            <td>Mobilization</td>
+                                            <td id="dateMobi_view"></td>
+                                            <td id="amountMobi_view"></td>
+                                            <td id="remMobi_view"></td>
+                                            </tr>
+                                            <tr>
+                                            <tbody id="partialBillingsRows"></tbody>
+                                            </tr>
+                                    
+                                            <tr>
+                                            <td>Final Billing</td>
+                                            <td id="dateFinal_view"></td>
+                                            <td id="amountFinal_view"></td>
+                                            <td id="remFinal_view"></td>
+                                            </tr>
+                                            <tr>
+                                            <td>Engineering</td>
+                                            <td id="dateEng_view"></td>
+                                            <td id="amountEng_view"></td>
+                                            <td id="remEng_view"></td>
+                                            </tr>
+                                            <tr>
+                                            <td>MQC</td>
+                                            <td id="dateMqc_view"></td>
+                                            <td id="amountMqc_view"></td>
+                                            <td id="remMqc_view"></td>
+                                            </tr>
+                                            <tr class="fw-bold">
+                                            <td>Total Expenditures</td>
+                                            <td>-</td>
+                                            <td id="amountTotal_view"></td>
+                                            <td id="remTotal_view"></td>
+                                            </tr>
+                                            <tr class="fw-bold">
+                                            <td>Total Savings</td>
+                                            <td>-</td>
+                                            <td id="amountSavings_view"></td>
+                                            <td id="remSavings_view"></td>
+                                            </tr>
+                                        </tbody>
+                                        </table>
+                                    </div>
+                                    </fieldset>
                                 </div>
                             </div>
-                        </div>       
+                        </div>
                     </div>
-                </div>
+                </div>       
             </div>
         </div>
+    </div>
+</div>
            
 
 
 
-                        <!-- file Manment -->
-                        <div class="row font-content mt-2">
-                            <div class="col-md-12">
-                                <div class="card border-0 shadow-sm h-100">
-                                    <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center">
-                                            <div class="icon-circle me-3" style="background: rgba(158, 158, 158, 0.1); padding: 12px; border-radius: 50%;">
-                                                <i class="fas fa-archive" style="font-size: 16px; color: #757575;"></i>
-                                            </div>
-                                            <div>
-                                                <h4 class="mb-0">Project Files</h4>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn btn-success btn-sm d-flex align-items-center gap-1"
-                                            data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
-                                            <i class="fa fa-upload"></i>
-                                            <span class="d-none d-md-inline">Upload</span>
-                                        </button>
-                                    </div>
-                                    <div class="card-body p-2">
-                                        <div class="table-responsive">
-                                            <div class="row projectInfo">
-                                                <div class="table-container table-responsive">
-                                                    <table id="projectFiles" class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>File Name</th>
-                                                                <th>Type</th>
-                                                                <th>Uploaded By</th>
-                                                                <th>Upload Date</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody></tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>        
+    <!-- file Manment -->
+    <div class="row font-content mt-2">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle me-3" style="background: rgba(158, 158, 158, 0.1); padding: 12px; border-radius: 50%;">
+                        <i class="fas fa-archive" style="font-size: 16px; color: #757575;"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0">Project Files</h4>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success btn-sm d-flex align-items-center gap-1"
+                    data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
+                    <i class="fa fa-upload"></i>
+                    <span class="d-none d-md-inline">Upload</span>
+                </button>
+            </div>
+            <div class="card-body p-2">
+                <div class="table-responsive">
+                    <div class="row projectInfo">
+                        <div class="table-container table-responsive">
+                            <table id="projectFiles" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Type</th>
+                                        <th>Uploaded By</th>
+                                        <th>Upload Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>        
 
 <script>
     // Store the project ID in sessionStorage before going back

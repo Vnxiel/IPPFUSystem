@@ -106,22 +106,25 @@
                                       
                             </div>
                         </div>
-                        <div class="row mb-2 g-3">
-                            <div class="col-3 text-end">
-                                <label for="projectContractor" class="form-label">Contractor<span
-                                        class="text-danger">*</span></label>
+                         <!-- Contractor Input with Dynamic Suggestions -->
+                         <div class="row g-3 mb-2 text-end">
+                            <div class="col-md-3">
+                                <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
-                            <div class="col">
-                            <select id="projectContractor" name="projectContractor" class="form-select" onchange="toggleOtherContractor()">
-                                            <option value="">--Select Contractor--</option>
-                                            @foreach($contractors as $contractor)
-                                                <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
-                                                    {{ $contractor->name }}
-                                                </option>
-                                            @endforeach
-                                            <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
-                                        </select>
+                            <div class="col-md-9 position-relative">
+                                <input type="text" class="form-control" id="projectContractor" name="projectContractor"
+                                    placeholder="Select or enter contractor name" autocomplete="off"
+                                    value="{{ old('projectContractor', $project['projectContractor'] ?? '') }}"
+                                    oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
+
+                                <!-- Container for dynamically inserted buttons -->
+                                <div id="projectContractorDropdown"
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                </div>
                             </div>
+                        </div>
+
                             <!-- <div class="mb-2">
                                 <label for="projectContractor" class="form-label">Contractor <span
                                         class="text-danger">*</span></label>
@@ -132,8 +135,7 @@
                                     @endforeach
                                     <option value="Others">Others: (Specify)</option>
                                 </select>-->
-                        </div>
-
+                        
                         <!-- Hidden textbox for specifying 'Others' -->
                         <!-- <div class="mb-2" id="othersContractorDiv" style="display: none;">
                                     <label for="othersContractor" class="form-label">Specify New Contractor</label>
@@ -614,6 +616,108 @@
                 </div>
             </div>
         </div>
+        <script>
+  const contractorInput = document.getElementById('projectContractor');
+    const dropdown = document.getElementById('projectContractorDropdown');
+
+    // Store contractor names in JavaScript for easier manipulation
+    const contractorNames = [
+        @foreach($contractors as $contractor)
+            "{{ $contractor->name }}",
+        @endforeach
+    ];
+
+    function filterAndReorderContractors() {
+        const inputValue = contractorInput.value.toLowerCase();
+        const matches = contractorNames
+            .map(name => ({
+                name,
+                score: name.toLowerCase().startsWith(inputValue) ? 0 : 
+                       name.toLowerCase().includes(inputValue) ? 1 : 2
+            }))
+            .filter(item => item.score < 2)
+            .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+
+        dropdown.innerHTML = '';
+        matches.forEach(item => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'list-group-item list-group-item-action';
+            button.textContent = item.name;
+            button.onclick = () => selectContractor(item.name);
+            dropdown.appendChild(button);
+        });
+
+        dropdown.style.display = matches.length ? 'block' : 'none';
+    }
+
+    function selectContractor(name) {
+        contractorInput.value = name;
+        dropdown.style.display = 'none';
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!contractorInput.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+    function showLocDropdown() {
+        document.getElementById('projectLocDropdown').style.display = 'block';
+    }
+
+    function selectLoc(value) {
+        document.getElementById('projectLoc').value = value;
+        document.getElementById('projectLocDropdown').style.display = 'none';
+    }
+
+    // Optional: Close dropdown if clicked outside
+    document.addEventListener('click', function (e) {
+        const input = document.getElementById('projectLoc');
+        const dropdown = document.getElementById('projectLocDropdown');
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    document.querySelectorAll('.currency-input').forEach(input => {
+    input.addEventListener('input', () => {
+        let value = input.value;
+
+        // Remove all non-digit and non-dot characters
+        value = value.replace(/[^0-9.]/g, '');
+
+        // If more than one dot, keep only the first
+        const firstDot = value.indexOf('.');
+        if (firstDot !== -1) {
+            const beforeDot = value.substring(0, firstDot);
+            const afterDot = value.substring(firstDot + 1).replace(/\./g, '');
+            value = beforeDot + '.' + afterDot;
+        }
+
+        // Split into integer and decimal parts
+        let [intPart, decimalPart] = value.split('.');
+
+        // Remove leading zeros, unless input is just "0" or "0.x"
+        if (intPart.length > 1 && intPart.startsWith('0')) {
+            intPart = intPart.replace(/^0+/, '') || '0';
+        }
+
+        // Format integer part with commas
+        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        // Keep up to two decimal digits
+        if (decimalPart !== undefined) {
+            decimalPart = decimalPart.slice(0, 2);
+            input.value = `${intPart}.${decimalPart}`;
+        } else {
+            input.value = intPart;
+        }
+    });
+
+});
+
+</script>
+
 <script>
           function showLocDropdown() {
         const dropdown = document.getElementById('projectLocDropdown');

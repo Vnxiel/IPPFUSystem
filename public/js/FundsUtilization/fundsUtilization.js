@@ -89,32 +89,65 @@ function formatCurrency(value) {
 }
 
 
-function calculateTotalExpenditures() {
-  const final = parseCurrency(document.querySelector('input[name="amountFinal"]')?.value);
-  const eng = parseCurrency(document.querySelector('input[name="amountEng"]')?.value);
-  const mqc = parseCurrency(document.querySelector('input[name="amountMqc"]')?.value);
-  const mobi = parseCurrency(document.querySelector('input[name="amountMobi"]')?.value);
+function calculateTotalExpenditures(changedInput = null) {
+  const finalInput = document.querySelector('input[name="amountFinal"]');
+  const engInput = document.querySelector('input[name="amountEng"]');
+  const mqcInput = document.querySelector('input[name="amountMqc"]');
+  const mobiInput = document.querySelector('input[name="amountMobi"]');
+  const partialInputs = document.querySelectorAll('input[name^="amountPart"]');
 
-  let partials = 0;
-  document.querySelectorAll('input[name^="amountPart"]').forEach(input => {
-    partials += parseCurrency(input.value);
-  });
+  const appropriation = parseCurrency(document.getElementById('orig_appropriation')?.value);
 
-  const total = final + eng + mqc + mobi + partials;
+  let total = 0;
+  let inputs = [finalInput, engInput, mqcInput, mobiInput, ...partialInputs];
 
+  for (let input of inputs) {
+    let value = parseCurrency(input.value);
+    if (!value) continue;
+
+    // Tentatively add to total
+    if ((total + value) > appropriation) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Exceeds Appropriation',
+        text: 'This value causes total expenditures to exceed the original appropriation.',
+        confirmButtonColor: '#d33'
+      });
+
+      // Clear the input that pushed it over
+      if (input === changedInput) {
+        input.value = '';
+      }
+
+      return; // Stop further processing
+    }
+
+    total += value;
+  }
+
+  // Set total if valid
   const totalField = document.querySelector('input[name="amountTotal"]');
   if (totalField) totalField.value = formatCurrency(total);
 
   calculateSavings(total);
 }
 
+document.querySelectorAll('input[name^="amount"]').forEach(input => {
+  input.addEventListener('input', () => calculateTotalExpenditures(input));
+});
+
+
 function calculateSavings(total) {
   const appropriation = parseCurrency(document.getElementById('orig_appropriation')?.value);
-  const savings = appropriation - total;
+  let savings = appropriation - total;
+
+  // Prevent negative savings
+  savings = Math.max(savings, 0);
 
   const savingsField = document.querySelector('input[name="amountSavings"]');
   if (savingsField) savingsField.value = formatCurrency(savings);
 }
+
 
 function calculateMobilization() {
   const percent = parseFloat(document.getElementById("percentMobi")?.value) || 0;

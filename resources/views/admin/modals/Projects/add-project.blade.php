@@ -121,8 +121,7 @@
                             <div class="col-md-9 position-relative">
                                 <input type="text" class="form-control" id="projectContractor" name="projectContractor"
                                     placeholder="Select or enter contractor name" autocomplete="off"
-                                    value="{{ old('projectContractor', $project['projectContractor'] ?? '') }}"
-                                    oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
+                                      oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
 
                                 <!-- Container for dynamically inserted buttons -->
                                 <div id="projectContractorDropdown"
@@ -131,9 +130,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-                        
 
                         <div class="row mb-2 align-items-center">
                             <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation

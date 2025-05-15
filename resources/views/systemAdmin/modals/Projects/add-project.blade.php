@@ -120,7 +120,6 @@
                             <div class="col-md-9 position-relative">
                                 <input type="text" class="form-control" id="projectContractor" name="projectContractor"
                                     placeholder="Select or enter contractor name" autocomplete="off"
-                                    value="{{ old('projectContractor', $project['projectContractor'] ?? '') }}"
                                     oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
 
                                 <!-- Container for dynamically inserted buttons -->
