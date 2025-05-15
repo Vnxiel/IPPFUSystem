@@ -158,7 +158,7 @@ if ($existing) {
         }
 
         //  Insert contractor if new
-        $contractorName = $request->input('othersContractor');
+        $contractorName = $request->input('projectContractor');
         if ($contractorName && !Contractor::where('name', $contractorName)->exists()) {
             Contractor::create(['name' => $contractorName]);
         }
@@ -260,6 +260,7 @@ if ($existing) {
         ->orderBy('created_at', 'desc')
         ->get();
         $contractors = Contractor::orderBy('name', 'asc')->get();
+        
         $staticLocations = [ 
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
             'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',

@@ -227,16 +227,16 @@
     </tr>
     <tr class="fit-text-row">
       <th>ABC:</th>
-      <td style="text-align: right;">{{ $projectFundsUtilization['orig_abc'] ?? '--' }}</td>
-      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_abc'] ?? '--' }}</td>
-      <td style="text-align: right;">{{ $projectFundsUtilization['actual_abc'] ?? '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['orig_abc']) ? number_format($projectFundsUtilization['orig_abc'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectVariationOrder[0]['vo_abc']) ? number_format($projectVariationOrder[0]['vo_abc'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_abc']) ? number_format($projectFundsUtilization['actual_abc'], 2) : '--' }}</td>
     </tr>
     <tr class="fit-text-row">
       <th>Contract Amount:</th>
-      <td style="text-align: right;">{{ $projectFundsUtilization['orig_contract_amount'] ?? '--' }}</td>
-      <td style="text-align: right;">{{ $projectVariationOrder[0]['vo_contract_amount'] ?? '--' }}</td>
-      <td style="text-align: right;">{{ $projectFundsUtilization['actual_contract_amount'] ?? '--' }}</td>
-    </tr>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['orig_contract_amount']) ? number_format($projectFundsUtilization['orig_contract_amount'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectVariationOrder[0]['vo_contract_amount']) ? number_format($projectVariationOrder[0]['vo_contract_amount'], 2) : '--' }}</td>
+      <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_contract_amount']) ? number_format($projectFundsUtilization['actual_contract_amount'], 2) : '--' }}</td>
+      </tr>
     <tr class="fit-text-row">
       <th>Engineering:</th>
       <td style="text-align: right;">{{ $projectFundsUtilization['orig_engineering'] ?? '--' }}</td>
