@@ -60,11 +60,16 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const percentageInput = document.getElementById('percentage');
+    const progressSelect = document.getElementById('progress');
     const dropdown = document.getElementById('historyDropdown');
-    const historyLabel = document.getElementById('historyLabel'); // Reference to the label element
+    const historyLabel = document.getElementById('historyLabel');
+    const autoDate = document.getElementById('autoDate');
+    const dateInput = document.getElementById('date');
 
-    // Dynamically injected project status history
     const historyData = @json($projectStatusData['ongoingStatus']);
+    const existingPercentages = historyData.map(entry => parseInt(entry.percentage));
+    const totalUsedPercentage = existingPercentages.reduce((sum, val) => sum + val, 0);
+    const remainingPercentage = 100 - totalUsedPercentage;
 
     function showHistory() {
         dropdown.innerHTML = '';
@@ -79,7 +84,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     percentageInput.addEventListener('focus', showHistory);
-    percentageInput.addEventListener('input', showHistory);
+
+    percentageInput.addEventListener('input', () => {
+    showHistory();
+
+    const currentValue = parseInt(percentageInput.value);
+    const duplicate = existingPercentages.includes(currentValue);
+    const exceedsLimit = currentValue > remainingPercentage;
+
+    percentageInput.setCustomValidity('');
+
+    // Check for exceeding remaining percentage
+    if (exceedsLimit) {
+        percentageInput.setCustomValidity(`Only ${remainingPercentage}% remaining. Please enter a value within the limit.`);
+    }
+
+    // ✅ Automatically set progress to "Completed" if user enters remaining %
+    if (currentValue === remainingPercentage && progressSelect.value !== 'Completed') {
+        progressSelect.value = 'Completed';
+    }
+
+    // ✅ If user reduces value again, allow manual override of status
+    if (currentValue < remainingPercentage && progressSelect.value === 'Completed') {
+        progressSelect.value = ''; // or revert to previous status if you track it
+    }
+
+    percentageInput.reportValidity();
+});
 
     percentageInput.addEventListener('blur', () => {
         setTimeout(() => {
@@ -88,10 +119,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 200);
     });
 
-    // Auto date handling
-    const autoDate = document.getElementById('autoDate');
-    const dateInput = document.getElementById('date');
+    // If 'Completed' is selected, auto-fill remaining % and disable editing
+    progressSelect.addEventListener('change', () => {
+        const selected = progressSelect.value;
 
+        if (selected === 'Completed') {
+            percentageInput.value = remainingPercentage;
+            percentageInput.disabled = true;
+            percentageInput.setCustomValidity('');
+        } else {
+            percentageInput.disabled = false;
+        }
+
+        percentageInput.dispatchEvent(new Event('input')); // Re-validate
+    });
+
+    // Auto date handling
     autoDate.addEventListener('change', () => {
         if (autoDate.checked) {
             const today = new Date().toISOString().split('T')[0];

@@ -79,7 +79,7 @@
                                 <input type="text" class="form-control" id="projectLoc" name="projectLoc"
                                     value="{{ old('projectLoc', $project['projectLoc'] ?? '') }}"
                                     placeholder="Select or enter location" autocomplete="off"
-                                    onfocus="showLocDropdown()" oninput="showLocDropdown()" />
+                                    oninput="filterLocations()" onblur="finalizeLocation()" onfocus="showLocDropdown()"/>
                                 
                                 <!-- Dropdown -->
                                 <div id="projectLocDropdown"
@@ -257,13 +257,14 @@
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-4">
-                                <select class="form-select" id="ea_position" name="ea_position" value="{{ old('ea_position', $project['ea_position'] ?? '') }}" required>
-                                    <option value="" disabled selected>Select Position</option>
-                                    <option value="Engineer Aid">Engineer Aid</option>
-                                    <option value="Engineer Assistant">Engineer Assistant</option>
-                                    <option value="Engineer I">Engineer I</option>
+                                <select class="form-select" id="ea_position" name="ea_position" required>
+                                    <option value="" disabled {{ old('ea_position', $project['ea_position'] ?? '') == '' ? 'selected' : '' }}>Select Position</option>
+                                    <option value="Engineer Aid" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Aid' ? 'selected' : '' }}>Engineer Aid</option>
+                                    <option value="Engineer Assistant" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Assistant' ? 'selected' : '' }}>Engineer Assistant</option>
+                                    <option value="Engineer I" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer I' ? 'selected' : '' }}>Engineer I</option>
                                 </select>
                             </div>
+
                         </div>
                     </fieldset>
 
@@ -661,23 +662,68 @@
             dropdown.style.display = 'none';
         }
     });
-    function showLocDropdown() {
-        document.getElementById('projectLocDropdown').style.display = 'block';
-    }
+    
+    function filterLocations() {
+    const input = document.getElementById('projectLoc');
+    const dropdown = document.getElementById('projectLocDropdown');
+    const buttons = dropdown.getElementsByTagName('button');
 
-    function selectLoc(value) {
-        document.getElementById('projectLoc').value = value;
-        document.getElementById('projectLocDropdown').style.display = 'none';
-    }
+    // Remove existing ", Nueva Vizcaya" before filtering
+    const filter = input.value.toLowerCase().replace(/,\s*nueva\s*vizcaya\s*$/i, '').trim();
 
-    // Optional: Close dropdown if clicked outside
-    document.addEventListener('click', function (e) {
-        const input = document.getElementById('projectLoc');
-        const dropdown = document.getElementById('projectLocDropdown');
-        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.style.display = 'none';
+    let anyVisible = false;
+
+    for (let i = 0; i < buttons.length; i++) {
+        const txt = buttons[i].textContent || buttons[i].innerText;
+        if (txt.toLowerCase().includes(filter)) {
+
+            buttons[i].style.display = '';
+            anyVisible = true;
+        } else {
+            buttons[i].style.display = 'none';
         }
-    });
+    }
+
+    dropdown.style.display = anyVisible ? 'block' : 'none';
+}
+
+function finalizeLocation() {
+    const input = document.getElementById('projectLoc');
+    let value = input.value.trim();
+
+    // Remove any existing ", Nueva Vizcaya"
+    value = value.replace(/,\s*nueva\s*vizcaya\s*$/i, '');
+
+    if (value !== '') {
+        input.value = value + ', Nueva Vizcaya';
+    }
+}
+
+function selectLoc(value) {
+    const input = document.getElementById('projectLoc');
+    input.value = value + ', Nueva Vizcaya';
+    document.getElementById('projectLocDropdown').style.display = 'none';
+}
+
+function showLocDropdown() {
+    const dropdown = document.getElementById('projectLocDropdown');
+    const buttons = dropdown.getElementsByTagName('button');
+
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].style.display = '';
+    }
+
+    dropdown.style.display = 'block';
+}
+
+// Optional: hide dropdown if clicked outside
+document.addEventListener('click', function (e) {
+    const input = document.getElementById('projectLoc');
+    const dropdown = document.getElementById('projectLocDropdown');
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});
 
     document.querySelectorAll('.currency-input').forEach(input => {
     input.addEventListener('input', () => {

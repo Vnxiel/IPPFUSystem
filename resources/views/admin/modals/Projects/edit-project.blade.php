@@ -79,7 +79,7 @@
                                 <input type="text" class="form-control" id="projectLoc" name="projectLoc"
                                     value="{{ old('projectLoc', $project['projectLoc'] ?? '') }}"
                                     placeholder="Select or enter location" autocomplete="off"
-                                    onfocus="showLocDropdown()" oninput="showLocDropdown()" />
+                                    oninput="filterLocations()" onblur="finalizeLocation()" onfocus="showLocDropdown()"/>
                                 
                                 <!-- Dropdown -->
                                 <div id="projectLocDropdown"
@@ -106,22 +106,25 @@
                                       
                             </div>
                         </div>
-                        <div class="row mb-2 g-3">
-                            <div class="col-3 text-end">
-                                <label for="projectContractor" class="form-label">Contractor<span
-                                        class="text-danger">*</span></label>
+                         <!-- Contractor Input with Dynamic Suggestions -->
+                         <div class="row g-3 mb-2 text-end">
+                            <div class="col-md-3">
+                                <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
-                            <div class="col">
-                            <select id="projectContractor" name="projectContractor" class="form-select" onchange="toggleOtherContractor()">
-                                            <option value="">--Select Contractor--</option>
-                                            @foreach($contractors as $contractor)
-                                                <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
-                                                    {{ $contractor->name }}
-                                                </option>
-                                            @endforeach
-                                            <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
-                                        </select>
+                            <div class="col-md-9 position-relative">
+                                <input type="text" class="form-control" id="projectContractor" name="projectContractor"
+                                    placeholder="Select or enter contractor name" autocomplete="off"
+                                    value="{{ old('projectContractor', $project['projectContractor'] ?? '') }}"
+                                    oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
+
+                                <!-- Container for dynamically inserted buttons -->
+                                <div id="projectContractorDropdown"
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                </div>
                             </div>
+                        </div>
+
                             <!-- <div class="mb-2">
                                 <label for="projectContractor" class="form-label">Contractor <span
                                         class="text-danger">*</span></label>
@@ -132,8 +135,7 @@
                                     @endforeach
                                     <option value="Others">Others: (Specify)</option>
                                 </select>-->
-                        </div>
-
+                        
                         <!-- Hidden textbox for specifying 'Others' -->
                         <!-- <div class="mb-2" id="othersContractorDiv" style="display: none;">
                                     <label for="othersContractor" class="form-label">Specify New Contractor</label>
@@ -236,39 +238,33 @@
 
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                            <div class="col-md-12">
-                                <div class="row mb-2">
-                                    <label for="ea" class="form-label">Project E.A (Engineer Assigned) <span
+                            <div class="col-3 text-end">
+                                <label for="ea" class="form-label">Project Engineer <span
                                             class="text-danger">*</span></label>
-                                </div>
-                                <d class="row mb-2 align-items-center">
-                                    <div class="col-3 text-end">
-                                        <label for="ea" class="form-label">E.A. Fullname</label>
-                                    </div>
-                                    <div class="col-9">
-                                       <input type="text" class="form-control" id="ea" name="ea" value="{{ old('ea', $project['ea'] ?? '') }}">
-                                        
-                                        <datalist id="eaList">
-                                            @foreach($projectEA as $ea)
-                                                <option value="{{ $ea->ea }}"></option>
-                                            @endforeach
-                                        </datalist>
-                                    </div>
                             </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-3 text-end">
-                                <label for="ea_position" class="form-label">Position</label>
+                            <div class="col-4">
+                                <input type="text" class="form-control" id="ea" name="ea" list="eaList" value="{{ old('ea', $project['ea'] ?? '') }}"
+                                    placeholder="Enter Engineer Assigned">
+                                <datalist id="eaList">
+                                    @foreach($projectEA as $ea)
+                                        <option value="{{ $ea->ea }}"></option>
+                                    @endforeach
+                                </datalist>
                             </div>
-                            <div class="col-3">
-                                 <input type="text" class="form-control" id="ea_position" name="ea_position" value="{{ old('ea_position', $project['ea_position'] ?? '') }}">
+
+                            <div class="col-1 text-end">
+                                <label for="ea_position" class="form-label">Position<span
+                                        class="text-danger">*</span></label>
                             </div>
-                            <div class="col-3 text-end">
-                                <label for="ea_monthlyRate" class="form-label">Monthly Rate</label>
+                            <div class="col-4">
+                                <select class="form-select" id="ea_position" name="ea_position" required>
+                                    <option value="" disabled {{ old('ea_position', $project['ea_position'] ?? '') == '' ? 'selected' : '' }}>Select Position</option>
+                                    <option value="Engineer Aid" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Aid' ? 'selected' : '' }}>Engineer Aid</option>
+                                    <option value="Engineer Assistant" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Assistant' ? 'selected' : '' }}>Engineer Assistant</option>
+                                    <option value="Engineer I" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer I' ? 'selected' : '' }}>Engineer I</option>
+                                </select>
                             </div>
-                            <div class="col-3">
-                              <input type="number" class="form-control" id="ea_monthlyRate" name="ea_monthlyRate" value="{{ old('ea_monthlyRate', $project['ea_monthlyRate'] ?? '') }}">
-                             </div>
+
                         </div>
                     </fieldset>
 
@@ -417,10 +413,10 @@
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="targetCompletion" name="targetCompletion" value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
                                 </div>
-                            </div>
+                            </div> -->
 
 
-                            <div class="row mb-2">
+                            <!-- <div class="row mb-2">
                                 <div class="col-3 text-end">
                                     <label for="completionDate" class="form-label">Completion Date</label>
                                 </div>
@@ -446,86 +442,166 @@
                                     id="revisedTargetCompletion" name="revisedTargetCompletion">
                             </div> 
                         </div> -->
+<!-- Implementation Details Section -->
+<fieldset class="border p-3 mb-4 rounded shadow-sm">
+    <legend class="float-none w-auto px-3 fw-bold text-primary">
+        <i class="fas fa-info-circle me-2"></i>Implementation Details
+    </legend>
 
-                            <!-- Implementation Details Section -->
-                            <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                <legend class="float-none w-auto px-3 fw-bold text-primary">
-                                    <i class="fas fa-info-circle me-2"></i>Implementation Details
-                                </legend>
+    <div class="container">
+        <div class="row mb-2 align-items-center">
+            <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
+                <span class="text-danger">*</span></label>
+            <div class="col-9">
+                <input type="text" class="form-control" id="modeOfImplementation"
+                    name="modeOfImplementation" value="By contract." readonly required>
+            </div>
+        </div>
 
-                                <div class="container">
-                                    <div class="row align-items-center">
-                                        <!-- Add/Remove Order Buttons -->
-                                        <div class="col-md-10">
-                                            <hr>
-                                        </div>
-                                        <div class="col-2 text-center mb-0">
-                                            <button type="button" class="btn btn-outline-primary btn-sm mr-1"
-                                                onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Add Suspension and Resumption Order">
-                                                <span class="fa-solid fa-square-plus"></span>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-danger btn-sm"
-                                                onclick="removeLastOrderFields()" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="Remove Suspension and Resumption Order">
-                                                <span class="fa-solid fa-circle-minus"></span>
-                                            </button>
-                                        </div>
+        <!-- Original and Target Dates -->
+        <div class="row mb-2 align-items-center">
+            <div class="col-3 text-end">
+                <label class="form-label">Original Starting Date <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-3">
+                <input type="date" class="form-control" id="originalStartDate" name="originalStartDate"
+                    value="{{ old('originalStartDate', $project['originalStartDate'] ?? '') }}">
+            </div>
+            <div class="col-3 text-end">
+                <label class="form-label">Target Completion Date <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-3">
+                <input type="date" class="form-control" id="targetCompletion" name="targetCompletion"
+                    value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
+            </div>
+        </div>
 
-                                      <!-- Order Fields -->
-                                    <div id="orderContainer" class="col-12">
-                                        @php
-                                            // Extract remarks data at the top level so it's accessible in the view
-                                            $remarksData = $project['remarksData'] ?? [];
+        <div class="row">
+            <div class="col-3 mb-2 text-end">
+                <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-9">
+                <input type="date" class="form-control" id="completionDate" name="completionDate"
+                    value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
+                    style="background-color: lightgray;">
+            </div>
+        </div>
 
-                                            $orders = collect($project['orderDetails'] ?? [])
-                                                ->filter(fn($val, $key) => preg_match('/suspensionOrderNo\d+/', $key))
-                                                ->keys()
-                                                ->map(function ($suspKey) use ($project) {
-                                                    $index = preg_replace('/\D/', '', $suspKey);
-                                                    $resumeKey = 'resumeOrderNo' . $index;
+        <!-- Add/Remove Order Buttons -->
+        <div class="row align-items-center">
+            <div class="col-md-10"><hr></div>
+            <div class="col-2 text-center mb-0">
+                <button type="button" class="btn btn-outline-primary btn-sm mr-1"
+                    onclick="addOrderFields()" title="Add Suspension and Resumption Order">
+                    <span class="fa-solid fa-square-plus"></span>
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-sm"
+                    onclick="removeLastOrderFields()" title="Remove Suspension and Resumption Order">
+                    <span class="fa-solid fa-circle-minus"></span>
+                </button>
+            </div>
 
-                                                    $suspensionValue = old($suspKey, $project['orderDetails'][$suspKey] ?? '');
-                                                    $resumeValue = old($resumeKey, $project['orderDetails'][$resumeKey] ?? '');
+            <!-- Orders -->
+            <div id="orderContainer" class="col-12">
+                @php
+                    $remarksData = $project['remarksData'] ?? [];
+                    $orders = collect($project['orderDetails'] ?? [])
+                        ->filter(fn($val, $key) => preg_match('/suspensionOrderNo\d+/', $key))
+                        ->keys()
+                        ->map(function ($suspKey) use ($project) {
+                            $index = preg_replace('/\D/', '', $suspKey);
+                            $resumeKey = 'resumeOrderNo' . $index;
+                            return [
+                                'index' => $index,
+                                'suspensionKey' => $suspKey,
+                                'resumeKey' => $resumeKey,
+                                'suspensionValue' => old($suspKey, $project['orderDetails'][$suspKey] ?? ''),
+                                'resumeValue' => old($resumeKey, $project['orderDetails'][$resumeKey] ?? '')
+                            ];
+                        })
+                        ->filter(fn($order) => !empty($order['suspensionValue']) || !empty($order['resumeValue']));
+                @endphp
 
-                                                    return [
-                                                        'index' => $index,
-                                                        'suspensionKey' => $suspKey,
-                                                        'resumeKey' => $resumeKey,
-                                                        'suspensionValue' => $suspensionValue,
-                                                        'resumeValue' => $resumeValue,
-                                                    ];
-                                                })
-                                                ->filter(fn($order) => $order['index'] == 1 || !empty($order['suspensionValue']) || !empty($order['resumeValue']));
-                                        @endphp
+                @foreach ($orders as $order)
+                    <div class="row">
+                        <div class="col-md-3 mb-3 text-end">
+                            <label for="{{ $order['suspensionKey'] }}" class="form-label">
+                                Suspension Order No. {{ $order['index'] }}
+                            </label>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}"
+                                name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
+                        </div>
+                        <div class="col-md-3 mb-3 text-end">
+                            <label for="{{ $order['resumeKey'] }}" class="form-label">
+                                Resumption Order No. {{ $order['index'] }}
+                            </label>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" id="{{ $order['resumeKey'] }}"
+                                name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
+                        </div>
+                        <div class="row mt-1 mb-2">
+                            <div class="col-md-3 mb-3 text-end">
+                                <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">
+                                    Suspension Remarks
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <textarea class="form-control"
+                                    id="suspensionOrderNo{{ $order['index'] }}Remarks"
+                                    name="suspensionOrderNo{{ $order['index'] }}Remarks">
+                                    {{ $remarksData[(string) $order['index']]['suspensionOrderRemarks'] ?? '' }}
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
 
-                                        @foreach ($orders as $order)
-                                            <div class="row">
-                                                <div class="col-md-6 mb-2">
-                                                    <label for="{{ $order['suspensionKey'] }}" class="form-label">Suspension Order No. {{ $order['index'] }}</label>
-                                                    <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}" name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
-                                                </div>
-                                                <div class="col-md-6 mb-2">
-                                                    <label for="{{ $order['resumeKey'] }}" class="form-label">Resumption Order No. {{ $order['index'] }}</label>
-                                                    <input type="date" class="form-control" id="{{ $order['resumeKey'] }}" name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 mb-2">
-                                                    <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">Suspension Remarks</label>
-                                                    <textarea class="form-control" id="suspensionOrderNo{{ $order['index'] }}Remarks" name="suspensionOrderNo{{ $order['index'] }}Remarks">{{ $remarksData[(string) $order['index']]['suspensionOrderRemarks'] ?? '' }}</textarea>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
+        @if($orders->isNotEmpty())
+            <!-- Revised Dates and Extension -->
+            <div class="row mb-2">
+                <div class="col-3 text-end">
+                    <label for="revisedTargetDate" class="form-label">Revised Target Date
+                        <span class="text-danger">*</span>
+                    </label>
+                </div>
+                <div class="col-3">
+                    <input type="date" class="form-control" id="revisedTargetDate"
+                        name="revisedTargetDate"
+                        value="{{ old('revisedTargetDate', $project['revisedTargetDate'] ?? '') }}">
+                </div>
+                <div class="col-3 text-end">
+                    <label for="revisedCompletionDate" class="form-label">Revised Completion Date
+                        <span class="text-danger">*</span>
+                    </label>
+                </div>
+                <div class="col-3">
+                    <input type="date" class="form-control" id="revisedCompletionDate"
+                        name="revisedCompletionDate"
+                        value="{{ old('revisedCompletionDate', $project['revisedCompletionDate'] ?? '') }}">
+                </div>
+            </div>
 
-                                <div class="row">
-                                    <div class="col-md-6 mb-2">
-                                        <label for="timeExtension" class="form-label">Time Extension</label>
-                                        <input type="text" class="form-control" id="timeExtension" name="timeExtension" value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
-                                    </div>
-                                </div>
-                            </fieldset>
+            <div class="row">
+                <div class="col-3 text-end">
+                    <label for="timeExtension" class="form-label">Extension Date
+                        <span class="text-danger">*</span>
+                    </label>
+                </div>
+                <div class="col-3">
+                    <input type="number" class="form-control" id="timeExtension"
+                        name="timeExtension"
+                        value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
+                </div>
+            </div>
+        @endif
+    </div>
+</fieldset>
+
 
                             <!-- Modal Footer -->
                             <div class="modal-footer bg-light">
@@ -541,6 +617,153 @@
                 </div>
             </div>
         </div>
+        <script>
+  const contractorInput = document.getElementById('projectContractor');
+    const dropdown = document.getElementById('projectContractorDropdown');
+
+    // Store contractor names in JavaScript for easier manipulation
+    const contractorNames = [
+        @foreach($contractors as $contractor)
+            "{{ $contractor->name }}",
+        @endforeach
+    ];
+
+    function filterAndReorderContractors() {
+        const inputValue = contractorInput.value.toLowerCase();
+        const matches = contractorNames
+            .map(name => ({
+                name,
+                score: name.toLowerCase().startsWith(inputValue) ? 0 : 
+                       name.toLowerCase().includes(inputValue) ? 1 : 2
+            }))
+            .filter(item => item.score < 2)
+            .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+
+        dropdown.innerHTML = '';
+        matches.forEach(item => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'list-group-item list-group-item-action';
+            button.textContent = item.name;
+            button.onclick = () => selectContractor(item.name);
+            dropdown.appendChild(button);
+        });
+
+        dropdown.style.display = matches.length ? 'block' : 'none';
+    }
+
+    function selectContractor(name) {
+        contractorInput.value = name;
+        dropdown.style.display = 'none';
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!contractorInput.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+    
+    function filterLocations() {
+    const input = document.getElementById('projectLoc');
+    const dropdown = document.getElementById('projectLocDropdown');
+    const buttons = dropdown.getElementsByTagName('button');
+
+    // Remove existing ", Nueva Vizcaya" before filtering
+    const filter = input.value.toLowerCase().replace(/,\s*nueva\s*vizcaya\s*$/i, '').trim();
+
+    let anyVisible = false;
+
+    for (let i = 0; i < buttons.length; i++) {
+        const txt = buttons[i].textContent || buttons[i].innerText;
+        if (txt.toLowerCase().includes(filter)) {
+
+            buttons[i].style.display = '';
+            anyVisible = true;
+        } else {
+            buttons[i].style.display = 'none';
+        }
+    }
+
+    dropdown.style.display = anyVisible ? 'block' : 'none';
+}
+
+function finalizeLocation() {
+    const input = document.getElementById('projectLoc');
+    let value = input.value.trim();
+
+    // Remove any existing ", Nueva Vizcaya"
+    value = value.replace(/,\s*nueva\s*vizcaya\s*$/i, '');
+
+    if (value !== '') {
+        input.value = value + ', Nueva Vizcaya';
+    }
+}
+
+function selectLoc(value) {
+    const input = document.getElementById('projectLoc');
+    input.value = value + ', Nueva Vizcaya';
+    document.getElementById('projectLocDropdown').style.display = 'none';
+}
+
+function showLocDropdown() {
+    const dropdown = document.getElementById('projectLocDropdown');
+    const buttons = dropdown.getElementsByTagName('button');
+
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].style.display = '';
+    }
+
+    dropdown.style.display = 'block';
+}
+
+// Optional: hide dropdown if clicked outside
+document.addEventListener('click', function (e) {
+    const input = document.getElementById('projectLoc');
+    const dropdown = document.getElementById('projectLocDropdown');
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});
+
+    document.querySelectorAll('.currency-input').forEach(input => {
+    input.addEventListener('input', () => {
+        let value = input.value;
+
+        // Remove all non-digit and non-dot characters
+        value = value.replace(/[^0-9.]/g, '');
+
+        // If more than one dot, keep only the first
+        const firstDot = value.indexOf('.');
+        if (firstDot !== -1) {
+            const beforeDot = value.substring(0, firstDot);
+            const afterDot = value.substring(firstDot + 1).replace(/\./g, '');
+            value = beforeDot + '.' + afterDot;
+        }
+
+        // Split into integer and decimal parts
+        let [intPart, decimalPart] = value.split('.');
+
+        // Remove leading zeros, unless input is just "0" or "0.x"
+        if (intPart.length > 1 && intPart.startsWith('0')) {
+            intPart = intPart.replace(/^0+/, '') || '0';
+        }
+
+        // Format integer part with commas
+        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        // Keep up to two decimal digits
+        if (decimalPart !== undefined) {
+            decimalPart = decimalPart.slice(0, 2);
+            input.value = `${intPart}.${decimalPart}`;
+        } else {
+            input.value = intPart;
+        }
+    });
+
+});
+
+</script>
+
 <script>
           function showLocDropdown() {
         const dropdown = document.getElementById('projectLocDropdown');

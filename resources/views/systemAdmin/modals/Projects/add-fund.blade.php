@@ -274,7 +274,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const actualEng = document.getElementById("actual_engineering");
@@ -282,6 +281,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const actualMqc = document.getElementById("actual_mqc");
   const summaryMqc = document.querySelector('input[name="amountMqc"]');
+
+  const voContractAmount = document.getElementById("vo_contract_amount_1");
+  const actualContractAmount = document.getElementById("actual_contract_amount");
+  const finalBillingAmount = document.querySelector('input[name="amountFinal"]');
 
   if (actualEng && summaryEng) {
     actualEng.addEventListener("input", () => {
@@ -294,9 +297,19 @@ document.addEventListener("DOMContentLoaded", function () {
       summaryMqc.value = actualMqc.value;
     });
   }
-});
 
+  if (voContractAmount && actualContractAmount && finalBillingAmount) {
+    voContractAmount.addEventListener("input", () => {
+      const voValue = voContractAmount.value.trim();
+      if (voValue !== "") {
+        actualContractAmount.value = voValue;
+        finalBillingAmount.value = voValue;
+      }
+    });
+  }
+});
 </script>
+
 
 <script>
   

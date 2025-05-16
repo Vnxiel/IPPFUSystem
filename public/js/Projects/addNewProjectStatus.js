@@ -9,10 +9,9 @@ $(document).ready(function () {
 
         // Clear previous inputs
         $("#progress").val("");
-        $("#percentage").val("");
+        $("#percentage").val("").prop("disabled", false);
         $("#autoDate").prop("checked", true).trigger("change");
 
-        // Show the Add Status Modal
         $("#addStatusModal").modal("show");
     });
 
@@ -25,44 +24,64 @@ $(document).ready(function () {
         }
     });
 
+    // Handle progress change (e.g., Completed auto-fills percentage)
+    $("#progress").on("change", function () {
+        const selected = $(this).val();
+        const statusData = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
+        const prevPercentage = parseFloat(statusData.percentage || 0);
+        const remaining = 100 - prevPercentage;
+
+        if (selected === "Completed") {
+            $("#percentage").val(remaining).prop("disabled", true);
+        } else {
+            $("#percentage").val("").prop("disabled", false);
+        }
+    });
+
     // Submit new status
     $("#addStatusForm").on("submit", function (e) {
         e.preventDefault();
 
         const project_id = sessionStorage.getItem("project_id");
         const progress = $("#progress").val();
-        const percentage = parseFloat($("#percentage").val());
+        let percentage = parseFloat($("#percentage").val());
+        const statusData = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
+        const prevPercentage = parseFloat(statusData.percentage || 0);
+        const remaining = 100 - prevPercentage;
+
+        if (progress === "Completed") {
+            percentage = remaining;
+        }
+
         const date = $("#autoDate").is(":checked")
             ? new Date().toISOString().split("T")[0]
             : $("#date").val();
 
-            if (isNaN(percentage) || percentage < 0 || percentage > 100) {
-                return Swal.fire({
-                    icon: "warning",
-                    title: "Invalid Percentage",
-                    text: "Please enter a value between 0 and 100."
-                });
-            }
-            
-            if (percentage === 0) {
-                return Swal.fire({
-                    icon: "warning",
-                    title: "Invalid Progress",
-                    text: "0% progress is not allowed."
-                });
-            }
+        if (!progress || isNaN(percentage) || percentage <= 0 || percentage > 100) {
+            return Swal.fire({
+                icon: "warning",
+                title: "Invalid Input",
+                text: "Please provide valid progress and percentage (1-100)."
+            });
+        }
 
-        const latestStatus = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
+        if (percentage > remaining) {
+            return Swal.fire({
+                icon: "warning",
+                title: "Exceeded Limit",
+                text: `Only ${remaining}% progress is remaining.`
+            });
+        }
 
-        if (latestStatus.percentage !== undefined) {
-            const lastDate = new Date(latestStatus.date).toISOString().split("T")[0];
+        if (statusData.date) {
+            const lastDate = new Date(statusData.date).toISOString().split("T")[0];
             const newDate = new Date(date).toISOString().split("T")[0];
 
             if (newDate <= lastDate) {
                 return Swal.fire({
                     icon: "error",
                     title: "Invalid Date",
-                    text: "New status date must be later than the last recorded date."
+                    text: `New status date must be later than the last recorded date: ${lastDate}.`
                 });
             }
         }
@@ -82,12 +101,9 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 console.error(xhr.responseText);
-
                 let errorMessage = "Could not update status. Please try again later.";
                 try {
                     const response = JSON.parse(xhr.responseText);
-
-                    // Concatenate all validation messages into a single string
                     if (response.errors) {
                         errorMessage = Object.values(response.errors).flat().join("\n");
                     } else if (response.message) {

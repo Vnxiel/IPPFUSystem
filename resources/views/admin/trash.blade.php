@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('systemAdmin.layout')
 
 @section('title', 'Archived Projects')
 

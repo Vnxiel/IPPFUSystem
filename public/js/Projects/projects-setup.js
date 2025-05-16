@@ -147,7 +147,6 @@ function updateRevisedDates() {
         newDate.setDate(newDate.getDate() + extension);
         const formatted = newDate.toISOString().split('T')[0];
         revised.value = actual.value = formatted;
-        revised.readOnly = actual.readOnly = true;
     } else {
         revised.readOnly = actual.readOnly = false;
     }

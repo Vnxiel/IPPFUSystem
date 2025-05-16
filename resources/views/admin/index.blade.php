@@ -5,7 +5,7 @@
 @section('content') 
 <div class="container-fluid py-4" style="background-color: transparent;">
     <!-- Header Section -->
-    <div class="card mb-1 border-0 shadow-lg" >
+    <div class="container card mb-1 border-0 shadow-lg mt-5" style="top:25px;">
         <div class="card-body p-2">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="ms-auto">
@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="container py-4">
-        <div class="row mt-1">
+        <div class="row mt-4">
             <div class="col-12">
                 <!-- Project Status Cards -->
                 <div class="row g-2 mb-5">
@@ -111,7 +111,7 @@
 
                     <!-- Suspended Projects -->
                     <div class="col-md-4">
-                        <a href="/admin/projects?page=suspended" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/systemAdmin/projects?page=suspended" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">

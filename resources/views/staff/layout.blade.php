@@ -29,81 +29,85 @@
     <body class="montserrat d-flex flex-column min-vh-100">
         <div class="wrapper d-flex flex-column flex-grow-1">
             <!-- Enhanced Navbar -->
-           <!-- Enhanced Navbar -->
-<nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(to right, #ffffff, #F8F2DE);">
-    <div class="container-fluid px-4">
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background: linear-gradient(to right, #ffffff, #F8F2DE);">
+                <div class="container-fluid px-4">
+                    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-        <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-            <a href="{{ route('staff.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
-                <div class="d-flex align-items-center">
-                    <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="55" height="45" class="img-fluid me-3">
-                    <div>
-                        <h5 class="mb-0 fw-bold" style="color: #2c3e50;">Provincial Engineering Office</h5>
-                        <h6 class="mt-1 text-muted" style="font-size: 0.9rem;">Province of Nueva Vizcaya</h6>
+                    <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
+                        <a href="{{ route('staff.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid me-3">
+                                <div>
+                                    <h5 class="mb-0 fw-bold" style="color: #2c3e50;">Provincial Engineering Office</h5>
+                                    <h6 class="mt-1 text-muted" style="font-size: 0.9rem;">Province of Nueva Vizcaya</h6>
+                                </div>
+                            </div>
+                        </a>
+
+                        <div class="d-lg-flex align-items-center ms-auto gap-lg-3">
+                            <ul class="navbar-nav gap-lg-2">
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('staff/index') ? 'fw-bold text-white' : '' }}" 
+                                    style="{{ Request::is('staff/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/staff/index') }}">
+                                    <i class="fas fa-chart-line me-2"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('staff/projects') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('staff/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/staff/projects') }}">
+                                    <i class="fas fa-project-diagram me-2"></i>Projects
+                                    </a>
+                                </li>
+                                <!-- <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 {{ Request::is('staff/trash') || Request::is('systemAdmin/activityLogs') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('staff/trash') || Request::is('systemAdmin/activityLogs') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="#" data-bs-toggle="dropdown">
+                                    <i class="fas fa-cog me-2"></i>Settings
+                                    </a>
+                                    <ul class="dropdown-menu border-0 shadow-sm mt-2">
+                                        <li>
+                                            <a class="dropdown-item py-2 {{ Request::is('staff/trash') ? 'fw-bold text-primary' : '' }}" href="{{ url('/systemAdmin/trash') }}">
+                                                <i class="fas fa-archive me-2"></i>Archive
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item py-2 {{ Request::is('staff/activityLogs') ? 'fw-bold text-primary' : '' }}" href="{{ url('/systemAdmin/activityLogs') }}">
+                                                <i class="fas fa-history me-2"></i>Activity Logs
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li> -->
+                            </ul>
+
+                            <div class="dropdown">
+                                <?php $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest'; ?>
+                                <a href="#" id="dropdownMenuButton" 
+                                class="d-flex align-items-center text-decoration-none dropdown-toggle px-3 py-2 rounded-3"
+                                style="color: #2c3e50;"
+                                data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle me-2" style="background: rgba(33, 150, 243, 0.1); padding: 8px; border-radius: 50%;">
+                                            <i class="fas fa-user" style="color: #2196F3;"></i>
+                                        </div>
+                                        <span class="fw-medium"><?php echo htmlspecialchars($username); ?></span>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2">
+                                    <li>
+                                        <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="logout()">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Sign out
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </a>
-
-            <div class="d-lg-flex align-items-center ms-auto gap-lg-3">
-                <ul class="navbar-nav gap-lg-2">
-                    <li class="nav-item">
-                        <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('staff/index') ? 'fw-bold text-white' : '' }}" 
-                           style="{{ Request::is('staff/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                           href="{{ url('/staff/index') }}">
-                           <i class="fas fa-chart-line me-2"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('staff/projects') ? 'fw-bold text-white' : '' }}"
-                           style="{{ Request::is('staff/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                           href="{{ url('/staff/projects') }}">
-                           <i class="fas fa-project-diagram me-2"></i>Projects
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 {{ Request::is('staff/trash') || Request::is('systemAdmin/activityLogs') ? 'fw-bold text-white' : '' }}"
-                           style="{{ Request::is('staff/trash') || Request::is('staff/activityLogs') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                           href="#" data-bs-toggle="dropdown">
-                           <i class="fas fa-cog me-2"></i>Settings
-                        </a>
-                        <ul class="dropdown-menu border-0 shadow-sm mt-2">
-                            <li>
-                                <a class="dropdown-item py-2 {{ Request::is('staff/trash') ? 'fw-bold text-primary' : '' }}" href="{{ url('/systemAdmin/trash') }}">
-                                    <i class="fas fa-archive me-2"></i>Archive
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <div class="dropdown">
-                    <?php $username = session()->has('loggedIn') ? session('loggedIn.username') : 'Guest'; ?>
-                    <a href="#" id="dropdownMenuButton" 
-                       class="d-flex align-items-center text-decoration-none dropdown-toggle px-3 py-2 rounded-3"
-                       style="color: #2c3e50;"
-                       data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-circle me-2" style="background: rgba(33, 150, 243, 0.1); padding: 8px; border-radius: 50%;">
-                                <i class="fas fa-user" style="color: #2196F3;"></i>
-                            </div>
-                            <span class="fw-medium"><?php echo htmlspecialchars($username); ?></span>
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2">
-                        <li>
-                            <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="logout()">
-                                <i class="fas fa-sign-out-alt me-2"></i>Sign out
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</nav>
+            </nav>
 
             <!-- Content -->
             <div class="container-fluid flex-grow-1" style="background: #F8F2DE;">
@@ -134,8 +138,11 @@
         
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Account/register-user.js') }}"></script>
+        <script src="{{ asset('js/Account/fetch-pass_requests.js') }}"></script>
+        <script src="{{ asset('js/Account/change-new_pass.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
+        <script src="{{ asset('js/Projects/projects-setup.js') }}"></script>
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
