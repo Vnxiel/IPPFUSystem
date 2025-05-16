@@ -558,9 +558,7 @@
                                                         name="suspensionOrderNo1Remarks" rows="2"></textarea>
                                                 </div>
                                             </div>
-
                                         </div>
-
                                     </div>
                                 </div>
                             </div>

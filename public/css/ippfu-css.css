@@ -84,3 +84,38 @@ tbody tr:first-child td {
     transform: scale(0.97);
     transition: transform 0.1s ease;
 }
+
+.font-title-overview{
+    font-size: 1rem; 
+    font-weight: bold;
+    display: block;
+}
+
+.font-base {
+    font-size: 0.850rem; 
+    font-weight: bold;
+    /* color: #6c757d;  */
+    display: block;
+}
+
+.font-base p{
+    font-size: 0.850rem; 
+    font-weight: bold;
+    display: block;
+    margin: 3px;    
+}
+
+.font-base span {
+    font-weight: normal;
+    color: black;
+}
+
+.font-content{
+    font-size: 0.850rem; 
+}
+
+.legend-text {
+    font-size: 1.15rem; 
+    font-weight: bold;
+    color: #333;
+}
