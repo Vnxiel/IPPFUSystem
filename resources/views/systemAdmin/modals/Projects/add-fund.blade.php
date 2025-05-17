@@ -15,7 +15,8 @@
                   <!-- Project Title -->
                   <textarea class="form-control-plaintext border rounded p-3 bg-white text-dark fw-semibold"
                      id="projectTitleFU" name="projectTitleFU" readonly>{{ $project['projectTitle'] ?? '' }}</textarea>
-           </fieldset>
+              </div>
+            </fieldset>
            <!-- Cost Breakdown Table -->
            <fieldset class="border p-3 mb-4 rounded">
             <legend class="float-none w-auto px-2 fw-bold">Cost Breakdown</legend>
@@ -123,6 +124,8 @@
                 </tbody>
               </table>
             </div>
+
+            
           </fieldset>
 
 
@@ -136,6 +139,238 @@
           <!-- Fund Utilization Summary Table -->
           <fieldset class="border p-3 mb-4 rounded">
             <legend class="float-none w-auto px-2 fw-bold">Fund Utilization Summary</legend>
+            <!-- <div class="mb-2 row align-element-center">
+              <div class="row">
+                <div class="table-responsive">
+                  <table id="editableFundTable" class="table table-bordered text-center align-middle">
+                    <thead>
+                      <th>Contract amount</th>
+                    </thead>
+                  </table>
+                 </div>
+              </div> -->
+            <!-- </div> -->
+            <div class="row mb-1">
+              <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                  <thead>
+                    <tr>
+                      <th colspan="3">
+                        <strong>Contract Amount</strong>
+                      </th>
+                      <th colspan="2" class="text-end">
+                        ---
+                      </th>
+                    </tr>                    
+                  </thead>
+                  <tr>
+                    <tr>
+                      <td>15% Mobilization</td>
+                      <td><input type="date" class="form-control" name="datePart1"></td>
+                      <td colspan="2">
+                        <input type="number" max="15" min="0" class="form-control" id="percentMobi" name="percentMobi" placeholder="0.00">
+                      </td>
+                      <td><input type="text" class="form-control" name="remPart1" placeholder="Remarks"></td>
+                    </tr>
+                   <tr accesskey="billsTableBody">
+                      <td>1st Partial Billing</td>
+                      <td><input type="date" class="form-control" name="datePart1"></td>
+                      <td colspan="2"><input type="text" class="form-control amount-input" name="amountPart1"></td>
+                      <td><input type="text" class="form-control" name="remPart1"></td>                        
+                    </tr>
+                    <tr>
+                      <td colspan="5" class="text-end">
+                        <div class="text-end mt-2">
+                          <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addNewBill()">
+                            <i class="fa-solid fa-square-plus"></i> Add Billing
+                          </button>
+                          <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastBill()">
+                            <i class="fa-solid fa-circle-minus"></i> Remove Billing
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Final Billing</td>
+                      <td><input type="date" class="form-control" name="dateFinal"></td>
+                      <td><input type="text" class="form-control amount-input" name="amountFinal" >
+                      </td>
+                      <td><input type="text" class="form-control" name="remFinal"></td>
+                    </tr>
+                    <tr>
+                      <th colspan="2">
+                        Balance
+                      </th>
+                      <td colspan="3">
+                        ---
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row mb-1">
+              <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                  <thead>
+                    <tr>
+                      <th colspan="3">
+                        <strong>Engineering</strong>
+                      </th>
+                      <th colspan="2" class="text-end">
+                        ---
+                      </th>
+                    </tr>                    
+                  </thead>
+                  <tr>
+                    <td colspan="5">Breakdown</td>
+                  </tr>
+                  <tr>
+                    <tr>
+                      <td><input type="date" class="form-control" name=""></td>
+                      <td colspan="2"><input type="text" class="form-control" id="" name="" placeholder="Name of Receiver"></td>
+                      <td colspan="2">
+                        <input type="number" max="15" min="0" class="form-control" id="" name="" placeholder="0.00">
+                      </td>
+                    </tr>
+                      <td colspan="5" class="text-end">
+                          <div class="text-end mt-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addEngineeringBreakdown()">
+                              <i class="fa-solid fa-square-plus"></i> Add 
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEngineeringBreakdown()">
+                              <i class="fa-solid fa-circle-minus"></i> Remove
+                            </button>
+                          </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th colspan="2">
+                        Balance
+                      </th>
+                      <td colspan="3">
+                        ---
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row mb-1">
+              <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                  <thead>
+                    <tr>
+                      <th colspan="3">
+                        <strong>MQC</strong>
+                      </th>
+                      <th colspan="2" class="text-end">
+                        ---
+                      </th>
+                    </tr>                    
+                  </thead>
+                  <tr>
+                    <td colspan="5">Breakdown</td>
+                  </tr>
+                  <tr>
+                    <tr>
+                      <td><input type="date" class="form-control" name=""></td>
+                      <td colspan="2"><input type="text" class="form-control" id="" name="" placeholder="Name of Receiver"></td>
+                      <td colspan="2">
+                        <input type="number" max="15" min="0" class="form-control" id="" name="" placeholder="0.00">
+                      </td>
+                    </tr>
+                      <td colspan="5" class="text-end">
+                          <div class="text-end mt-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addMQCBreakdown()">
+                              <i class="fa-solid fa-square-plus"></i> Add 
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeMQCBreakdown()">
+                              <i class="fa-solid fa-circle-minus"></i> Remove
+                            </button>
+                          </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th colspan="2">
+                        Balance
+                      </th>
+                      <td colspan="3">
+                        ---
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row mb-1">
+              <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                  <thead>
+                    <tr>
+                      <th colspan="3">
+                        <strong>Contingency</strong>
+                      </th>
+                      <th colspan="2" class="text-end">
+                        ---
+                      </th>
+                    </tr>                    
+                  </thead>
+                  <tr>
+                    <td colspan="5">Breakdown</td>
+                  </tr>
+                  <tr>
+                    <tr>
+                      <td><input type="date" class="form-control" name=""></td>
+                      <td colspan="2"><input type="text" class="form-control" id="" name="" placeholder="Name of Receiver"></td>
+                      <td colspan="2">
+                        <input type="number" max="15" min="0" class="form-control" id="" name="" placeholder="0.00">
+                      </td>
+                    </tr>
+                      <td colspan="5" class="text-end">
+                          <div class="text-end mt-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addContingencyBreakdown()">
+                              <i class="fa-solid fa-square-plus"></i> Add 
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeContingencyBreakdown()">
+                              <i class="fa-solid fa-circle-minus"></i> Remove
+                            </button>
+                          </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th colspan="2">
+                        Balance
+                      </th>
+                      <td colspan="3">
+                        ---
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row mb-1">
+              <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                  <tr class="fw-bold">
+                    <td>Total Expenditures</td>
+                    <td colspan="4"><input type="text" class="form-control amount-input" name="amountTotal" disabled>
+                    </td>
+                  </tr>
+                  <tr class="fw-bold">
+                    <td>Total Savings</td>
+                    <td colspan="4"><input type="text" class="form-control amount-input" name="amountSavings"  disabled>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+<!-- <hr>
+<br>
+            
             <div class="mb-2 row align-items-center">
               <div class="col-md-2">
                 <label for="percentMobi" class="form-label fw-bold">% Mobilization</label>
@@ -155,9 +390,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                <tbody id="mobilizationRows">
+                <tbody id="mobilizationRows">-->
                   <!-- JavaScript will populate mobilization rows here -->
-                </tbody>
+                <!---</tbody>
           
                 <tbody id="billingsTableBody">
                   <tr>
@@ -204,7 +439,7 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
+            </div> -->
 
             <div class="text-end mt-2">
               <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addNextBilling()">
@@ -274,7 +509,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const actualEng = document.getElementById("actual_engineering");
@@ -282,6 +516,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const actualMqc = document.getElementById("actual_mqc");
   const summaryMqc = document.querySelector('input[name="amountMqc"]');
+
+  const voContractAmount = document.getElementById("vo_contract_amount_1");
+  const actualContractAmount = document.getElementById("actual_contract_amount");
+  const finalBillingAmount = document.querySelector('input[name="amountFinal"]');
 
   if (actualEng && summaryEng) {
     actualEng.addEventListener("input", () => {
@@ -294,9 +532,19 @@ document.addEventListener("DOMContentLoaded", function () {
       summaryMqc.value = actualMqc.value;
     });
   }
-});
 
+  if (voContractAmount && actualContractAmount && finalBillingAmount) {
+    voContractAmount.addEventListener("input", () => {
+      const voValue = voContractAmount.value.trim();
+      if (voValue !== "") {
+        actualContractAmount.value = voValue;
+        finalBillingAmount.value = voValue;
+      }
+    });
+  }
+});
 </script>
+
 
 <script>
   
@@ -386,5 +634,3 @@ document.addEventListener("DOMContentLoaded", function () {
   amountSavings.addEventListener('blur', validateExpenditures);
 });
 </script>
-
-

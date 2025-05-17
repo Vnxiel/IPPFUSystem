@@ -119,3 +119,9 @@ tbody tr:first-child td {
     font-weight: bold;
     color: #333;
 }
+
+/* engineering-row */
+.eng-breakdown-row td {
+  background-color: #f9f9f9;
+  font-size: 0.95em;
+}

@@ -3,21 +3,21 @@
 @section('title', 'Overview Page')
 
 @section('content')
-    <!-- Project Overview -->
-    <hr class="mx-2">
-    < class="container-fluid mt-5">
-        <div class="row">
-            <div class="col-md-12 d-flex align-items-center justify-content-between mb-3" style="margin-top:25px;">
-                <div class="d-flex align-items-center gap-2">
-                    <a id="back-to-projects" class="btn btn-outline-secondary btn-sm"
+<!-- Project Overview -->
+<hr class="mx-2">
+<div class="container-fluid mt-5" >
+    <div class="row">
+        <div class="col-md-12 d-flex align-items-center justify-content-between mb-3" style="margin-top:25px;">
+            <div class="d-flex align-items-center gap-2">
+                <a id="back-to-projects" class="btn btn-outline-secondary btn-sm"
                         href="{{ url('/systemAdmin/projects') }}">
-                        <span class="fa fa-arrow-left"></span>
-                    </a>
+                    <span class="fa fa-arrow-left"></span>
+                </a>
 
-                    <h5 class="m-0">Project Overview</h5>
-                </div>
+                <h5 class="m-0">Project Overview</h5>
             </div>
         </div>
+    </div>
 
         <div class="row mb-1">
             <div class="col-md-12">
@@ -440,7 +440,7 @@
                             <div class="col-md-6">
                                 <!-- Cost Breakdown -->
                                 <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Cost Breakdown
+                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Source
                                     </legend>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped text-center align-middle"
@@ -508,8 +508,7 @@
                             <!-- Right Column: Implementation Details -->
                             <div class="col-md-6 font-base">
                                 <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Utilization
-                                        Summary</legend>
+                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Utilization</legend>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">% Mobilization</label>
                                         <div class="form-control" id="percentMobi_view">0.00%</div>
