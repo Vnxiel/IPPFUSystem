@@ -441,14 +441,14 @@
               </table>
             </div> -->
 
-            <div class="text-end mt-2">
+            <!-- <div class="text-end mt-2">
               <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addNextBilling()">
                 <i class="fa-solid fa-square-plus"></i> Add Billing
               </button>
               <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastBilling()">
                 <i class="fa-solid fa-circle-minus"></i> Remove Billing
               </button>
-            </div>
+            </div> -->
           </fieldset>
 
           <!-- Modal Footer -->
