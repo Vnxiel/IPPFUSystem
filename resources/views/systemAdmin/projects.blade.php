@@ -48,8 +48,7 @@
                             </div>
                             <div id="contractorDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                 style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                <button type="button" class="list-group-item list-group-item-action">All Contractor</button>
-
+                                
                                 @foreach($contractors as $contractor)
                                     <button type="button" class="list-group-item list-group-item-action"
                                         onclick="selectContractor('{{ $contractor->name }}')">{{ $contractor->name }}</button>
@@ -125,12 +124,12 @@
                         <tr>
                             <th style="width: 4%;"><small>ID</small></th>
                             <th style="width: 23%;"><small>Project Title</small></th>
-                            <th style="width: 21%;"><small>Location</small></th>
+                            <th style="width: 18%;"><small>Location</small></th>
                             <th style="width: 8%;"><small>Status</small></th>
-                            <th style="width: 12%;"><small>Contract Amount</small></th>
-                            <th style="width: 15%;"><small>Contractor</small></th>
+                            <th style="width: 10%;"><small>Contract Amount</small></th>
+                            <th style="width: 12%;"><small>Contractor</small></th>
                             <th style="width: 6%;"><small>Duration</small></th>
-                            <th style="width: 10%;"><small>Action</small></th>
+                            <th style="width: 15%;"><small>Action</small></th>
                         </tr>
                     </thead>
                     <tbody class="small">
@@ -144,39 +143,27 @@
                                 <td>{{ $project['contractor'] }}</td>
                                 <td>{{ $project['duration'] }}</td>
                                 <td>
-                                <div class="d-flex gap-1 flex-wrap">
-                                <button class="btn btn-primary btn-sm overview-btn" 
-                                    style="min-width: 70px; white-space: nowrap;"
-                                    data-id="{{ $project['id'] }}">
-                                    <i class="fas fa-eye fa-sm"></i>
-                                    <small>View</small>
-                                </button>
+    <div class="d-flex gap-1 flex-wrap">
+        <!-- View Button -->
+        <button class="btn btn-primary btn-sm overview-btn d-flex align-items-center gap-1"
+                data-id="{{ $project['id'] }}">
+            <i class="fas fa-eye fa-sm"></i>
+            <span class="d-none d-md-inline">View</span>
+        </button>
 
-                                        <!-- <button
-                                            type="button"
-                                            class="btn btn-primary btn-sm"
-                                            data-id="{{ $project['id'] }}"
-                                            aria-label="View project {{ $project['id'] }}"
-                                        >
-                                            <i class="fas fa-eye fa-sm" aria-hidden="true"></i>
-                                            <span class="ms-1">View</span>
-                                        </button> -->
+        <!-- Report Button -->
+        <button type="button"
+                id="generateProjectBtn"
+                class="btn btn-info btn-sm d-flex align-items-center gap-1"
+                data-bs-toggle="modal"
+                data-bs-target="#generateProjectModal"
+                title="Generate/Download Report">
+            <i class="fa fa-download"></i>
+            <span class="d-none d-md-inline">Report</span>
+        </button>
+    </div>
+</td>
 
-                                        <button
-                                            type="button"
-                                            id="generateProjectBtn"
-                                            class="btn btn-info btn-sm d-flex align-items-center gap-1"
-                                            style="min-width: 90px; white-space: nowrap;"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#generateProjectModal"
-                                            title="Generate/Download Report"
-                                        >
-                                            <i class="fa fa-download"></i>
-                                            <span>Report</span>
-                                        </button>
-                                    </div>
-
-                                </td>
                             </tr>
                         @empty
                             <tr>

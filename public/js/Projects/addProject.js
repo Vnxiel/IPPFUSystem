@@ -236,12 +236,54 @@ document.addEventListener("DOMContentLoaded", function () {
     contractDays.addEventListener('input', updateTargetCompletion);
 });
 
+function validateFinancialFields() {
+    const requiredFields = [
+        "#appropriation",
+        "#contractAmount",
+        "#engineering",
+        "#abc",
+        "#mqc"
+    ];
+
+    let allFilled = true;
+
+    // Remove old validation styling
+    requiredFields.forEach(selector => {
+        $(selector).removeClass("empty-field");
+    });
+
+    // Check each required field
+    requiredFields.forEach(selector => {
+        const value = $(selector).val().trim();
+        if (!value) {
+            $(selector).addClass("empty-field");
+            allFilled = false;
+        }
+    });
+
+    if (!allFilled) {
+        Swal.fire({
+            icon: "warning",
+            title: "Missing Financial Information",
+            text: "Please fill in all required financial fields before submitting.",
+            confirmButtonText: "OK"
+        });
+    }
+
+    return allFilled;
+}
+
+
     // ================================
     // Form Submission Logic
     // ================================
 
     $(document).on("submit", "#addProjectForm", function (event) {
         event.preventDefault();
+
+        if (!validateFinancialFields()) {
+            return; // Stop if financial fields are invalid
+        }
 
         const form = this;
         let emptyFields = [];

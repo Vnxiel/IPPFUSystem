@@ -166,12 +166,13 @@
                                 <div class="bg-light p-2 d-flex justify-content-between align-items-center">
                                     <span><i class="bi bi-bar-chart-line me-2"></i><strong>Progress</strong></span>
 
-                                    @if ($projectStatusData['projectStatus'] !== 'Completed')
-                                        <button type="button" class="btn btn-sm btn-outline-primary" id="addStatusBtn">
-                                            <i class="bi bi-plus-circle me-1"></i>Add
-                                        </button>
-                                    @endif
-                                </div>
+                            @if ($totalPercentage < 100)
+
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="addStatusBtn">
+                                    <i class="bi bi-plus-circle me-1"></i>Add
+                                </button>
+                            @endif
+                        </div>
 
                                 <!-- Scrollable Table Wrapper -->
                                 <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">

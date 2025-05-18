@@ -818,7 +818,8 @@ function updateBidDifference() {
 
     for (let i = 0; i < buttons.length; i++) {
         const txt = buttons[i].textContent || buttons[i].innerText;
-        if (txt.toLowerCase().startsWith(filter)) {
+        if (txt.toLowerCase().includes(filter)) {
+
             buttons[i].style.display = '';
             anyVisible = true;
         } else {

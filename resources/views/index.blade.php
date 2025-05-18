@@ -38,7 +38,7 @@
                             <div style="color: #FFD700; font-family: Arial, sans-serif;">Provincial Government Information System</div>
                         </div>
                         <div class="text-center pt-2">
-                            <div style="color:#006400;"> Login to Access (DMSv2.1.0.0.413)</div>
+                            <div style="color:#006400;"> Login to Access (IPPFUv1.1.0.0.413)</div>
                         </div>
                         <div class="card-body">
                         <form id="loginForm" method="POST" action="{{ route('login') }}">

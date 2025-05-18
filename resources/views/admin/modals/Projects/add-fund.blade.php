@@ -21,7 +21,7 @@
             <legend class="float-none w-auto px-2 fw-bold">Cost Breakdown</legend>
 
             <div class="table-responsive">
-              <table class="table table-bordered text-center align-middle">
+              <table id="editableFundTable" class="table table-bordered text-center align-middle">
                 <thead>
                   <tr>
                     <th>Category</th>
@@ -130,9 +130,6 @@
             <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="addVOFields()">
               <i class="fa-solid fa-square-plus"></i> Add V.O.
             </button>
-            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastVOFields()">
-              <i class="fa-solid fa-circle-minus"></i> Remove V.O.
-            </button>
           </div>
           </fieldset>
 
@@ -194,7 +191,7 @@
                   <tr class="fw-bold">
                     <td>Total Expenditures</td>
                     <td></td>
-                    <td><input type="text" class="form-control amount-input" name="amountTotal"  disabled>
+                    <td><input type="text" class="form-control amount-input" name="amountTotal" disabled>
                     </td>
                     <td><input type="text" class="form-control" name="remTotal"></td>
                   </tr>
@@ -262,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const appropriationValue = parseCurrency(document.getElementById('orig_appropriation').value);
           const inputValue = parseCurrency(input.value);
 
-      
+       
           if (inputValue > appropriationValue) {
             console.warn(`✖ ${group.label} [${id}] exceeds appropriation`);
             showError(group.label);
@@ -277,7 +274,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const actualEng = document.getElementById("actual_engineering");
@@ -285,6 +281,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const actualMqc = document.getElementById("actual_mqc");
   const summaryMqc = document.querySelector('input[name="amountMqc"]');
+
+  const voContractAmount = document.getElementById("vo_contract_amount_1");
+  const actualContractAmount = document.getElementById("actual_contract_amount");
+  const finalBillingAmount = document.querySelector('input[name="amountFinal"]');
 
   if (actualEng && summaryEng) {
     actualEng.addEventListener("input", () => {
@@ -297,9 +297,19 @@ document.addEventListener("DOMContentLoaded", function () {
       summaryMqc.value = actualMqc.value;
     });
   }
-});
 
+  if (voContractAmount && actualContractAmount && finalBillingAmount) {
+    voContractAmount.addEventListener("input", () => {
+      const voValue = voContractAmount.value.trim();
+      if (voValue !== "") {
+        actualContractAmount.value = voValue;
+        finalBillingAmount.value = voValue;
+      }
+    });
+  }
+});
 </script>
+
 
 <script>
   
@@ -344,11 +354,50 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 function removeLastBilling() {
-  if (billingCount > 1) {
+  if (billingCount > 1) { 
     const tbody = document.getElementById('billingsTableBody');
     tbody.removeChild(tbody.lastElementChild);
     billingCount--;
   }
 }
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const amountTotal = document.querySelector('input[name="amountTotal"]');
+  const amountSavings = document.querySelector('input[name="amountSavings"]');
+  const origAppropriation = document.getElementById('orig_appropriation');
+
+  const validateExpenditures = () => {
+    const appropriation = parseCurrency(origAppropriation.value);
+    const total = parseCurrency(amountTotal.value);
+    const savings = parseCurrency(amountSavings.value);
+
+    if (total > appropriation) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Expenditure Exceeded',
+        text: 'Total Expenditures cannot exceed the Original Appropriation!',
+      });
+      amountTotal.value = '';
+      return false;
+    }
+
+    if (savings < 0) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Negative Savings',
+        text: 'Total Savings cannot be a negative amount!',
+      });
+      amountSavings.value = '';
+      return false;
+    }
+
+    return true;
+  };
+
+  amountTotal.addEventListener('blur', validateExpenditures);
+  amountSavings.addEventListener('blur', validateExpenditures);
+});
+</script>
+
 

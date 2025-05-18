@@ -86,20 +86,31 @@ document.addEventListener('DOMContentLoaded', () => {
     percentageInput.addEventListener('focus', showHistory);
 
     percentageInput.addEventListener('input', () => {
-        showHistory();
+    showHistory();
 
-        const currentValue = parseInt(percentageInput.value);
-        const duplicate = existingPercentages.includes(currentValue);
-        const exceedsLimit = currentValue > remainingPercentage;
+    const currentValue = parseInt(percentageInput.value);
+    const duplicate = existingPercentages.includes(currentValue);
+    const exceedsLimit = currentValue > remainingPercentage;
 
-        percentageInput.setCustomValidity('');
-        if (duplicate) {
-            percentageInput.setCustomValidity('This percentage has already been used.');
-        } else if (exceedsLimit) {
-            percentageInput.setCustomValidity(`Only ${remainingPercentage}% remaining. Please enter a value within the limit.`);
-        }
-        percentageInput.reportValidity();
-    });
+    percentageInput.setCustomValidity('');
+
+    // Check for exceeding remaining percentage
+    if (exceedsLimit) {
+        percentageInput.setCustomValidity(`Only ${remainingPercentage}% remaining. Please enter a value within the limit.`);
+    }
+
+    // ✅ Automatically set progress to "Completed" if user enters remaining %
+    if (currentValue === remainingPercentage && progressSelect.value !== 'Completed') {
+        progressSelect.value = 'Completed';
+    }
+
+    // ✅ If user reduces value again, allow manual override of status
+    if (currentValue < remainingPercentage && progressSelect.value === 'Completed') {
+        progressSelect.value = ''; // or revert to previous status if you track it
+    }
+
+    percentageInput.reportValidity();
+});
 
     percentageInput.addEventListener('blur', () => {
         setTimeout(() => {
