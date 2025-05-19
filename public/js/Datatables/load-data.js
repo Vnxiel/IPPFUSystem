@@ -357,3 +357,5 @@ $(document).ready(function() {
             deleteFile(fileName); // Call the deleteFile function from deleteFile.js
         });
     });
+
+      

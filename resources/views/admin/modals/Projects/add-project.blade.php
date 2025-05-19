@@ -659,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Show/hide other fund input
         otherFundContainer.style.display = isOther ? 'block' : 'none';
 
-        // // Validate year prefix
+        // Validate year prefix
         // if (fundValue && !fundValue.startsWith(selectedYear)) {
         //     sourceOfFundsInput.setCustomValidity(`The Source of Fund must start with "${selectedYear}"`);
         //     sourceOfFundsInput.reportValidity();

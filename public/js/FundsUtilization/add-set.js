@@ -56,48 +56,10 @@ function removeLastOrderFields() {
     }
 }
 
-function formatPesoLive(input) {
-    let selectionStart = input.selectionStart;
-    let selectionEnd = input.selectionEnd;
-
-
-    // Remove peso sign and non-digit/non-dot characters
-    let rawValue = input.value.replace(/[^0-9]/g, '');
-
-    // Split integer and decimal parts
-    let parts = rawValue.split('.');
-    let intPart = parts[0];
-    let decPart = parts[1] ? parts[1].slice(0, 2) : '';
-
-    // Format integer part with commas
-    let formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-    // Compose formatted value
-    let formatted = decPart ? `${formattedInt}.${decPart}` : formattedInt;
-
-    // Calculate cursor offset caused by formatting
-    let prevLength = input.value.length;
-    input.value = '₱' + formatted;
-    let newLength = input.value.length;
-
-    // Calculate the difference in length before and after formatting (excluding peso sign)
-    let diff = newLength - prevLength;
-
-    // Adjust cursor (limit to inside input)
-    let newPos = selectionStart + diff;
-    if (newPos > input.value.length) newPos = input.value.length;
-    if (newPos < 1) newPos = 1; // after peso sign
-
-    input.setSelectionRange(newPos, newPos);
-}
-
-
     /*  V.O. fields
         This script allows the user to add or remove V.O. fields dynamically
         V.O. stands for Variation Order*/
         
-        let voCount = parseInt(document.getElementById('voCount').value) || 1;
-      
         function addVOFields() {
             if (voCount >= 3) return; // Max limit
           
@@ -133,10 +95,26 @@ function formatPesoLive(input) {
               const newInput = newCell.querySelector('input');
           
               // Add live formatting while typing
-              newInput.addEventListener('input', () => formatPesoLive(newInput));
+              // Apply full formatting and setup listeners like existing inputs
+                formatInput(newInput);
+
+                newInput.addEventListener('input', function () {
+                    // Just do lightweight formatting here (commas only, no peso sign or fixed decimals)
+                    formatInputLive(this);
+                });
+                
+                newInput.addEventListener('blur', function () {
+                    // Full formatting with peso sign and two decimals on blur
+                    formatInput(this);
+                });
+                
+
             });
           
+            // After adding all rows
             updateVOButtonsState();
+            initAmountInputs(); // This will re-bind listeners and format all .amount-input fields
+                                                            
           }
               
         function updateVOButtonsState() {
@@ -145,12 +123,10 @@ function formatPesoLive(input) {
         }
       
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('input.amount-input').forEach(input => {
-              input.addEventListener('input', () => formatPesoLive(input));
-            });
-          
+            initAmountInputs(); // handles initial formatting + events
             updateVOButtonsState();
           });
+          
           
           
 
@@ -167,3 +143,49 @@ function formatPesoLive(input) {
             });
         }
     }
+
+    let currentBilling = 1;
+
+    // Show next billing row
+    function addNextBilling() {
+      if (currentBilling < 5) {
+        currentBilling++;
+        const nextRow = document.querySelector(`.billing-${currentBilling}`);
+        if (nextRow) {
+          nextRow.style.display = 'table-row';
+        }
+      }
+    }
+  
+    // Hide last billing row if needed
+    function removeLastBilling() {
+      if (currentBilling > 1) {
+        const rowToHide = document.querySelector(`.billing-${currentBilling}`);
+        if (rowToHide) {
+          rowToHide.style.display = 'none';
+          // Optional: clear the inputs
+          rowToHide.querySelectorAll('input').forEach(input => input.value = '');
+        }
+        currentBilling--;
+      }
+    }
+  
+    // On page load, auto-show rows that have any value
+    document.addEventListener('DOMContentLoaded', () => {
+
+        document.getElementById('btnAddBilling').addEventListener('click', addNextBilling);
+        document.getElementById('btnRemoveBilling').addEventListener('click', removeLastBilling);
+      for (let i = 2; i <= 5; i++) {
+        const row = document.querySelector(`.billing-${i}`);
+        const hasValue = Array.from(row.querySelectorAll('input')).some(input => input.value.trim() !== '');
+  
+        if (hasValue) {
+          row.style.display = 'table-row';
+          currentBilling = i; // Update currentBilling to the highest visible row
+        } else {
+          row.style.display = 'none'; // Ensure it's hidden if empty
+        }
+      }
+    });
+  
+   

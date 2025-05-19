@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('systemAdmin.layout')
 
 @section('title', 'Dashboard Page')
 
@@ -26,7 +26,7 @@
                 <div class="row g-2 mb-5">
                    <!-- Total Projects -->
                     <div class="col-md-4">
-                        <a href="/admin/projects" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/systemAdmin/projects" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                  <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -43,7 +43,7 @@
 
                     <!-- Started Projects -->
                     <div class="col-md-4">
-                        <a href="/admin/projects?page=tobestarted" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/systemAdmin/projects?page=tobestarted" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                              <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -60,7 +60,7 @@
 
                     <!-- On-going Projects -->
                     <div class="col-md-4">
-                        <a href="/admin/projects?page=ongoing" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/systemAdmin/projects?page=ongoing" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -77,7 +77,7 @@
 
                     <!-- Completed Projects -->
                     <div class="col-md-4">
-                        <a href="/admin/projects?page=completed" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/systemAdmin/projects?page=completed" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                             <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -94,7 +94,7 @@
 
                     <!-- Discontinued Projects -->
                     <div class="col-md-4">
-                        <a href="/admin/projects?page=discontinued" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/systemAdmin/projects?page=discontinued" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -130,18 +130,17 @@
     </div>
 </div>
 
-@include('admin.modals.Projects.add-project')
+@include('systemAdmin.modals.Projects.add-project')
 
-<!-- DataTable Initialization -->
-<script>    
-         document.addEventListener("DOMContentLoaded", function () {
+<!-- Dashboard Initialization -->
+    <script>    
+        document.addEventListener("DOMContentLoaded", function () {
             fetchProjectSummary(); //  Fetch project summary stats
-          
         });
         function fetchProjectSummary() {
-    fetch("/projects/summary")
-        .then(response => response.json())
-        .then(data => {
+            fetch("/projects/summary")
+            .then(response => response.json())
+            .then(data => {
 
             if (data.status === "success" && data.data) {
                 const summary = data.data;
@@ -153,17 +152,14 @@
                 document.getElementById("discontinuedProjects").textContent = summary.discontinuedProjects ?? 0;
                 document.getElementById("toBeStartedProjects").textContent = summary.toBeStartedProjects;
                 document.getElementById("suspendedProjects").textContent = summary.suspendedProjects;
-           
-              
-
-           } else {
-                console.error("Invalid summary data received.");
+            } else {
+                        console.error("Invalid summary data received.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching project summary:", error);
+                });
             }
-        })
-        .catch(error => {
-            console.error("Error fetching project summary:", error);
-        });
-}
 
-        </script>
+    </script>
 @endsection
