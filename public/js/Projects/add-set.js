@@ -56,6 +56,40 @@ function removeLastOrderFields() {
     }
 }
 
+function formatPesoLive(input) {
+    let selectionStart = input.selectionStart;
+    let selectionEnd = input.selectionEnd;
+
+
+    // Remove peso sign and non-digit/non-dot characters
+    let rawValue = input.value.replace(/[^0-9]/g, '');
+
+    // Split integer and decimal parts
+    let parts = rawValue.split('.');
+    let intPart = parts[0];
+    let decPart = parts[1] ? parts[1].slice(0, 2) : '';
+
+    // Format integer part with commas
+    let formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // Compose formatted value
+    let formatted = decPart ? `${formattedInt}.${decPart}` : formattedInt;
+
+    // Calculate cursor offset caused by formatting
+    let prevLength = input.value.length;
+    input.value = '₱' + formatted;
+    let newLength = input.value.length;
+
+    // Calculate the difference in length before and after formatting (excluding peso sign)
+    let diff = newLength - prevLength;
+
+    // Adjust cursor (limit to inside input)
+    let newPos = selectionStart + diff;
+    if (newPos > input.value.length) newPos = input.value.length;
+    if (newPos < 1) newPos = 1; // after peso sign
+
+    input.setSelectionRange(newPos, newPos);
+}
 
 
     /*  V.O. fields
@@ -65,51 +99,60 @@ function removeLastOrderFields() {
         let voCount = parseInt(document.getElementById('voCount').value) || 1;
       
         function addVOFields() {
-          if (voCount >= 3) return; // Max limit
-      
-          voCount++;
-          document.getElementById('voCount').value = voCount;
-      
-          const table = document.getElementById('editableFundTable');
-          const headerRow = table.querySelector('thead tr');
-      
-          // Add new V.O. header before 'Actual'
-          const newHeader = document.createElement('th');
-          newHeader.textContent = `V.O. ${voCount}`;
-          headerRow.insertBefore(newHeader, headerRow.lastElementChild);
-      
-          // Row IDs by order in tbody (appropriation, abc, contract_amount, etc.)
-          const rowKeys = [
-            'appropriation', 'abc', 'contract_amount', 'bid',
-            'engineering', 'mqc', 'contingency'
-          ];
-      
-          // Match these rows by index
-          const rows = table.querySelectorAll('tbody tr:not(.fw-bold)'); // exclude total row
-      
-          rowKeys.forEach((key, index) => {
-            const newCell = document.createElement('td');
-            newCell.innerHTML = `
-              <input type="text" class="form-control amount-input"
-                     id="vo_${key}_${voCount}"
-                     name="vo_${key}_${voCount}">
-            `;
-      
-            const cells = rows[index].querySelectorAll('td');
-            rows[index].insertBefore(newCell, cells[cells.length - 1]); // Before 'Actual'
-          });
-      
-          // Optionally disable button if max reached
-          updateVOButtonsState();
-        }
-      
+            if (voCount >= 3) return; // Max limit
+          
+            voCount++;
+            document.getElementById('voCount').value = voCount;
+          
+            const table = document.getElementById('editableFundTable');
+            const headerRow = table.querySelector('thead tr');
+          
+            // Add new V.O. header before 'Actual'
+            const newHeader = document.createElement('th');
+            newHeader.textContent = `V.O. ${voCount}`;
+            headerRow.insertBefore(newHeader, headerRow.lastElementChild);
+          
+            const rowKeys = [
+              'appropriation', 'abc', 'contract_amount', 'bid',
+              'engineering', 'mqc', 'contingency'
+            ];
+          
+            const rows = table.querySelectorAll('tbody tr:not(.fw-bold)');
+          
+            rowKeys.forEach((key, index) => {
+              const newCell = document.createElement('td');
+              newCell.innerHTML = `
+                <input type="text" class="form-control amount-input"
+                       id="vo_${key}_${voCount}"
+                       name="vo_${key}_${voCount}">
+              `;
+          
+              const cells = rows[index].querySelectorAll('td');
+              rows[index].insertBefore(newCell, cells[cells.length - 1]); // Before 'Actual'
+          
+              const newInput = newCell.querySelector('input');
+          
+              // Add live formatting while typing
+              newInput.addEventListener('input', () => formatPesoLive(newInput));
+            });
+          
+            updateVOButtonsState();
+          }
+              
         function updateVOButtonsState() {
           const addButton = document.querySelector('.btn-outline-primary[onclick="addVOFields()"]');
           if (addButton) addButton.disabled = voCount >= 3;
         }
       
-        document.addEventListener('DOMContentLoaded', updateVOButtonsState);
-      
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input.amount-input').forEach(input => {
+              input.addEventListener('input', () => formatPesoLive(input));
+            });
+          
+            updateVOButtonsState();
+          });
+          
+          
 
     function removeLastVOFields() {
         if (voCount > 1) {

@@ -143,7 +143,7 @@
                                         <button class="btn btn-primary btn-sm overview-btn d-flex align-items-center gap-1"
                                                 data-id="{{ $project['id'] }}">
                                             <i class="fas fa-eye fa-sm"></i>
-                                            <span class="d-none d-md-inline">View</span>
+                                            <span class=" d-md-inline">View</span>
                                         </button>
                                         <!-- Report Button -->
                                         <button type="button"
@@ -153,7 +153,7 @@
                                                 data-bs-target="#generateProjectModal"
                                                 title="Generate/Download Report">
                                             <i class="fa fa-download"></i>
-                                            <span class="d-none d-md-inline">Report</span>
+                                            <span class=" d-md-inline">Report</span>
                                         </button>
                                     </div>
                                 </td>

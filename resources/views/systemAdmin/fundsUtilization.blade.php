@@ -258,7 +258,7 @@
             <td>Contract Amount</td>
             <td></td>
             <td><input type="text" class="form-control amount-input text-end"
-                id="contract_amount" name="contract_amount"></td>
+                id="contract_amount" name="contract_amount" readonly></td>
             <td></td>
           </tr>
           <tr>
@@ -320,7 +320,7 @@
           <tr>
             <td class="fw-bold">Balance</td>
             <td></td>
-            <td id="contractBalance" class="fw-bold">0.00</td>
+            <td id="contractBalance" class="fw-bold text-end">0.00</td>
             <td></td>
           </tr>
         </tbody>
@@ -346,7 +346,7 @@
           <tr>
             <td>Engineering</td>
             <td><input type="date" class="form-control form-control-sm" name="dateEng"></td>
-            <td><input type="text" class="form-control form-control-sm" name="amountEng" ></td>
+            <td><input type="text" class="form-control form-control-sm text-end" name="amountEng" ></td>
             <td><input type="text" class="form-control form-control-sm" name="remEng"></td>
             <td>
               <button type="button" class="btn btn-sm btn-link p-0" data-bs-toggle="collapse" data-bs-target="#engDetails">Breakdown</button>
@@ -382,7 +382,7 @@
           <tr>
             <td class="fw-bold">Engineering Balance</td>
             <td></td>
-            <td class="fw-bold" id="engineeringBalance">0.00</td>
+            <td class="fw-bold text-end" id="engineeringBalance">0.00</td>
             <td colspan="2"></td>
           </tr>
         </tbody>
@@ -408,7 +408,7 @@
         <tr>
           <td>MQC</td>
           <td><input type="date" class="form-control form-control-sm" name="dateMqc"></td>
-          <td><input type="text" class="form-control form-control-sm" name="amountMqc"></td>
+          <td><input type="text" class="form-control form-control-sm text-end" name="amountMqc"></td>
           <td><input type="text" class="form-control form-control-sm" name="remMqc"></td>
           <td>
             <button type="button" class="btn btn-sm btn-link p-0" data-bs-toggle="collapse" data-bs-target="#mqcDetails">Breakdown</button>
@@ -442,7 +442,7 @@
         <tr>
           <td class="fw-bold">MQC Balance</td>
           <td></td>
-          <td class="fw-bold" id="mqcBalance">0.00</td>
+          <td class="fw-bold text-end" id="mqcBalance">0.00</td>
           <td colspan="2"></td>
         </tr>
       </tbody>
@@ -539,6 +539,58 @@
 </div>
 </section>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const amountInputs = document.querySelectorAll(".amount-input");
+
+  amountInputs.forEach(input => {
+    input.addEventListener("input", function (e) {
+      let value = this.value.replace(/[^\d.]/g, "");
+      let parts = value.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.value = '₱' + parts.join(".");
+    });
+
+    input.addEventListener("focus", function () {
+      this.value = this.value.replace(/[^\d.]/g, "");
+    });
+
+    input.addEventListener("blur", function () {
+      let value = this.value.replace(/[^\d.]/g, "");
+      let parts = value.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.value = value ? '₱' + parts.join(".") : '';
+    });
+  });
+
+  document.getElementById("addFundUtilization").addEventListener("submit", function () {
+    amountInputs.forEach(input => {
+      input.value = input.value.replace(/[^\d.]/g, "");
+    });
+  });
+});
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Loop through each VO input and listen for changes
+    document.querySelectorAll('input[id^="vo_"]').forEach(function (voInput) {
+      voInput.addEventListener('input', function () {
+        const idParts = this.id.split('_'); // e.g., vo_engineering_2 => [vo, engineering, 2]
+        const key = idParts[1]; // e.g., engineering
+        const voNumber = idParts[2]; // e.g., 2
+
+        // Set the actual field's value = current VO input's value
+        const actualInput = document.getElementById(`actual_${key}`);
+        if (actualInput) {
+          actualInput.value = this.value;
+        }
+      });
+    });
+  });
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     function parseAmount(value) {
@@ -601,11 +653,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Optional: Call once on load
     calculateExpenditureAndSavings();
-});
-</script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
     // Update amountEng, amountMqc, amountContingency from actual_* inputs
     const updateAmountFields = () => {
       const engineeringValue = document.getElementById('actual_engineering')?.value || '';
@@ -703,28 +751,53 @@ document.addEventListener('DOMContentLoaded', () => {
       amountMqcInput.addEventListener('input', updateMqcBalance);
       amountMqcInput.addEventListener('change', updateMqcBalance);
     }
-  });
-</script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+    // Set initial amount on contract amount
     const actualContractAmount = document.getElementById("actual_contract_amount");
     const contractAmount = document.getElementById("contract_amount");
 
     if (actualContractAmount && contractAmount) {
-        // Set initial value
         contractAmount.value = actualContractAmount.value;
 
-        // Update on input
         actualContractAmount.addEventListener("input", () => {
             contractAmount.value = actualContractAmount.value;
+            calculateBalance();               // 🔁 Ensures visible balance is updated
+            calculateExpenditureAndSavings(); // 🔁 Ensures total/savings update
         });
     }
-});
-</script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+
+    // Add listeners to all VO contract_amount, engineering, and mqc fields
+    const voCount = parseInt(document.getElementById("voCount").value) || 1;
+
+    for (let i = 1; i <= voCount; i++) {
+        const voContract = document.getElementById(`vo_contract_amount_${i}`);
+        const voEng = document.getElementById(`vo_engineering_${i}`);
+        const voMqc = document.getElementById(`vo_mqc_${i}`);
+
+        if (voContract) {
+            voContract.addEventListener("input", () => {
+                const contractField = document.getElementById("contract_amount");
+                if (contractField) contractField.value = voContract.value;
+            });
+        }
+
+        if (voEng) {
+            voEng.addEventListener("input", () => {
+                const engField = document.getElementById("amountEng");
+                if (engField) engField.value = voEng.value;
+            });
+        }
+
+        if (voMqc) {
+            voMqc.addEventListener("input", () => {
+                const mqcField = document.getElementById("amountMqc");
+                if (mqcField) mqcField.value = voMqc.value;
+            });
+        }
+    }
+
+//  Calculate Balance for contract groups
   const actualContractAmountInput = document.getElementById("actual_contract_amount");
   const contractAmountInput = document.getElementById("contract_amount");
   const balanceDisplay = document.getElementById("contractBalance");
@@ -804,6 +877,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initial balance calculation
   calculateBalance();
+
+
+  // Trigger recalculations when contract amount, engineering, or mqc values change
+  const actualFields = ['actual_contract_amount', 'actual_engineering', 'actual_mqc'];
+  actualFields.forEach(id => {
+  const input = document.getElementById(id);
+  if (input) {
+    input.addEventListener('input', () => {
+      calculateBalance();              // Update contract balance display
+      calculateExpenditureAndSavings(); // Update savings and totals
+      updateEngineeringBalance();      // Update engineering balance
+      updateMqcBalance();              // Update MQC balance
+    });
+    input.addEventListener('change', () => {
+      calculateBalance();
+      calculateExpenditureAndSavings();
+      updateEngineeringBalance();
+      updateMqcBalance();
+    });
+  }
+});
+
 });
 </script>
 
@@ -851,52 +946,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-  
-    const voCount = parseInt(document.getElementById('voCount').value) || 1;
-    const keys = ['contract_amount', 'engineering', 'mqc']; // add all your keys here
-
-    function updateActualValues() {
-      keys.forEach(key => {
-        const origInput = document.getElementById(`orig_${key}`);
-        const actualInput = document.getElementById(`actual_${key}`);
-
-        let actualVal = '';
-
-        // Check all VO inputs in order, pick the first non-empty value
-        for (let i = 1; i <= voCount; i++) {
-          const voInput = document.getElementById(`vo_${key}_${i}`);
-          if (voInput && voInput.value.trim() !== '') {
-            actualVal = voInput.value.trim();
-            break; // stop checking further if found a VO value
-          }
-        }
-
-        // If no VO values found, fallback to original
-        if (actualVal === '') {
-          actualVal = origInput ? origInput.value.trim() : '';
-        }
-
-        if (actualInput) {
-          actualInput.value = actualVal;
-        }
-      });
-    }
-
-    // Run on page load
-    updateActualValues();
-
-    // Attach event listeners to all relevant inputs (orig + all VOs) to update live
-    keys.forEach(key => {
-      const origInput = document.getElementById(`orig_${key}`);
-      if (origInput) origInput.addEventListener('input', updateActualValues);
-
-      for (let i = 1; i <= voCount; i++) {
-        const voInput = document.getElementById(`vo_${key}_${i}`);
-        if (voInput) voInput.addEventListener('input', updateActualValues);
-      }
-    });
-  });
+ 
 </script>
 
 
@@ -1141,6 +1191,76 @@ const percentInput = document.getElementById('percentMobi');
   }
 });
 
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const keys = ['contract_amount', 'engineering', 'mqc', 'abc', 'bid', 'contingency', 'appropriation'];
+
+  // Keys that require VO values only; no fallback to original
+  const voOnlyKeys = ['appropriation', 'contingency', 'bid', 'abc'];
+
+  function getHighestVONumber() {
+    const voInputs = document.querySelectorAll('input[id^="vo_"]');
+    let max = 1;
+    voInputs.forEach(input => {
+      const parts = input.id.split('_'); // e.g., vo_contract_amount_2
+      const voNum = parseInt(parts[parts.length - 1]);
+      if (!isNaN(voNum) && voNum > max) {
+        max = voNum;
+      }
+    });
+    return max;
+  }
+
+  function updateActualValuesForKey(key) {
+    const origInput = document.getElementById(`orig_${key}`);
+    const actualInput = document.getElementById(`actual_${key}`);
+    let actualVal = '';
+
+    const highestVO = getHighestVONumber();
+
+    // Look for highest VO value (from highest VO # down to 1)
+    for (let i = highestVO; i >= 1; i--) {
+      const voInput = document.getElementById(`vo_${key}_${i}`);
+      if (voInput && voInput.value.trim() !== '') {
+        actualVal = voInput.value.trim();
+        break;
+      }
+    }
+
+    if (actualInput) {
+      if (voOnlyKeys.includes(key)) {
+        // For voOnlyKeys: set actual only if VO value exists; else blank
+        actualInput.value = actualVal; // empty string if no VO values
+      } else {
+        // For others: fallback to original if no VO values
+        actualInput.value = actualVal !== '' ? actualVal : (origInput ? origInput.value.trim() : '');
+      }
+    }
+  }
+
+  // Listen for any input change on VO or Original fields
+  document.addEventListener('input', (e) => {
+    const target = e.target;
+
+    if (target && target.id.startsWith('vo_')) {
+      const idParts = target.id.split('_');
+      if (idParts.length >= 3) {
+        const key = idParts.slice(1, -1).join('_');
+        updateActualValuesForKey(key);
+      }
+    }
+
+    if (target && target.id.startsWith('orig_')) {
+      const key = target.id.replace('orig_', '');
+      updateActualValuesForKey(key);
+    }
+  });
+
+  // Initial update on page load
+  keys.forEach(updateActualValuesForKey);
+});
 </script>
 
 @endsection

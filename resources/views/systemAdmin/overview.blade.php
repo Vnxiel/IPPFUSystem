@@ -29,13 +29,13 @@
                     <button type="button" id="editProjectBtn" class="btn btn-warning btn-sm d-flex align-items-center gap-1"
                         data-bs-toggle="modal" data-bs-target="#projectModal" title="Edit Project Details">
                         <i class="fa fa-edit"></i>
-                        <span class="d-none d-md-inline">Edit</span>
+                        <span class=" d-md-inline">Edit</span>
                     </button>
 
                     <button type="button" id="trashProjectBtn" class="btn btn-danger btn-sm d-flex align-items-center gap-1"
                         data-bs-toggle="modal" data-bs-target="#trashModal" title="Archive Project">
                         <i class="fa fa-trash"></i>
-                        <span class="d-none d-md-inline">Archive</span>
+                        <span class=" d-md-inline">Archive</span>
                     </button>
                 </div>
             </div>
@@ -396,7 +396,7 @@
                                     class="btn btn-primary btn-sm d-flex align-items-center gap-2 ms-auto"
                                     title="Add Fund Utilization Details">
                                         <i class="fa fa-plus"></i>
-                                        <span class="d-none d-md-inline">Add Fund Utilization</span>
+                                        <span class=" d-md-inline">Add Fund Utilization</span>
                                     </a>
 
 
@@ -563,7 +563,7 @@
                 <button type="button" class="btn btn-success btn-sm d-flex align-items-center gap-1"
                     data-bs-toggle="modal" data-bs-target="#uploadModal" title="Upload Files">
                     <i class="fa fa-upload"></i>
-                    <span class="d-none d-md-inline">Upload</span>
+                    <span class=" d-md-inline">Upload</span>
                 </button>
             </div>
             <div class="card-body p-2">
