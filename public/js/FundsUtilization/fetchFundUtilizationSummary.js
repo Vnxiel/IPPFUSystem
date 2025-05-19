@@ -3,6 +3,7 @@ $(document).ready(function () {
 
   if (project_id) {
     loadFundSummary(project_id);
+    
   } else {
     console.warn("No project_id found. Skipping fund summary.");
   }
@@ -99,6 +100,7 @@ function loadFundSummary(project_id) {
         document.getElementById('amountSavings_view').textContent = numberFormat(summary.totalSavings?.amount);
         document.getElementById('remSavings_view').textContent = summary.totalSavings?.remarks || '-';
 
+        updateOriginalTotal();
       } else {
         console.warn("Fund summary not found.");
       }

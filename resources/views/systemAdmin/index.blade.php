@@ -132,16 +132,15 @@
 
 @include('systemAdmin.modals.Projects.add-project')
 
-<!-- DataTable Initialization -->
-<script>    
-         document.addEventListener("DOMContentLoaded", function () {
+<!-- Dashboard Initialization -->
+    <script>    
+        document.addEventListener("DOMContentLoaded", function () {
             fetchProjectSummary(); //  Fetch project summary stats
-          
         });
         function fetchProjectSummary() {
-    fetch("/projects/summary")
-        .then(response => response.json())
-        .then(data => {
+            fetch("/projects/summary")
+            .then(response => response.json())
+            .then(data => {
 
             if (data.status === "success" && data.data) {
                 const summary = data.data;
@@ -153,17 +152,14 @@
                 document.getElementById("discontinuedProjects").textContent = summary.discontinuedProjects ?? 0;
                 document.getElementById("toBeStartedProjects").textContent = summary.toBeStartedProjects;
                 document.getElementById("suspendedProjects").textContent = summary.suspendedProjects;
-           
-              
-
-           } else {
-                console.error("Invalid summary data received.");
+            } else {
+                        console.error("Invalid summary data received.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching project summary:", error);
+                });
             }
-        })
-        .catch(error => {
-            console.error("Error fetching project summary:", error);
-        });
-}
 
-        </script>
+    </script>
 @endsection

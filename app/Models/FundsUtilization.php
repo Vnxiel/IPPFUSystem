@@ -42,4 +42,30 @@ class FundsUtilization extends Model
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
+
+    public function mobilizations()
+{
+    return $this->hasMany(Mobilization::class);
+}
+
+public function partialBillings()
+{
+    return $this->hasMany(PartialBilling::class);
+}
+
+public function engineerings()
+{
+    return $this->hasMany(Engineering::class);
+}
+
+public function mqcs()
+{
+    return $this->hasMany(Mqc::class);
+}
+
+public function contingencies()
+{
+    return $this->hasMany(Contingency::class);
+}
+
 }

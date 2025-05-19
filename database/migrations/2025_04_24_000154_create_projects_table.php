@@ -26,7 +26,7 @@ return new class extends Migration
 
 
             $table->date('originalStartDate');
-            $table->date('targetCompletionDate');
+            $table->date('targetCompletion');
             $table->string('timeExtension')->nullable();
             $table->date('revisedTargetCompletion')->nullable();
             $table->date('completionDate');

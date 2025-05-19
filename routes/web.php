@@ -32,6 +32,11 @@ Route::controller(UserManager::class)->group(function () {
        
     });
 
+    Route::get('/funds-utilization', function () {
+        return view('systemAdmin.fundsUtilization');
+    })->name('funds.utilization');
+    
+
     Route::controller(SystemAdminManager::class)->group(function () {
         Route::get('/systemAdmin/index', 'index')->name('systemAdmin.index');
         Route::get('/systemAdmin/userManagement', 'viewUserManagement')->name('systemAdmin.userManagement');
@@ -91,13 +96,16 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/projects/restore/{project_id}', 'restoreProject')->name('projects.restore');
         Route::post('/project-status/addStatus', 'addStatus');
         Route::get('/systemAdmin/trash', 'fetchTrashedProjects')->name('systemAdmin.trash');
-
+      
     });
     
-  
-    Route::get('/fund-utilization/{project_id}', [FundsUtilizationController::class, 'getFundUtilization']);
-    Route::post('/fund-utilization/store', [FundsUtilizationController::class, 'storeFundUtilization']);
-    
+    Route::get('/projects/fund-utilization/{project_id}', [FundsUtilizationController::class, 'getFundsUtilization'])
+        ->name('project.fund-utilization');
+    Route::post('/projects/fund-utilization/{id}/details', [FundsUtilizationController::class, 'storeFundDetail']);
+  Route::post('/fund-utilization/store', [FundsUtilizationController::class, 'storeFundUtilization']);
+    Route::post('/funds-utilization/{id}/engineering', [FundsUtilizationController::class, 'storeEngineering'])->name('engineering.store');
+    Route::post('/funds-utilization/{id}/mqc', [FundsUtilizationController::class, 'storeMQC'])->name('mqc.store');
+   
     Route::get('generateProject/{project_id}', [GenerateProjectReport::class, 'generateProjectPDF']);
 
 

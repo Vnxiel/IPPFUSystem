@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\FundsUtilization;
 use App\Models\VariationOrder;
 use App\Models\Project;
+use App\Models\FundsBreakdowns;
+use App\Models\MQC;
 
 class FundsUtilizationController extends Controller
 {
@@ -47,7 +49,8 @@ class FundsUtilizationController extends Controller
             'previousData' => $previousData
         ]);
     }
-     public function storeFundUtilization(Request $request)
+
+    public function storeFundUtilization(Request $request)
     {
         DB::beginTransaction();
     
@@ -64,60 +67,95 @@ class FundsUtilizationController extends Controller
                 'variation_orders' => $variationOrders
             ]);
     
-            // Create new fund utilization record
-            $fundUtilization = FundsUtilization::create([
-                'project_id' => $request->project_id,
-                'orig_abc' => $this->cleanMoney($fundData['orig_abc'] ?? null),
-                'orig_contract_amount' => $this->cleanMoney($fundData['orig_contract_amount'] ?? null),
-                'orig_engineering' => $this->cleanMoney($fundData['orig_engineering'] ?? null),
-                'orig_mqc' => $this->cleanMoney($fundData['orig_mqc'] ?? null),
-                'orig_contingency' => $this->cleanMoney($fundData['orig_contingency'] ?? null),
-                'orig_bid' => $this->cleanMoney($fundData['orig_bid'] ?? null),
-                'orig_appropriation' => $this->cleanMoney($fundData['orig_appropriation'] ?? null),
-                'actual_abc' => $this->cleanMoney($fundData['actual_abc'] ?? null),
-                'actual_contract_amount' => $this->cleanMoney($fundData['actual_contract_amount'] ?? null),
-                'actual_engineering' => $this->cleanMoney($fundData['actual_engineering'] ?? null),
-                'actual_mqc' => $this->cleanMoney($fundData['actual_mqc'] ?? null),
-                'actual_bid' => $this->cleanMoney($fundData['actual_bid'] ?? null),
-                'actual_contingency' => $this->cleanMoney($fundData['actual_contingency'] ?? null),
-                'actual_appropriation' => $this->cleanMoney($fundData['actual_appropriation'] ?? null),
-                'totalExpenditure' => $this->cleanMoney($fundData['total_expenditure'] ?? null),
-                'totalSavings' => $this->cleanMoney($fundData['total_savings'] ?? null),
-                'summary' => collect($summary)->map(function ($item, $key) {
-                    if (isset($item['amount'])) {
-                        $item['amount'] = $this->cleanMoney($item['amount']);
-                    }
-                
-                    // Optionally sanitize 'percent' to float (if needed)
-                    // Inside your ->map() for summary
-                    if ($key === 'mobilization') {
-                        if (isset($item['percent'])) {
-                            $item['percent'] = floatval($item['percent']);
-                        }
-
-                        if (isset($item['amount'])) {
-                            $item['amount'] = $this->cleanMoney($item['amount']);
-                        }
-
-                        if (isset($item['remaining']['amount'])) {
-                            $item['remaining']['amount'] = $this->cleanMoney($item['remaining']['amount']);
-                        }
-                    }
-
-                
-                    return $item;
-                })->toArray(),                
-                
-                'partial_billings' => collect($partialBillings)->map(function ($item) {
-                    $item['amount'] = isset($item['amount']) ? $this->cleanMoney($item['amount']) : null;
-                    return $item;
-                })->toArray(),
-                
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            // Format summary and partial billings
+            $formattedSummary = collect($summary)->map(function ($item, $key) {
+                if (isset($item['amount'])) {
+                    $item['amount'] = $this->cleanMoney($item['amount']);
+                }
     
-            // Prepare variation orders data
+                if ($key === 'mobilization') {
+                    if (isset($item['percent'])) {
+                        $item['percent'] = floatval($item['percent']);
+                    }
+    
+                    if (isset($item['remaining']['amount'])) {
+                        $item['remaining']['amount'] = $this->cleanMoney($item['remaining']['amount']);
+                    }
+                }
+    
+                return $item;
+            })->toArray();
+    
+            $formattedBillings = collect($partialBillings)->map(function ($item) {
+                $item['amount'] = isset($item['amount']) ? $this->cleanMoney($item['amount']) : null;
+                return $item;
+            })->toArray();
+    
+            // Check if fund utilization already exists
+            $fundUtilization = FundsUtilization::where('project_id', $request->project_id)->first();
+    
+            if ($fundUtilization) {
+                // Update existing record
+                $fundUtilization->update([
+                    'orig_abc' => $this->cleanMoney($fundData['orig_abc'] ?? null),
+                    'orig_contract_amount' => $this->cleanMoney($fundData['orig_contract_amount'] ?? null),
+                    'orig_engineering' => $this->cleanMoney($fundData['orig_engineering'] ?? null),
+                    'orig_mqc' => $this->cleanMoney($fundData['orig_mqc'] ?? null),
+                    'orig_contingency' => $this->cleanMoney($fundData['orig_contingency'] ?? null),
+                    'orig_bid' => $this->cleanMoney($fundData['orig_bid'] ?? null),
+                    'orig_appropriation' => $this->cleanMoney($fundData['orig_appropriation'] ?? null),
+                    'actual_abc' => $this->cleanMoney($fundData['actual_abc'] ?? null),
+                    'actual_contract_amount' => $this->cleanMoney($fundData['actual_contract_amount'] ?? null),
+                    'actual_engineering' => $this->cleanMoney($fundData['actual_engineering'] ?? null),
+                    'actual_mqc' => $this->cleanMoney($fundData['actual_mqc'] ?? null),
+                    'actual_bid' => $this->cleanMoney($fundData['actual_bid'] ?? null),
+                    'actual_contingency' => $this->cleanMoney($fundData['actual_contingency'] ?? null),
+                    'actual_appropriation' => $this->cleanMoney($fundData['actual_appropriation'] ?? null),
+                    'totalExpenditure' => $this->cleanMoney($fundData['total_expenditure'] ?? null),
+                    'totalSavings' => $this->cleanMoney($fundData['total_savings'] ?? null),
+                    'summary' => $formattedSummary,
+                    'partial_billings' => $formattedBillings,
+                    'updated_at' => now(),
+                ]);
+            } else {
+                // Create new record
+                $fundUtilization = FundsUtilization::create([
+                    'project_id' => $request->project_id,
+                    'orig_abc' => $this->cleanMoney($fundData['orig_abc'] ?? null),
+                    'orig_contract_amount' => $this->cleanMoney($fundData['orig_contract_amount'] ?? null),
+                    'orig_engineering' => $this->cleanMoney($fundData['orig_engineering'] ?? null),
+                    'orig_mqc' => $this->cleanMoney($fundData['orig_mqc'] ?? null),
+                    'orig_contingency' => $this->cleanMoney($fundData['orig_contingency'] ?? null),
+                    'orig_bid' => $this->cleanMoney($fundData['orig_bid'] ?? null),
+                    'orig_appropriation' => $this->cleanMoney($fundData['orig_appropriation'] ?? null),
+                    'actual_abc' => $this->cleanMoney($fundData['actual_abc'] ?? null),
+                    'actual_contract_amount' => $this->cleanMoney($fundData['actual_contract_amount'] ?? null),
+                    'actual_engineering' => $this->cleanMoney($fundData['actual_engineering'] ?? null),
+                    'actual_mqc' => $this->cleanMoney($fundData['actual_mqc'] ?? null),
+                    'actual_bid' => $this->cleanMoney($fundData['actual_bid'] ?? null),
+                    'actual_contingency' => $this->cleanMoney($fundData['actual_contingency'] ?? null),
+                    'actual_appropriation' => $this->cleanMoney($fundData['actual_appropriation'] ?? null),
+                    'totalExpenditure' => $this->cleanMoney($fundData['total_expenditure'] ?? null),
+                    'totalSavings' => $this->cleanMoney($fundData['total_savings'] ?? null),
+                    'summary' => $formattedSummary,
+                    'partial_billings' => $formattedBillings,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+    
+            // Delete existing VOs for this fund utilization
+            VariationOrder::where('funds_utilization_id', $fundUtilization->id)->delete();
+
+            // Limit to max 3 VOs
+            if (count($variationOrders) > 3) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Only up to 3 Variation Orders are allowed.'
+                ], 400);
+            }
+
+            // Insert up to 3 VOs with correct numbering
             $voData = [];
             foreach ($variationOrders as $index => $vo) {
                 $voData[] = [
@@ -134,11 +172,10 @@ class FundsUtilizationController extends Controller
                     'updated_at' => now(),
                 ];
             }
-    
-            // Insert variation orders in bulk
             if (!empty($voData)) {
                 VariationOrder::insert($voData);
             }
+
     
             DB::commit();
     
@@ -157,6 +194,128 @@ class FundsUtilizationController extends Controller
         }
     }
     
+    public function storeFundDetail(Request $request, $id)
+{
+    try {
+        $fundUtilization = FundsUtilization::where('project_id', $id)->first();
+
+        if (!$fundUtilization) {
+            return response()->json(['success' => false, 'message' => 'Fund utilization record not found.']);
+        }
+
+        // Check for duplicate entry
+        $existing = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
+            ->where('type', $request->type)
+            ->where('name', $request->name)
+            ->where('month', $request->month)
+            ->where('payment_periods', $request->payment_period)
+            ->first();
+
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Duplicate entry detected. Same name, month, and payment period already exist.'
+            ]);
+        }
+
+        FundsBreakdowns::create([
+            'funds_utilization_id' => $fundUtilization->id,
+            'type' => $request->type,
+            'name' => $request->name,
+            'month' => $request->month,
+            'payment_periods' => $request->payment_period,
+            'amount' => $this->cleanMoney($request->amount),
+            'date' => now(),
+            'remarks' => null,
+        ]);
+
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        Log::error("Failed to store fund detail: " . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Failed to save.']);
+    }
+}
+
+    
+    
+public function getFundsUtilization(Request $request, $project_id)
+{
+    try {
+        $project = Project::find($project_id);
+        if (!$project) {
+            return redirect()->back()->withErrors(['Project not found.']);
+        }
+
+        $fundUtilization = FundsUtilization::where('project_id', $project_id)
+            ->orderBy('updated_at', 'desc')
+            ->first();
+
+        $funds = [];
+        $summary = [];
+        $partial_billings = [];
+        $engineeringEntries = collect();
+        $mqcEntries = collect();
+
+        if ($fundUtilization) {
+            $funds = $fundUtilization->only([
+                'orig_abc', 'orig_contract_amount', 'orig_engineering', 'orig_mqc',
+                'orig_contingency', 'orig_bid', 'orig_appropriation',
+                'actual_abc', 'actual_contract_amount', 'actual_engineering',
+                'actual_mqc', 'actual_contingency', 'actual_bid', 'actual_appropriation',
+            ]);
+
+            // JSON decode with fallback
+            if (!empty($fundUtilization->summary)) {
+                $summary = is_string($fundUtilization->summary)
+                    ? json_decode($fundUtilization->summary, true) ?? []
+                    : $fundUtilization->summary;
+            }
+
+            if (!empty($fundUtilization->partial_billings)) {
+                $partial_billings = is_string($fundUtilization->partial_billings)
+                    ? json_decode($fundUtilization->partial_billings, true) ?? []
+                    : $fundUtilization->partial_billings;
+            }
+
+            $variationOrders = [];
+    
+           $variationOrders = VariationOrder::where('funds_utilization_id', $fundUtilization->id)
+            ->orderBy('vo_number')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            // Fetch engineering and mqc from database
+            $engineeringEntries = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
+            ->where('type', 'engineering')
+            ->orderBy('created_at', 'desc')
+            ->get();
+           
+
+            \Log::info('Debug engineering entries', [
+                'fund_utilization_id' => $fundUtilization->project_id ?? null,
+                'engineering_count' => $engineeringEntries->count(),
+                'entries' => $engineeringEntries->toArray()
+            ]);
+            
+        
+
+            $mqcEntries = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
+                ->where('type', 'mqc')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+
+        return view('systemAdmin.fundsUtilization', compact(
+            'project', 'funds', 'summary', 'partial_billings',
+            'engineeringEntries', 'mqcEntries', 'variationOrders'
+        ));
+        
+
+    } catch (\Exception $e) {
+        \Log::error('Error fetching fund utilization: ' . $e->getMessage());
+        return redirect()->back()->withErrors(['An error occurred while retrieving fund utilization.']);
+    }
+}
 
     /**
      * Helper function to clean currency strings (₱, commas, etc.)

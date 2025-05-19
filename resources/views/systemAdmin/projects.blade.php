@@ -8,36 +8,33 @@
     <div class="card mb-1 border-0 shadow-lg" style="margin-top:75px;">
         <div class="card-body p-2">
             <div class="row g-3 ">
-            <!-- Filters Section - Left Sidebar -->
-            <div class="card border-0 shadow-sm mb-1">
-                <div class="card-body p-1">
-                    <div class="d-flex align-items-center justify-content-between mb-1" style="color: #2c3e50; font-weight: 600;">
-                        <h6 class="mb-0">
-                            <i class="fas fa-filter me-2"></i>Filter Projects
-                        </h6>
-                    </div>
-
-                    <div class="row g-3">
-                    <!-- Location Dropdown -->
-                            
-
-                    <div class="col-md-2 position-relative">
-                        <input type="text" class="form-control" id="location_filter" name="location_filter"
-                            placeholder="Select or type location" autocomplete="off" onfocus="showLocationDropdown()" oninput="showLocationDropdown()" />
-
-                        <div id="location_filter_dropdown"
-                            class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                            style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                            @foreach($locations as $location)
-                                <button type="button" class="list-group-item list-group-item-action"
-                                    onclick="selectLocation('{{ $location }}')">
-                                    {{ $location }}
-                                </button>
-                            @endforeach
+                <!-- Filters Section - Left Sidebar -->
+                <div class="card border-0 shadow-sm mb-1">
+                    <div class="card-body p-1">
+                        <div class="d-flex align-items-center justify-content-between mb-1" style="color: #2c3e50; font-weight: 600;">
+                            <h6 class="mb-0">
+                                <i class="fas fa-filter me-2"></i>Filter Projects
+                            </h6>
                         </div>
-                    </div>
 
-                    <!-- CONTRACTOR INPUT + DROPDOWN -->
+                        <div class="row g-3">
+                        <!-- Location Dropdown -->
+                        <div class="col-md-2 position-relative">
+                            <input type="text" class="form-control" id="location_filter" name="location_filter"
+                                placeholder="Select or type location" autocomplete="off" onfocus="showLocationDropdown()" oninput="showLocationDropdown()" />
+                            <div id="location_filter_dropdown"
+                                class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                @foreach($locations as $location)
+                                    <button type="button" class="list-group-item list-group-item-action"
+                                        onclick="selectLocation('{{ $location }}')">
+                                        {{ $location }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- CONTRACTOR INPUT + DROPDOWN -->
                         <div class="col-md-3 position-relative">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="contractor_filter" name="contractor"
@@ -56,8 +53,6 @@
                             </div>
                         </div>
 
-
-
                         <!-- Amount Filter -->
                         <div class="col-md-2">
                             <div class="">
@@ -65,7 +60,6 @@
                                     placeholder="Enter amount"> <!-- Keep this non-empty -->
                             </div>
                         </div>
-
 
                         <!-- Status Filter -->
                         <div class="col-md-2">
@@ -80,8 +74,8 @@
                                 </select>
                             </div>
                         </div>
-                        
-                        <!-- Status Filter -->
+                            
+                        <!-- Add Project -->
                         <div class="col-md-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="ms-auto">
@@ -94,6 +88,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="d-flex">
                             <!-- View All Projects Checkbox -->
                             <div class="form-check mx-2">
@@ -115,7 +110,7 @@
 <div class="col-md-12">
     <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-2">
-            <!-- Responsive Table Wrapper -->
+            <!-- Responsive Table Wrapper-->
             <div class="table-responsive" style="overflow-x: auto;">
                 <table id="projects" 
                        class="table table-hover table-bordered table-sm mb-0"
@@ -143,27 +138,25 @@
                                 <td>{{ $project['contractor'] }}</td>
                                 <td>{{ $project['duration'] }}</td>
                                 <td>
-    <div class="d-flex gap-1 flex-wrap">
-        <!-- View Button -->
-        <button class="btn btn-primary btn-sm overview-btn d-flex align-items-center gap-1"
-                data-id="{{ $project['id'] }}">
-            <i class="fas fa-eye fa-sm"></i>
-            <span class="d-none d-md-inline">View</span>
-        </button>
-
-        <!-- Report Button -->
-        <button type="button"
-                id="generateProjectBtn"
-                class="btn btn-info btn-sm d-flex align-items-center gap-1"
-                data-bs-toggle="modal"
-                data-bs-target="#generateProjectModal"
-                title="Generate/Download Report">
-            <i class="fa fa-download"></i>
-            <span class="d-none d-md-inline">Report</span>
-        </button>
-    </div>
-</td>
-
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        <!-- View Button -->
+                                        <button class="btn btn-primary btn-sm overview-btn d-flex align-items-center gap-1"
+                                                data-id="{{ $project['id'] }}">
+                                            <i class="fas fa-eye fa-sm"></i>
+                                            <span class="d-none d-md-inline">View</span>
+                                        </button>
+                                        <!-- Report Button -->
+                                        <button type="button"
+                                                id="generateProjectBtn"
+                                                class="btn btn-info btn-sm d-flex align-items-center gap-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#generateProjectModal"
+                                                title="Generate/Download Report">
+                                            <i class="fa fa-download"></i>
+                                            <span class="d-none d-md-inline">Report</span>
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -178,9 +171,9 @@
 </div>
 
 
-    <script>
-        
-        function showLocationDropdown() {
+<script>
+
+    function showLocationDropdown() {
         const input = $('#location_filter').val().toLowerCase();
         $('#location_filter_dropdown').show();
 
@@ -678,24 +671,25 @@
                 const received = document.getElementById(receivedId);
 
                 function checkDate() {
-                    if (issued.value && received.value) {
-                        const issuedDate = new Date(issued.value);
-                        const receivedDate = new Date(received.value);
+                        if (issued.value && received.value) {
+                            const issuedDate = new Date(issued.value);
+                            const receivedDate = new Date(received.value);
 
-                        // Only validate if both dates are valid
-                        if (!isNaN(issuedDate) && !isNaN(receivedDate)) {
-                            if (receivedDate <= issuedDate) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: `${label} Error`,
-                                    text: 'Received date must be after the issued date.',
-                                    confirmButtonColor: '#3085d6',
-                                });
-                                received.value = ""; // Clear invalid input
+                            // Only validate if both dates are valid
+                            if (!isNaN(issuedDate) && !isNaN(receivedDate)) {
+                                if (receivedDate < issuedDate) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: `${label} Error`,
+                                        text: 'Received date must be the same or after the issued date.',
+                                        confirmButtonColor: '#3085d6',
+                                    });
+                                    received.value = ""; // Clear invalid input
+                                }
                             }
                         }
                     }
-                }
+
 
                 // Use blur instead of change so it fires after typing and moving away
                 issued.addEventListener("blur", checkDate);

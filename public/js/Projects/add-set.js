@@ -61,54 +61,55 @@ function removeLastOrderFields() {
     /*  V.O. fields
         This script allows the user to add or remove V.O. fields dynamically
         V.O. stands for Variation Order*/
-    function addVOFields() {
-        voCount++;
-        const container = document.getElementById('voContainer');
-
-        const newSet = document.createElement('div');
-        newSet.classList.add('row', 'mb-3', 'vo-set');
-        newSet.id = `voSet${voCount}`;
-        newSet.innerHTML = `
-                            <div class="row text-center">
-                                <div class="row">
-                                    <h6 class=" m-1 fw-bold">V.O.${voCount}</h6>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-1">
-                                    <label for="vo_abc${voCount}" class="form-label">ABC</label>
-                                    <input type="text" class="form-control currency-input" id="vo_abc${voCount}" name="vo_abc${voCount}">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="vo_contractAmount${voCount}" class="form-label">Contract Amount</label>
-                                    <input type="text" class="form-control currency-input" id="vo_contractAmount${voCount}" name="vo_contractAmount${voCount}">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="vo_engineering${voCount}" class="form-label">Engineering</label>
-                                    <input type="text" class="form-control currency-input" id="vo_engineering${voCount}" name="vo_engineering${voCount}">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="vo_mqc${voCount}" class="form-label">MQC</label>
-                                    <input type="text" class="form-control currency-input" id="vo_mqc${voCount}" name="vo_mqc${voCount}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-1">
-                                    <label for="vo_contingency${voCount}" class="form-label">Contingency</label>
-                                    <input type="text" class="form-control currency-input" id="vo_contingency${voCount}" name="vo_contingency${voCount}">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="vo_bid${voCount}" class="form-label">Bid Difference</label>
-                                    <input type="text" class="form-control currency-input" id="vo_bid${voCount}" name="vo_bid${voCount}">
-                                </div>
-                                <div class="mb-1">
-                                    <label for="vo_appropriation${voCount}" class="form-label">Appropriation</label>
-                                    <input type="text" class="form-control currency-input" id="vo_appropriation${voCount}" name="vo_appropriation${voCount}">
-                                </div>
-                            </div>
-                        `;
-        container.appendChild(newSet);
-    }
+        
+        let voCount = parseInt(document.getElementById('voCount').value) || 1;
+      
+        function addVOFields() {
+          if (voCount >= 3) return; // Max limit
+      
+          voCount++;
+          document.getElementById('voCount').value = voCount;
+      
+          const table = document.getElementById('editableFundTable');
+          const headerRow = table.querySelector('thead tr');
+      
+          // Add new V.O. header before 'Actual'
+          const newHeader = document.createElement('th');
+          newHeader.textContent = `V.O. ${voCount}`;
+          headerRow.insertBefore(newHeader, headerRow.lastElementChild);
+      
+          // Row IDs by order in tbody (appropriation, abc, contract_amount, etc.)
+          const rowKeys = [
+            'appropriation', 'abc', 'contract_amount', 'bid',
+            'engineering', 'mqc', 'contingency'
+          ];
+      
+          // Match these rows by index
+          const rows = table.querySelectorAll('tbody tr:not(.fw-bold)'); // exclude total row
+      
+          rowKeys.forEach((key, index) => {
+            const newCell = document.createElement('td');
+            newCell.innerHTML = `
+              <input type="text" class="form-control amount-input"
+                     id="vo_${key}_${voCount}"
+                     name="vo_${key}_${voCount}">
+            `;
+      
+            const cells = rows[index].querySelectorAll('td');
+            rows[index].insertBefore(newCell, cells[cells.length - 1]); // Before 'Actual'
+          });
+      
+          // Optionally disable button if max reached
+          updateVOButtonsState();
+        }
+      
+        function updateVOButtonsState() {
+          const addButton = document.querySelector('.btn-outline-primary[onclick="addVOFields()"]');
+          if (addButton) addButton.disabled = voCount >= 3;
+        }
+      
+        document.addEventListener('DOMContentLoaded', updateVOButtonsState);
+      
 
     function removeLastVOFields() {
         if (voCount > 1) {

@@ -538,7 +538,7 @@ if ($existing) {
                         'vo_number', 'vo_abc', 'vo_contract_amount', 'vo_engineering', 'vo_mqc', 'vo_contingency', 'vo_bid', 'vo_appropriation'
                     ]);
                 })
-                ->toArray();
+                ->toArray(); 
 
                 Log::info('Variation Orders:', ['project_id' => $id, 'variation_orders' => $project['variation_orders']]);
     
@@ -565,6 +565,7 @@ if ($existing) {
             return redirect()->back()->withErrors(['An error occurred while retrieving the project.']);
         }
     }
+    
     
     public function getProjectSummary()
     {
