@@ -315,7 +315,7 @@ public function getFundsUtilization(Request $request, $project_id)
         \Log::error('Error fetching fund utilization: ' . $e->getMessage());
         return redirect()->back()->withErrors(['An error occurred while retrieving fund utilization.']);
     }
-}
+} 
 
     /**
      * Helper function to clean currency strings (₱, commas, etc.)
