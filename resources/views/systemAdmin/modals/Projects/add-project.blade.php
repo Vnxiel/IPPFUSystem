@@ -533,15 +533,13 @@
                                         <!-- Suspension and Resumption Order Row -->
                                         <div class="row mb-2">
                                             <div class="col-3 text-end">
-                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1
-                                                <span class="text-danger">*</span></label>
+                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1</label>
                                             </div>                        
                                             <div class="col-3">
                                                 <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
                                             </div>
                                             <div class="col-3 mb-2 text-end">
-                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No.1
-                                                    <span class="text-danger">*</span></label>
+                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No.1</label>
                                             </div>
                                             <div class="col-3">
                                                     <input type="date" class="form-control" id="resumeOrderNo1"
@@ -761,7 +759,8 @@ function updateBidDifference() {
 
 
 <script>
-  const contractorInput = document.getElementById('projectContractor');
+    const contractorInput = document.getElementById('projectContractor');
+
     const dropdown = document.getElementById('projectContractorDropdown');
 
     // Store contractor names in JavaScript for easier manipulation

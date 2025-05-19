@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let anyVisible = false;
 
     for (let i = 0; i < buttons.length; i++) {
-      const text = buttons[i].textContent.toLowerCase();
+      const text = buttons[i].textContent.toLowerCase().trim();
       if (text.includes(filter)) {
         buttons[i].style.display = '';
         anyVisible = true;
@@ -69,11 +69,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let val = input.value.trim().replace(/,\s*nueva\s*vizcaya\s*$/i, '');
     if (val === '') return;
 
-    // Check if input matches a button (case-insensitive)
-    const matchBtn = Array.from(buttons).find(btn => btn.textContent.toLowerCase() === val.toLowerCase());
+    const visibleButtons = Array.from(buttons).filter(btn => btn.style.display !== 'none');
+
+    // If only one visible suggestion, auto-select it
+    if (visibleButtons.length === 1) {
+      input.value = visibleButtons[0].textContent.trim() + ', Nueva Vizcaya';
+      return;
+    }
+
+    // Exact match
+    const matchBtn = Array.from(buttons).find(
+      btn => btn.textContent.toLowerCase().trim() === val.toLowerCase()
+    );
 
     if (matchBtn) {
-      input.value = matchBtn.textContent + ', Nueva Vizcaya';
+      input.value = matchBtn.textContent.trim() + ', Nueva Vizcaya';
     } else {
       input.value = toTitleCase(val) + ', Nueva Vizcaya';
     }
