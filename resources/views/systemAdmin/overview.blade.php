@@ -460,158 +460,83 @@
                                         
                                 <!-- Right Column: Implementation Details -->
                                 <div class="col-md-6 font-base">
-                                    <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Utilization Summary</legend>
-                                   
+                                <!-- Fund Utilization Summary -->
+<fieldset class="border p-3 mb-4 rounded shadow-sm">
+    <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Utilization Summary</legend>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped text-center align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+            @php
+            function ordinal($number) {
+                $ends = ['th','st','nd','rd','th','th','th','th','th','th'];
+                if ((($number % 100) >= 11) && (($number % 100) <= 13))
+                    return $number. 'th';
+                else
+                    return $number. $ends[$number % 10];
+            }
+            @endphp
 
-                                    <div class="table-responsive">
-                                    <table class="table table-sm table-bordered text-center align-middle">
-        <thead>
-          <tr>
-            <th style="width: 20%;">Category</th>
-            <th style="width: 20%;">Date</th>
-            <th style="width: 20%;">Amount</th>
-            <th style="width: 40%;">Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{-- Mobilization --}}
-          <tr>
-            <td>Mobilization</td>
-            <td>
-              <input type="date" class="form-control form-control-sm"
-                name="summary[mobilization][date]"
-                value="{{ $project['summary']['mobilization']['date'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm amount-input"
-                name="summary[mobilization][amount]"
-                value="{{ $project['summary']['mobilization']['amount'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm"
-                name="summary[mobilization][remarks]"
-                value="{{ $project['summary']['mobilization']['remarks'] ?? '' }}">
-            </td>
-          </tr>
+                @php
+                    $summary = $project['summary'] ?? [];
+                    $partialBillings = $project['partial_billings'] ?? [];
+                    
+                    $summaryRows = [
+                        'mobilization' => 'Mobilization',
+                        'engineering' => 'Engineering',
+                        'mqc' => 'MQC',
+                        'final_billing' => 'Final Billing',
+                    ];
+                @endphp
 
-          {{-- Partial Billings (up to 5 rows, show/hide handled via JS or CSS) --}}
-          @for ($i = 0; $i < 5; $i++)
-            <tr class="partial-billing billing-{{ $i + 1 }}" @if($i > 0 && empty($project['partial_billings'][$i])) style="display: none;" @endif>
-              <td>{{ $i + 1 }}{{ ($i == 0 ? 'st' : ($i == 1 ? 'nd' : ($i == 2 ? 'rd' : 'th'))) }} Partial Billing</td>
-              <td>
-                <input type="date" class="form-control form-control-sm"
-                  name="partial_billings[{{ $i }}][date]"
-                  value="{{ $project['partial_billings'][$i]['date'] ?? '' }}">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm amount-input"
-                  name="partial_billings[{{ $i }}][amount]"
-                  value="{{ $project['partial_billings'][$i]['amount'] ?? '' }}">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm"
-                  name="partial_billings[{{ $i }}][remarks]"
-                  value="{{ $project['partial_billings'][$i]['remarks'] ?? '' }}">
-              </td>
-            </tr>
-          @endfor
+                {{-- Fixed Rows: Mobilization, Engineering, MQC, Final Billing --}}
+                @foreach($summaryRows as $key => $label)
+                    @php $item = $summary[$key] ?? null; @endphp
+                    <tr>
+                        <td>{{ $label }}</td>
+                        <td>{{ $item['date'] ?? '-' }}</td>
+                        <td>{{ number_format($item['amount'] ?? 0, 2) }}</td>
+                        <td>{{ $item['remarks'] ?? '-' }}</td>
+                    </tr>
+                @endforeach
 
-          {{-- Final Billing --}}
-          <tr>
-            <td>Final Billing</td>
-            <td>
-              <input type="date" class="form-control form-control-sm"
-                name="summary[final_billing][date]"
-                value="{{ $project['summary']['final_billing']['date'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm amount-input"
-                name="summary[final_billing][amount]"
-                value="{{ $project['summary']['final_billing']['amount'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm"
-                name="summary[final_billing][remarks]"
-                value="{{ $project['summary']['final_billing']['remarks'] ?? '' }}">
-            </td>
-          </tr>
+                {{-- Dynamic Partial Billings (only show if it has any amount or date) --}}
+                @foreach ($partialBillings as $index => $billing)
+                    @if (!empty($billing['date']) || !empty($billing['amount']) || !empty($billing['remarks']))
+                        <tr>
+                            <td>{{ ordinal($index + 1) }} Partial Billing</td>
+                            <td>{{ $billing['date'] ?? '-' }}</td>
+                            <td>{{ number_format($billing['amount'] ?? 0, 2) }}</td>
+                            <td>{{ $billing['remarks'] ?? '-' }}</td>
+                        </tr>
+                    @endif
+                @endforeach
 
-          {{-- Engineering --}}
-          <tr>
-            <td>Engineering</td>
-            <td>
-              <input type="date" class="form-control form-control-sm"
-                name="summary[engineering][date]"
-                value="{{ $project['summary']['engineering']['date'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm amount-input"
-                name="summary[engineering][amount]"
-                value="{{ $project['summary']['engineering']['amount'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm"
-                name="summary[engineering][remarks]"
-                value="{{ $project['summary']['engineering']['remarks'] ?? '' }}">
-            </td>
-          </tr>
+                {{-- Totals --}}
+                <tr class="fw-bold">
+                    <td>Total Expenditures</td>
+                    <td>-</td>
+                    <td>{{ number_format($summary['total_expenditures'] ?? 0, 2) }}</td>
+                    <td>{{ $summary['remarks_total_expenditures'] ?? '-' }}</td>
+                </tr>
+                <tr class="fw-bold">
+                    <td>Total Savings</td>
+                    <td>-</td>
+                    <td>{{ number_format($summary['total_savings'] ?? 0, 2) }}</td>
+                    <td>{{ $summary['remarks_total_savings'] ?? '-' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</fieldset>
 
-          {{-- MQC --}}
-          <tr>
-            <td>MQC</td>
-            <td>
-              <input type="date" class="form-control form-control-sm"
-                name="summary[mqc][date]"
-                value="{{ $project['summary']['mqc']['date'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm amount-input"
-                name="summary[mqc][amount]"
-                value="{{ $project['summary']['mqc']['amount'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm"
-                name="summary[mqc][remarks]"
-                value="{{ $project['summary']['mqc']['remarks'] ?? '' }}">
-            </td>
-          </tr>
-
-          {{-- Total Expenditures --}}
-          <tr class="fw-bold">
-            <td>Total Expenditures</td>
-            <td>-</td>
-            <td>
-              <input type="text" class="form-control form-control-sm amount-input" readonly
-                name="summary[total_expenditures]"
-                value="{{ $project['summary']['total_expenditures'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm" readonly
-                name="summary[remarks_total_expenditures]"
-                value="{{ $project['summary']['remarks_total_expenditures'] ?? '' }}">
-            </td>
-          </tr>
-
-          {{-- Total Savings --}}
-          <tr class="fw-bold">
-            <td>Total Savings</td>
-            <td>-</td>
-            <td>
-              <input type="text" class="form-control form-control-sm amount-input" readonly
-                name="summary[total_savings]"
-                value="{{ $project['summary']['total_savings'] ?? '' }}">
-            </td>
-            <td>
-              <input type="text" class="form-control form-control-sm" readonly
-                name="summary[remarks_total_savings]"
-                value="{{ $project['summary']['remarks_total_savings'] ?? '' }}">
-            </td>
-          </tr>
-        </tbody>
-      </table>
-                                    </div>
-                                    </fieldset>
                                 </div>
                             </div>
                         </div>
