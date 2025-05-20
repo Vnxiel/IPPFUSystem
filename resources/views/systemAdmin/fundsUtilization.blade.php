@@ -191,7 +191,7 @@
                     value="{{ $summary['mobilization']['date'] ?? '' }}">
             </td>
             <td>
-              <input type="text" class="form-control form-control-sm amount-input" name="amountMobilization" id="amountMobilization"
+              <input type="text" class="form-control form-control-sm amount-input expenditure-amount" name="amountMobilization" id="amountMobilization"
                     value="{{ $summary['mobilization']['amount'] ?? '' }}">
             </td>
             <td>
@@ -205,12 +205,12 @@
               <tr class="partial-billing billing-{{ $i }}" style="{{ $i > 1 ? 'display: none;' : '' }}">
                 <td>{{ $i }}{{ $i == 1 ? 'st' : ($i == 2 ? 'nd' : ($i == 3 ? 'rd' : 'th')) }} Partial Billing</td>
                 <td>
-                  <input type="date" class="form-control form-control-sm"
+                  <input type="date" class="form-control form-control-sm "
                         name="partialBillings[{{ $i }}][date]"
                         value="{{ $partial_billings[$i - 1]['date'] ?? '' }}">
                 </td>
                 <td>
-                  <input type="text" class="form-control form-control-sm amount-input"
+                  <input type="text" class="form-control form-control-sm amount-input expenditure-amount"
                         name="partialBillings[{{ $i }}][amount]" id="amountPartial{{ $i }}"
                         value="{{ $partial_billings[$i - 1]['amount'] ?? '' }}">
                 </td>
@@ -231,7 +231,7 @@
                     value="{{ $summary['final']['date'] ?? '' }}">
             </td>
             <td>
-              <input type="text" class="form-control form-control-sm amount-input" name="amountFinal" id="amountFinal"
+              <input type="text" class="form-control form-control-sm amount-input expenditure-amount" name="amountFinal" id="amountFinal"
                     value="{{ $summary['final']['amount'] ?? '' }}">
             </td>
             <td>
@@ -268,9 +268,9 @@
         <tbody>
           <tr>
             <td>Engineering</td>
-            <td><input type="date" class="form-control form-control-sm" name="dateEng"></td>
-            <td><input type="text" class="form-control form-control-sm text-end" name="amountEng" ></td>
-            <td><input type="text" class="form-control form-control-sm" name="remEng"></td>
+            <td><input type="date" class="form-control form-control-sm" name="dateEng" value="{{ $summary['engineering']['date'] ?? '' }}"></td>
+            <td><input type="text" class="form-control form-control-sm text-end expenditure-amount" name="amountEng" id="amountEng" value="{{ $summary['engineering']['amount'] ?? '' }}" readonly></td>
+            <td><input type="text" class="form-control form-control-sm" name="remEng" value="{{ $summary['engineering']['remarks'] ?? '' }}"></td>
             <td>
               <button type="button" class="btn btn-sm btn-link p-0" data-bs-toggle="collapse" data-bs-target="#engDetails">Breakdown</button>
             </td>
@@ -330,9 +330,9 @@
       <tbody>
         <tr>
           <td>MQC</td>
-          <td><input type="date" class="form-control form-control-sm" name="dateMqc"></td>
-          <td><input type="text" class="form-control form-control-sm text-end" name="amountMqc"></td>
-          <td><input type="text" class="form-control form-control-sm" name="remMqc"></td>
+          <td><input type="date" class="form-control form-control-sm" name="dateMqc" value="{{ $summary['mqc']['date'] ?? '' }}"></td>
+          <td><input type="text" class="form-control form-control-sm text-end expenditure-amount" name="amountMqc"  id="amountMqc" value="{{ $summary['mqc']['amount'] ?? '' }}" readonly></td>
+          <td><input type="text" class="form-control form-control-sm" name="remMqc" value="{{ $summary['mqc']['remarks'] ?? '' }}"></td>
           <td>
             <button type="button" class="btn btn-sm btn-link p-0" data-bs-toggle="collapse" data-bs-target="#mqcDetails">Breakdown</button>
           </td>
@@ -385,14 +385,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Total Expenditures</td>
-            <td><input type="text" class="form-control form-control-sm" id="amountTotal"></td>
-         </tr>
-          <tr>
-            <td>Total Savings</td>
-            <td><input type="text" class="form-control form-control-sm" id="amountSavings"></td>
-           </tr>
+            <tr>
+              <td>Total Expenditures</td>
+              <td><input type="text" class="form-control form-control-sm" id="amountTotal"></td>
+          </tr>
+            <tr>
+              <td>Total Savings</td>
+              <td><input type="text" class="form-control form-control-sm" id="amountSavings"></td>
+            </tr>
         </tbody>
       </table>
     </div>
@@ -417,3 +417,11 @@
 @endsection
 
 @include('systemAdmin.modals.Funds_Utilization.add-eng_mqc')
+@section('page-scripts')
+    <script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
+    <script src="{{ asset('js/FundsUtilization/funds_utilization-setCurrencyFormatting.js') }}"></script>
+    <script src="{{ asset('js/FundsUtilization/funds_utilization-setvalue.js') }}"></script>
+    <script src="{{ asset('js/FundsUtilization/add-set.js') }}"></script>
+    <script src="{{ asset('js/FundsUtilization/funds_utilization-addBreakdown.js') }}"></script>
+    <script src="{{ asset('js/FundsUtilization/funds_utilization-Totals.js') }}"></script>
+@endsection

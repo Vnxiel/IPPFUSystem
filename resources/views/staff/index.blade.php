@@ -3,7 +3,7 @@
 @section('title', 'Dashboard Page')
 
 @section('content') 
-<div class="container-fluid py-4" style="background-color: transparent;">
+<div class="container-fluid py-4" style="background-color: transparent; margin-top: 70px;">
     <!-- Header Section -->
     <div class="container py-4">
         <div class="row mt-4">
@@ -46,7 +46,7 @@
 
                     <!-- On-going Projects -->
                     <div class="col-md-4">
-                        <a href="/systemAdmin/projects?page=ongoing" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/staff/projects?page=ongoing" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">

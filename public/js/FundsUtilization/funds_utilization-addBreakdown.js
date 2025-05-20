@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
           renderTable();
           updateEngineeringBalance();
           updateMqcBalance();
-          calculateExpenditureAndSavings();
         });
       });
     }
@@ -81,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
   
       // Get the allotted amount for Engineering or MQC
-      const allowedEngineering = parseFloat(cleanMoney(document.getElementById("amountEng")?.value || "0"));
-      const allowedMQC = parseFloat(cleanMoney(document.getElementById("amountMqc")?.value || "0"));
+      const allowedEngineering = parseFloat(cleanMoney(document.getElementById("engineeringBalance")?.value || "0"));
+      const allowedMQC = parseFloat(cleanMoney(document.getElementById("mqcBalance")?.value || "0"));
   
       const engSum = entries
         .filter(e => e.type === 'Engineering')
@@ -114,7 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
   
       updateEngineeringBalance();
       updateMqcBalance();
-      calculateExpenditureAndSavings();
   
       // Clear inputs
       document.getElementById("entryName").value = '';
@@ -139,9 +137,6 @@ document.addEventListener("DOMContentLoaded", function () {
               entries.length = 0;
               renderTable();
               $('#entryModal').modal('hide');
-  
-              // Recalculate totals/savings after submit
-              calculateExpenditureAndSavings();
               updateEngineeringBalance();
               updateMqcBalance();
   
@@ -183,36 +178,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return parseFloat(value) || 0;
     }
   
-    function calculateExpenditureAndSavings() {
-      const contractAmount = parseAmount(document.getElementById('contract_amount')?.value);
-      const mobilization = parseAmount(document.getElementById('amountMobilization')?.value);
-  
-      let partialTotal = 0;
-      for (let i = 1; i <= 5; i++) {
-        partialTotal += parseAmount(document.getElementById(`amountPartial${i}`)?.value);
-      }
-  
-      const finalBilling = parseAmount(document.getElementById('amountFinal')?.value);
-      const engineering = parseAmount(document.querySelector('[name="amountEng"]')?.value);
-      const mqc = parseAmount(document.querySelector('[name="amountMqc"]')?.value);
-      const contingency = parseAmount(document.querySelector('[name="amountContingency"]')?.value);
-  
-      const totalExpenditure = mobilization + partialTotal + finalBilling + engineering + mqc + contingency;
-      const savings = contractAmount - totalExpenditure;
-  
-      document.getElementById('amountTotal').value = totalExpenditure.toFixed(2);
-      document.getElementById('amountSavings').value = savings.toFixed(2);
-    }
-  
-    // Attach blur listeners to amount inputs
-    const amountInputs = document.querySelectorAll('.amount-input');
-    amountInputs.forEach(input => {
-      input.addEventListener('blur', calculateExpenditureAndSavings);
-    });
-  
-    // Optional: Call once on load
-    calculateExpenditureAndSavings();
-  
     // Update amountEng, amountMqc, amountContingency from actual_* inputs
     const updateAmountFields = () => {
       const engineeringValue = document.getElementById('actual_engineering')?.value || '';
@@ -228,7 +193,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const amountContingencyInput = document.querySelector('input[name="amountContingency"]');
       if (amountContingencyInput) amountContingencyInput.value = contingencyValue;
   
-      calculateExpenditureAndSavings();
     };
   
     ['actual_engineering', 'actual_mqc', 'actual_contingency'].forEach(id => {

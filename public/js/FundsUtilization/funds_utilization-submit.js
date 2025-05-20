@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', function () {  
   document.getElementById('submitFundsUtilization').addEventListener('click', function () {
         
         const project_id = sessionStorage.getItem("project_id");
@@ -42,11 +43,6 @@
                 date: document.querySelector('[name="dateMobilization"]')?.value || '',
                 amount: document.querySelector('[name="amountMobilization"]')?.value || '',
                 remarks: document.querySelector('[name="remMobilization"]')?.value || '',
-                remaining: {
-                  date: document.querySelector('[name="dateMobilization2"]')?.value || '',
-                  amount: document.querySelector('[name="amountMobilization2"]')?.value || '',
-                  remarks: document.querySelector('[name="remMobilization2"]')?.value || ''
-                }
               },
               final: {
                 date: document.querySelector('[name="dateFinal"]')?.value || '',
@@ -108,6 +104,7 @@
             Swal.fire('Error', 'An error occurred while saving fund utilization.', 'error');
           });
       });
+    });
 
  
  

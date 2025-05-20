@@ -159,20 +159,14 @@
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
 
-        <script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
-        <script src="{{ asset('js/FundsUtilization/fetchFundUtilizationSummary.js') }}"></script> 
-        <script src="{{ asset('js/FundsUtilization/EngAndMqc.js') }}"></script>
-        <script src="{{ asset('js/FundsUtilization/funds_utilization-setCurrencyFormatting.js') }}"></script>
-        <script src="{{ asset('js/FundsUtilization/funds_utilization-setvalue.js') }}"></script>
-        <script src="{{ asset('js/FundsUtilization/add-set.js') }}"></script> 
-        <script src="{{ asset('js/FundsUtilization/funds_utilization-valueLimit.js') }}"></script> 
-        <script src="{{ asset('js/FundsUtilization/funds_utilization-addBreakdown.js') }}"></script> 
-
+       
          <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>
         <script src="{{ asset('js/Account/logout.js') }}"></script>
-        
+
+        @yield('page-scripts') <!-- Add this line here -->
+
     </body>
 </html>
 

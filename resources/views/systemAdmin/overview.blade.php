@@ -398,77 +398,62 @@
                                         <i class="fa fa-plus"></i>
                                         <span class=" d-md-inline">Add Fund Utilization</span>
                                     </a>
-
-
-
                                 </div>
                             
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <!-- Cost Breakdown -->
-                                            <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                            <legend class="float-none w-auto px-2 fw-bold text-primary">Cost Breakdown</legend>
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered table-striped text-center align-middle" id="costBreakdownTable">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                    <th>Category</th>
-                                                    <th>Proposed</th>
-                                                    <!-- V.O. headers will be dynamically inserted here -->
-                                                    <th id="voHeadersPlaceholder"></th>
-                                                    <th>Actual</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>Appropriation</td>
-                                                    <td id="orig_appropriation_view">{{ number_format($projects->orig_appropriation ?? 0, 2) }}</td>
-                                                    <!-- Dynamic VO cells for Appropriation -->
-                                                    <!-- Each <td> will be appended inside this cell -->
-                                                    <td class="vo_cells_row" data-field="appropriation"></td>
-                                                    <td id="actual_appropriation_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>Contract Amount</td>
-                                                    <td id="orig_contract_amount_view"></td>
-                                                    <td class="vo_cells_row" data-field="contract_amount"></td>
-                                                    <td id="actual_contract_amount_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>ABC</td>
-                                                    <td id="orig_abc_view"></td>
-                                                    <td class="vo_cells_row" data-field="abc"></td>
-                                                    <td id="actual_abc_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>Bid Difference</td>
-                                                    <td id="orig_bid_view"></td>
-                                                    <td class="vo_cells_row" data-field="bid"></td>
-                                                    <td id="actual_bid_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>Engineering</td>
-                                                    <td id="orig_engineering_view"></td>
-                                                    <td class="vo_cells_row" data-field="engineering"></td>
-                                                    <td id="actual_engineering_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>MQC</td>
-                                                    <td id="orig_mqc_view"></td>
-                                                    <td class="vo_cells_row" data-field="mqc"></td>
-                                                    <td id="actual_mqc_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>Contingency</td>
-                                                    <td id="orig_contingency_view"></td>
-                                                    <td class="vo_cells_row" data-field="contingency"></td>
-                                                    <td id="actual_contingency_view"></td>
-                                                    </tr>
-                                                </tbody>
-                                                </table>
-                                            </div>
-                                            </fieldset>
+                                                <fieldset class="border p-3 mb-4 rounded shadow-sm">
+                                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Funds Source</legend>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered table-striped text-center align-middle" id="costBreakdownTable">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th rowspan="2">Category</th>
+                                                                    <th rowspan="2">Proposed</th>
+                                                                    <th colspan="{{ count($project['variation_orders'] ?? []) }}">Variation Orders</th>
+                                                                    <th rowspan="2">Actual</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    @foreach($project['variation_orders'] ?? [] as $vo)
+                                                                        <th>V.O. {{ $vo['vo_number'] }}</th>
+                                                                    @endforeach
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @php
+                                                                    $rows = [
+                                                                        ['label' => 'Appropriation', 'key' => 'appropriation'],
+                                                                        ['label' => 'Contract Amount', 'key' => 'contract_amount'],
+                                                                        ['label' => 'ABC', 'key' => 'abc'],
+                                                                        ['label' => 'Bid Difference', 'key' => 'bid'],
+                                                                        ['label' => 'Engineering', 'key' => 'engineering'],
+                                                                        ['label' => 'MQC', 'key' => 'mqc'],
+                                                                        ['label' => 'Contingency', 'key' => 'contingency'],
+                                                                    ];
+                                                                    $vos = $project['variation_orders'] ?? [];
+                                                                    $funds = $project['funds'] ?? [];
+                                                                @endphp
+
+                                                                @foreach ($rows as $row)
+                                                                    <tr>
+                                                                        <td>{{ $row['label'] }}</td>
+                                                                        <td>{{ number_format($funds['orig_' . $row['key']] ?? 0, 2) }}</td>
+
+                                                                        @foreach ($vos as $vo)
+                                                                            @php $voKey = 'vo_' . $row['key']; @endphp
+                                                                            <td>{{ number_format($vo[$voKey] ?? 0, 2) }}</td>
+                                                                        @endforeach
+
+                                                                        <td>{{ number_format($funds['actual_' . $row['key']] ?? 0, 2) }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </fieldset>
+
 
 
                                         </div>
@@ -480,58 +465,151 @@
                                    
 
                                     <div class="table-responsive">
-                                        <table class="table table-bordered table-striped text-center align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                            <th>Category</th>
-                                            <th>Date</th>
-                                            <th>Amount</th>
-                                            <th>Remarks</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                            <td>Mobilization</td>
-                                            <td id="dateMobi_view"></td>
-                                            <td id="amountMobi_view"></td>
-                                            <td id="remMobi_view"></td>
-                                            </tr>
-                                            <tr>
-                                            <tbody id="partialBillingsRows"></tbody>
-                                            </tr>
-                                    
-                                            <tr>
-                                            <td>Final Billing</td>
-                                            <td id="dateFinal_view"></td>
-                                            <td id="amountFinal_view"></td>
-                                            <td id="remFinal_view"></td>
-                                            </tr>
-                                            <tr>
-                                            <td>Engineering</td>
-                                            <td id="dateEng_view"></td>
-                                            <td id="amountEng_view"></td>
-                                            <td id="remEng_view"></td>
-                                            </tr>
-                                            <tr>
-                                            <td>MQC</td>
-                                            <td id="dateMqc_view"></td>
-                                            <td id="amountMqc_view"></td>
-                                            <td id="remMqc_view"></td>
-                                            </tr>
-                                            <tr class="fw-bold">
-                                            <td>Total Expenditures</td>
-                                            <td>-</td>
-                                            <td id="amountTotal_view"></td>
-                                            <td id="remTotal_view"></td>
-                                            </tr>
-                                            <tr class="fw-bold">
-                                            <td>Total Savings</td>
-                                            <td>-</td>
-                                            <td id="amountSavings_view"></td>
-                                            <td id="remSavings_view"></td>
-                                            </tr>
-                                        </tbody>
-                                        </table>
+                                    <table class="table table-sm table-bordered text-center align-middle">
+        <thead>
+          <tr>
+            <th style="width: 20%;">Category</th>
+            <th style="width: 20%;">Date</th>
+            <th style="width: 20%;">Amount</th>
+            <th style="width: 40%;">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{-- Mobilization --}}
+          <tr>
+            <td>Mobilization</td>
+            <td>
+              <input type="date" class="form-control form-control-sm"
+                name="summary[mobilization][date]"
+                value="{{ $project['summary']['mobilization']['date'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm amount-input"
+                name="summary[mobilization][amount]"
+                value="{{ $project['summary']['mobilization']['amount'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm"
+                name="summary[mobilization][remarks]"
+                value="{{ $project['summary']['mobilization']['remarks'] ?? '' }}">
+            </td>
+          </tr>
+
+          {{-- Partial Billings (up to 5 rows, show/hide handled via JS or CSS) --}}
+          @for ($i = 0; $i < 5; $i++)
+            <tr class="partial-billing billing-{{ $i + 1 }}" @if($i > 0 && empty($project['partial_billings'][$i])) style="display: none;" @endif>
+              <td>{{ $i + 1 }}{{ ($i == 0 ? 'st' : ($i == 1 ? 'nd' : ($i == 2 ? 'rd' : 'th'))) }} Partial Billing</td>
+              <td>
+                <input type="date" class="form-control form-control-sm"
+                  name="partial_billings[{{ $i }}][date]"
+                  value="{{ $project['partial_billings'][$i]['date'] ?? '' }}">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm amount-input"
+                  name="partial_billings[{{ $i }}][amount]"
+                  value="{{ $project['partial_billings'][$i]['amount'] ?? '' }}">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm"
+                  name="partial_billings[{{ $i }}][remarks]"
+                  value="{{ $project['partial_billings'][$i]['remarks'] ?? '' }}">
+              </td>
+            </tr>
+          @endfor
+
+          {{-- Final Billing --}}
+          <tr>
+            <td>Final Billing</td>
+            <td>
+              <input type="date" class="form-control form-control-sm"
+                name="summary[final_billing][date]"
+                value="{{ $project['summary']['final_billing']['date'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm amount-input"
+                name="summary[final_billing][amount]"
+                value="{{ $project['summary']['final_billing']['amount'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm"
+                name="summary[final_billing][remarks]"
+                value="{{ $project['summary']['final_billing']['remarks'] ?? '' }}">
+            </td>
+          </tr>
+
+          {{-- Engineering --}}
+          <tr>
+            <td>Engineering</td>
+            <td>
+              <input type="date" class="form-control form-control-sm"
+                name="summary[engineering][date]"
+                value="{{ $project['summary']['engineering']['date'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm amount-input"
+                name="summary[engineering][amount]"
+                value="{{ $project['summary']['engineering']['amount'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm"
+                name="summary[engineering][remarks]"
+                value="{{ $project['summary']['engineering']['remarks'] ?? '' }}">
+            </td>
+          </tr>
+
+          {{-- MQC --}}
+          <tr>
+            <td>MQC</td>
+            <td>
+              <input type="date" class="form-control form-control-sm"
+                name="summary[mqc][date]"
+                value="{{ $project['summary']['mqc']['date'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm amount-input"
+                name="summary[mqc][amount]"
+                value="{{ $project['summary']['mqc']['amount'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm"
+                name="summary[mqc][remarks]"
+                value="{{ $project['summary']['mqc']['remarks'] ?? '' }}">
+            </td>
+          </tr>
+
+          {{-- Total Expenditures --}}
+          <tr class="fw-bold">
+            <td>Total Expenditures</td>
+            <td>-</td>
+            <td>
+              <input type="text" class="form-control form-control-sm amount-input" readonly
+                name="summary[total_expenditures]"
+                value="{{ $project['summary']['total_expenditures'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm" readonly
+                name="summary[remarks_total_expenditures]"
+                value="{{ $project['summary']['remarks_total_expenditures'] ?? '' }}">
+            </td>
+          </tr>
+
+          {{-- Total Savings --}}
+          <tr class="fw-bold">
+            <td>Total Savings</td>
+            <td>-</td>
+            <td>
+              <input type="text" class="form-control form-control-sm amount-input" readonly
+                name="summary[total_savings]"
+                value="{{ $project['summary']['total_savings'] ?? '' }}">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm" readonly
+                name="summary[remarks_total_savings]"
+                value="{{ $project['summary']['remarks_total_savings'] ?? '' }}">
+            </td>
+          </tr>
+        </tbody>
+      </table>
                                     </div>
                                     </fieldset>
                                 </div>
@@ -587,7 +665,41 @@
                 </div>
             </div>
         </div>
-    </div>        
+    </div> 
+    
+    <script>
+    const variationOrders = {!! json_encode($project['variation_orders'] ?? []) !!};
+
+    // Insert V.O. headers
+    const voHeadersPlaceholder = document.getElementById("voHeadersPlaceholder");
+    if (variationOrders.length > 0) {
+        voHeadersPlaceholder.colSpan = variationOrders.length;
+        variationOrders.forEach((vo, index) => {
+            const th = document.createElement("th");
+            th.textContent = `V.O. ${vo.vo_number}`;
+            voHeadersPlaceholder.parentElement.insertBefore(th, voHeadersPlaceholder);
+        });
+        voHeadersPlaceholder.remove();
+    }
+
+    // Populate each V.O. column per row
+    const fields = ['appropriation', 'contract_amount', 'abc', 'bid', 'engineering', 'mqc', 'contingency'];
+
+    fields.forEach(field => {
+        const row = document.querySelector(`.vo_cells_row[data-field="${field}"]`);
+        variationOrders.forEach(vo => {
+            const td = document.createElement("td");
+
+            // Matching VO fields to data-field
+            let voKey = 'vo_' + field;
+            let value = vo[voKey] ?? 0;
+
+            td.textContent = parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            row.appendChild(td);
+        });
+    });
+</script>
+
 
 <script>
     // Store the project ID in sessionStorage before going back
@@ -599,40 +711,6 @@
             localStorage.setItem('highlighted_project_page', 'preserve');
         }
     });
-
-   // Function to toggle the visibility of the 'otherFundContainer' when 'Others' is selected in 'Source of Fund'
-function toggleOtherFund() {
-    const sourceOfFunds = document.getElementById("sourceOfFunds").value;
-    const otherFundContainer = document.getElementById("otherFundContainer");
-    
-    if (sourceOfFunds === "Others") {
-        otherFundContainer.style.display = "block"; // Show the input field for specifying the fund
-    } else {
-        otherFundContainer.style.display = "none"; // Hide the input field if not selected
-    }
-}
-
-// Function to toggle the visibility of the 'othersContractorDiv' when 'Others' is selected in 'Contractor'
-function toggleOtherContractor() {
-    const projectContractor = document.getElementById("projectContractor").value;
-    const othersContractorDiv = document.getElementById("othersContractorDiv");
-    
-    if (projectContractor === "Others") {
-        othersContractorDiv.style.display = "block"; // Show the input field for specifying the contractor
-    } else {
-        othersContractorDiv.style.display = "none"; // Hide the input field if not selected
-    }
-}
-
-// Ensure the correct visibility when the page loads, in case the 'Others' option was already selected in any dropdown
-document.addEventListener("DOMContentLoaded", function() {
-    toggleOtherFund(); // Check if 'Others' was selected for Source of Fund
-    toggleOtherContractor(); // Check if 'Others' was selected for Contractor
-});
-
-    </script>
-
-<script>
     
      document.addEventListener("DOMContentLoaded", function () {
         const currencyInputs = document.querySelectorAll(".currency-input");
@@ -686,7 +764,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 bidInput.value = bidDifference !== 0 ? formatCurrency(bidDifference) : formatCurrency(0);
             } else {
                 bidInput.value = '';
-            }
+            }   
         }
 
         // Trigger calculation while typing
@@ -855,7 +933,6 @@ function showMunicipalitySuggestions(query) {
 
 
 </script>
-
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     function validateDates(issuedId, receivedId, label) {
@@ -863,20 +940,18 @@ function showMunicipalitySuggestions(query) {
       const received = document.getElementById(receivedId);
 
       function checkDate() {
-  const issuedDate = new Date(issued.value);
-  const receivedDate = new Date(received.value);
+        const issuedDate = new Date(issued.value);
+        const receivedDate = new Date(received.value);
 
-  if (issued.value && received.value && receivedDate < issuedDate) {
-    Swal.fire({
-      icon: 'error',
-      title: `${label} Error`,
-      text: 'Received date must be the same or after the issued date.',
-      confirmButtonColor: '#3085d6',
-    });
-    received.value = ""; // Clear invalid input
-  }
-}
-
+        if (issued.value && received.value && receivedDate < issuedDate) {
+          Swal.fire({
+            icon: 'error',
+            title: `${label} Error`,
+            text: 'Received date must be the same or after the issued date.',
+            confirmButtonColor: '#3085d6',
+          });
+          received.value = ""; // Clear invalid input
+        }
       }
 
       issued.addEventListener("change", checkDate);
@@ -887,6 +962,7 @@ function showMunicipalitySuggestions(query) {
     validateDates("ntpIssuedDate", "ntpReceivedDate", "Notice to Proceed");
   });
 </script>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -946,8 +1022,6 @@ function showMunicipalitySuggestions(query) {
   });
 </script>
 
-    
-    @include('systemAdmin.modals.Projects.add-fund')
     @include('systemAdmin.modals.Projects.add-status')
     @include('systemAdmin.modals.Projects.edit-project')
     @include('systemAdmin.modals.Projects.uploadFiles')

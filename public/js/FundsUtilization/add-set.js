@@ -59,7 +59,8 @@ function removeLastOrderFields() {
     /*  V.O. fields
         This script allows the user to add or remove V.O. fields dynamically
         V.O. stands for Variation Order*/
-        
+        let voCount = parseInt(document.getElementById('voCount').value) || 1;
+      
         function addVOFields() {
             if (voCount >= 3) return; // Max limit
           

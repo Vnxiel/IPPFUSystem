@@ -502,12 +502,23 @@ if ($existing) {
                         $decodedSummary = json_decode($fundUtilization->summary, true);
                         if (json_last_error() === JSON_ERROR_NONE) {
                             $project['summary'] = $decodedSummary;
+                            Log::info('Summary data fetched successfully.', [
+                                'project_id' => $id,
+                                'summary' => $decodedSummary
+                            ]);
                         } else {
-                            // Handle JSON decoding error
                             error_log('Summary JSON decode error: ' . json_last_error_msg());
+                            Log::warning('Summary JSON decode error.', [
+                                'project_id' => $id,
+                                'error' => json_last_error_msg()
+                            ]);
                         }
                     } elseif (is_array($fundUtilization->summary)) {
                         $project['summary'] = $fundUtilization->summary;
+                        Log::info('Summary array fetched successfully.', [
+                            'project_id' => $id,
+                            'summary' => $fundUtilization->summary
+                        ]);
                     }
                 }
                 
@@ -518,15 +529,26 @@ if ($existing) {
                         $decodedBillings = json_decode($fundUtilization->partial_billings, true);
                         if (json_last_error() === JSON_ERROR_NONE) {
                             $project['partial_billings'] = $decodedBillings;
+                            Log::info('Partial billings fetched successfully.', [
+                                'project_id' => $id,
+                                'partial_billings' => $decodedBillings
+                            ]);
                         } else {
-                            // Handle JSON decoding error
                             error_log('Partial billings JSON decode error: ' . json_last_error_msg());
+                            Log::warning('Partial billings JSON decode error.', [
+                                'project_id' => $id,
+                                'error' => json_last_error_msg()
+                            ]);
                         }
                     } elseif (is_array($fundUtilization->partial_billings)) {
                         $project['partial_billings'] = $fundUtilization->partial_billings;
+                        Log::info('Partial billings array fetched successfully.', [
+                            'project_id' => $id,
+                            'partial_billings' => $fundUtilization->partial_billings
+                        ]);
                     }
                 }
-                
+                                
             }
         
     
