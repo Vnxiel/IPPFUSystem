@@ -113,71 +113,20 @@
                             </div>
                         </div>
 
-                        <!-- Contractor Input with Dynamic Suggestions -->
-                        <div class="row g-3 mb-2 text-end">
-                            <div class="col-md-3">
-                                <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
-                            </div>
-                            <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="projectContractor" name="projectContractor"
-                                    placeholder="Select or enter contractor name" autocomplete="off"
-                                    oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
-
-                                <!-- Container for dynamically inserted buttons -->
-                                <div id="projectContractorDropdown"
-                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- <div class="row mb-2 g-3">
-                            <div class="col-3 text-end">
-                                <label for="projectContractor" class="form-label">Contractor<span
-                                        class="text-danger">*</span></label>
-                            </div>
-                            <div class="col">
-                                <select id="projectContractor" name="projectContractor" class="form-select"
-                                    onchange="toggleOtherContractor()">
-                                    <option value="">--Select Contractor--</option>
-                                    @foreach($contractors as $contractor)
-                                        <option value="{{ $contractor->name }}" {{ old('projectContractor', $project['projectContractor'] ?? '') == $contractor->name ? 'selected' : '' }}>
-                                            {{ $contractor->name }}
-                                        </option>
-                                    @endforeach
-                                    <option value="Others" {{ old('projectContractor', $project['projectContractor'] ?? '') == 'Others' ? 'selected' : '' }}>Others: (Specify)</option>
-                                </select>
-                            </div>
-                            <div class="row mt-2">
-                                <div id="othersContractorDiv" style="display: none;">
-                                    <div class="row mb-2 g-3">
-                                        <div class="col-3 text-end">
-                                            <label for="othersContractor" class="form-label">Specify:</label>
-                                        </div>
-                                        <div class="col-9">
-                                            <input type="text" class="form-control" id="othersContractor"
-                                                name="othersContractor" placeholder="Enter new contractor name">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-                        <!-- <div class="mb-2">
-                                <label for="projectContractor" class="form-label">Contractor <span
-                                        class="text-danger">*</span></label>
-                                <select id="projectContractor" name="projectContractor" class="form-select">
-                                    <option value="">--Select Contractor--</option>
-                                    @foreach($contractors as $contractor)
-                                        <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
-                                    @endforeach
-                                    <option value="Others">Others: (Specify)</option>
-                                </select>
-                        </div> -->
-
-
-
-
+<!-- Contractor Input with Dynamic Suggestions -->
+<div class="row g-3 mb-2 text-end">
+  <div class="col-md-3">
+    <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
+  </div>
+  <div class="col-md-9 position-relative">
+    <input type="text" class="form-control" id="projectContractor" name="projectContractor"
+           placeholder="Select or enter contractor name" autocomplete="off" />
+    <div id="projectContractorDropdown"
+         class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+         style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+    </div>
+  </div>
+</div>
 
                         <div class="row mb-2 g-3 text-end">
                             <div class="col-md-3 text-end">
