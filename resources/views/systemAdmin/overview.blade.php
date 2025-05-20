@@ -436,11 +436,11 @@
                 <!-- Combined Card with Two Columns -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">   
-                        <a href="{{ route('project.fund-utilization', ['project_id' => $project['id']]) }}"
+                        <a href="{{ route('project.fund-utilization', ['project_id' => $project['projectID']]) }}"
                             class="btn btn-primary btn-sm d-flex align-items-center gap-2 ms-auto"
                             title="Add Fund Utilization Details">
-                                <i class="fa fa-plus"></i>
-                                <span class=" d-md-inline">Add Fund Utilization</span>
+                            <i class="fa fa-plus"></i>
+                            <span class=" d-md-inline">Add Fund Utilization</span>
                         </a>
                     </div>
                     <div class="card-body">

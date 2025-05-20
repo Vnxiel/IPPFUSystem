@@ -82,10 +82,9 @@
                                 </label>
                             </div>
                             <div class="col-md-9 position-relative">
-                            <input type="text" class="form-control" id="projectLoc" name="projectLoc"
+                                <input type="text" class="form-control" id="projectLoc" name="projectLoc"
                                     placeholder="Select or enter location" autocomplete="off"
                                     oninput="filterLocations()" onblur="finalizeLocation()" onfocus="showLocDropdown()" />
-
 
                                 <!-- Place dropdown outside input -->
                                 <div id="projectLocDropdown"

@@ -153,7 +153,6 @@
         <script src="{{ asset('js/Projects/add-set.js') }}"></script> 
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
-        <script src="{{ asset('js/FundsUtilization/fetchFundUtilizationSummary.js') }}"></script>
         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>
