@@ -148,7 +148,9 @@
         <script src="{{ asset('js/Account/fetch-pass_requests.js') }}"></script>
         <script src="{{ asset('js/Account/change-new_pass.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
+        <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
+
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
@@ -164,7 +166,16 @@
         <script src="{{ asset('js/Filters/sourceOfFund-search.js') }}"></script>
         <script src="{{ asset('js/Filters/engineer-search.js') }}"></script>  
         <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
+
+        <script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
+        <script src="{{ asset('js/FundsUtilization/fetchFundUtilizationSummary.js') }}"></script> 
         <script src="{{ asset('js/FundsUtilization/EngAndMqc.js') }}"></script>
+        <script src="{{ asset('js/FundsUtilization/funds_utilization-setCurrencyFormatting.js') }}"></script>
+        <script src="{{ asset('js/FundsUtilization/funds_utilization-setvalue.js') }}"></script>
+        <script src="{{ asset('js/FundsUtilization/add-set.js') }}"></script> 
+        <script src="{{ asset('js/FundsUtilization/funds_utilization-valueLimit.js') }}"></script> 
+        <script src="{{ asset('js/FundsUtilization/funds_utilization-addBreakdown.js') }}"></script> 
+
          <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>

@@ -111,20 +111,20 @@
     <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-2">
             <!-- Responsive Table Wrapper-->
-            <div class="table-responsive" style="overflow-x: auto;">
+            <div class="table-responsive">
                 <table id="projects" 
                        class="table table-hover table-bordered table-sm mb-0"
-                       style="width: 100%; font-size: 1rem; white-space: nowrap;">
+                       style="width: 100%; font-size: 1rem;">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 4%;"><small>ID</small></th>
-                            <th style="width: 23%;"><small>Project Title</small></th>
-                            <th style="width: 18%;"><small>Location</small></th>
-                            <th style="width: 8%;"><small>Status</small></th>
-                            <th style="width: 10%;"><small>Contract Amount</small></th>
-                            <th style="width: 12%;"><small>Contractor</small></th>
-                            <th style="width: 6%;"><small>Duration</small></th>
-                            <th style="width: 15%;"><small>Action</small></th>
+                            <th style="width: 4%; white-space: nowrap;"><small>ID</small></th>
+                            <th style="width: 23%; white-space: nowrap;"><small>Project Title</small></th>
+                            <th style="width: 18%; white-space: nowrap;"><small>Location</small></th>
+                            <th style="width: 8%; white-space: nowrap;"><small>Status</small></th>
+                            <th style="width: 10%; white-space: nowrap;"><small>Contract Amount</small></th>
+                            <th style="width: 12%; white-space: nowrap;"><small>Contractor</small></th>
+                            <th style="width: 6%; white-space: nowrap;"><small>Duration</small></th>
+                            <th style="width: 15%; white-space: nowrap;"><small>Action</small></th>
                         </tr>
                     </thead>
                     <tbody class="small">

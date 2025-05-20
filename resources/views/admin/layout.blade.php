@@ -36,7 +36,7 @@
                     </button>
 
                     <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('admin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
+                        <a href="{{ route('systemAdmin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
                             <div class="d-flex align-items-center">
                                 <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid me-3">
                                 <div>
@@ -49,23 +49,23 @@
                         <div class="d-lg-flex align-items-center ms-auto gap-lg-3">
                             <ul class="navbar-nav gap-lg-2">
                                 <li class="nav-item">
-                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/index') ? 'fw-bold text-white' : '' }}" 
-                                    style="{{ Request::is('admin/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                    href="{{ url('/admin/index') }}">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/index') ? 'fw-bold text-white' : '' }}" 
+                                    style="{{ Request::is('systemAdmin/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/systemAdmin/index') }}">
                                     <i class="fas fa-chart-line me-2"></i>Dashboard
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/projects') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('admin/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                    href="{{ url('/admin/projects') }}">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/projects') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('systemAdmin/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/systemAdmin/projects') }}">
                                     <i class="fas fa-project-diagram me-2"></i>Projects
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/userManagement') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('admin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                    href="{{ url('/admin/userManagement') }}">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/userManagement') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('systemAdmin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/systemAdmin/userManagement') }}">
                                     <i class="fas fa-users me-2"></i>User Management
                                     </a>
                                 </li>
@@ -149,7 +149,6 @@
         <script src="{{ asset('js/Account/change-new_pass.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-setup.js') }}"></script>
         <script src="{{ asset('js/Projects/addProject.js') }}"></script>
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
@@ -161,6 +160,10 @@
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
+        <script src="{{ asset('js/FundsUtilization/fetchFundUtilizationSummary.js') }}"></script>
+        
+        <script src="{{ asset('js/FundsUtilization/EngAndMqc.js') }}"></script>
+         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>
         <script src="{{ asset('js/Account/logout.js') }}"></script>

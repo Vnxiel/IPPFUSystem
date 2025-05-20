@@ -195,47 +195,86 @@ class FundsUtilizationController extends Controller
     }
     
     public function storeFundDetail(Request $request, $id)
-{
-    try {
-        $fundUtilization = FundsUtilization::where('project_id', $id)->first();
-
-        if (!$fundUtilization) {
-            return response()->json(['success' => false, 'message' => 'Fund utilization record not found.']);
+    {
+        try {
+            $fundUtilization = FundsUtilization::where('project_id', $id)->first();
+    
+            if (!$fundUtilization) {
+                return response()->json(['success' => false, 'message' => 'Fund utilization record not found.']);
+            }
+    
+            $entries = $request->input('entries', []);
+    
+            // Fallback to single entry if 'entries' array is not used
+            if (empty($entries) && $request->has(['type', 'name', 'month', 'period', 'amount'])) {
+                $entries = [[
+                    'type' => $request->input('type'),
+                    'name' => $request->input('name'),
+                    'month' => $request->input('month'),
+                    'period' => $request->input('period'),
+                    'amount' => $request->input('amount'),
+                ]];
+            }
+    
+            $duplicates = [];
+            $saved = 0;
+    
+            foreach ($entries as $entry) {
+                $type = $entry['type'] ?? null;
+                $name = trim($entry['name'] ?? '');
+                $month = trim($entry['month'] ?? '');
+                $paymentPeriod = $entry['period'] ?? null;
+                $amount = $entry['amount'] ?? null;
+    
+                if (!$type || !$name || !$month || !$paymentPeriod || !$amount) {
+                    Log::warning("Skipping incomplete entry: " . json_encode($entry));
+                    continue;
+                }
+    
+                // Check for duplicate
+                $existing = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
+                    ->where('type', $type)
+                    ->where('name', $name)
+                    ->where('month', $month)
+                    ->where('payment_periods', $paymentPeriod)
+                    ->first();
+    
+                if ($existing) {
+                    $duplicates[] = "$name ($month, $paymentPeriod)";
+                    continue;
+                }
+    
+                FundsBreakdowns::create([
+                    'funds_utilization_id' => $fundUtilization->id,
+                    'type' => $type,
+                    'name' => $name,
+                    'month' => $month,
+                    'payment_periods' => $paymentPeriod,
+                    'amount' => $this->cleanMoney($amount),
+                    'date' => now(),
+                    'remarks' => null,
+                ]);
+    
+                $saved++;
+            }
+    
+            if ($saved > 0 && count($duplicates) > 0) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "$saved entr" . ($saved > 1 ? "ies" : "y") . " saved. Some duplicates were skipped: " . implode(', ', $duplicates)
+                ]);
+            } elseif ($saved > 0) {
+                return response()->json(['success' => true, 'message' => 'All entries saved successfully.']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'All entries were duplicates or invalid. Nothing saved.']);
+            }
+    
+        } catch (\Exception $e) {
+            Log::error("Failed to store fund detail: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to save.']);
         }
-
-        // Check for duplicate entry
-        $existing = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
-            ->where('type', $request->type)
-            ->where('name', $request->name)
-            ->where('month', $request->month)
-            ->where('payment_periods', $request->payment_period)
-            ->first();
-
-        if ($existing) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Duplicate entry detected. Same name, month, and payment period already exist.'
-            ]);
-        }
-
-        FundsBreakdowns::create([
-            'funds_utilization_id' => $fundUtilization->id,
-            'type' => $request->type,
-            'name' => $request->name,
-            'month' => $request->month,
-            'payment_periods' => $request->payment_period,
-            'amount' => $this->cleanMoney($request->amount),
-            'date' => now(),
-            'remarks' => null,
-        ]);
-
-        return response()->json(['success' => true]);
-    } catch (\Exception $e) {
-        Log::error("Failed to store fund detail: " . $e->getMessage());
-        return response()->json(['success' => false, 'message' => 'Failed to save.']);
     }
-}
-
+    
     
     
 public function getFundsUtilization(Request $request, $project_id)

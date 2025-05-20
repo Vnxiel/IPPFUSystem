@@ -659,12 +659,12 @@ public function updateProject(Request $request, $id)
             'targetCompletion' => 'required|date',
             'timeExtension' => 'nullable|integer',
             'revisedCompletionDate' => 'nullable|date',
+            'revisedTargetDate' => 'nullable|date',
             'completionDate' => 'required|date',
             'projectSlippage' => 'nullable|string',
             'othersContractor' => 'nullable|string',
             'ea' => 'nullable|string',
             'ea_position' => 'nullable|string',
-            'ea_monthlyRate' => 'nullable|string',
             'projectYear' => 'nullable|integer',
             'projectFPP' => 'nullable|string',
             'projectRC' => 'nullable|string',
@@ -688,12 +688,30 @@ public function updateProject(Request $request, $id)
         foreach ($request->all() as $key => $value) {
             if (preg_match('/^(suspensionOrderNo|resumeOrderNo)(\d+)$/', $key, $matches)) {
                 $index = $matches[2];
+
+                $suspensionRemark = trim($request->input("suspensionOrderNo{$index}Remarks"));
+                $resumeRemark = trim($request->input("resumeOrderNo{$index}Remarks"));
+
                 $remarksData[$index] = [
-                    'suspensionOrderRemarks' => $request->input("suspensionOrderNo{$index}Remarks"),
-                    'resumeOrderRemarks' => $request->input("resumeOrderNo{$index}Remarks"),
+                    'suspensionOrderRemarks' => $suspensionRemark,
+                    'resumeOrderRemarks' => $resumeRemark,
                 ];
             }
         }
+
+        $fundsOld = FundsUtilization::where('project_id', $id)->first();
+
+            $oldFundValues = [
+                'abc' => $fundsOld->orig_abc ?? null,
+                'contractAmount' => $fundsOld->orig_contract_amount ?? null,
+                'engineering' => $fundsOld->orig_engineering ?? null,
+                'mqc' => $fundsOld->orig_mqc ?? null,
+                'contingency' => $fundsOld->orig_contingency ?? null,
+                'bid' => $fundsOld->orig_bid ?? null,
+                'appropriation' => $fundsOld->orig_appropriation ?? null,
+            ];
+
+
 
         $oldValues = [];
 
@@ -709,9 +727,9 @@ public function updateProject(Request $request, $id)
                 'sourceOfFunds', 'otherFund', 'modeOfImplementation',
                 'projectStatus', 'ongoingStatus', 'projectContractDays',
                 'noaIssuedDate', 'noaReceivedDate', 'ntpIssuedDate', 'ntpReceivedDate',
-                'originalStartDate', 'targetCompletion', 'timeExtension',
+                'originalStartDate', 'targetCompletion', 'timeExtension', 'revisedTargetDate', 
                 'revisedCompletionDate', 'completionDate', 'projectSlippage',
-                'othersContractor', 'ea', 'ea_position', 'ea_monthlyRate', 'projectYear', 'projectFPP', 'projectRC',
+                'othersContractor', 'ea', 'ea_position', 'projectYear', 'projectFPP', 'projectRC',
                 'suspensionRemarks'
             ]);
 
@@ -727,25 +745,36 @@ public function updateProject(Request $request, $id)
             $project->save();
 
             $projectDescription = $request->input('projectDescription');
-            if (!empty($projectDescription)) {
-                $lines = preg_split('/\r\n|\r|\n/', $projectDescription);
-                foreach ($lines as $line) {
-                    $trimmedLine = trim($line);
-                    if ($trimmedLine !== '') {
-                        $existing = ProjectDescription::where('project_id', $project->id)
-                            ->where('ProjectDescription', $trimmedLine)
-                            ->first();
 
-                        if (!$existing) {
-                            ProjectDescription::create([
-                                'project_id' => $project->id,
-                                'projectID' => $project->projectID,
-                                'ProjectDescription' => $trimmedLine
-                            ]);
-                        }
+            if (!empty($projectDescription)) {
+                $newLines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $projectDescription)));
+                $newCombined = implode(' ', $newLines); // Single string version of the new content
+            
+                // Get all previous descriptions for this project_id
+                $existingDescriptions = ProjectDescription::where('project_id', $project->id)
+                    ->pluck('ProjectDescription')
+                    ->toArray();
+            
+                $existingCombined = implode(' ', array_map('trim', $existingDescriptions)); // Existing combined string
+            
+                // Compare similarity
+                similar_text($existingCombined, $newCombined, $percentSimilarity);
+            
+                if ($percentSimilarity < 95) {
+                    // Delete all previous descriptions for this project_id
+                    ProjectDescription::where('project_id', $project->id)->delete();
+            
+                    // Insert new descriptions
+                    foreach ($newLines as $line) {
+                        ProjectDescription::create([
+                            'project_id' => $project->id,
+                            'projectID' => $project->projectID,
+                            'ProjectDescription' => $line
+                        ]);
                     }
                 }
             }
+                        
 
             $funds = FundsUtilization::firstOrNew(['project_id' => $project->id]);
             $funds->orig_abc = $this->cleanMoney($request->input('abc'));
@@ -756,6 +785,32 @@ public function updateProject(Request $request, $id)
             $funds->orig_bid = $this->cleanMoney($request->input('bid'));
             $funds->orig_appropriation = $this->cleanMoney($request->input('appropriation'));
             $funds->save();
+
+            $newFundValues = [
+                'abc' => $funds->orig_abc,
+                'contractAmount' => $funds->orig_contract_amount,
+                'engineering' => $funds->orig_engineering,
+                'mqc' => $funds->orig_mqc,
+                'contingency' => $funds->orig_contingency,
+                'bid' => $funds->orig_bid,
+                'appropriation' => $funds->orig_appropriation,
+            ];
+            
+            foreach ($oldFundValues as $key => $oldValue) {
+                $newValue = $newFundValues[$key];
+            
+                if ($oldValue != $newValue) {
+                    $action = "Updated $key in project: $projectTitle — from '$oldValue' to '$newValue'";
+                    (new ActivityLogs)->userAction(
+                        $sessionData['user_id'] ?? null,
+                        $sessionData['ofmis_id'] ?? null,
+                        $sessionData['performedBy'] ?? null,
+                        $sessionData['role'] ?? null,
+                        $action
+                    );
+                }
+            }
+            
         });
 
         // Log activity
@@ -770,18 +825,25 @@ public function updateProject(Request $request, $id)
             }
         }
 
-        $projectTitle = $request->input('projectTitle');
-        $changeLog = implode("; ", $changes) ?: 'No changes detected.';
         $sessionData = session('loggedIn', []);
-        $action = "Updated project: $projectTitle. Changes: $changeLog";
-
-        (new ActivityLogs)->userAction(
-            $sessionData['user_id'] ?? null,
-            $sessionData['ofmis_id'] ?? null,
-            $sessionData['performedBy'] ?? null,
-            $sessionData['role'] ?? null,
-            $action
-        );
+        $projectTitle = $request->input('projectTitle');
+        
+        foreach ($oldValues as $key => $oldValue) {
+            $newValue = $newValues[$key];
+        
+            if ($oldValue != $newValue) {
+                $action = "Updated $key in project: $projectTitle — from '$oldValue' to '$newValue'";
+        
+                (new ActivityLogs)->userAction(
+                    $sessionData['user_id'] ?? null,
+                    $sessionData['ofmis_id'] ?? null,
+                    $sessionData['performedBy'] ?? null,
+                    $sessionData['role'] ?? null,
+                    $action
+                );
+            }
+        }
+        
 
         return response()->json([
             'status' => 'success',
