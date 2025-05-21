@@ -94,18 +94,18 @@ document.addEventListener('DOMContentLoaded', function () {
       contractAmountInput.value = formatNumber(contractAmount);
     }
 
-    if (balance < 0 && triggerInput) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Exceeded Allocation',
-        text: 'Total billing exceeds the allocated Contract Amount!',
-        confirmButtonText: 'OK'
-      }).then(() => {
-        triggerInput.value = '';
-        triggerInput.focus();
-        calculateBalance();
-      });
-    }
+    // if (balance < 0 && triggerInput) {
+    //   Swal.fire({
+    //     icon: 'warning',
+    //     title: 'Exceeded Allocation',
+    //     text: 'Total billing exceeds the allocated Contract Amount!',
+    //     confirmButtonText: 'OK'
+    //   }).then(() => {
+    //     triggerInput.value = '';
+    //     triggerInput.focus();
+    //     calculateBalance();
+    //   });
+    // }
   }
 
   inputIds.forEach(id => {
@@ -219,3 +219,5 @@ function updateBalances() {
   document.getElementById('engineeringBalance').textContent = engSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   document.getElementById('mqcBalance').textContent = mqcSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
+

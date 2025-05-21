@@ -19,6 +19,7 @@ use App\Models\ProjectDescription;
 use App\Models\ProjectFile;
 use App\Models\ProjectStatus;
 use App\Models\VariationOrder;
+use App\Models\FundsBreakdowns;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProjectManager extends Controller
@@ -563,7 +564,26 @@ if ($existing) {
                 ->toArray(); 
 
                 Log::info('Variation Orders:', ['project_id' => $id, 'variation_orders' => $project['variation_orders']]);
-    
+                    // Fetch engineering and mqc from database
+                    $engineeringEntries = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
+                    ->where('type', 'engineering')
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                    
+
+                    \Log::info('Debug engineering entries', [
+                        'fund_utilization_id' => $fundUtilization->project_id ?? null,
+                        'engineering_count' => $engineeringEntries->count(),
+                        'entries' => $engineeringEntries->toArray()
+                    ]);
+                    
+                
+
+                    $mqcEntries = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
+                        ->where('type', 'mqc')
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                
                 
             $role = auth()->user()->role;
             switch ($role) {
@@ -580,7 +600,7 @@ if ($existing) {
                     return redirect()->back()->withErrors(['Unauthorized role.']);
             }
     
-            return view($view, compact('contractors', 'project', 'locations', 'sourceOfFunds', 'projectYear', 'projectEA', 'projectStatusData'));
+            return view($view, compact('contractors', 'project', 'locations', 'sourceOfFunds', 'projectYear', 'projectEA', 'projectStatusData', 'engineeringEntries', 'mqcEntries'));
     
         } catch (\Exception $e) {
             Log::error('Error fetching project details: ' . $e->getMessage());

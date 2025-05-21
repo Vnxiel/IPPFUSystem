@@ -158,6 +158,8 @@
         <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
+        <script src="{{ asset('js/Projects/projects-total_savings.js') }}"></script>
+
 
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/Filters/location-search.js') }}"></script>

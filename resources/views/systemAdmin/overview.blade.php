@@ -140,7 +140,7 @@
                                             <p class="d-block">Status:</p>
                                         </div> 
                                         <div class="col-md-7">
-                                            <span class="badge bg-success me-2" style="font-weight: normal;">
+                                            <span class="badge bg-success me-2 text-white" style="font-weight: normal;">
                                                 {{ $project['projectStatus'] ?? 'N/A' }}
                                             </span><br>
                                             <small style="font-weight: normal;">
@@ -440,128 +440,257 @@
                             <div class="col-md-6">
                                 <!-- Cost Breakdown -->
                                 <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                    <legend class="legend-text">Proposed Fund</legend>
+                                    <legend class="float-none w-auto px-2 fw-bold text-primary">Funds Source</legend>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped text-center align-middle" id="costBreakdownTable">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th>Category</th>
-                                                    <th>Proposed</th>
-                                                    <!-- V.O. headers will be dynamically inserted here -->
-                                                    <th id="voHeadersPlaceholder"></th>
-                                                    <th>Actual</th>
+                                                    <th rowspan="2">Category</th>
+                                                    <th rowspan="2">Proposed</th>
+                                                    <th colspan="{{ max(count($project['variation_orders'] ?? []), 1) }}">Variation Orders</th>
+                                                    <th rowspan="2">Actual</th>
+                                                </tr>
+                                                <tr>
+                                                    @php
+                                                        $vos = $project['variation_orders'] ?? [];
+                                                        $hasVO1 = collect($vos)->contains('vo_number', 1);
+                                                    @endphp
+
+                                                    {{-- Always show VO.1 --}}
+                                                    <th>V.O. 1</th>
+
+                                                    {{-- Show others if present and not VO.1 --}}
+                                                    @foreach($vos as $vo)
+                                                        @if ($vo['vo_number'] != 1)
+                                                            <th>V.O. {{ $vo['vo_number'] }}</th>
+                                                        @endif
+                                                    @endforeach
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>Appropriation</td>
-                                                    <td id="orig_appropriation_view">{{ number_format($projects->orig_appropriation ?? 0, 2) }}</td>
-                                                    <!-- Dynamic VO cells for Appropriation -->
-                                                    <!-- Each <td> will be appended inside this cell -->
-                                                    <td class="vo_cells_row" data-field="appropriation"></td>
-                                                    <td id="actual_appropriation_view"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Contract Amount</td>
-                                                    <td id="orig_contract_amount_view"></td>
-                                                    <td class="vo_cells_row" data-field="contract_amount"></td>
-                                                    <td id="actual_contract_amount_view"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>ABC</td>
-                                                    <td id="orig_abc_view"></td>
-                                                    <td class="vo_cells_row" data-field="abc"></td>
-                                                    <td id="actual_abc_view"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Bid Difference</td>
-                                                    <td id="orig_bid_view"></td>
-                                                    <td class="vo_cells_row" data-field="bid"></td>
-                                                    <td id="actual_bid_view"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Engineering</td>
-                                                    <td id="orig_engineering_view"></td>
-                                                    <td class="vo_cells_row" data-field="engineering"></td>
-                                                    <td id="actual_engineering_view"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>MQC</td>
-                                                    <td id="orig_mqc_view"></td>
-                                                    <td class="vo_cells_row" data-field="mqc"></td>
-                                                    <td id="actual_mqc_view"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Contingency</td>
-                                                    <td id="orig_contingency_view"></td>
-                                                    <td class="vo_cells_row" data-field="contingency"></td>
-                                                    <td id="actual_contingency_view"></td>
-                                                </tr>
+                                                @php
+                                                    $rows = [
+                                                        ['label' => 'Appropriation', 'key' => 'appropriation'],
+                                                        ['label' => 'Contract Amount', 'key' => 'contract_amount'],
+                                                        ['label' => 'ABC', 'key' => 'abc'],
+                                                        ['label' => 'Bid Difference', 'key' => 'bid'],
+                                                        ['label' => 'Engineering', 'key' => 'engineering'],
+                                                        ['label' => 'MQC', 'key' => 'mqc'],
+                                                        ['label' => 'Contingency', 'key' => 'contingency'],
+                                                    ];
+                                                    $funds = $project['funds'] ?? [];
+                                                    $vo1 = collect($vos)->firstWhere('vo_number', 1);
+                                                @endphp
+
+                                                @foreach ($rows as $row)
+                                                    @php $key = $row['key']; @endphp
+                                                    <tr>
+                                                        <td>{{ $row['label'] }}</td>
+                                                        <td>{{ number_format($funds['orig_' . $key] ?? 0, 2) }}</td>
+
+                                                        {{-- Always show VO.1 --}}
+                                                        <td>{{ number_format($vo1 ? ($vo1['vo_' . $key] ?? 0) : 0, 2) }}</td>
+
+                                                        {{-- Show others if present and not VO.1 --}}
+                                                        @foreach ($vos as $vo)
+                                                            @if ($vo['vo_number'] != 1)
+                                                                <td>{{ number_format($vo['vo_' . $key] ?? 0, 2) }}</td>
+                                                            @endif
+                                                        @endforeach
+
+                                                        <td>{{ number_format($funds['actual_' . $key] ?? 0, 2) }}</td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
                                 </fieldset>
+
                             </div>
                                     
                             <!-- Right Column: Implementation Details -->
                             <div class="col-md-6 font-base">
-                                <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                                    <legend class="legend-text">Fund Utilization Summary</legend>                                    
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-striped text-center align-middle">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th>Category</th>
-                                                        <th>Date</th>
-                                                        <th>Amount</th>
-                                                        <th>Remarks</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Mobilization</td>
-                                                        <td id="dateMobi_view"></td>
-                                                        <td id="amountMobi_view"></td>
-                                                        <td id="remMobi_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                    <tbody id="partialBillingsRows"></tbody>
-                                                    </tr>
-                                            
-                                                    <tr>
-                                                    <td>Final Billing</td>
-                                                    <td id="dateFinal_view"></td>
-                                                    <td id="amountFinal_view"></td>
-                                                    <td id="remFinal_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Engineering</td>
-                                                        <td id="dateEng_view"></td>
-                                                        <td id="amountEng_view"></td>
-                                                        <td id="remEng_view"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>MQC</td>
-                                                        <td id="dateMqc_view"></td>
-                                                        <td id="amountMqc_view"></td>
-                                                        <td id="remMqc_view"></td>
-                                                    </tr>
-                                                    <tr class="fw-bold">
-                                                        <td>Total Expenditures</td>
-                                                        <td>-</td>
-                                                        <td id="amountTotal_view"></td>
-                                                        <td id="remTotal_view"></td>
-                                                    </tr>
-                                                    <tr class="fw-bold">
-                                                        <td>Total Savings</td>
-                                                        <td>-</td>
-                                                        <td id="amountSavings_view"></td>
-                                                        <td id="remSavings_view"></td>
-                                                    </tr>
-                                                </tbody>
+                            <fieldset class="border p-3 mb-4 rounded shadow-sm">
+                                <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Utilization Summary</legend>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped text-center align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                        <th>Category</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Remarks</th>
+                                        <th>Show Breakdown</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="font-weight: normal;">
+                                        @php
+                                        if (!function_exists('ordinal')) {
+                                            function ordinal($number) {
+                                                $ends = ['th','st','nd','rd','th','th','th','th','th','th'];
+
+                                                if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
+                                                    return $number . 'th';
+                                                }
+
+                                                return $number . $ends[$number % 10];
+                                            }
+                                        }
+
+
+                                        $summary = $project['summary'] ?? [];
+                                        $partialBillings = $project['partial_billings'] ?? [];
+
+                                        $summaryLabels = [
+                                            'mobilization' => '15% Mobilization',
+                                            'final' => 'Final Billing',
+                                            'engineering' => 'Engineering',
+                                            'mqc' => 'MQC',
+                                        ];
+                                        @endphp
+
+                                        {{-- Mobilization --}}
+                                        @php $mob = $summary['mobilization'] ?? null; @endphp
+                                        <tr>
+                                        <td>{{ $summaryLabels['mobilization'] }}</td>
+                                        <td>{{ $mob['date'] ?? '-' }}</td>
+                                        <td>{{ number_format($mob['amount'] ?? 0, 2) }}</td>
+                                        <td>{{ $mob['remarks'] ?? '-' }}</td>
+                                        <td>-</td>
+                                        </tr>
+
+                                        {{-- Partial Billings --}}
+                                        @foreach ($partialBillings as $index => $billing)
+                                        @if (!empty($billing['date']) || !empty($billing['amount']) || !empty($billing['remarks']))
+                                            <tr>
+                                            <td>{{ ordinal($index + 1) }} Partial Billing</td>
+                                            <td>{{ $billing['date'] ?? '-' }}</td>
+                                            <td>{{ number_format($billing['amount'] ?? 0, 2) }}</td>
+                                            <td>{{ $billing['remarks'] ?? '-' }}</td>
+                                            <td>-</td>
+                                            </tr>
+                                        @endif
+                                        @endforeach
+
+                                        {{-- Final Billing --}}
+                                        @php $final = $summary['final'] ?? null; @endphp
+                                        <tr>
+                                        <td>{{ $summaryLabels['final'] }}</td>
+                                        <td>{{ $final['date'] ?? '-' }}</td>
+                                        <td>{{ number_format($final['amount'] ?? 0, 2) }}</td>
+                                        <td>{{ $final['remarks'] ?? '-' }}</td>
+                                        <td>-</td>
+                                        </tr>
+
+                                        {{-- Engineering --}}
+                                        @php $eng = $summary['engineering'] ?? null; @endphp
+                                        <tr>
+                                        <td>{{ $summaryLabels['engineering'] }}</td>
+                                        <td>{{ $eng['date'] ?? '-' }}</td>
+                                        <td>{{ number_format((float) ($eng['amount'] ?? 0), 2) }}</td>
+                                        <td>{{ $eng['remarks'] ?? '-' }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#engineeringBreakdown">
+                                            View
+                                            </button>
+                                        </td>
+                                        </tr>
+                                        <tr class="collapse" id="engineeringBreakdown">
+                                        <td colspan="5">
+                                            <table class="table table-sm table-bordered text-center mb-0 w-100">
+                                            <thead>
+                                                <tr>
+                                                <th>Name (Month - Payment Period)</th>
+                                                <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($engineeringEntries as $eng)
+                                                <tr>
+                                                <td>{{ $eng->name }} ({{ $eng->month }} - {{ $eng->payment_periods }})</td>
+                                                <td>{{ number_format($eng->amount, 2) }}</td>
+                                                </tr>
+                                                @empty
+                                                <tr>
+                                                <td colspan="2" class="text-muted">No entries found.</td>
+                                                </tr>
+                                                @endforelse
+                                            </tbody>
                                             </table>
-                                        </div>
-                                    </fieldset>
+                                        </td>
+                                        </tr>
+
+                                        {{-- MQC --}}
+                                        @php $mqc = $summary['mqc'] ?? null; @endphp
+                                        <tr>
+                                        <td>{{ $summaryLabels['mqc'] }}</td>
+                                        <td>{{ $mqc['date'] ?? '-' }}</td>
+                                        <td>{{ number_format((float) ($mqc['amount'] ?? 0), 2) }}</td>
+
+                                        <td>{{ $mqc['remarks'] ?? '-' }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#mqcBreakdown">
+                                            View
+                                            </button>
+                                        </td>
+                                        </tr>
+                                        <tr class="collapse" id="mqcBreakdown">
+                                        <td colspan="5">
+                                            <table class="table table-sm table-bordered text-center mb-0 w-100">
+                                            <thead>
+                                                <tr>
+                                                <th>Name (Month - Payment Period)</th>
+                                                <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($mqcEntries as $mqc)
+                                                <tr>
+                                                <td>{{ $mqc->name }} ({{ $mqc->month }} - {{ $mqc->payment_periods }})</td>
+                                                <td>{{ number_format($mqc->amount, 2) }}</td>
+                                                </tr>
+                                                @empty
+                                                <tr>
+                                                <td colspan="2" class="text-muted">No entries found.</td>
+                                                </tr>
+                                                @endforelse
+                                            </tbody>
+                                            </table>
+                                        </td>
+                                        </tr>
+
+                                        {{-- Totals --}}
+                                            <tr class="fw-normal">
+                                            <td>Total Expenditures</td>
+                                            <td>-</td>
+                                            <td>
+                                                {{ number_format(
+                                                    (float)($summary['totalExpenditures']['amount'] ?? 0),
+                                                    2
+                                                ) }}
+                                            </td>
+                                            <td>{{ $summary['remarks_total_expenditures'] ?? '-' }}</td>
+                                            <td>-</td>
+                                            </tr>
+                                            <tr class="fw-normal">
+                                            <td>Total Savings</td>
+                                            <td>-</td>
+                                            <td>
+                                                {{ number_format(
+                                                    (float)($summary['totalSavings']['amount'] ?? 0),
+                                                    2
+                                                ) }}
+                                            </td>
+                                            <td>{{ $summary['remarks_total_savings'] ?? '-' }}</td>
+                                            <td>-</td>
+                                            </tr>
+
+                                    </tbody>
+                                    </table>
+                                </div>
+                                </fieldset>
+
+
                                 </div>
                             </div>
                         </div>
@@ -778,6 +907,7 @@ function removeLastOrderFields() {
         });
     }
 }
+
 
 // Function to validate that resumeOrderNo is not earlier than or equal to suspensionOrderNo
 function validateOrderDates(orderId) {

@@ -12,7 +12,7 @@ use App\Models\FundsBreakdowns;
 use App\Models\MQC;
 
 class FundsUtilizationController extends Controller
-{
+{ 
     public function getFundUtilization($project_id)
     {
         $fundUtilization = FundsUtilization::where('project_id', $project_id)

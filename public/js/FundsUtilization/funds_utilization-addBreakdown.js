@@ -108,29 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return Swal.fire({ icon: "error", title: "Duplicate entry detected." });
     }
 
-    // Get current balances
-const amountEng = parseAmount(document.getElementById("amountEng").value);
-const amountMqc = parseAmount(document.getElementById("amountMqc").value);
-
-const totalEng = entries
-  .filter(entry => entry.type === "engineering")
-  .reduce((sum, entry) => sum + parseAmount(entry.amount), 0);
-
-const totalMqc = entries
-  .filter(entry => entry.type === "mqc")
-  .reduce((sum, entry) => sum + parseAmount(entry.amount), 0);
-
-const engBalance = amountEng - totalEng;
-const mqcBalance = amountMqc - totalMqc;
-
-if ((type === "engineering" && amount > engBalance) || (type === "mqc" && amount > mqcBalance)) {
-  return Swal.fire({
-    icon: "error",
-    title: "Insufficient funds",
-    text: `You cannot add more than the remaining balance.`,
-  });
-}
-
+  
 entries.push(newEntry);
 renderTable();
 

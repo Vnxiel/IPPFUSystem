@@ -421,11 +421,11 @@
                 <tbody>
                   <tr>
                     <td>Total Expenditures</td>
-                    <td><input type="text" class="form-control form-control-sm" id="amountTotal"></td>
+                    <td><input type="text" class="form-control form-control-sm" id="amountTotal" name="amountTotal"></td>
                   </tr>
                   <tr>
                     <td>Total Savings</td>
-                    <td><input type="text" class="form-control form-control-sm" id="amountSavings"></td>
+                    <td><input type="text" class="form-control form-control-sm" id="amountSavings" name="amountSavings"></td>
                   </tr>
                 </tbody>
               </table>
