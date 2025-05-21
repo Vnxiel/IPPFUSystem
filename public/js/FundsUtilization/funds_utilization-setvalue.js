@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 🔹 Call once on load and re-calculate when original fields change
   calculateOrigTotal();
+  
   ['abc', 'contract_amount', 'bid', 'engineering', 'mqc', 'contingency'].forEach(field => {
     const input = document.getElementById(`orig_${field}`);
     if (input) {

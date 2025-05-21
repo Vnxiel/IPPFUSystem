@@ -658,169 +658,160 @@ if ($existing) {
     }
 
 
-public function updateProject(Request $request, $id)
-{
-    try {
-        Log::info("Updating project ID: $id", $request->all());
-
-        $validator = \Validator::make($request->all(), [
-            'projectTitle' => 'required|string|max:255',
-            'projectLoc' => 'required|string|max:255',
-            'projectID' => 'required|string|max:255',
-            'projectContractor' => 'required|string',
-            'sourceOfFunds' => 'required|string',
-            'otherFund' => 'nullable|string|max:255',
-            'modeOfImplementation' => 'required|string',
-            'projectDescription' => 'nullable|string',
-            'projectContractDays' => 'required|integer',
-            'noaIssuedDate' => 'nullable|date',
-            'noaReceivedDate' => 'nullable|date',
-            'ntpIssuedDate' => 'nullable|date',
-            'ntpReceivedDate' => 'nullable|date',
-            'originalStartDate' => 'required|date',
-            'targetCompletion' => 'required|date',
-            'timeExtension' => 'nullable|integer',
-            'revisedCompletionDate' => 'nullable|date',
-            'revisedTargetDate' => 'nullable|date',
-            'completionDate' => 'required|date',
-            'projectSlippage' => 'nullable|string',
-            'othersContractor' => 'nullable|string',
-            'ea' => 'nullable|string',
-            'ea_position' => 'nullable|string',
-            'projectYear' => 'nullable|integer',
-            'projectFPP' => 'nullable|string',
-            'projectRC' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation failed!',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $newProjectID = $request->input('projectID');
-
-        $dynamicFields = collect($request->all())->filter(function ($_, $key) {
-            return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d*$/', $key);
-        });
-
-        $remarksData = [];
-        foreach ($request->all() as $key => $value) {
-            if (preg_match('/^(suspensionOrderNo|resumeOrderNo)(\d+)$/', $key, $matches)) {
-                $index = $matches[2];
-
-                $suspensionRemark = trim($request->input("suspensionOrderNo{$index}Remarks"));
-                $resumeRemark = trim($request->input("resumeOrderNo{$index}Remarks"));
-
-                $remarksData[$index] = [
-                    'suspensionOrderRemarks' => $suspensionRemark,
-                    'resumeOrderRemarks' => $resumeRemark,
-                ];
-            }
-        }
-
-        $fundsOld = FundsUtilization::where('project_id', $id)->first();
-
-            $oldFundValues = [
-                'abc' => $fundsOld->orig_abc ?? null,
-                'contractAmount' => $fundsOld->orig_contract_amount ?? null,
-                'engineering' => $fundsOld->orig_engineering ?? null,
-                'mqc' => $fundsOld->orig_mqc ?? null,
-                'contingency' => $fundsOld->orig_contingency ?? null,
-                'bid' => $fundsOld->orig_bid ?? null,
-                'appropriation' => $fundsOld->orig_appropriation ?? null,
-            ];
-
-
-
-        $oldValues = [];
-
-        \DB::transaction(function () use ($request, $id, $newProjectID, $dynamicFields, $remarksData, &$oldValues) {
-            $project = Project::find($id);
-
-            if (!$project) {
-                throw new \Exception('Project not found.');
-            }
-
-            $oldValues = $project->only([
-                'projectTitle', 'projectLoc', 'projectID', 'projectContractor',
-                'sourceOfFunds', 'otherFund', 'modeOfImplementation',
-                'projectStatus', 'ongoingStatus', 'projectContractDays',
-                'noaIssuedDate', 'noaReceivedDate', 'ntpIssuedDate', 'ntpReceivedDate',
-                'originalStartDate', 'targetCompletion', 'timeExtension', 'revisedTargetDate', 
-                'revisedCompletionDate', 'completionDate', 'projectSlippage',
-                'othersContractor', 'ea', 'ea_position', 'projectYear', 'projectFPP', 'projectRC',
-                'suspensionRemarks'
+    public function updateProject(Request $request, $id)
+    {
+        try {
+            Log::info("Updating project ID: $id", $request->all());
+    
+            $validator = \Validator::make($request->all(), [
+                'projectTitle' => 'required|string|max:255',
+                'projectLoc' => 'required|string|max:255',
+                'projectID' => 'required|string|max:255',
+                'projectContractor' => 'required|string',
+                'sourceOfFunds' => 'required|string',
+                'otherFund' => 'nullable|string|max:255',
+                'modeOfImplementation' => 'required|string',
+                'projectDescription' => 'nullable|string',
+                'projectContractDays' => 'required|integer',
+                'noaIssuedDate' => 'nullable|date',
+                'noaReceivedDate' => 'nullable|date',
+                'ntpIssuedDate' => 'nullable|date',
+                'ntpReceivedDate' => 'nullable|date',
+                'originalStartDate' => 'required|date',
+                'targetCompletion' => 'required|date',
+                'timeExtension' => 'nullable|integer',
+                'revisedCompletionDate' => 'nullable|date',
+                'revisedTargetDate' => 'nullable|date',
+                'completionDate' => 'required|date',
+                'projectSlippage' => 'nullable|string',
+                'othersContractor' => 'nullable|string',
+                'ea' => 'nullable|string',
+                'ea_position' => 'nullable|string',
+                'projectYear' => 'nullable|integer',
+                'projectFPP' => 'nullable|string',
+                'projectRC' => 'nullable|string',
             ]);
-
-            $project->fill($request->only(array_keys($oldValues)));
-
-            foreach ($dynamicFields as $field => $value) {
-                if (Schema::hasColumn('projects', $field)) {
-                    $project->$field = $value;
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed!',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+    
+            $newProjectID = $request->input('projectID');
+    
+            $dynamicFields = collect($request->all())->filter(function ($_, $key) {
+                return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d*$/', $key);
+            });
+    
+            $remarksData = [];
+            foreach ($request->all() as $key => $value) {
+                if (preg_match('/^(suspensionOrderNo|resumeOrderNo)(\d+)$/', $key, $matches)) {
+                    $index = $matches[2];
+                    $remarksData[$index] = [
+                        'suspensionOrderRemarks' => trim($request->input("suspensionOrderNo{$index}Remarks")),
+                        'resumeOrderRemarks' => trim($request->input("resumeOrderNo{$index}Remarks")),
+                    ];
                 }
             }
-
-            $project->suspensionRemarks = json_encode($remarksData);
-            $project->save();
-
-            $projectDescription = $request->input('projectDescription');
-
-            if (!empty($projectDescription)) {
-                $newLines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $projectDescription)));
-                $newCombined = implode(' ', $newLines); // Single string version of the new content
-            
-                // Get all previous descriptions for this project_id
-                $existingDescriptions = ProjectDescription::where('project_id', $project->id)
-                    ->pluck('ProjectDescription')
-                    ->toArray();
-            
-                $existingCombined = implode(' ', array_map('trim', $existingDescriptions)); // Existing combined string
-            
-                // Compare similarity
-                similar_text($existingCombined, $newCombined, $percentSimilarity);
-            
-                if ($percentSimilarity < 95) {
-                    // Delete all previous descriptions for this project_id
-                    ProjectDescription::where('project_id', $project->id)->delete();
-            
-                    // Insert new descriptions
-                    foreach ($newLines as $line) {
-                        ProjectDescription::create([
-                            'project_id' => $project->id,
-                            'projectID' => $project->projectID,
-                            'ProjectDescription' => $line
-                        ]);
+    
+            $oldValues = [];
+            $oldFundValues = [];
+    
+            \DB::transaction(function () use (
+                $request, $id, $newProjectID, $dynamicFields, $remarksData, 
+                &$oldValues, &$oldFundValues
+            ) {
+                $project = Project::find($id);
+                if (!$project) {
+                    throw new \Exception('Project not found.');
+                }
+    
+                $oldValues = $project->only([
+                    'projectTitle', 'projectLoc', 'projectID', 'projectContractor',
+                    'sourceOfFunds', 'otherFund', 'modeOfImplementation',
+                    'projectStatus', 'ongoingStatus', 'projectContractDays',
+                    'noaIssuedDate', 'noaReceivedDate', 'ntpIssuedDate', 'ntpReceivedDate',
+                    'originalStartDate', 'targetCompletion', 'timeExtension', 'revisedTargetDate', 
+                    'revisedCompletionDate', 'completionDate', 'projectSlippage',
+                    'othersContractor', 'ea', 'ea_position', 'projectYear', 'projectFPP', 'projectRC',
+                    'suspensionRemarks'
+                ]);
+    
+                $project->fill($request->only(array_keys($oldValues)));
+    
+                foreach ($dynamicFields as $field => $value) {
+                    if (\Schema::hasColumn('projects', $field)) {
+                        $project->$field = $value;
                     }
                 }
+    
+                $project->suspensionRemarks = json_encode($remarksData);
+                $project->save();
+    
+                $projectDescription = $request->input('projectDescription');
+                if (!empty($projectDescription)) {
+                    $newLines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $projectDescription)));
+                    $newCombined = implode(' ', $newLines);
+                    $existingDescriptions = ProjectDescription::where('project_id', $project->id)
+                        ->pluck('ProjectDescription')
+                        ->toArray();
+                    $existingCombined = implode(' ', array_map('trim', $existingDescriptions));
+    
+                    similar_text($existingCombined, $newCombined, $percentSimilarity);
+                    if ($percentSimilarity < 95) {
+                        ProjectDescription::where('project_id', $project->id)->delete();
+                        foreach ($newLines as $line) {
+                            ProjectDescription::create([
+                                'project_id' => $project->id,
+                                'projectID' => $project->projectID,
+                                'ProjectDescription' => $line
+                            ]);
+                        }
+                    }
+                }
+    
+                $fundsOld = FundsUtilization::where('project_id', $id)->first();
+                $oldFundValues = [
+                    'abc' => $fundsOld->orig_abc ?? null,
+                    'contractAmount' => $fundsOld->orig_contract_amount ?? null,
+                    'engineering' => $fundsOld->orig_engineering ?? null,
+                    'mqc' => $fundsOld->orig_mqc ?? null,
+                    'contingency' => $fundsOld->orig_contingency ?? null,
+                    'bid' => $fundsOld->orig_bid ?? null,
+                    'appropriation' => $fundsOld->orig_appropriation ?? null,
+                ];
+    
+                $funds = FundsUtilization::firstOrNew(['project_id' => $project->id]);
+                $funds->orig_abc = $this->cleanMoney($request->input('abc'));
+                $funds->orig_contract_amount = $this->cleanMoney($request->input('contractAmount'));
+                $funds->orig_engineering = $this->cleanMoney($request->input('engineering'));
+                $funds->orig_mqc = $this->cleanMoney($request->input('mqc'));
+                $funds->orig_contingency = $this->cleanMoney($request->input('contingency'));
+                $funds->orig_bid = $this->cleanMoney($request->input('bid'));
+                $funds->orig_appropriation = $this->cleanMoney($request->input('appropriation'));
+                $funds->save();
+            });
+    
+            // After transaction
+            $project = Project::find($id);
+            $newValues = $project->only(array_keys($oldValues));
+            $changes = [];
+    
+            foreach ($oldValues as $key => $oldValue) {
+                $newValue = $newValues[$key];
+                if ($oldValue != $newValue) {
+                    $changes[] = "$key: '$oldValue' -> '$newValue'";
+                }
             }
-                        
-
-            $funds = FundsUtilization::firstOrNew(['project_id' => $project->id]);
-            $funds->orig_abc = $this->cleanMoney($request->input('abc'));
-            $funds->orig_contract_amount = $this->cleanMoney($request->input('contractAmount'));
-            $funds->orig_engineering = $this->cleanMoney($request->input('engineering'));
-            $funds->orig_mqc = $this->cleanMoney($request->input('mqc'));
-            $funds->orig_contingency = $this->cleanMoney($request->input('contingency'));
-            $funds->orig_bid = $this->cleanMoney($request->input('bid'));
-            $funds->orig_appropriation = $this->cleanMoney($request->input('appropriation'));
-            $funds->save();
-
-            $newFundValues = [
-                'abc' => $funds->orig_abc,
-                'contractAmount' => $funds->orig_contract_amount,
-                'engineering' => $funds->orig_engineering,
-                'mqc' => $funds->orig_mqc,
-                'contingency' => $funds->orig_contingency,
-                'bid' => $funds->orig_bid,
-                'appropriation' => $funds->orig_appropriation,
-            ];
-            
-            foreach ($oldFundValues as $key => $oldValue) {
-                $newValue = $newFundValues[$key];
-            
+    
+            $sessionData = session('loggedIn', []);
+            $projectTitle = $request->input('projectTitle');
+    
+            foreach ($oldValues as $key => $oldValue) {
+                $newValue = $newValues[$key];
                 if ($oldValue != $newValue) {
                     $action = "Updated $key in project: $projectTitle — from '$oldValue' to '$newValue'";
                     (new ActivityLogs)->userAction(
@@ -832,58 +823,49 @@ public function updateProject(Request $request, $id)
                     );
                 }
             }
-            
-        });
-
-        // Log activity
-        $project = Project::find($id);
-        $newValues = $project->only(array_keys($oldValues));
-        $changes = [];
-
-        foreach ($oldValues as $key => $oldValue) {
-            $newValue = $newValues[$key];
-            if ($oldValue != $newValue) {
-                $changes[] = "$key: '$oldValue' -> '$newValue'";
+    
+            // Log fund changes
+            $newFundValues = [
+                'abc' => $request->input('abc'),
+                'contractAmount' => $request->input('contractAmount'),
+                'engineering' => $request->input('engineering'),
+                'mqc' => $request->input('mqc'),
+                'contingency' => $request->input('contingency'),
+                'bid' => $request->input('bid'),
+                'appropriation' => $request->input('appropriation'),
+            ];
+    
+            foreach ($oldFundValues as $key => $oldValue) {
+                $newValue = $this->cleanMoney($newFundValues[$key] ?? null);
+                if ($oldValue != $newValue) {
+                    $action = "Updated $key in project: $projectTitle — from '$oldValue' to '$newValue'";
+                    (new ActivityLogs)->userAction(
+                        $sessionData['user_id'] ?? null,
+                        $sessionData['ofmis_id'] ?? null,
+                        $sessionData['performedBy'] ?? null,
+                        $sessionData['role'] ?? null,
+                        $action
+                    );
+                }
             }
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Project updated successfully!',
+                'project' => $project,
+                'newProjectID' => $newProjectID
+            ]);
+    
+        } catch (\Exception $e) {
+            Log::error("Error updating project ID $id: " . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update project.',
+                'error_details' => $e->getMessage()
+            ]);
         }
-
-        $sessionData = session('loggedIn', []);
-        $projectTitle = $request->input('projectTitle');
-        
-        foreach ($oldValues as $key => $oldValue) {
-            $newValue = $newValues[$key];
-        
-            if ($oldValue != $newValue) {
-                $action = "Updated $key in project: $projectTitle — from '$oldValue' to '$newValue'";
-        
-                (new ActivityLogs)->userAction(
-                    $sessionData['user_id'] ?? null,
-                    $sessionData['ofmis_id'] ?? null,
-                    $sessionData['performedBy'] ?? null,
-                    $sessionData['role'] ?? null,
-                    $action
-                );
-            }
-        }
-        
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Project updated successfully!',
-            'project' => $project,
-            'newProjectID' => $newProjectID
-        ]);
-
-    } catch (\Exception $e) {
-        Log::error("Error updating project ID $id: " . $e->getMessage());
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to update project.',
-            'error_details' => $e->getMessage()
-        ]);
     }
-}
-
+    
     public function trashProject(Request $request, $id)
     {
         $project = Project::where('id', $id)->first();

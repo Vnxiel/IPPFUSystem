@@ -1,4 +1,4 @@
-
+let orderCount = 1;
 function addOrderFields() {
     orderCount++;
     const container = document.getElementById('orderContainer');

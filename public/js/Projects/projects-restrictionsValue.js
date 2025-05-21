@@ -63,5 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 validateContractAmount();
             }
         });
-    
+
+        
 });
+
+

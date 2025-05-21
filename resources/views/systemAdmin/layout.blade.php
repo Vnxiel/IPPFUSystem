@@ -151,15 +151,7 @@
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
 
-        <script src="{{ asset('js/Projects/projects-addSubmit.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-addOrder.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-currencyFormatting.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-dateValidation.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-location_contractorDropdown.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-restrictionsValue.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-suggestionBox.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-valueCalculations.js') }}"></script>
-
+       
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
@@ -167,7 +159,12 @@
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
 
-       
+        <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
+        <script src="{{ asset('js/Filters/location-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/contractor-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/sourceOfFund-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/engineer-search.js') }}"></script>  
+
          <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>

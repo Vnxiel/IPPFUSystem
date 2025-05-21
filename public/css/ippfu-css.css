@@ -84,41 +84,44 @@ tbody tr:first-child td {
     transform: scale(0.97);
     transition: transform 0.1s ease;
 }
-.tab-buttons {
-    margin-top: -2.2rem;
-    z-index: 2;
-    background: white;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-    border: 1px solid #dee2e6;
-    border-bottom: none;
-    border-radius: 0.375rem 0.375rem 0 0;
-  }
-  .fund-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 5px;
-  }
-  
-  .fund-row {
-    display: contents;
-  }
-  
-  .fund-cell {
-    border: 1px solid #ccc;
-    padding: 6px;
-  }
-  
-  .fund-header .fund-cell {
-    background-color: #cce5ff;
+
+.font-title-overview{
+    font-size: 1rem; 
     font-weight: bold;
-  }
-  
-  .fund-group-title .fund-cell {
-    grid-column: span 4;
+    display: block;
+}
+
+.font-base {
+    font-size: 0.850rem; 
     font-weight: bold;
-    background-color: #ffeeba;
-    text-align: center;
-  }
-  
-  .d-none { display: none !important; }
+    /* color: #6c757d;  */
+    display: block;
+}
+
+.font-base p{
+    font-size: 0.850rem; 
+    font-weight: bold;
+    display: block;
+    margin: 3px;    
+}
+
+.font-base span {
+    font-weight: normal;
+    color: black;
+}
+
+.font-content{
+    font-size: 0.850rem; 
+}
+
+.legend-text {
+    font-size: 1.15rem; 
+    font-weight: bold;
+    color: #333;
+}
+
+/* engineering-row */
+.eng-breakdown-row td {
+  background-color: #f9f9f9;
+  font-size: 0.95em;
+}

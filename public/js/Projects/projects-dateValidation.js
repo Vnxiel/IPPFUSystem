@@ -175,16 +175,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
         
 
-    originalStartDate.addEventListener("change", () => {
+    // Trigger validation and restrictions only on blur
+    originalStartDate.addEventListener("blur", () => {
         if (!validateOriginalStartVsNTP()) return;
         setMinDates();
         suspensionDate.value = '';
         resumeDate.value = '';
-        targetCompletion.value = '';
         actualCompletion.value = '';
         revisedTargetField.value = '';
         revisedCompletionField.value = '';
     });
+
 
     ntpIssuedDate.addEventListener("change", () => {
         validateOriginalStartVsNTP();
@@ -333,45 +334,8 @@ function updateTargetCompletion() {
         targetCompletion.value = start.toISOString().split('T')[0];
     }
 }
-
-originalStartDate.addEventListener('change', updateTargetCompletion);
+// Update logic on change/input (calculate targetCompletion etc.)
+originalStartDate.addEventListener("change", updateTargetCompletion);
+originalStartDate.addEventListener("input", updateTargetCompletion);
 contractDays.addEventListener('input', updateTargetCompletion);
-
-function validateFinancialFields() {
-const requiredFields = [
-    "#appropriation",
-    "#contractAmount",
-    "#engineering",
-    "#abc",
-    "#mqc"
-];
-
-let allFilled = true;
-
-// Remove old validation styling
-requiredFields.forEach(selector => {
-    $(selector).removeClass("empty-field");
-});
-
-// Check each required field
-requiredFields.forEach(selector => {
-    const value = $(selector).val().trim();
-    if (!value) {
-        $(selector).addClass("empty-field");
-        allFilled = false;
-    }
-});
-
-if (!allFilled) {
-    Swal.fire({
-        icon: "warning",
-        title: "Missing Financial Information",
-        text: "Please fill in all required financial fields before submitting.",
-        confirmButtonText: "OK"
-    });
-}
-
-return allFilled;
-}
-
 
