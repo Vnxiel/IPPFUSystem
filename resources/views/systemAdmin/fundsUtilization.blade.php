@@ -134,11 +134,6 @@
           </legend>
           <!-- Fund Utilization Summary Section -->
           <div class="section mb-4">
-            <h5 class="section-title d-flex align-items-center gap-2 mb-3">
-              <i class="fas fa-chart-pie text-primary"></i>
-              Fund Utilization Summary
-            </h5>
-
             <!-- Action Buttons -->
             <div class="d-flex flex-wrap gap-2 mb-4">
               <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#entryModal">
