@@ -312,7 +312,6 @@
                                     </div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <span class="input-group-text">₱</span>
                                             <input type="text" class="form-control currency-input" name="appropriation"
                                                 id="appropriation" required>
                                         </div>
@@ -327,7 +326,6 @@
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="contractAmount"
                                         name="contractAmount">
                                 </div>
@@ -337,7 +335,6 @@
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="engineering"
                                         name="engineering">
                                 </div>
@@ -350,7 +347,6 @@
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="abc" name="abc">
                                 </div>
                             </div>
@@ -360,7 +356,6 @@
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="mqc" name="mqc">
                                 </div>
                             </div>
@@ -372,7 +367,6 @@
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="bid" name="bid">
                                 </div>
                             </div>
@@ -381,7 +375,6 @@
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" name="contingency" class="form-control currency-input"
                                         id="contingency">
                                 </div>

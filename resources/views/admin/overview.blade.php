@@ -41,14 +41,14 @@
             </div>
 
 
-            <div class="card-body">
+            <div class="card-body font-base">
                 <div class="row gy-4">
                     <!-- Column 1 -->
                     <div class="col-md-4">
                         <div class="col-md-12" >
                             <div class="row">
                                 <div class="col-md-4" >
-                                    <strong class="d-block text-end">Project ID:</strong>
+                                    <p class="d-block text-end">Project ID:</p>
                                 </div>
                                 <div class="col-md-8" >
                                     <span style="font-weight: normal;">{{ $project['projectID'] ?? 'N/A' }}</span>
@@ -58,7 +58,7 @@
                         <div class="col-md-12" >
                             <div class="row">
                                 <div class="col-md-4" >
-                                    <strong class="d-block text-end">Location:</strong>
+                                    <p class="d-block text-end">Location:</p>
                                 </div>
                                 <div class="col-md-8" >
                                     <span style="font-weight: normal;">{{ $project['projectLoc'] ?? 'N/A' }}</span>
@@ -68,7 +68,7 @@
                         <div class="col-md-12" >
                             <div class="row">
                                 <div class="col-md-4" >
-                                    <strong class="d-block text-end">Contractor:</strong>
+                                    <p class="d-block text-end">Contractor:</p>
                                 </div>
                                 <div class="col-md-8" >
                                     <span style="font-weight: normal;">{{ $project['projectContractor'] ?? 'N/A' }}</span>
@@ -78,7 +78,7 @@
                         <div class="col-md-12" >
                             <div class="row">
                                 <div class="col-md-4" >
-                                    <strong class="d-block text-end">Project Year:</strong>
+                                    <p class="d-block text-end">Project Year:</p>
                                 </div>
                                 <div class="col-md-8" >
                                     <span style="font-weight: normal;">{{ $project['projectYear'] ?? 'N/A' }}</span>
@@ -88,7 +88,7 @@
                         <div class="col-md-12" >
                             <div class="row">
                                 <div class="col-md-4" >
-                                    <strong class="d-block text-end">Project FPP:</strong>
+                                    <p class="d-block text-end">Project FPP:</p>
                                 </div>
                                 <div class="col-md-8" >
                                     
@@ -99,7 +99,7 @@
                         <div class="col-md-12" >
                             <div class="row">
                                 <div class="col-md-4" >
-                                    <strong class="d-block text-end">Project Engineer:</strong>
+                                    <p class="d-block text-end">Project Engineer:</p>
                                 </div>
                                 <div class="col-md-8" >
                                     <span style="font-weight: normal;">{{ $project['ea'] ?? 'N/A' }}</span>
@@ -111,16 +111,16 @@
                     <!-- Column 2 -->
                     <div class="col-md-4">
                         <div class="mb-2">
-                            <strong class="d-block">Contract Days:  <span style="font-weight: normal;">{{ $project['projectContractDays'] ?? 'N/A' }} (Calendar days)</span> </strong>
+                            <p class="d-block">Contract Days:  <span style="font-weight: normal;">{{ $project['projectContractDays'] ?? 'N/A' }} (Calendar days)</span> </p>
                         </div>
                         <div class="mb-2">
-                            <strong class="d-block">Source of Fund:  <span style="font-weight: normal;">
+                            <p class="d-block">Source of Fund:  <span style="font-weight: normal;">
                                 {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? 'N/A') : ($project['sourceOfFunds'] ?? 'N/A') }}
-                            </span></strong>
+                            </span></p>
                            
                         </div>
                         <div class="mb-2">
-                            <strong class="d-block">Responsibility Center:  <span style="font-weight: normal;">{{ $project['projectRC'] ?? 'N/A' }}</span></strong>  
+                            <p class="d-block">Responsibility Center:  <span style="font-weight: normal;">{{ $project['projectRC'] ?? 'N/A' }}</span></p>  
                         </div>
 
                         @php
@@ -133,7 +133,7 @@
 
                     <!-- Project Status Display -->
                     <div class="mb-2 d-flex align-items-center">
-                        <strong class="me-2">
+                        <p class="me-2">
                             Status:
                             <span class="badge bg-success me-2" style="font-weight: normal;">
                                 {{ $project['projectStatus'] ?? 'N/A' }}
@@ -144,17 +144,17 @@
                                     as of {{ \Carbon\Carbon::parse($latestDate)->format('F j, Y') }}
                                 @endif
                             </small>
-                        </strong>
+                        </p>
                     </div>
                     <div>
-                            <strong>Slippage:
-                            <span class="badge bg-danger ms-2">{{ $project['projectSlippage'] ?? 'N/A' }}</span></strong>
+                            <p>Slippage:
+                            <span class="badge bg-danger ms-2">{{ $project['projectSlippage'] ?? 'N/A' }}</span></p>
                         </div>
                  </div>
                     <!-- Column 3 - Progress Table -->
                     <div class="col-md-4">
                     <div class="bg-light p-2 d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-bar-chart-line me-2"></i><strong>Progress</strong></span>
+                            <span><i class="bi bi-bar-chart-line me-2"></i><p>Progress</p></span>
 
                             @if ($totalPercentage < 100)
 
@@ -225,7 +225,7 @@
                                                 <div class="col-md-12" >
                                                     <div class="row">
                                                         <div class="col-md-4" >
-                                                            <strong class="d-block text-end">Implementation Mode:</strong>
+                                                            <p class="d-block text-end">Implementation Mode:</p>
                                                         </div>
                                                         <div class="col-md-8" >
                                                             <span style="font-weight: normal;">{{ $project['modeOfImplementation'] ?? 'N/A' }}</span>
@@ -252,7 +252,7 @@
                                                 <div class="col-md-12" >
                                                     <div class="row">
                                                         <div class="col-md-4" >
-                                                            <strong class="d-block text-end">Notice of Award:</strong>
+                                                            <p class="d-block text-end">Notice of Award:</p>
                                                         </div>
                                                         <div class="col-md-4" >
                                                             <span style="font-weight: normal;">{{ $project['noaIssuedDate'] ?? 'N/A' }}</span>
@@ -268,7 +268,7 @@
                                                 <div class="col-md-12" >
                                                     <div class="row">
                                                         <div class="col-md-4" >
-                                                            <strong class="d-block text-end">Notice to Proceed:</strong>
+                                                            <p class="d-block text-end">Notice to Proceed:</p>
                                                         </div>
                                                         <div class="col-md-4" >
                                                             <span style="font-weight: normal;">{{ $project['ntpIssuedDate'] ?? 'N/A' }}</span>
@@ -285,7 +285,7 @@
                                                 <div class="col-md-12" >
                                                     <div class="row">
                                                         <div class="col-md-4" >
-                                                            <strong class="d-block text-end">Original Starting Date:</strong>
+                                                            <p class="d-block text-end">Original Starting Date:</p>
                                                         </div>
                                                         <div class="col-md-8" >
                                                             <span style="font-weight: normal;">{{ $project['originalStartDate'] ?? 'N/A' }}</span>
@@ -297,7 +297,7 @@
                                                 <div class="col-md-12" >
                                                     <div class="row">
                                                         <div class="col-md-4" >
-                                                            <strong class="d-block text-end">Target Completion Date:</strong>
+                                                            <p class="d-block text-end">Target Completion Date:</p>
                                                         </div>
                                                         <div class="col-md-8" >
                                                             <span style="font-weight: normal;">{{ $project['targetCompletion'] ?? 'N/A' }}</span>
@@ -309,7 +309,7 @@
                                                 <div class="col-md-12" >
                                                     <div class="row">
                                                         <div class="col-md-4" >
-                                                            <strong class="d-block text-end" style="white-space: nowrap;">Actual Date of Completion:</strong>
+                                                            <p class="d-block text-end" style="white-space: nowrap;">Actual Date of Completion:</p>
                                                         </div>
                                                         <div class="col-md-8" >
                                                             <span style="font-weight: normal;">{{ $project['completionDate'] ?? 'N/A' }}</span>
@@ -947,7 +947,7 @@ function showMunicipalitySuggestions(query) {
 </script>
 
     
-    @include('systemAdmin.modals.Projects.add-fund')
+
     @include('systemAdmin.modals.Projects.add-status')
     @include('systemAdmin.modals.Projects.edit-project')
     @include('systemAdmin.modals.Projects.uploadFiles')
