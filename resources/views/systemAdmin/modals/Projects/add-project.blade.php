@@ -533,14 +533,14 @@
                                         <div class="row mb-2">
                                             <div class="col-3 text-end">
                                                 <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1
-                                                <span class="text-danger">*</span></label>
+                                                </label>
                                             </div>                        
                                             <div class="col-3">
                                                 <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
                                             </div>
                                             <div class="col-3 mb-2 text-end">
                                                 <label for="resumeOrderNo1" class="form-label">Resumption Order No.1
-                                                    <span class="text-danger">*</span></label>
+                                                    </label>
                                             </div>
                                             <div class="col-3">
                                                     <input type="date" class="form-control" id="resumeOrderNo1"
@@ -582,7 +582,7 @@
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
                                     <label for="revisedTargetDate" class="form-label">Revised Target Date
-                                    <span class="text-danger">*</span></label>
+                                    </label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="revisedTargetDate"
@@ -590,7 +590,7 @@
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="revisedCompletionDate" class="form-label">Revised Completion Date
-                                    <span class="text-danger">*</span></label>
+                                    </label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="revisedCompletionDate"
@@ -600,7 +600,7 @@
                             <div class="row">
                                 <div class="col-3 text-end">
                                     <label for="timeExtension" class="form-label">Extension Date
-                                    <span class="text-danger">*</span></label>
+                                    </label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="number" class="form-control" id="timeExtension"
@@ -618,6 +618,7 @@
                             <i class="fas fa-save me-2"></i>Save Project
                         </button>
                     </div>
+                    
                 </form>
             </div>
         </div>
