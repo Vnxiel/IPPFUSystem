@@ -1,4 +1,4 @@
-@extends('systemAdmin.layout')
+@extends('admin.layout')
 
 @section('title', 'User Management Page')
 
@@ -103,9 +103,9 @@
 </div>
 
 
-@include('systemAdmin.modals.Account.add-newUser')
-@include('systemAdmin.modals.Account.change-userRole')
-@include('systemAdmin.modals.Account.change-password')
+@include('admin.modals.Account.add-newUser')
+@include('admin.modals.Account.change-userRole')
+@include('admin.modals.Account.change-password')
 
 
 @endsection

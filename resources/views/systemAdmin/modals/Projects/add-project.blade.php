@@ -21,7 +21,7 @@
                         <div class="row g-3 mb-2">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 ">
                                         <label for="projectTitle" class="form-label">Project Title <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -35,7 +35,7 @@
                         <div class="row g-3 mb-2">
                             <div class="col-md-12  mb-2">
                                 <div class="row">
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 ">
                                         <label for="projectID" class="form-label">Project ID <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -46,8 +46,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row g-3 mb-2 text-end">
-                            <div class="col-md-3 text-end">
+                        <div class="row g-3 mb-2 ">
+                            <div class="col-md-3 ">
                                 <label for="projectYear" class="form-label">Year <span
                                         class="text-danger">*</span></label>
                             </div>
@@ -58,7 +58,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-2 text-end">
+                            <div class="col-md-2 ">
                                 <label for="projectFPP" class="form-label">FPP <span
                                         class="text-danger">*</span></label>
                             </div>
@@ -66,8 +66,8 @@
                                 <input type="text" class="form-control" id="projectFPP" name="projectFPP" required>
                             </div>
                         </div>
-                        <div class="row mb-2 g-3 text-end">
-                            <div class="col-md-3 text-end">
+                        <div class="row mb-2 g-3 ">
+                            <div class="col-md-3 ">
                                 <label for="projectRC" class="form-label">Responsibility Center<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -75,7 +75,7 @@
                                 <input type="text" class="form-control" id="projectRC" name="projectRC" required>
                             </div>
                         </div>
-                        <div class="row g-3 mb-2 text-end">
+                        <div class="row g-3 mb-2 ">
                             <div class="col-md-3">
                                 <label for="projectLoc" class="form-label">Location
                                     <span class="text-danger">*</span>
@@ -103,7 +103,7 @@
 
                         <!-- Project Description -->
                         <div class="row mb-2 g-3">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="projectDescription" class="form-label">Project Description<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -114,7 +114,7 @@
                         </div>
 
                         <!-- Contractor Input with Dynamic Suggestions -->
-                        <div class="row g-3 mb-2 text-end">
+                        <div class="row g-3 mb-2 ">
                             <div class="col-md-3">
                                 <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
@@ -133,7 +133,7 @@
 
 
                         <!-- <div class="row mb-2 g-3">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="projectContractor" class="form-label">Contractor<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -152,7 +152,7 @@
                             <div class="row mt-2">
                                 <div id="othersContractorDiv" style="display: none;">
                                     <div class="row mb-2 g-3">
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 ">
                                             <label for="othersContractor" class="form-label">Specify:</label>
                                         </div>
                                         <div class="col-9">
@@ -179,8 +179,8 @@
 
 
 
-                        <div class="row mb-2 g-3 text-end">
-                            <div class="col-md-3 text-end">
+                        <div class="row mb-2 g-3 ">
+                            <div class="col-md-3 ">
                                 <label for="sourceOfFunds" class="form-label">Source of Fund <span
                                         class="text-danger">*</span></label>
                             </div>
@@ -202,7 +202,7 @@
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 ">
                                         <label for="contractDays" class="form-label">Contract Days (Calendar days) <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -216,7 +216,7 @@
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12 ">
                                 <div class="row align-items-center">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 ">
                                         <label for="projectStatus" class="form-label">Status <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -258,7 +258,7 @@
                             </div> -->
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 ">
                                         <label for="ea" class="form-label">Project Engineer <span
                                                     class="text-danger">*</span></label>
                                     </div>
@@ -272,7 +272,7 @@
                                         </datalist>
                                     </div>
 
-                                    <div class="col-1 text-end">
+                                    <div class="col-1 ">
                                         <label for="ea_position" class="form-label">Position<span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -284,7 +284,7 @@
                                             <option value="Engineer I">Engineer I</option>
                                         </select>
                                     </div>
-                            <!-- <div class="col-3 text-end">
+                            <!-- <div class="col-3 ">
                                 <label for="ea_monthlyRate" class="form-label">Monthly Rate<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -306,7 +306,7 @@
                         <div class="row g-3 mb-2">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 ">
                                         <label for="appropriation" class="form-label">Appropriation <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -321,7 +321,7 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="contractAmount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
@@ -330,7 +330,7 @@
                                         name="contractAmount">
                                 </div>
                             </div>
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="engineering" class="form-label">Engineering</label>
                             </div>
                             <div class="col-3">
@@ -342,7 +342,7 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="abc" class="form-label">ABC</label>
                             </div>
                             <div class="col-3">
@@ -351,7 +351,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="mqc" class="form-label">MQC</label>
                             </div>
                             <div class="col-3">
@@ -362,7 +362,7 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="bid" class="form-label">Bid Difference</label>
                             </div>
                             <div class="col-3">
@@ -370,7 +370,7 @@
                                     <input type="text" class="form-control currency-input" id="bid" name="bid">
                                 </div>
                             </div>
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="bid" class="form-label">Contingency</label>
                             </div>
                             <div class="col-3">
@@ -389,13 +389,13 @@
                             </div>
 
                             <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="noaIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="noaReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
@@ -410,13 +410,13 @@
                             </div>
 
                             <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="ntpIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="ntpReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
@@ -424,14 +424,14 @@
                                 </div>
                             </div>
                             <!-- <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="originalStartDate" class="form-label">Official Start<span
                                             class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="originalStartDate" name="originalStartDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="targetCompletion" class="form-label">Target Completion Date<span
                                             class="text-danger">*</span></label>
                                 </div>
@@ -443,7 +443,7 @@
 
 
                             <!-- <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="completionDate" class="form-label">Completion Date<span
                                             class="text-danger">*</span>
                                     </label>
@@ -452,7 +452,7 @@
                                     <input type="date" style="background-color: lightgray;" class="form-control"
                                         id="completionDate" name="completionDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="revisedCompletionDate" class="form-label">Revised Completion
                                         Date</label>
                                 </div>
@@ -481,7 +481,7 @@
 
                         <div class="container">
                             <div class="row mb-2 align-items-center">
-                                <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
+                                <label for="modeOfImplementation" class="col-3  form-label">Mode of Implementation
                                     <span class="text-danger">*</span></label>
                                 <div class="col-9">
                                     <input type="text" class="form-control" id="modeOfImplementation"
@@ -490,14 +490,14 @@
                             </div>
                             <!-- Bagong add -->
                             <div class="row mb-2 align-items-center">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="" class="form-label">Original Starting Date
                                     <span class="text-danger">*</span></label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="originalStartDate" name="originalStartDate">
                                 </div>
-                                <div class="col-3 mb-2 text-end">
+                                <div class="col-3 mb-2 ">
                                     <label for="" class="form-label">Target Completion Date
                                         <span class="text-danger">*</span></label>
                                 </div>
@@ -508,7 +508,7 @@
                             </div>
                             
                             <div class="row">
-                                <div class="col-3 mb-2 text-end">
+                                <div class="col-3 mb-2 ">
                                     <label for="" class="form-label">Actual Date of Completion
                                         <span class="text-danger">*</span></label>
                                 </div>
@@ -524,14 +524,14 @@
                                     <div class="row mt-2 mb-2 order-set" id="orderSet1">
                                         <!-- Suspension and Resumption Order Row -->
                                         <div class="row mb-2">
-                                            <div class="col-3 text-end">
+                                            <div class="col-3 ">
                                                 <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1
                                                 </label>
                                             </div>                        
                                             <div class="col-3">
                                                 <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
                                             </div>
-                                            <div class="col-3 mb-2 text-end">
+                                            <div class="col-3 mb-2 ">
                                                 <label for="resumeOrderNo1" class="form-label">Resumption Order No.1
                                                     </label>
                                             </div>
@@ -541,7 +541,7 @@
                                             </div>
                                              <!-- Remarks Row -->
                                             <div class="row mt-1 mb-2">
-                                                <div class="col-md-3 mb-3 text-end">
+                                                <div class="col-md-3 mb-3 ">
                                                     <label for="suspensionOrderNo1Remarks" class="form-label">Suspension
                                                         Remarks</label>
                                                 </div>
@@ -556,7 +556,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row text-end">
+                            <div class="row ">
                                 <div class="col-md-10">
                                     <hr>
                                 </div>
@@ -573,7 +573,7 @@
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="revisedTargetDate" class="form-label">Revised Target Date
                                     </label>
                                 </div>                        
@@ -581,7 +581,7 @@
                                     <input type="date" class="form-control" id="revisedTargetDate"
                                         name="revisedTargetDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="revisedCompletionDate" class="form-label">Revised Completion Date
                                     </label>
                                 </div>                        
@@ -591,7 +591,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="timeExtension" class="form-label">Extension Date
                                     </label>
                                 </div>                        

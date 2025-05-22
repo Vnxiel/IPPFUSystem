@@ -1,4 +1,4 @@
-@extends('systemAdmin.layout')
+@extends('admin.layout')
 
 @section('title', 'Dashboard Page')
 
@@ -10,7 +10,7 @@
         <div class="col-md-12 d-flex align-items-center justify-content-between mb-3" style="margin-top:25px;">
             <div class="d-flex align-items-center gap-2">
             <a id="back-to-projects" class="btn btn-outline-secondary btn-sm"
-                      href="{{ url('/systemAdmin/overview/' . $project['id']) }}">
+                      href="{{ url('/admin/overview/' . $project['id']) }}">
                       <span class="fa fa-arrow-left"></span>
                     </a>
 

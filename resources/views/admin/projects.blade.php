@@ -1,4 +1,4 @@
-@extends('systemAdmin.layout')
+@extends('admin.layout')
 
 @section('title', 'Projects Page')
 
@@ -702,6 +702,6 @@
 
     </script>
 
-    @include('systemAdmin.modals.Projects.add-project')
-    @include('systemAdmin.modals.Projects.generate-report')
+    @include('admin.modals.Projects.add-project')
+    @include('admin.modals.Projects.generate-report')
 @endsection

@@ -36,7 +36,7 @@
                     </button>
 
                     <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('systemAdmin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
+                        <a href="{{ route('admin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
                             <div class="d-flex align-items-center">
                                 <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid me-3">
                                 <div>
@@ -49,43 +49,43 @@
                         <div class="d-lg-flex align-items-center ms-auto gap-lg-3">
                             <ul class="navbar-nav gap-lg-2">
                                 <li class="nav-item">
-                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/index') ? 'fw-bold text-white' : '' }}" 
-                                    style="{{ Request::is('systemAdmin/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                    href="{{ url('/systemAdmin/index') }}">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/index') ? 'fw-bold text-white' : '' }}" 
+                                    style="{{ Request::is('admin/index') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/admin/index') }}">
                                     <i class="fas fa-chart-line me-2"></i>Dashboard
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/projects') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('systemAdmin/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                    href="{{ url('/systemAdmin/projects') }}">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/projects') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('admin/projects') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/admin/projects') }}">
                                     <i class="fas fa-project-diagram me-2"></i>Projects
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/userManagement') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('systemAdmin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                    href="{{ url('/systemAdmin/userManagement') }}">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/userManagement') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('admin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/admin/userManagement') }}">
                                     <i class="fas fa-users me-2"></i>User Management
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 {{ Request::is('systemAdmin/trash') || Request::is('systemAdmin/activityLogs') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('systemAdmin/trash') || Request::is('systemAdmin/activityLogs') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 {{ Request::is('admin/trash') || Request::is('admin/activityLogs') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('admin/trash') || Request::is('admin/activityLogs') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
                                     href="#" data-bs-toggle="dropdown">
                                     <i class="fas fa-cog me-2"></i>Settings
                                     </a>
                                     <ul class="dropdown-menu border-0 shadow-sm mt-2">
                                         <li>
-                                            <a class="dropdown-item py-2 {{ Request::is('systemAdmin/trash') ? 'fw-bold text-primary' : '' }}" href="{{ url('/systemAdmin/trash') }}">
+                                            <a class="dropdown-item py-2 {{ Request::is('admin/trash') ? 'fw-bold text-primary' : '' }}" href="{{ url('/admin/trash') }}">
                                                 <i class="fas fa-archive me-2"></i>Archive
                                             </a>
                                         </li>
-                                        <li>
-                                            <a class="dropdown-item py-2 {{ Request::is('systemAdmin/activityLogs') ? 'fw-bold text-primary' : '' }}" href="{{ url('/systemAdmin/activityLogs') }}">
+                                        <!-- <li>
+                                            <a class="dropdown-item py-2 {{ Request::is('admin/activityLogs') ? 'fw-bold text-primary' : '' }}" href="{{ url('/admin/activityLogs') }}">
                                                 <i class="fas fa-history me-2"></i>Activity Logs
                                             </a>
-                                        </li>
+                                        </li> -->
                                     </ul>
                                 </li>
                             </ul>

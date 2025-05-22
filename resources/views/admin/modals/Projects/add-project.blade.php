@@ -307,13 +307,12 @@
                         <div class="row g-3 mb-2">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 ">
                                         <label for="appropriation" class="form-label">Appropriation <span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <span class="input-group-text">₱</span>
                                             <input type="text" class="form-control currency-input" name="appropriation"
                                                 id="appropriation" required>
                                         </div>
@@ -322,23 +321,22 @@
                             </div>
                         </div>
 
+
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="contractAmount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="contractAmount"
                                         name="contractAmount">
                                 </div>
                             </div>
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="engineering" class="form-label">Engineering</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="engineering"
                                         name="engineering">
                                 </div>
@@ -346,43 +344,39 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="abc" class="form-label">ABC</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="abc" name="abc">
                                 </div>
                             </div>
 
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="mqc" class="form-label">MQC</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="mqc" name="mqc">
                                 </div>
                             </div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="bid" class="form-label">Bid Difference</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="bid" name="bid">
                                 </div>
                             </div>
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="bid" class="form-label">Contingency</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" name="contingency" class="form-control currency-input"
                                         id="contingency">
                                 </div>
@@ -397,13 +391,13 @@
                             </div>
 
                             <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="noaIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="noaReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
@@ -418,13 +412,13 @@
                             </div>
 
                             <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="ntpIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="ntpReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
@@ -432,14 +426,14 @@
                                 </div>
                             </div>
                             <!-- <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="originalStartDate" class="form-label">Official Start<span
                                             class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="originalStartDate" name="originalStartDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="targetCompletion" class="form-label">Target Completion Date<span
                                             class="text-danger">*</span></label>
                                 </div>
@@ -451,7 +445,7 @@
 
 
                             <!-- <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="completionDate" class="form-label">Completion Date<span
                                             class="text-danger">*</span>
                                     </label>
@@ -460,7 +454,7 @@
                                     <input type="date" style="background-color: lightgray;" class="form-control"
                                         id="completionDate" name="completionDate">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 ">
                                     <label for="revisedCompletionDate" class="form-label">Revised Completion
                                         Date</label>
                                 </div>
@@ -471,6 +465,7 @@
                             </div> -->
                         </div>
                     </fieldset>
+
 
                     <!-- <div class="row">
                             <div class="mb-2">

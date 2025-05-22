@@ -277,14 +277,14 @@
                         <div class="row g-3 mb-2">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 ">
                                         <label for="appropriation" class="form-label">Appropriation <span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <span class="input-group-text">₱</span>
-                                            <input type="text" class="form-control currency-input" id="appropriation" name="appropriation" value="{{ old('appropriation', $project['funds']['orig_appropriation'] ?? '') }}" required>
+                                            <input type="text" class="form-control currency-input" name="appropriation"
+                                                id="appropriation" required>
                                         </div>
                                     </div>
                                 </div>
@@ -292,68 +292,62 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="contractAmount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount" value="{{ old('contractAmount', $project['funds']['orig_contract_amount'] ?? '') }}">
-                                        
+                                    <input type="text" class="form-control currency-input" id="contractAmount"
+                                        name="contractAmount">
                                 </div>
                             </div>
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="engineering" class="form-label">Engineering</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="engineering" name="engineering" value="{{ old('engineering', $project['funds']['orig_engineering'] ?? '') }}">
-                                   
+                                    <input type="text" class="form-control currency-input" id="engineering"
+                                        name="engineering">
                                 </div>
                             </div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="abc" class="form-label">ABC</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc" value="{{ old('abc', $project['funds']['orig_abc'] ?? '') }}">
-                                 </div>
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                </div>
                             </div>
 
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="mqc" class="form-label">MQC</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc" value="{{ old('mqc', $project['funds']['orig_mqc'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc">
                                 </div>
                             </div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="bid" class="form-label">Bid Difference</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="bid" name="bid" value="{{ old('bid', $project['funds']['orig_bid'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="bid" name="bid">
                                 </div>
-                             </div>
-                            <div class="col-3 text-end">
+                            </div>
+                            <div class="col-3 ">
                                 <label for="bid" class="form-label">Contingency</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="contingency" name="contingency" value="{{ old('contingency', $project['funds']['orig_contingency'] ?? '') }}">
-                                        
+                                    <input type="text" name="contingency" class="form-control currency-input"
+                                        id="contingency">
                                 </div>
                             </div>
                         </div>
