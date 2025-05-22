@@ -29,7 +29,7 @@
     <body class="montserrat d-flex flex-column min-vh-100">
         <div class="wrapper d-flex flex-column flex-grow-1">
             <!-- Enhanced Navbar -->
-            <nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background: linear-gradient(to right, #ffffff, #F8F2DE);">
+            <nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background-color: #ECDCBF;">
                 <div class="container-fluid px-4">
                     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -64,7 +64,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/userManagement') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('systemAdmin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    style="{{ Request::is('systemAdmin/userManagement') || Request::is('systemAdmin/overview') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
                                     href="{{ url('/systemAdmin/userManagement') }}">
                                     <i class="fas fa-users me-2"></i>User Management
                                     </a>

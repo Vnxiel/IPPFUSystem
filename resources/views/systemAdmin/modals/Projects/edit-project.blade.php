@@ -1,7 +1,7 @@
 <div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header text-white bg-primary">
                         <h5 class="modal-title" id="projectModalLabel">Edit Project Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -469,19 +469,67 @@
 
                                 
 
-                                <!-- Add/Remove Order Buttons -->
-                                <div class="row align-items-center">
-                                    <div class="col-md-10"><hr></div>
-                                    <div class="col-2 text-center mb-0">
-                                        <button type="button" class="btn btn-outline-primary btn-sm mr-1"
-                                            onclick="addOrderFields()" title="Add Suspension and Resumption Order">
-                                            <span class="fa-solid fa-square-plus"></span>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-danger btn-sm"
-                                            onclick="removeLastOrderFields()" title="Remove Suspension and Resumption Order">
-                                            <span class="fa-solid fa-circle-minus"></span>
-                                        </button>
+                                <div class="row">
+                                <!-- Order pair container -->
+                                <div id="orderContainer" class="col-12 ">
+                                    <div class="row mt-2 mb-2 order-set" id="orderSet1">
+                                        <!-- Suspension and Resumption Order Row -->
+                                        <div class="row mb-2">
+                                            <div class="col-3 text-end">
+                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1</label>
+                                            </div>                        
+                                            <div class="col-3">
+                                                <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
+                                            </div>
+                                            <div class="col-3 mb-2 text-end">
+                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No.1</label>
+                                            </div>
+                                            <div class="col-3">
+                                                    <input type="date" class="form-control" id="resumeOrderNo1"
+                                                    name="resumeOrderNo1">
+                                            </div>
+                                             <!-- Remarks Row -->
+                                            <div class="row mt-1 mb-2">
+                                                <div class="col-md-3 mb-3 text-end">
+                                                    <label for="suspensionOrderNo1Remarks" class="form-label">Suspension
+                                                        Remarks</label>
+                                                </div>
+                                                <div class="col-9">
+                                                    <textarea class="form-control" id="suspensionOrderNo1Remarks"
+                                                        name="suspensionOrderNo1Remarks" rows="2"></textarea>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row text-end mb-1">
+                                <div class="col-md-10">
+                                    <hr>
+                                </div>
+                                <div class="col-2 text-center mb-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm mr-1"
+                                        onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="Add Suspension and Resumption Order">
+                                        <span class="fa-solid fa-square-plus"></span> </button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        onclick="removeLastOrderFields()" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Suspension and Resumption Order">
+                                        <span class="fa-solid fa-circle-minus"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-3 text-end">
+                                    <label for="timeExtension" class="form-label">Extension Date</label>
+                                </div>                        
+                                <div class="col-9">
+                                    <input type="number" class="form-control" id="timeExtension"
+                                        name="timeExtension">
+                                </div>
+                            </div>
 
                                     <!-- Orders -->
                                     <div id="orderContainer" class="col-12">
@@ -801,3 +849,5 @@ document.addEventListener('click', function (e) {
         }
     }
 </script>
+
+
