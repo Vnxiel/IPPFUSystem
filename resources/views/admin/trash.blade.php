@@ -1,11 +1,11 @@
-@extends('systemAdmin.layout')
+@extends('admin.layout')
 
 @section('title', 'Archived Projects')
 
 @section('content') 
-<div class="container-fluid py-4" style="top-margin:25px;">
+<div class="container-fluid py-4" >
         <!-- Header Section -->
-        <div class="card mb-2 border-0 shadow-sm" >
+        <div class="card mb-2 border-0 shadow-sm" style="margin-top:75px;">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
                     <div class="icon-circle me-3" style="background: rgba(158, 158, 158, 0.1); padding: 12px; border-radius: 50%;">

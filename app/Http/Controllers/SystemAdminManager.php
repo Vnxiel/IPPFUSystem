@@ -126,23 +126,7 @@ class SystemAdminManager extends Controller
         ]);
     }
 
-    public function getUserRole(Request $request)
-    {
-        $user = User::find($request->id); 
     
-        if ($user) {
-            return response()->json([
-                'success' => 1,
-                'user' => [
-                    'role' => $user->role,
-                    'time_frame' => $user->time_frame ?? '',
-                    'time_limit' => $user->time_limit ?? ''
-                ]
-            ]);
-        }
-    
-        return response()->json(['success' => 0]); 
-    }
     
     public function changeRole(Request $request)
     {

@@ -434,7 +434,6 @@
                                         <span class=" d-md-inline">Add Fund Utilization</span>
                                     </a>
                                 </div>
-                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
@@ -471,8 +470,8 @@
                                                 @php
                                                     $rows = [
                                                         ['label' => 'Appropriation', 'key' => 'appropriation'],
-                                                        ['label' => 'Contract Amount', 'key' => 'contract_amount'],
                                                         ['label' => 'ABC', 'key' => 'abc'],
+                                                        ['label' => 'Contract Amount', 'key' => 'contract_amount'],
                                                         ['label' => 'Bid Difference', 'key' => 'bid'],
                                                         ['label' => 'Engineering', 'key' => 'engineering'],
                                                         ['label' => 'MQC', 'key' => 'mqc'],
@@ -505,12 +504,11 @@
                                         </table>
                                     </div>
                                 </fieldset>
-
                             </div>
                                     
                             <!-- Right Column: Implementation Details -->
                             <div class="col-md-6 font-base">
-                            <fieldset class="border p-3 mb-4 rounded shadow-sm">
+                                <fieldset class="border p-3 mb-4 rounded shadow-sm">
                                 <legend class="float-none w-auto px-2 fw-bold text-primary">Fund Utilization Summary</legend>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped text-center align-middle">
@@ -687,15 +685,13 @@
 
                                     </tbody>
                                     </table>
-                                </div>
-                                </fieldset>
-
-
+                                    </div>
+                                    </fieldset>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>       
+                </div>
             </div>
  
             <!-- file Manment -->

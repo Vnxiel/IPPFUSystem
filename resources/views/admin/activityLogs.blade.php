@@ -1,4 +1,4 @@
-@extends('systemAdmin.layout')
+@extends('admin.layout')
 
 @section('title', 'Activity Logs Page')
 @php use Carbon\Carbon; @endphp

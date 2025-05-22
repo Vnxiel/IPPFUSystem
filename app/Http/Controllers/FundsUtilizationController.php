@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use App\Models\FundsUtilization;
 use App\Models\VariationOrder;
 use App\Models\Project;
 use App\Models\FundsBreakdowns;
 use App\Models\MQC;
+
 
 class FundsUtilizationController extends Controller
 { 
@@ -344,10 +346,25 @@ public function getFundsUtilization(Request $request, $project_id)
                 ->get();
         }
 
-        return view('systemAdmin.fundsUtilization', compact(
-            'project', 'funds', 'summary', 'partial_billings',
-            'engineeringEntries', 'mqcEntries', 'variationOrders'
-        ));
+        $allNames = \App\Models\FundsBreakdowns::whereIn('type', ['engineering', 'mqc'])
+            ->pluck('name')
+            ->filter() // Remove null or empty
+            ->map(function ($name) {
+                return trim($name);
+            })
+            ->unique(function ($name) {
+                return Str::lower($name); // Case-insensitive uniqueness
+            })
+            ->sort()
+            ->values(); // Reset keys
+
+
+
+            return view('systemAdmin.fundsUtilization', compact(
+                'project', 'funds', 'summary', 'partial_billings',
+                'engineeringEntries', 'mqcEntries', 'variationOrders', 'allNames'
+            ));
+            
         
 
     } catch (\Exception $e) {

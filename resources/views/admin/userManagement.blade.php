@@ -1,4 +1,4 @@
-@extends('systemAdmin.layout')
+@extends('admin.layout')
 
 @section('title', 'User Management Page')
 
@@ -12,6 +12,7 @@
                     <button class="btn btn-sm btn-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#addNewUserModal"
+                            onclick="restrictedActionAlert()"
                             style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
                         <i class="fas fa-plus-circle me-2"></i>Add New User
                     </button>
@@ -67,27 +68,21 @@
                                         <span class="badge bg-primary">{{ $user->role }}</span>
                                     </td>
                                     <td class="text-center">
-                                    <button type="button"
-                                        class="btn btn-outline-warning btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#roleModal"
-                                        data-id="{{ $user->id }}"
-                                        title="Change Role"
-                                        id="changeRoleBtn-{{ $user->id }}"
-                                        name="changeRoleBtn">
-                                    <i class="fas fa-user-tag"></i>
-                                </button>
+                                            <button type="button"
+                                                class="btn btn-outline-warning btn-sm"
+                                                onclick="restrictedActionAlert()"
+                                                data-id="{{ $user->id }}"
+                                                title="Change Role">
+                                                <i class="fas fa-user-tag"></i>
+                                            </button>
 
-                                <button type="button"
-                                    class="btn btn-outline-info btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#changePassModal"
-                                    data-id="{{ $user->id }}"
-                                    title="Change Password"
-                                    id="changePassBtn-{{ $user->id }}">
-                                <i class="fas fa-key"></i>
-                            </button>
-
+                                            <button type="button"
+                                                class="btn btn-outline-info btn-sm"
+                                                onclick="restrictedActionAlert()"
+                                                data-id="{{ $user->id }}"
+                                                title="Change Password">
+                                                <i class="fas fa-key"></i>
+                                            </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -103,9 +98,18 @@
 </div>
 
 
-@include('systemAdmin.modals.Account.add-newUser')
-@include('systemAdmin.modals.Account.change-userRole')
-@include('systemAdmin.modals.Account.change-password')
+@include('admin.modals.Account.change-password')
 
 
 @endsection
+<script>
+    function restrictedActionAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Access Denied',
+            text: 'Only System Admins are allowed to perform this action.',
+            confirmButtonColor: '#3085d6',
+        });
+    }
+</script>
+

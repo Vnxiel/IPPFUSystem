@@ -23,6 +23,7 @@ Route::controller(UserManager::class)->group(function () {
     Route::post('/password/request', 'requestPasswordChange')->name('systemAdmin.requestPass');
     Route::get('/password/requests/fetch', 'getPasswordRequests');
     Route::post('/password/change-password', 'changeUserPassword');
+    Route::get('/getUserRole', 'getUserRole');
 
 });
 
@@ -42,7 +43,6 @@ Route::controller(UserManager::class)->group(function () {
         Route::get('/systemAdmin/userManagement', 'viewUserManagement')->name('systemAdmin.userManagement');
         Route::post('/userRegistration', 'registerUser')->name('userRegistration');
         Route::get('/getUsers', 'viewUserManagement')->name('getUsers');
-        Route::get('/getUserRole', 'getUserRole');
         Route::post('/changeRole', 'changeRole');
         Route::get('/systemAdmin/activityLogs', 'viewActivityLogs')->name('systemAdmin.activityLogs');
     });

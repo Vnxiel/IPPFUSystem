@@ -1,7 +1,8 @@
+
 document.addEventListener('DOMContentLoaded', function () {
 
   const voCountInput = document.getElementById('voCount');
-  const voCount = parseInt(voCountInput?.value) || 1;
+  let voCount = parseInt(voCountInput?.value) || 1;
 
   const allFields = ['appropriation', 'abc', 'contract_amount', 'bid', 'engineering', 'mqc', 'contingency'];
   const pageLoadFields = ['contract_amount', 'engineering', 'mqc', 'contingency'];
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Set actual_* fields based on VO values if available, fallback to orig_* on page load
+  // Initial set of actual_* fields on load
   pageLoadFields.forEach(function (field) {
     let latestNonEmptyValue = '';
     for (let i = voCount; i >= 1; i--) {
@@ -61,17 +62,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  allFields.forEach(function (field) {
-    for (let i = 1; i <= voCount; i++) {
-      const voInput = document.getElementById(`vo_${field}_${i}`);
-      if (voInput) {
-        voInput.addEventListener('input', function () {
-          updateActualField(field, i);
-          calculateBalance();
-        });
+  // 🔄 Attach VO input listeners (initial + reusable)
+  function attachVOListeners() {
+    voCount = parseInt(voCountInput?.value) || 1; // Refresh in case voCount was updated
+    allFields.forEach(function (field) {
+      for (let i = 1; i <= voCount; i++) {
+        const voInput = document.getElementById(`vo_${field}_${i}`);
+        if (voInput && !voInput.dataset.listenerAttached) {
+          voInput.addEventListener('input', function () {
+            updateActualField(field, i);
+            calculateBalance();
+          
+            // Update amountEng or amountMqc if applicable
+            const actualEng = document.getElementById("actual_engineering");
+            const amountEng = document.querySelector('input[name="amountEng"]');
+            const actualMqc = document.getElementById("actual_mqc");
+            const amountMqc = document.querySelector('input[name="amountMqc"]');
+          
+            if (field === 'engineering' && actualEng && amountEng) {
+              amountEng.value = actualEng.value;
+            }
+          
+            if (field === 'mqc' && actualMqc && amountMqc) {
+              amountMqc.value = actualMqc.value;
+            }
+          
+            // Make all previous VO inputs for this field readonly if this input has a value
+            if (this.value.trim() !== '') {
+              for (let j = 1; j < i; j++) {
+                const prevInput = document.getElementById(`vo_${field}_${j}`);
+                if (prevInput) {
+                  prevInput.readOnly = true;
+                }
+              }
+            }
+          });
+          
+
+          voInput.dataset.listenerAttached = "true";
+        }
       }
-    }
-  });
+    });
+  }
+
+  attachVOListeners(); // Initial run
 
   function calculateBalance(triggerInput = null) {
     const contractAmount = getSanitizedValue(actualContractAmountInput);
@@ -93,19 +127,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (contractAmountInput) {
       contractAmountInput.value = formatNumber(contractAmount);
     }
-
-    // if (balance < 0 && triggerInput) {
-    //   Swal.fire({
-    //     icon: 'warning',
-    //     title: 'Exceeded Allocation',
-    //     text: 'Total billing exceeds the allocated Contract Amount!',
-    //     confirmButtonText: 'OK'
-    //   }).then(() => {
-    //     triggerInput.value = '';
-    //     triggerInput.focus();
-    //     calculateBalance();
-    //   });
-    // }
   }
 
   inputIds.forEach(id => {
@@ -126,14 +147,32 @@ document.addEventListener('DOMContentLoaded', function () {
       input.addEventListener('input', () => {
         calculateBalance();
         if (typeof calculateExpenditureAndSavings === "function") calculateExpenditureAndSavings();
-        if (typeof updateEngineeringBalance === "function") updateEngineeringBalance();
-        if (typeof updateMqcBalance === "function") updateMqcBalance();
+        const amountEng = document.getElementById('amountEng');
+        const amountMqc = document.getElementById('amountMqc');
+        
+        if (id === 'actual_engineering' && amountEng) {
+          amountEng.value = formatNumber(getSanitizedValue(input));
+        }
+        
+        if (id === 'actual_mqc' && amountMqc) {
+          amountMqc.value = formatNumber(getSanitizedValue(input));
+        }
+        
       });
       input.addEventListener('change', () => {
         calculateBalance();
         if (typeof calculateExpenditureAndSavings === "function") calculateExpenditureAndSavings();
-        if (typeof updateEngineeringBalance === "function") updateEngineeringBalance();
-        if (typeof updateMqcBalance === "function") updateMqcBalance();
+        const amountEng = document.getElementById('amountEng');
+        const amountMqc = document.getElementById('amountMqc');
+        
+        if (id === 'actual_engineering' && amountEng) {
+          amountEng.value = formatNumber(getSanitizedValue(input));
+        }
+        
+        if (id === 'actual_mqc' && amountMqc) {
+          amountMqc.value = formatNumber(getSanitizedValue(input));
+        }
+        
       });
     }
   });
@@ -190,9 +229,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // 🔹 Call once on load and re-calculate when original fields change
   calculateOrigTotal();
-  
+
   ['abc', 'contract_amount', 'bid', 'engineering', 'mqc', 'contingency'].forEach(field => {
     const input = document.getElementById(`orig_${field}`);
     if (input) {
@@ -205,8 +243,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // ✅ Make attachVOListeners globally callable
+  window.attachVOListeners = attachVOListeners;
+
+    // 🔁 Auto-attach listeners when new VO fields are added
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          attachVOListeners(); // Check for new VO inputs and attach listeners
+        }
+      }
+    });
+  
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
 });
 
+// 🔹 Optional helper for Engineering and MQC balances
 function updateBalances() {
   const engSum = entries
     .filter(e => e.type === 'Engineering')
@@ -219,5 +275,3 @@ function updateBalances() {
   document.getElementById('engineeringBalance').textContent = engSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   document.getElementById('mqcBalance').textContent = mqcSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-
-

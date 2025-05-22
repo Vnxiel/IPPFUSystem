@@ -17,7 +17,7 @@
                             <div class="row g-3 mb-2">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 p">
                                             <label for="projectTitle" class="form-label">Project Title <span
                                                     class="text-danger">*</span></label>
                                         </div>
@@ -30,7 +30,7 @@
                             <div class="row g-3 mb-2">
                                 <div class="col-md-12  mb-2">
                                     <div class="row">
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 p">
                                             <label for="projectID" class="form-label">Project ID <span
                                                     class="text-danger">*</span></label>
                                         </div>
@@ -42,17 +42,17 @@
                                 </div>
                             </div>
                                 <!-- Project Year with Datalist -->
-                                <div class="row g-3 mb-2 text-end">
-                                <div class="col-md-3 text-end">
-                                            <label for="projectYear" class="form-label">Year <span class="text-danger">*</span></label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select form-select-sm" id="projectYear" name="projectYear" value="{{ old('projectYear', $project['projectYear'] ?? '') }}" required>
-                                                <option value="" disabled selected>Select Year</option>
-                                                <!-- Year options will be injected here by JavaScript -->
-                                            </select>
-                                        </div>
-                                    <div class="col-md-2 text-end">
+                                <div class="row g-3 mb-2">
+                                    <div class="col-md-3 p">
+                                        <label for="projectYear" class="form-label">Year <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select form-select-sm" id="projectYear" name="projectYear" value="{{ old('projectYear', $project['projectYear'] ?? '') }}" required>
+                                            <option value="" disabled selected>Select Year</option>
+                                            <!-- Year options will be injected here by JavaScript -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
                                         <label for="projectFPP" class="form-label">FPP <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -60,8 +60,8 @@
                                     <input type="text" class="form-control" id="projectFPP" name="projectFPP" value="{{ old('projectFPP', $project['projectFPP'] ?? '') }}" required>
                                           </div>
                                 </div>
-                                <div class="row mb-2 g-3 text-end">
-                                    <div class="col-md-3 text-end">
+                                <div class="row mb-2 g-3">
+                                    <div class="col-md-3">
                                         <label for="projectRC" class="form-label">Responsibility Center<span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -69,7 +69,7 @@
                                     <input type="text" class="form-control" id="projectRC" name="projectRC" value="{{ old('projectRC', $project['projectRC'] ?? '') }}" required>
                                         </div>
                                 </div>
-                                <div class="row g-3 mb-2 text-end">
+                                <div class="row g-3 mb-2 p">
                             <div class="col-md-3">
                                 <label for="projectLoc" class="form-label">Location
                                     <span class="text-danger">*</span>
@@ -97,7 +97,7 @@
                         </div>
 
                         <div class="row mb-2 g-3">
-                            <div class="col-3 text-end">
+                            <div class="col-3 p">
                                 <label for="projectDescription" class="form-label">Project Description<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -107,7 +107,7 @@
                             </div>
                         </div>
                          <!-- Contractor Input with Dynamic Suggestions -->
-                         <div class="row g-3 mb-2 text-end">
+                         <div class="row g-3 mb-2 p">
                             <div class="col-md-3">
                                 <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
@@ -144,14 +144,14 @@
                                 </div> -->
 
                         <div class="row mb-2 align-items-center">
-                            <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
+                            <label for="modeOfImplementation" class="col-3 p form-label">Mode of Implementation
                                 <span class="text-danger">*</span></label>
                             <div class="col-9">
                                 <input type="text" class="form-control" id="modeOfImplementation" name="modeOfImplementation" value="{{ old('modeOfImplementation', $project['modeOfImplementation'] ?? '') }}" readonly>
                             </div>
                         </div>
-                        <div class="row mb-2 g-3 text-end">
-                            <div class="col-md-3 text-end">
+                        <div class="row mb-2 g-3 p">
+                            <div class="col-md-3 p">
                                 <label for="sourceOfFunds" class="form-label">Source of Fund <span
                                         class="text-danger">*</span></label>
                             </div>
@@ -173,7 +173,7 @@
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 p">
                                         <label for="contractDays" class="form-label">Contract Days (Calendar days) <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -187,7 +187,7 @@
                         <!-- <div class="row mb-2 align-items-center">
                             <div class="col-md-12 ">
                                 <div class="row align-items-center">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 p">
                                         <label for="projectStatus" class="form-label">Status <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -225,7 +225,7 @@
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 p">
                                             <label for="projectSlippage" class="form-label">Slippage</label>
                                     </div>
                                     <div class="col-md-9">
@@ -238,7 +238,7 @@
 
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                            <div class="col-3 text-end">
+                            <div class="col-3 p">
                                 <label for="ea" class="form-label">Project Engineer <span
                                             class="text-danger">*</span></label>
                             </div>
@@ -252,7 +252,7 @@
                                 </datalist>
                             </div>
 
-                            <div class="col-1 text-end">
+                            <div class="col-1 p">
                                 <label for="ea_position" class="form-label">Position<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -277,14 +277,14 @@
                         <div class="row g-3 mb-2">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 ">
                                         <label for="appropriation" class="form-label">Appropriation <span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <span class="input-group-text">₱</span>
-                                            <input type="text" class="form-control currency-input" id="appropriation" name="appropriation" value="{{ old('appropriation', $project['funds']['orig_appropriation'] ?? '') }}" required>
+                                            <input type="text" class="form-control currency-input" name="appropriation"
+                                                id="appropriation" required>
                                         </div>
                                     </div>
                                 </div>
@@ -292,87 +292,78 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="contractAmount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="contractAmount" name="contractAmount" value="{{ old('contractAmount', $project['funds']['orig_contract_amount'] ?? '') }}">
-                                        
+                                    <input type="text" class="form-control currency-input" id="contractAmount"
+                                        name="contractAmount">
                                 </div>
                             </div>
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="engineering" class="form-label">Engineering</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="engineering" name="engineering" value="{{ old('engineering', $project['funds']['orig_engineering'] ?? '') }}">
-                                   
+                                    <input type="text" class="form-control currency-input" id="engineering"
+                                        name="engineering">
                                 </div>
                             </div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="abc" class="form-label">ABC</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc" value="{{ old('abc', $project['funds']['orig_abc'] ?? '') }}">
-                                 </div>
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                </div>
                             </div>
 
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="mqc" class="form-label">MQC</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc" value="{{ old('mqc', $project['funds']['orig_mqc'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="mqc" name="mqc">
                                 </div>
                             </div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="bid" class="form-label">Bid Difference</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="bid" name="bid" value="{{ old('bid', $project['funds']['orig_bid'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="bid" name="bid">
                                 </div>
-                             </div>
-                            <div class="col-3 text-end">
+                            </div>
+                            <div class="col-3 ">
                                 <label for="bid" class="form-label">Contingency</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="text" class="form-control currency-input" id="contingency" name="contingency" value="{{ old('contingency', $project['funds']['orig_contingency'] ?? '') }}">
-                                        
+                                    <input type="text" name="contingency" class="form-control currency-input"
+                                        id="contingency">
                                 </div>
                             </div>
                         </div>
-                        
-
-
+               
                         <div class="row">
                             <div class="row">
                                 <h6 class=" m-1 fw-bold">Notice of Award</h6>
                             </div>
-
                             <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 p">
                                     <label for="noaIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate" value="{{ old('noaIssuedDate', $project['noaIssuedDate'] ?? '') }}">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 p">
                                     <label for="noaReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
@@ -387,13 +378,13 @@
                             </div>
 
                             <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 p">
                                     <label for="ntpIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate" value="{{ old('ntpIssuedDate', $project['ntpIssuedDate'] ?? '') }}">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 p">
                                     <label for="ntpReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
@@ -401,13 +392,13 @@
                                 </div>
                             </div>
                             <!-- <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 p">
                                     <label for="originalStartDate" class="form-label">Official Start</label>
                                 </div>
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="originalStartDate" name="originalStartDate" value="{{ old('originalStartDate', $project['originalStartDate'] ?? '') }}">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 p">
                                     <label for="targetCompletion" class="form-label">Target Completion Date</label>
                                 </div>
                                 <div class="col-3">
@@ -417,13 +408,13 @@
 
 
                             <!-- <div class="row mb-2">
-                                <div class="col-3 text-end">
+                                <div class="col-3 p">
                                     <label for="completionDate" class="form-label">Completion Date</label>
                                 </div>
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="completionDate" name="completionDate" value="{{ old('completionDate', $project['completionDate'] ?? '') }}">
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-3 p">
                                     <label for="revisedCompletionDate" class="form-label">Revised Completion
                                         Date</label>
                                 </div>
@@ -450,7 +441,7 @@
 
                             <div class="container">
                                 <div class="row mb-2 align-items-center">
-                                    <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
+                                    <label for="modeOfImplementation" class="col-3 p form-label">Mode of Implementation
                                         <span class="text-danger">*</span></label>
                                     <div class="col-9">
                                         <input type="text" class="form-control" id="modeOfImplementation"
@@ -460,14 +451,14 @@
 
                                 <!-- Original and Target Dates -->
                                 <div class="row mb-2 align-items-center">
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 p">
                                         <label class="form-label">Original Starting Date <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-3">
                                         <input type="date" class="form-control" id="originalStartDate" name="originalStartDate"
                                             value="{{ old('originalStartDate', $project['originalStartDate'] ?? '') }}">
                                     </div>
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 p">
                                         <label class="form-label">Target Completion Date <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-3">
@@ -515,7 +506,7 @@
 
                                         @foreach ($orders as $order)
                                             <div class="row">
-                                                <div class="col-md-3 mb-3 text-end">
+                                                <div class="col-md-3 mb-3 p">
                                                     <label for="{{ $order['suspensionKey'] }}" class="form-label">
                                                         Suspension Order No. {{ $order['index'] }}
                                                     </label>
@@ -524,7 +515,7 @@
                                                     <input type="date" class="form-control" id="{{ $order['suspensionKey'] }}"
                                                         name="{{ $order['suspensionKey'] }}" value="{{ $order['suspensionValue'] }}">
                                                 </div>
-                                                <div class="col-md-3 mb-3 text-end">
+                                                <div class="col-md-3 mb-3 p">
                                                     <label for="{{ $order['resumeKey'] }}" class="form-label">
                                                         Resumption Order No. {{ $order['index'] }}
                                                     </label>
@@ -534,7 +525,7 @@
                                                         name="{{ $order['resumeKey'] }}" value="{{ $order['resumeValue'] }}">
                                                 </div>
                                                 <div class="row mt-1 mb-2">
-                                                    <div class="col-md-3 mb-3 text-end">
+                                                    <div class="col-md-3 mb-3 p">
                                                         <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">
                                                             Suspension Remarks
                                                         </label>
@@ -554,9 +545,8 @@
 
                                     <!-- Revised Dates and Extension -->
                                     <div class="row mb-2">
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 p">
                                             <label for="revisedTargetDate" class="form-label">Revised Target Date
-                                                <span class="text-danger">*</span>
                                             </label>
                                         </div>
                                         <div class="col-3">
@@ -564,9 +554,8 @@
                                                 name="revisedTargetDate"
                                                 value="{{ old('revisedTargetDate', $project['revisedTargetDate'] ?? '') }}">
                                         </div>
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 p">
                                             <label for="revisedCompletionDate" class="form-label">Revised Completion Date
-                                                <span class="text-danger">*</span>
                                             </label>
                                         </div>
                                         <div class="col-3">
@@ -577,9 +566,8 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 p">
                                             <label for="timeExtension" class="form-label">Extension Date
-                                                <span class="text-danger">*</span>
                                             </label>
                                         </div>
                                         <div class="col-3">
@@ -589,7 +577,7 @@
                                         </div>
                                     </div>
                                     <div class="row mt-2">
-                                    <div class="col-3 mb-2 text-end">
+                                    <div class="col-3 mb-2 p">
                                         <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-9">
@@ -813,5 +801,3 @@ document.addEventListener('click', function (e) {
         }
     }
 </script>
-
-

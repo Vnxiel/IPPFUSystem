@@ -1,4 +1,4 @@
-@extends('systemAdmin.layout')
+@extends('admin.layout')
 
 @section('title', 'Dashboard Page')
 
@@ -26,7 +26,7 @@
                 <div class="row g-2 mb-5">
                    <!-- Total Projects -->
                     <div class="col-md-4">
-                        <a href="/systemAdmin/projects" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/admin/projects" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                  <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -43,7 +43,7 @@
 
                     <!-- Started Projects -->
                     <div class="col-md-4">
-                        <a href="/systemAdmin/projects?page=tobestarted" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/admin/projects?page=tobestarted" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                              <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -60,7 +60,7 @@
 
                     <!-- On-going Projects -->
                     <div class="col-md-4">
-                        <a href="/systemAdmin/projects?page=ongoing" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/admin/projects?page=ongoing" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -77,7 +77,7 @@
 
                     <!-- Completed Projects -->
                     <div class="col-md-4">
-                        <a href="/systemAdmin/projects?page=completed" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/admin/projects?page=completed" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                             <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -94,7 +94,7 @@
 
                     <!-- Discontinued Projects -->
                     <div class="col-md-4">
-                        <a href="/systemAdmin/projects?page=discontinued" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/admin/projects?page=discontinued" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -111,7 +111,7 @@
 
                     <!-- Suspended Projects -->
                     <div class="col-md-4">
-                        <a href="/systemAdmin/projects?page=suspended" class="card-click-animate" style="text-decoration: none;">
+                        <a href="/admin/projects?page=suspended" class="card-click-animate" style="text-decoration: none;">
                         <div class="card status-card h-100" style="cursor: pointer; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none; background: linear-gradient(135deg, #ffffff, #f8f9fa);">
                                 <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -130,7 +130,7 @@
     </div>
 </div>
 
-@include('systemAdmin.modals.Projects.add-project')
+@include('admin.modals.Projects.add-project')
 
 <!-- Dashboard Initialization -->
     <script>    

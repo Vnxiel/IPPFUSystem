@@ -1,4 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const entryAmountInput = document.getElementById("entryAmount");
+
+entryAmountInput.addEventListener("input", function (e) {
+  let value = this.value.replace(/,/g, ''); // Remove existing commas
+  value = value.replace(/[^0-9.]/g, '');    // Remove all non-numeric except '.'
+
+  // Ensure only one decimal point exists
+  const parts = value.split(".");
+  if (parts.length > 2) {
+    value = parts[0] + "." + parts.slice(1).join(""); // Keep first dot, remove others
+  }
+
+  // Format with commas if there's a valid number
+  if (!isNaN(value) && value !== '') {
+    const [intPart, decimalPart] = value.split(".");
+    let formatted = parseInt(intPart).toLocaleString();
+    if (decimalPart !== undefined) {
+      formatted += "." + decimalPart.slice(0, 2); // Limit to 2 decimals
+    }
+    this.value = formatted;
+  } else {
+    this.value = '';
+  }
+});
+
   const entries = [];
   const project_id = sessionStorage.getItem("project_id");
 
@@ -98,26 +123,44 @@ document.addEventListener("DOMContentLoaded", function () {
     const amountRaw = document.getElementById("entryAmount").value;
     const amount = parseFloat(cleanMoney(amountRaw));
 
+    
+  
     if (!type || !name || !month || !period || isNaN(amount) || amount <= 0) {
       return Swal.fire({ icon: "warning", title: "Please fill in all fields with valid data." });
     }
-
+  
     const newEntry = { type, name, month, period, amount };
-
+  
     if (isDuplicate(newEntry)) {
       return Swal.fire({ icon: "error", title: "Duplicate entry detected." });
     }
-
   
-entries.push(newEntry);
-renderTable();
-
-
+    // Calculate current balance for the selected type before adding
+    let currentBalance = 0;
+    if (type === "engineering") {
+      currentBalance = parseFloat(document.getElementById("engineeringBalance").getAttribute("data-balance")) || 0;
+    } else if (type === "mqc") {
+      currentBalance = parseFloat(document.getElementById("mqcBalance").getAttribute("data-balance")) || 0;
+    }
+  
+    if (amount > currentBalance) {
+      return Swal.fire({
+        icon: "error",
+        title: "Amount Exceeds Remaining Balance",
+        text: `The amount you entered (₱${amount.toLocaleString()}) exceeds the remaining balance (₱${currentBalance.toLocaleString()}) for ${type}.`,
+      });
+    }
+  
+    // If all good, add the entry
+    entries.push(newEntry);
+    renderTable();
+  
+    // Clear inputs
     document.getElementById("entryName").value = '';
     document.getElementById("entryPeriod").value = '';
     document.getElementById("entryAmount").value = '';
   });
-
+  
   document.getElementById("submitEntriesBtn").addEventListener("click", function () {
     if (entries.length === 0) {
       return Swal.fire({ icon: "warning", title: "No entries to submit." });
@@ -136,17 +179,24 @@ renderTable();
             updateBalances(); // refresh balances
           
             // Reload DataTables
-            if ($.fn.DataTable.isDataTable('#engineeringSubTable')) {
-              $('#engineeringSubTable').DataTable().ajax.reload(null, false); // reload from server (if server-side), false = keep paging
-            } else {
-              $('#engineeringSubTable').DataTable().draw(); // fallback
-            }
-          
-            if ($.fn.DataTable.isDataTable('#mqcSubTable')) {
-              $('#mqcSubTable').DataTable().ajax.reload(null, false);
-            } else {
-              $('#mqcSubTable').DataTable().draw();
-            }
+            ['#engineeringSubTable', '#mqcSubTable'].forEach(selector => {
+              try {
+                const table = $(selector).DataTable();
+                
+                // Check if the table is initialized and supports AJAX reload
+                if (table && typeof table.ajax === 'object' && typeof table.ajax.reload === 'function') {
+                  table.ajax.reload(null, false); // Reload via AJAX
+                } else if (table) {
+                  table.clear().draw(false); // Redraw static table
+                }
+              } catch (err) {
+                console.error(`Error reloading table ${selector}:`, err);
+              }
+            });
+            
+            
+            
+
           
             $('#entryModal').modal('hide');
             updateAmountFields();
@@ -177,6 +227,7 @@ renderTable();
     updateEngineeringBalance();
     updateMqcBalance();
   }
+  
   function updateEngineeringBalance() {
     function parseAmount(value) {
       value = value?.toString().replace(/[₱,]/g, '').trim();
@@ -199,8 +250,10 @@ renderTable();
   
     const balanceEl = document.getElementById('engineeringBalance');
     if (balanceEl) {
-      balanceEl.textContent = `Balance: ₱${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      balanceEl.textContent = `₱${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      balanceEl.setAttribute('data-balance', balance); // Store numeric value
     }
+    
   }
   
   function updateMqcBalance() {
@@ -219,13 +272,14 @@ renderTable();
   
     const balance = allotted - used;
   
-    console.log(`actual_engineering value: ${allotted}`);
-    console.log(`Engineering used from DOM table: ${used}`);
-    console.log(`Engineering Balance Calculation -> Allotted: ${allotted}, Used: ${used}, Balance: ${balance}`);
+    console.log(`actual_mqc value: ${allotted}`);
+    console.log(`Mqc used from DOM table: ${used}`);
+    console.log(`Mqc Balance Calculation -> Allotted: ${allotted}, Used: ${used}, Balance: ${balance}`);
   
     const balanceEl = document.getElementById('mqcBalance');
     if (balanceEl) {
-      balanceEl.textContent = `Balance: ₱${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      balanceEl.textContent = `₱${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      balanceEl.setAttribute('data-balance', balance);
     }
   }
 
@@ -250,7 +304,7 @@ renderTable();
         order: [[0, 'asc']]
       });
     }
-
+  
     if ($('#mqcSubTable').length && !$.fn.DataTable.isDataTable('#mqcSubTable')) {
       $('#mqcSubTable').DataTable({
         paging: true,
@@ -260,20 +314,23 @@ renderTable();
       });
     }
   }
-
+  
   initializeSubTables();
-
+  
+  // Redraw + adjust tables on collapse show (no AJAX reload)
   $('#engDetails').on('shown.bs.collapse', function () {
     if ($.fn.DataTable.isDataTable('#engineeringSubTable')) {
-      $('#engineeringSubTable').DataTable().columns.adjust().draw();
+      $('#engineeringSubTable').DataTable().columns.adjust().draw(false);
       updateEngineeringBalance();
     }
   });
-
+  
   $('#mqcDetails').on('shown.bs.collapse', function () {
     if ($.fn.DataTable.isDataTable('#mqcSubTable')) {
-      $('#mqcSubTable').DataTable().columns.adjust().draw();
+      $('#mqcSubTable').DataTable().columns.adjust().draw(false);
       updateMqcBalance();
     }
   });
-});
+
+  
+  });
