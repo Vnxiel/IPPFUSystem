@@ -6,7 +6,7 @@
 <section class="container-fluid py-4">
   <!-- Header -->
   <div class="row">
-    <div class="col-12 d-flex align-items-center gap-2 mb-4" style="margin-top: 75px;">
+    <div class="col-12 d-flex align-items-center gap-2 mb-2" style="margin-top: 75px;">
       <a href="{{ url('/systemAdmin/overview/' . $project['id']) }}" 
          class="btn btn-outline-secondary btn-sm">
         <i class="fa fa-arrow-left"></i>
@@ -18,24 +18,23 @@
   <!-- Main Content -->
   <div class="card shadow">
     <form id="addFundUtilization" method="POST">
-      @csrf
-      
+      @csrf      
       <!-- Project Title Card -->
       <div class="card-header bg-light py-3">
         <h5 class="card-title mb-0 text-primary">{{ $project['projectTitle'] ?? 'Project Title' }}</h5>
       </div>
 
       <div class="card-body">
-        <fieldset class="mb-4">
-          <legend class="h5 text-primary mb-3">
+        <fieldset class="border rounded shadow-sm p-2 w-100 h-100 mb-2">
+          <legend class="float-none w-auto px-2 legend-text">
             <i class="fas fa-money-bill-wave me-2"></i>
             Fund Source and Utilization
           </legend>
 
           <!-- Fund Source Section -->
-          <div class="section mb-4">
-            <h5 class="section-title d-flex align-items-center gap-2 mb-3">
-              <i class="fas fa-money-bill-wave text-primary"></i>
+          <div class="section mb-2">
+            <h5 class="section-title d-flex align-items-center gap-2 mb-2">
+              <i class="fas fa-money-bill-wave"></i>
               Fund Source
             </h5>
             
@@ -130,11 +129,11 @@
               </button>
             </div>
         </div>
-
+        <hr>
         <!-- Fund Utilization Summary Section -->
-        <div class="section mb-4">
+        <div class="section mb-1">
           <h5 class="section-title d-flex align-items-center gap-2 mb-3">
-            <i class="fas fa-chart-pie text-primary"></i>
+            <i class="fas fa-chart-pie"></i>
             Fund Utilization Summary
           </h5>
 
@@ -349,6 +348,8 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+          </div>
           
 
           <!-- Totals Section Card -->
@@ -372,24 +373,25 @@
                 </tbody>
               </table>
             </div>
-
-            <div class="text-end mt-3">
-
             </div>
-        </fieldset>
+            </div>
 
-        <!-- Save Button -->
-        <div class="text-end mt-4">
-          <button type="button" id="submitFundsUtilization" 
-                  class="btn btn-primary px-4">
-            <i class="fas fa-save me-2"></i>
-            Save Changes
-          </button>
-        </div>
-    </form>
-  </div>
-</section>
-
+            <div class="row text-end mt-2">
+              <div class="text-end mt-4">
+                <button type="button" id="submitFundsUtilization" 
+                        class="btn btn-primary px-4">
+                  <i class="fas fa-save me-2"></i>
+                  Save Changes
+                </button>
+              </div>
+            </div>
+            </div>
+            </fieldset>
+            </div>
+            </form>
+            </div>
+      </section>
+          
 
 
 <style>
