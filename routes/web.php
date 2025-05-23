@@ -22,7 +22,8 @@ Route::controller(UserManager::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');  // Handle logout logic
     Route::post('/password/request', 'requestPasswordChange')->name('systemAdmin.requestPass');
     Route::get('/password/requests/fetch', 'getPasswordRequests');
-    Route::post('/password/change-password', 'changeUserPassword');
+    Route::post('/password/change-password', 'changePassword');
+    Route::post('/password/send-otp', 'sendOtp');
     Route::get('/getUserRole', 'getUserRole');
 
 });
@@ -44,6 +45,7 @@ Route::controller(UserManager::class)->group(function () {
         Route::post('/userRegistration', 'registerUser')->name('userRegistration');
         Route::get('/getUsers', 'viewUserManagement')->name('getUsers');
         Route::post('/changeRole', 'changeRole');
+        Route::post('/password/user-change-password', 'changeUserPassword');
         Route::get('/systemAdmin/activityLogs', 'viewActivityLogs')->name('systemAdmin.activityLogs');
     });
 });

@@ -65,7 +65,7 @@
                         </div>
                         <div class="card-footer d-flex align-items-center" style="font-size: 0.750rem;">
                             <span class="me-2">Forgot Password?</span>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#passwordRequestModal">Request new password.</a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#changePassword-LoginModal">Request new password.</a>
                         </div>
                     </div>
                 </div>
@@ -80,5 +80,5 @@
     </body>
 </html>
 
-@include('systemAdmin.modals.Account.request-newpass')
+@include('systemAdmin.modals.Account.change-newpass-login')
 

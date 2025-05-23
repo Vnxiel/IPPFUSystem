@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\OtpMail;
 use App\Mail\PasswordChanged;
 use App\Models\User;
 use App\Models\ActivityLog;
@@ -383,61 +384,46 @@ public function getUserRole(Request $request)
         return view('systemAdmin.overview', compact('contractors'));
     }
 
-    public function requestPasswordChange(Request $request)
+
+    public function sendOtp(Request $request)
     {
         $request->validate([
-            'username' => 'required|string',
-            'reason' => 'required|string',
+            'username' => 'required|string|exists:users,username',
         ]);
 
         $user = User::where('username', $request->username)->first();
 
-        if (!$user) {
-            return response()->json(['success' => false, 'message' => 'User not found.']);
-        }
+        $otp = rand(100000, 999999);
+        Redis::setex("otp:{$user->email}", 300, $otp); // 5 minutes expiration
 
-        $user->request_pass = 1;
-        $user->reason = $request->reason;
-        $user->save();
+        Mail::to($user->email)->send(new OtpMail($otp));
 
-
-        // You could also log or store the reason somewhere if needed.
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'OTP sent to your email.']);
     }
 
-    public function getPasswordRequests()
-    {
-        $requests = User::where('request_pass', 1)
-            ->select('username', 'email', 'reason')
-            ->get();
-
-        return response()->json($requests);
-    }
-
-    public function changeUserPassword(Request $request)
+    public function changePassword(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'new_password' => 'required|min:6|same:confirm_password'
+            'username' => 'required|string|exists:users,username',
+            'otp' => 'required|digits:6',
+            'new_password' => 'required|min:6|same:confirm_password',
         ]);
 
-        $user = User::find($request->user_id);
+        $user = User::where('username', $request->username)->first();
+        $cachedOtp = Redis::get("otp:{$user->email}");
+
+        if (!$cachedOtp || $cachedOtp !== $request->otp) {
+            return response()->json(['success' => false, 'message' => 'Invalid or expired OTP.']);
+        }
+
         $user->password = Hash::make($request->new_password);
-        $user->request_pass = 0;
-        $user->reason = null;
         $user->save();
 
-        \Log::info('Starting password change for user: ' . $request->user_id);
+        Redis::del("otp:{$user->email}");
 
-            try {
-                Mail::to($user->email)->send(new PasswordChanged($user, $request->new_password));
-                \Log::info('Email sent to: ' . $user->email);
-            } catch (\Exception $e) {
-                \Log::error('Email failed: ' . $e->getMessage());
-            }
-
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'Password changed successfully.']);
     }
+
 
     
     //When logging out it will check if the session variable exists then

@@ -49,7 +49,7 @@ $('#changePassModal form').on('submit', function (e) {
 
     // Proceed with AJAX request
     $.ajax({
-        url: '/password/change-password',
+        url: '/password/user-change-password',
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

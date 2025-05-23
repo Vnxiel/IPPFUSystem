@@ -152,16 +152,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Restrict contract inputs
-  const contractInputs = document.querySelectorAll('#amountMobilization, [id^="amountPartial"], #amountFinal');
-  contractInputs.forEach(input => {
-    input.addEventListener('focus', function (e) {
-      const contractBalance = parseBalance('contractBalance');
-      const currentValue = e.target.value.trim();
-      if (contractBalance <= 0 && currentValue === '') {
-        e.target.blur();
-        showAlert('Cannot add new contract amount. Contract balance is zero.', 'error');
-      }
-    });
-  });
+  // // Restrict contract inputs
+  // const contractInputs = document.querySelectorAll('#amountMobilization, [id^="amountPartial"], #amountFinal');
+  // contractInputs.forEach(input => {
+  //   input.addEventListener('focus', function (e) {
+  //     const contractBalance = parseBalance('contractBalance');
+  //     const currentValue = e.target.value.trim();
+  //     if (contractBalance <= 0 && currentValue === '') {
+  //       e.target.blur();
+  //       showAlert('Cannot add new contract amount. Contract balance is zero.', 'error');
+  //     }
+  //   });
+  // });
 });

@@ -12,7 +12,7 @@
             <div class="modal-body">
                 <form action="{{ route('projects.addProject') }}" id="addProjectForm" method="POST">
                     @csrf
-                    <div class="border p-3 mb-4 rounded shadow-sm">
+                    <fieldset class="border p-3 mb-4 rounded shadow-sm">
                         <legend class="float-none w-auto px-3 fw-bold text-primary">
                             <i class="fas fa-info-circle me-2"></i>Project Profile
                         </legend>
@@ -270,12 +270,10 @@
                                         <label for="appropriation" class="form-label">Appropriation <span
                                                 class="text-danger">*</span></label>
                                     </div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <span class="input-group-text">₱</span>
+                                    <div class="col">                                        
                                             <input type="text" class="form-control currency-input" name="appropriation"
                                                 id="appropriation" required>
-                                        </div>
+                                   
                                     </div>
                                 </div>
                             </div>
@@ -286,21 +284,17 @@
                                 <label for="abc" class="form-label">ABC</label>
                             </div>
                             <div class="col-3">
-                                <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="abc" name="abc">
-                                </div>
+                       
                             </div>
                            
                             <div class="col-3 text-end">
                                 <label for="engineering" class="form-label">Engineering</label>
                             </div>
                             <div class="col-3">
-                                <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="engineering"
                                         name="engineering">
-                                </div>
+                              
                             </div>
                         </div>
 
@@ -310,20 +304,16 @@
                                 <label for="contractAmount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
-                                <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="contractAmount"
                                         name="contractAmount">
-                                </div>
+                             
                             </div>
                             <div class="col-3 text-end">
                                 <label for="mqc" class="form-label">MQC</label>
                             </div>
                             <div class="col-3">
-                                <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="mqc" name="mqc">
-                                </div>
+                           
                             </div>
                         </div>
 
@@ -332,20 +322,16 @@
                                 <label for="bid" class="form-label">Bid Difference</label>
                             </div>
                             <div class="col-3">
-                                <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" class="form-control currency-input" id="bid" name="bid">
-                                </div>
+                         
                             </div>
                             <div class="col-3 text-end">
                                 <label for="bid" class="form-label">Contingency</label>
                             </div>
                             <div class="col-3">
-                                <div class="input-group">
-                                    <span class="input-group-text">₱</span>
                                     <input type="text" name="contingency" class="form-control currency-input"
                                         id="contingency">
-                                </div>
+                      
                             </div>
                         </div>
 
@@ -449,7 +435,7 @@
 
                         <div class="container">
                             <div class="row mb-2 align-items-center">
-                                <label for="modeOfImplementation" class="col-3 text-end form-label">Mode of Implementation
+                                <label for="modeOfImplementation" class="col-3 form-label">Mode of Implementation
                                     <span class="text-danger">*</span></label>
                                 <div class="col-9">
                                     <input type="text" class="form-control" id="modeOfImplementation"
@@ -484,15 +470,13 @@
                                         <!-- Suspension and Resumption Order Row -->
                                         <div class="row mb-2">
                                             <div class="col-3 text-end">
-                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1
-                                                <span class="text-danger">*</span></label>
+                                                <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1</label>
                                             </div>                        
                                             <div class="col-3">
                                                 <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
                                             </div>
                                             <div class="col-3 mb-2 text-end">
-                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No.1
-                                                    <span class="text-danger">*</span></label>
+                                                <label for="resumeOrderNo1" class="form-label">Resumption Order No.1</label>
                                             </div>
                                             <div class="col-3">
                                                     <input type="date" class="form-control" id="resumeOrderNo1"
@@ -515,7 +499,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row text-end">
+                            <div class="row mb-1">
                                 <div class="col-md-10">
                                     <hr>
                                 </div>
@@ -533,8 +517,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="timeExtension" class="form-label">Extension Date
-                                    <span class="text-danger">*</span></label>
+                                    <label for="timeExtension" class="form-label">Extension Date</label>
                                 </div>                        
                                 <div class="col-9">
                                     <input type="number" class="form-control" id="timeExtension"
@@ -543,16 +526,14 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="revisedTargetDate" class="form-label">Revised Target Date
-                                    <span class="text-danger">*</span></label>
+                                    <label for="revisedTargetDate" class="form-label">Revised Target Date</label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="revisedTargetDate"
                                         name="revisedTargetDate">
                                 </div>
                                 <div class="col-3 text-end">
-                                    <label for="revisedCompletionDate" class="form-label">Revised Completion Date
-                                    <span class="text-danger">*</span></label>
+                                    <label for="revisedCompletionDate" class="form-label">Revised Completion Date</label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="revisedCompletionDate"

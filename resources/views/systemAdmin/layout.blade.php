@@ -29,7 +29,7 @@
     <body class="montserrat d-flex flex-column min-vh-100">
         <div class="wrapper d-flex flex-column flex-grow-1">
             <!-- Enhanced Navbar -->
-            <nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background: linear-gradient(to right, #ffffff, #F8F2DE);">
+            <nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background-color: #ECDCBF;">
                 <div class="container-fluid px-4">
                     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -64,7 +64,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('systemAdmin/userManagement') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('systemAdmin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    style="{{ Request::is('systemAdmin/userManagement') || Request::is('systemAdmin/overview') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
                                     href="{{ url('/systemAdmin/userManagement') }}">
                                     <i class="fas fa-users me-2"></i>User Management
                                     </a>
@@ -132,6 +132,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+       <!-- Include Select2 if not already included -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
         <!-- DataTables JS -->
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
@@ -153,7 +156,6 @@
 
        
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-toggle.js') }}"></script>
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
