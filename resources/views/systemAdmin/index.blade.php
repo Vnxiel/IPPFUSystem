@@ -5,7 +5,7 @@
 @section('content') 
 <div class="container-fluid py-4" style="background-color: transparent;">
     <!-- Header Section -->
-    <div class="container card mb-1 border-0 shadow-lg mt-5" style="top:25px;">
+    <div class=" card mb-1 border-0 shadow-lg mt-5" style="top:25px;">
         <div class="card-body p-2">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="ms-auto">

@@ -490,65 +490,31 @@
                                                                 ['label' => 'Appropriation', 'key' => 'appropriation'],
                                                                 ['label' => 'ABC', 'key' => 'abc'],
                                                                 ['label' => 'Contract Amount', 'key' => 'contract_amount'],
-                                                                ['label' => 'Savings', 'key' => 'bid'],
-                                                                ['label' => 'Wages', 'key' => null, 'is_header' => true],
-                                                                ['label' => 'Engineering', 'key' => 'engineering', 'child_of' => 'Wages', 'text_end' => true],
-                                                                ['label' => 'MQC', 'key' => 'mqc', 'child_of' => 'Wages', 'text_end' => true],
+                                                                ['label' => 'Bid Difference', 'key' => 'bid'],
+                                                                ['label' => 'Engineering', 'key' => 'engineering'],
+                                                                ['label' => 'MQC', 'key' => 'mqc'],
                                                                 ['label' => 'Contingency', 'key' => 'contingency'],
                                                             ];
-
                                                             $funds = $project['funds'] ?? [];
-                                                            $vos = $project['variation_orders'] ?? [];
                                                             $vo1 = collect($vos)->firstWhere('vo_number', 1);
-                                                            $voKeys = collect($vos)->pluck('vo_number')->filter(fn($num) => $num != 1)->values()->all();
-
-                                                            $proposedTotalKeys = ['contract_amount', 'bid', 'engineering', 'mqc', 'contingency'];
-                                                            $proposedTotal = 0;
                                                         @endphp
 
                                                         @foreach ($rows as $row)
-                                                            @if (!empty($row['is_header']))
-                                                                <tr class="table-secondary fw-bold">
-                                                                    <td colspan="{{ 3 + max(count($vos), 1) }}">{{ $row['label'] }}</td>
-                                                                </tr>
-                                                            @else
-                                                                @php
-                                                                    $key = $row['key'];
-                                                                    $orig = $funds['orig_' . $key] ?? 0;
-                                                                    $vo1Val = $vo1['vo_' . $key] ?? 0;
-                                                                    $actual = $funds['actual_' . $key] ?? 0;
-
-                                                                    // Sum for total row only if in selected keys
-                                                                    if (in_array($key, $proposedTotalKeys)) {
-                                                                        $proposedTotal += $orig;
-                                                                    }
-                                                                @endphp
-                                                                <tr>
-                                                                    <td class="{{ isset($row['child_of']) ? 'ps-4' : '' }} {{ !empty($row['text_end']) ? 'text-end' : '' }}">
-                                                                        {{ $row['label'] }}
-                                                                    </td>
-                                                                    <td>{{ number_format($orig, 2) }}</td>
-                                                                    <td>{{ number_format($vo1Val, 2) }}</td>
-                                                                    @foreach ($voKeys as $voNum)
-                                                                        @php
-                                                                            $voVal = collect($vos)->firstWhere('vo_number', $voNum)['vo_' . $key] ?? 0;
-                                                                        @endphp
-                                                                        <td>{{ number_format($voVal, 2) }}</td>
-                                                                    @endforeach
-                                                                    <td>{{ number_format($actual, 2) }}</td>
-                                                                </tr>
-                                                            @endif
+                                                            @php $key = $row['key']; @endphp
+                                                            <tr>
+                                                                <td>{{ $row['label'] }}</td>
+                                                                <td>{{ number_format($funds['orig_' . $key] ?? 0, 2) }}</td>
+                                                                <td>{{ number_format($vo1 ? ($vo1['vo_' . $key] ?? 0) : 0, 2) }}
+                                                                </td>
+                                                                @foreach ($vos as $vo)
+                                                                    @if ($vo['vo_number'] != 1)
+                                                                        <td>{{ number_format($vo['vo_' . $key] ?? 0, 2) }}</td>
+                                                                    @endif
+                                                                @endforeach
+                                                                <td>{{ number_format($funds['actual_' . $key] ?? 0, 2) }}</td>
+                                                            </tr>
                                                         @endforeach
-
-                                                        <!-- Total Row for Proposed Column Only -->
-                                                        <tr class="table-warning fw-bold">
-                                                            <td>Total</td>
-                                                            <td>{{ number_format($proposedTotal, 2) }}</td>
-                                                            <td colspan="{{ 2 + count($voKeys) }}"></td>
-                                                        </tr>
                                                     </tbody>
-
-
                                                 </table>
                                             </div>
                                         </fieldset>
@@ -573,194 +539,168 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody style="font-weight: normal;">
-                                                    @php
-                                                
-                                                        if (!function_exists('ordinal')) {
-                                                            function ordinal($number) {
-                                                                $ends = ['th','st','nd','rd','th','th','th','th','th','th'];
-                                                                return ($number % 100 >= 11 && $number % 100 <= 13)
-                                                                    ? $number.'th'
-                                                                    : $number.$ends[$number % 10];
+                                                        @php
+                                                            if (!function_exists('ordinal')) {
+                                                                function ordinal($number)
+                                                                {
+                                                                    $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
+                                                                    if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
+                                                                        return $number . 'th';
+                                                                    }
+                                                                    return $number . $ends[$number % 10];
+                                                                }
                                                             }
-                                                        }
-                                                        // Sum of all engineering breakdown entries
-                                                            $engineeringBreakdownSum = $engineeringEntries->sum('amount');
-
-                                                            // Sum of all MQC breakdown entries
-                                                            $mqcBreakdownSum = $mqcEntries->sum('amount');
-
 
                                                             $summary = $project['summary'] ?? [];
                                                             $partialBillings = $project['partial_billings'] ?? [];
 
-                                                            $labels = [
+                                                            $summaryLabels = [
                                                                 'mobilization' => '15% Mobilization',
                                                                 'final' => 'Final Billing',
                                                                 'engineering' => 'Engineering',
                                                                 'mqc' => 'MQC',
                                                             ];
-
-                                                            $funds = $project['funds'] ?? [];
-                                                            $contractAmount = (float) ($funds['actual_contract_amount'] ?? 0);
-                                                            $mobilizationAmt = (float) ($summary['mobilization']['amount'] ?? 0);
-                                                            $finalAmt = (float) ($summary['final']['amount'] ?? 0);
-                                                            $engAmt = (float) ($summary['engineering']['amount'] ?? 0);
-                                                            $mqcAmt = (float) ($summary['mqc']['amount'] ?? 0);
-                                                            $partialTotal = collect($partialBillings)->sum('amount');
-                                                            $expenditures = $mobilizationAmt + $partialTotal + $finalAmt + $engAmt + $mqcAmt;
-                                                            $balance = $engineeringBreakdownSum + $mqcBreakdownSum + ($contractAmount - ($mobilizationAmt + $partialTotal + $finalAmt));
                                                         @endphp
 
-
-
+                                                        {{-- Mobilization --}}
+                                                        @php $mob = $summary['mobilization'] ?? null; @endphp
                                                         <tr>
-                                                            <td><strong>Contract Amount</strong></td>
-                                                            <td colspan="2" class="text-end">{{ number_format($contractAmount, 2) }}</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>{{ $labels['mobilization'] }}</td>
-                                                            <td>{{ $summary['mobilization']['date'] ?? '-' }}</td>
-                                                            <td>{{ number_format($mobilizationAmt, 2) }}</td>
-                                                            <td>{{ $summary['mobilization']['remarks'] ?? '-' }}</td>
+                                                            <td>{{ $summaryLabels['mobilization'] }}</td>
+                                                            <td>{{ $mob['date'] ?? '-' }}</td>
+                                                            <td>{{ number_format($mob['amount'] ?? 0, 2) }}</td>
+                                                            <td>{{ $mob['remarks'] ?? '-' }}</td>
                                                             <td>-</td>
                                                         </tr>
 
+                                                        {{-- Partial Billings --}}
                                                         @foreach ($partialBillings as $index => $billing)
-                                                        <tr>
-                                                            <td>{{ ordinal($index + 1) }} Partial Billing</td>
-                                                            <td>{{ $billing['date'] ?? '-' }}</td>
-                                                            <td>{{ number_format($billing['amount'] ?? 0, 2) }}</td>
-                                                            <td>{{ $billing['remarks'] ?? '-' }}</td>
-                                                            <td>
-                                                                @if (!empty($billing['breakdown']))
-                                                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                                                @else
-                                                                    -
-                                                                @endif
-                                                            </td>
-                                                        </tr>
+                                                            @if (!empty($billing['date']) || !empty($billing['amount']) || !empty($billing['remarks']))
+                                                                <tr>
+                                                                    <td>{{ ordinal($index + 1) }} Partial Billing</td>
+                                                                    <td>{{ $billing['date'] ?? '-' }}</td>
+                                                                    <td>{{ number_format($billing['amount'] ?? 0, 2) }}</td>
+                                                                    <td>{{ $billing['remarks'] ?? '-' }}</td>
+                                                                    <td>-</td>
+                                                                </tr>
+                                                            @endif
                                                         @endforeach
 
+                                                        {{-- Final Billing --}}
+                                                        @php $final = $summary['final'] ?? null; @endphp
                                                         <tr>
-                                                            <td>{{ $labels['final'] }}</td>
-                                                            <td>{{ $summary['final']['date'] ?? '-' }}</td>
-                                                            <td>{{ number_format($finalAmt, 2) }}</td>
-                                                            <td>{{ $summary['final']['remarks'] ?? '-' }}</td>
+                                                            <td>{{ $summaryLabels['final'] }}</td>
+                                                            <td>{{ $final['date'] ?? '-' }}</td>
+                                                            <td>{{ number_format($final['amount'] ?? 0, 2) }}</td>
+                                                            <td>{{ $final['remarks'] ?? '-' }}</td>
                                                             <td>-</td>
                                                         </tr>
-                                                        <tr>
-                                                            <td><em>Balance (Contract Group)</em></td>
-                                                            <td></td>
-                                                            <td class="text-end text-success fw-semibold">
-                                                                {{ number_format($contractAmount - ($mobilizationAmt + $partialTotal + $finalAmt), 2) }}
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
 
-
-                                                        {{-- Engineering Row --}}
+                                                        {{-- Engineering --}}
+                                                        @php $eng = $summary['engineering'] ?? null; @endphp
                                                         <tr>
-                                                            <td>{{ $labels['engineering'] }}</td>
-                                                            <td>{{ $summary['engineering']['date'] ?? '-' }}</td>
-                                                            <td>{{ number_format($engAmt, 2) }}</td>
-                                                            <td>{{ $summary['engineering']['remarks'] ?? '-' }}</td>
+                                                            <td>{{ $summaryLabels['engineering'] }}</td>
+                                                            <td>{{ $eng['date'] ?? '-' }}</td>
+                                                            <td>{{ number_format((float) ($eng['amount'] ?? 0), 2) }}</td>
+                                                            <td>{{ $eng['remarks'] ?? '-' }}</td>
                                                             <td>
-                                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#engineeringBreakdown" aria-expanded="false" aria-controls="engineeringBreakdown">View</button>
+                                                                <button class="btn btn-sm btn-outline-primary"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#engineeringBreakdown">
+                                                                    View
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                         <tr class="collapse" id="engineeringBreakdown">
                                                             <td colspan="5">
-                                                                <table class="table table-sm table-bordered text-center mb-0 w-100">
-                                                                    <thead class="table-light">
+                                                                <table
+                                                                    class="table table-sm table-bordered text-center mb-0 w-100">
+                                                                    <thead>
                                                                         <tr>
-                                                                            <th>Name (Month - Period)</th>
+                                                                            <th>Name (Month - Payment Period)</th>
                                                                             <th>Amount</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
                                                                         @forelse($engineeringEntries as $eng)
                                                                             <tr>
-                                                                                <td>{{ $eng->name }} ({{ $eng->month }} - {{ $eng->payment_periods }})</td>
-                                                                                <td class="text-end">{{ number_format($eng->amount, 2) }}</td>
+                                                                                <td>{{ $eng->name }} ({{ $eng->month }} -
+                                                                                    {{ $eng->payment_periods }})
+                                                                                </td>
+                                                                                <td>{{ number_format($eng->amount, 2) }}</td>
                                                                             </tr>
                                                                         @empty
-                                                                            <tr><td colspan="2" class="text-muted">No entries found.</td></tr>
+                                                                            <tr>
+                                                                                <td colspan="2" class="text-muted">No entries
+                                                                                    found.
+                                                                                </td>
+                                                                            </tr>
                                                                         @endforelse
                                                                     </tbody>
                                                                 </table>
                                                             </td>
                                                         </tr>
-                                                        @php
-                                                            $engineeringBreakdownSum = collect($engineeringEntries)->sum('amount');
-                                                            $engineeringBalance = $engAmt - $engineeringBreakdownSum;
-                                                        @endphp
-                                                        <tr>
-                                                            <td><em>Balance (Engineering)</em></td>
-                                                            <td></td>
-                                                            <td class="text-end text-success fw-semibold">
-                                                                {{ number_format($engineeringBalance, 2) }}
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
 
-
-                                                        {{-- MQC Row --}}
+                                                        {{-- MQC --}}
+                                                        @php $mqc = $summary['mqc'] ?? null; @endphp
                                                         <tr>
-                                                            <td>{{ $labels['mqc'] }}</td>
-                                                            <td>{{ $summary['mqc']['date'] ?? '-' }}</td>
-                                                            <td>{{ number_format($mqcAmt, 2) }}</td>
-                                                            <td>{{ $summary['mqc']['remarks'] ?? '-' }}</td>
+                                                            <td>{{ $summaryLabels['mqc'] }}</td>
+                                                            <td>{{ $mqc['date'] ?? '-' }}</td>
+                                                            <td>{{ number_format((float) ($mqc['amount'] ?? 0), 2) }}</td>
+                                                            <td>{{ $mqc['remarks'] ?? '-' }}</td>
                                                             <td>
-                                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#mqcBreakdown" aria-expanded="false" aria-controls="mqcBreakdown">View</button>
+                                                                <button class="btn btn-sm btn-outline-primary"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#mqcBreakdown">
+                                                                    View
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                         <tr class="collapse" id="mqcBreakdown">
                                                             <td colspan="5">
-                                                                <table class="table table-sm table-bordered text-center mb-0 w-100">
-                                                                    <thead class="table-light">
+                                                                <table
+                                                                    class="table table-sm table-bordered text-center mb-0 w-100">
+                                                                    <thead>
                                                                         <tr>
-                                                                            <th>Name (Month - Period)</th>
+                                                                            <th>Name (Month - Payment Period)</th>
                                                                             <th>Amount</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
                                                                         @forelse($mqcEntries as $mqc)
                                                                             <tr>
-                                                                                <td>{{ $mqc->name }} ({{ $mqc->month }} - {{ $mqc->payment_periods }})</td>
-                                                                                <td class="text-end">{{ number_format($mqc->amount, 2) }}</td>
+                                                                                <td>{{ $mqc->name }} ({{ $mqc->month }} -
+                                                                                    {{ $mqc->payment_periods }})
+                                                                                </td>
+                                                                                <td>{{ number_format($mqc->amount, 2) }}</td>
                                                                             </tr>
                                                                         @empty
-                                                                            <tr><td colspan="2" class="text-muted">No entries found.</td></tr>
+                                                                            <tr>
+                                                                                <td colspan="2" class="text-muted">No entries
+                                                                                    found.
+                                                                                </td>
+                                                                            </tr>
                                                                         @endforelse
                                                                     </tbody>
                                                                 </table>
                                                             </td>
                                                         </tr>
-                                                        @php
-                                                            $mqcBreakdownSum = collect($mqcEntries)->sum('amount');
-                                                            $mqcBalance = $mqcAmt - $mqcBreakdownSum;
-                                                        @endphp
-                                                        <tr>
-                                                            <td><em>Balance (MQC)</em></td>
-                                                            <td></td>
-                                                            <td class="text-end text-success fw-semibold">
-                                                                {{ number_format($mqcBalance, 2) }}
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
 
-                                                        <tr class="table-info fw-bold">
+                                                        {{-- Totals --}}
+                                                        <tr class="fw-normal">
                                                             <td>Total Expenditures</td>
-                                                            <td colspan="2" class="text-end">{{ number_format($expenditures, 2) }}</td>
+                                                            <td>-</td>
+                                                            <td>{{ number_format((float) ($summary['totalExpenditures']['amount'] ?? 0), 2) }}
+                                                            </td>
+                                                            <td>{{ $summary['remarks_total_expenditures'] ?? '-' }}</td>
+                                                            <td>-</td>
                                                         </tr>
-
-                                                        <tr class="table-success fw-bold">
-                                                            <td>Balance</td>
-                                                            <td colspan="2" class="text-end">{{ number_format($balance, 2) }}</td>
+                                                        <tr class="fw-normal">
+                                                            <td>Total Savings</td>
+                                                            <td>-</td>
+                                                            <td>{{ number_format((float) ($summary['totalSavings']['amount'] ?? 0), 2) }}
+                                                            </td>
+                                                            <td>{{ $summary['remarks_total_savings'] ?? '-' }}</td>
+                                                            <td>-</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -822,35 +762,6 @@
 
 
     <script>
-        function calculateBalances() {
-    // --- CONTRACT GROUP SUMMARY ---
-    const contractAmount = parseFloat(document.getElementById('contractAmount').textContent || 0);
-    const mobi = parseFloat(document.getElementById('mobiAmount').textContent || 0);
-    const partial = parseFloat(document.getElementById('partialAmount').textContent || 0);
-    const finalBilling = parseFloat(document.getElementById('finalAmount').textContent || 0);
-
-    const contractBalance = contractAmount - (mobi + partial + finalBilling);
-    document.getElementById('contractBalance').textContent = contractBalance.toFixed(2);
-
-    // --- ENGINEERING ---
-    const engineeringTotal = parseFloat(document.getElementById('engineeringAmount').textContent || 0);
-    let engineeringBreakdownSum = 0;
-    document.querySelectorAll('#engineeringTable tbody tr .breakdownAmount').forEach(cell => {
-        engineeringBreakdownSum += parseFloat(cell.textContent || 0);
-    });
-    const engineeringBalance = engineeringTotal - engineeringBreakdownSum;
-    document.getElementById('engineeringBalance').textContent = engineeringBalance.toFixed(2);
-
-    // --- MQC ---
-    const mqcTotal = parseFloat(document.getElementById('mqcAmount').textContent || 0);
-    let mqcBreakdownSum = 0;
-    document.querySelectorAll('#mqcTable tbody tr .breakdownAmount').forEach(cell => {
-        mqcBreakdownSum += parseFloat(cell.textContent || 0);
-    });
-    const mqcBalance = mqcTotal - mqcBreakdownSum;
-    document.getElementById('mqcBalance').textContent = mqcBalance.toFixed(2);
-}
-
         const variationOrders = {!! json_encode($project['variation_orders'] ?? []) !!};
 
         // Insert V.O. headers
