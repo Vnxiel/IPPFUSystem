@@ -65,7 +65,7 @@
                         </div>
                         <div class="card-footer d-flex align-items-center" style="font-size: 0.750rem;">
                             <span class="me-2">Forgot Password?</span>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#changePassword-LoginModal">Request new password.</a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#changePassword-LoginModal">Change password.</a>
                         </div>
                     </div>
                 </div>
@@ -75,8 +75,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
         <script src="{{ asset('js/Account/login.js') }}"></script>
-        <script src="{{ asset('js/Account/request-user_pass.js') }}"></script>
-        <script src="{{ asset('js/Account/fetch-pass._requests.js') }}"></script>
+        <script src="{{ asset('js/Account/user-change_pass.js') }}"></script>
     </body>
 </html>
 

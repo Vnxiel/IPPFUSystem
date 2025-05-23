@@ -1,47 +1,52 @@
 $(document).ready(function () {
     $('#getOtpBtn').on('click', function () {
-        const username = $('#username').val().trim();
-
-        if (!username) {
-            Swal.fire({
-                icon: "warning",
-                title: "Missing Username",
-                text: "Please enter your username to receive an OTP."
-            });
-            return;
-        }
-
-        $.ajax({
-            url: '/password/send-otp',
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: { username: username },
-            success: function (res) {
-                if (res.success) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "OTP Sent",
-                        text: res.message
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: res.message
-                    });
-                }
-            },
-            error: function (xhr) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Server Error",
-                    text: "Something went wrong. Please try again."
-                });
-            }
+      // Grab the username from the input field inside the modal
+      const username = $('#username').val().trim();
+  
+      if (!username) {
+        Swal.fire({
+          icon: "warning",
+          title: "Missing Username",
+          text: "Please enter your username to receive an OTP."
         });
+        return;
+      }
+  
+      // If username exists, send ajax request to get OTP
+      $.ajax({
+        url: '/password/send-otp',
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: { username: username },
+        success: function (res) {
+          if (res.success) {
+            Swal.fire({
+              icon: "success",
+              title: "OTP Sent",
+              text: res.message
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: res.message
+            });
+          }
+        },
+        error: function () {
+          Swal.fire({
+            icon: "error",
+            title: "Server Error",
+            text: "Something went wrong. Please try again."
+          });
+        }
+      });
     });
+
+
+
 
     $('#changePasswordForm').on('submit', function (e) {
         e.preventDefault();

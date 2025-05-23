@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpMail;
 use App\Mail\PasswordChanged;
@@ -385,23 +386,43 @@ public function getUserRole(Request $request)
     }
 
 
+   
     public function sendOtp(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string|exists:users,username',
-        ]);
-
-        $user = User::where('username', $request->username)->first();
-
-        $otp = rand(100000, 999999);
-        Redis::setex("otp:{$user->email}", 300, $otp); // 5 minutes expiration
-
+        $username = $request->input('username');
+    
+        // Find user by username
+        $user = User::where('username', $username)->first();
+    
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.'
+            ]);
+        }
+    
+        if (empty($user->email)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The user was found, but no email is associated with the account.'
+            ]);
+        }
+    
+        $otp = rand(100000, 999999); // Generate OTP
+    
+        // Save OTP to cache or database (optional)
+        // Cache::put('otp_' . $user->id, $otp, now()->addMinutes(5));
+    
+        // Send OTP email
         Mail::to($user->email)->send(new OtpMail($otp));
-
-        return response()->json(['success' => true, 'message' => 'OTP sent to your email.']);
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP sent to your email.'
+        ]);
     }
 
-    public function changePassword(Request $request)
+        public function changePassword(Request $request)
     {
         $request->validate([
             'username' => 'required|string|exists:users,username',
@@ -410,16 +431,15 @@ public function getUserRole(Request $request)
         ]);
 
         $user = User::where('username', $request->username)->first();
-        $cachedOtp = Redis::get("otp:{$user->email}");
 
-        if (!$cachedOtp || $cachedOtp !== $request->otp) {
+        if (!$user || $user->otp_code !== $request->otp || now()->gt($user->otp_expires_at)) {
             return response()->json(['success' => false, 'message' => 'Invalid or expired OTP.']);
         }
 
         $user->password = Hash::make($request->new_password);
+        $user->otp_code = null;
+        $user->otp_expires_at = null;
         $user->save();
-
-        Redis::del("otp:{$user->email}");
 
         return response()->json(['success' => true, 'message' => 'Password changed successfully.']);
     }

@@ -20,8 +20,25 @@ class OtpMail extends Mailable
         $this->otp = $otp;
     }
 
-    public function build()
+    public function envelope(): Envelope
     {
-        return $this->subject('Your OTP Code')->view('emails.otp');
+        return new Envelope(
+            subject: 'Your OTP Code',
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.otp',
+            with: [
+                'otp' => $this->otp,
+            ],
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [];
     }
 }
