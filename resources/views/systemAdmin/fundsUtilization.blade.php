@@ -63,7 +63,7 @@
                   'Appropriation' => 'appropriation',
                   'ABC' => 'abc',
                   'Contract Amount' => 'contract_amount',
-                  'Bid Difference' => 'bid',
+                  'Savings' => 'bid',
                   'Engineering' => 'engineering',
                   'MQC' => 'mqc',
                   'Contingency' => 'contingency',
@@ -169,14 +169,7 @@
 
           <!-- Contract Summary Card -->
           <div class="card border shadow-sm mb-4">
-            <div class="card-header bg-light py-2">
-              <h6 class="card-title mb-0">
-                <i class="fas fa-file-contract text-primary me-2"></i>
-                Contract Summary
-              </h6>
-            </div>
             <div class="card-body">
-              <h6 class="fw-bold mb-3">Contract Summary</h6>
               <table class="table table-sm table-bordered text-center align-middle">
                 <thead>
                   <tr>
@@ -255,33 +248,9 @@
                       <td id="contractBalance" class="fw-bold text-end">0.00</td>
                       <td></td>
                     </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- Engineering Section Card -->
-          <div class="card border shadow-sm mb-4">
-            <div class="card-header bg-light py-2">
-              <h6 class="card-title mb-0">
-                <i class="fas fa-hard-hat text-primary me-2"></i>
-                Engineering Details
-              </h6>
-            </div>
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">Engineering</h6>
-              <table class="table table-sm table-bordered text-center align-middle">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Category</th>
-                    <th style="width: 20%;">Date</th>
-                    <th style="width: 20%;">Amount</th>
-                    <th style="width: 30%;">Remarks</th>
-                    <th style="width: 10%;">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
+                    <!-- ENGINEERING Table -->
+                    <tr>
                     <td>Engineering</td>
                     <td><input type="date" class="form-control form-control-sm" name="dateEng"
                         value="{{ $summary['engineering']['date'] ?? '' }}"></td>
@@ -330,32 +299,8 @@
                     <td class="fw-bold text-end" id="engineeringBalance">0.00</td>
                     <td colspan="2"></td>
                   </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- MQC Section Card -->
-          <div class="card border shadow-sm mb-4">
-            <div class="card-header bg-light py-2">
-              <h6 class="card-title mb-0">
-                <i class="fas fa-clipboard-check text-primary me-2"></i>
-                MQC Details
-              </h6>
-            </div>
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">MQC</h6>
-              <table class="table table-sm table-bordered text-center align-middle">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Category</th>
-                    <th style="width: 20%;">Date</th>
-                    <th style="width: 20%;">Amount</th>
-                    <th style="width: 30%;">Remarks</th>
-                    <th style="width: 10%;">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
+                  <!-- MQC TABLE -->
                   <tr>
                     <td>MQC</td>
                     <td><input type="date" class="form-control form-control-sm" name="dateMqc"
@@ -404,13 +349,10 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
-          </div>
+          
 
           <!-- Totals Section Card -->
           <div class="card border-0 mb-4 shadow-sm">
-            <div class="card-body p-3">
-              <h6 class="fw-bold mb-3">Summary</h6>
               <table class="table table-sm table-bordered text-center align-middle">
                 <thead>
                   <tr>

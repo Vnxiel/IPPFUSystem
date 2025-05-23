@@ -35,24 +35,13 @@ class ProjectManager extends Controller
         'projectRC' => 'required|string',
         'projectContractor' => 'required|string',
         'sourceOfFunds' => 'required|string',
-        'otherFund' => 'nullable|string',
         'modeOfImplementation' => 'required|string',
         'projectDescription' => 'string',
         'projectStatus' => 'required|string',
         'ongoingStatus' => 'nullable|string',
         'projectContractDays' => 'required|integer',
-        'noaIssuedDate' => 'nullable|date',
-        'noaReceivedDate' => 'nullable|date',
-        'ntpIssuedDate' => 'nullable|date',
-        'ntpReceivedDate' => 'nullable|date',
         'originalStartDate' => 'required|date',
         'targetCompletion' => 'required|date',
-        'timeExtension' => 'nullable|integer',
-        'revisedCompletionDate' => 'nullable|date',
-        'revisedTargetDate' => 'nullable|date',
-        'completionDate' => 'required|date',
-        'projectSlippage' => 'nullable|string',
-        'othersContractor' => 'nullable|string',
         'ea' => 'required|string',
         'ea_position' => 'required|string',
     ]);
@@ -682,43 +671,6 @@ if ($existing) {
     {
         try {
             Log::info("Updating project ID: $id", $request->all());
-    
-            $validator = \Validator::make($request->all(), [
-                'projectTitle' => 'required|string|max:255',
-                'projectLoc' => 'required|string|max:255',
-                'projectID' => 'required|string|max:255',
-                'projectContractor' => 'required|string',
-                'sourceOfFunds' => 'required|string',
-                'otherFund' => 'nullable|string|max:255',
-                'modeOfImplementation' => 'required|string',
-                'projectDescription' => 'nullable|string',
-                'projectContractDays' => 'required|integer',
-                'noaIssuedDate' => 'nullable|date',
-                'noaReceivedDate' => 'nullable|date',
-                'ntpIssuedDate' => 'nullable|date',
-                'ntpReceivedDate' => 'nullable|date',
-                'originalStartDate' => 'required|date',
-                'targetCompletion' => 'required|date',
-                'timeExtension' => 'nullable|integer',
-                'revisedCompletionDate' => 'nullable|date',
-                'revisedTargetDate' => 'nullable|date',
-                'completionDate' => 'required|date',
-                'projectSlippage' => 'nullable|string',
-                'othersContractor' => 'nullable|string',
-                'ea' => 'nullable|string',
-                'ea_position' => 'nullable|string',
-                'projectYear' => 'nullable|integer',
-                'projectFPP' => 'nullable|string',
-                'projectRC' => 'nullable|string',
-            ]);
-    
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Validation failed!',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
     
             $newProjectID = $request->input('projectID');
     

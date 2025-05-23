@@ -6,7 +6,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
   @page {
-    margin: 20mm 15mm 30mm 15mm;
+    margin: 10mm 10mm 10mm 15mm;
   }
 
   body {
@@ -420,7 +420,7 @@
 </div>
 <footer>
   <div class="printed-by">
-    Printed by:  <u>{{ $userName }}</u> on {{ $printedAt }}
+ <p>{{ $userName }}</p><br>   Printed by:  
   </div>
 </footer>
 </body>

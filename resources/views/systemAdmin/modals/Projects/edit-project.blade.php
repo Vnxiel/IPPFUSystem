@@ -292,15 +292,15 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 ">
-                                <label for="contractAmount" class="form-label">Contract Amount</label>
+                        <div class="col-3 ">
+                                <label for="abc" class="form-label">ABC</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <input type="text" class="form-control currency-input" id="contractAmount"
-                                        name="contractAmount">
+                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
                                 </div>
                             </div>
+                            
                             <div class="col-3 ">
                                 <label for="engineering" class="form-label">Engineering</label>
                             </div>
@@ -313,12 +313,13 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-3 ">
-                                <label for="abc" class="form-label">ABC</label>
+                        <div class="col-3 ">
+                                <label for="contractAmount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <input type="text" class="form-control currency-input" id="abc" name="abc">
+                                    <input type="text" class="form-control currency-input" id="contractAmount"
+                                        name="contractAmount">
                                 </div>
                             </div>
 
@@ -542,6 +543,17 @@
                                         @endforeach
                                     </div>
                                 </div>
+                                <div class="row">
+                                        <div class="col-3 p">
+                                            <label for="timeExtension" class="form-label">Extension Date
+                                            </label>
+                                        </div>
+                                        <div class="col-9">
+                                            <input type="number" class="form-control" id="timeExtension"
+                                                name="timeExtension"
+                                                value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
+                                        </div>
+                                    </div>
 
                                     <!-- Revised Dates and Extension -->
                                     <div class="row mb-2">
@@ -565,17 +577,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-3 p">
-                                            <label for="timeExtension" class="form-label">Extension Date
-                                            </label>
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="number" class="form-control" id="timeExtension"
-                                                name="timeExtension"
-                                                value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
-                                        </div>
-                                    </div>
+                                    
                                     <div class="row mt-2">
                                     <div class="col-3 mb-2 p">
                                         <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>

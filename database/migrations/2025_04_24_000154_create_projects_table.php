@@ -29,7 +29,7 @@ return new class extends Migration
             $table->date('targetCompletion');
             $table->string('timeExtension')->nullable();
             $table->date('revisedTargetCompletion')->nullable();
-            $table->date('completionDate');
+            $table->date('completionDate')->nullable();
 
             $table->date('revisedTargetDate')->nullable();
             $table->date('revisedCompletionDate')->nullable();

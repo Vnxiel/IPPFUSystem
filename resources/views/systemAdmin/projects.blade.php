@@ -406,22 +406,6 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const contractorSelect = document.getElementById("projectContractor");
-            const othersContractorDiv = document.getElementById("othersContractorDiv");
-            const othersContractorInput = document.getElementById("othersContractor");
-
-            contractorSelect.addEventListener("change", function () {
-                if (this.value === "Others") {
-                    // Show the "Specify New Contractor" text box
-                    othersContractorDiv.style.display = "block";
-                } else {
-                    // Hide the "Specify New Contractor" text box if anything else is selected
-                    othersContractorDiv.style.display = "none";
-                    othersContractorInput.value = ""; // Clear input if not "Others"
-                }
-            });
-        });
     </script>
 
    
