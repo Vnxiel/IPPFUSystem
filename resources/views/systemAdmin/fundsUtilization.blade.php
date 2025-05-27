@@ -109,10 +109,11 @@
 
                     {{-- Actual --}}
                     <td>
-                      <input type="text" class="form-control amount-input" id="actual_{{ $key }}" name="actual_{{ $key }}"
-                        value="{{ $funds['actual_' . $key] ?? '' }}">
-                    </td>
-                  </tr>
+                        <input type="text" class="form-control amount-input bg-light" id="actual_{{ $key }}" name="actual_{{ $key }}"
+                              value="{{ $funds['actual_' . $key] ?? '' }}" readonly>
+                      </td>
+
+
                   @endforeach
 
                   <tr class="fw-bold">
@@ -150,233 +151,223 @@
             </button>
           </div>
 
-          <!-- Mobilization Input -->
-          <div class="row mb-4">
-            <div class="col-md-3">
-              <div class="form-group">
-                <label class="form-label fw-semibold">
-                  <i class="fas fa-percentage text-muted me-1"></i>
-                  Mobilization Percentage
-                </label>
-                <input type="number" max="15" min="0" step="0.01" 
-                       class="form-control form-control-sm" 
-                       id="percentMobi" name="percentMobi" 
-                       placeholder="Enter percentage (0-15)">
-              </div>
-            </div>
-          </div>
+        
 
-          <!-- Contract Summary Card -->
-          <div class="card border shadow-sm mb-4">
-            <div class="card-body">
-              <table class="table table-sm table-bordered text-center align-middle">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Category</th>
-                    <th style="width: 20%;">Date</th>
-                    <th style="width: 20%;">Amount</th>
-                    <th style="width: 40%;">Remarks</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Contract Amount</td>
-                    <td></td>
-                    <td><input type="text" class="form-control amount-input text-end" id="contract_amount"
-                        name="contract_amount" readonly></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Mobilization</td>
-                    <td>
-                      <input type="date" class="form-control form-control-sm" name="dateMobilization"
-                        value="{{ $summary['mobilization']['date'] ?? '' }}">
-                    </td>
-                    <td>
-                      <input type="text" class="form-control form-control-sm amount-input expenditure-amount"
-                        name="amountMobilization" id="amountMobilization"
-                        value="{{ $summary['mobilization']['amount'] ?? '' }}">
-                    </td>
-                    <td>
-                      <input type="text" class="form-control form-control-sm" name="remMobilization"
-                        value="{{ $summary['mobilization']['remarks'] ?? '' }}">
-                    </td>
-                  </tr>
+          <!-- Revised Contract Summary Card -->
+            <div class="card border shadow-sm mb-4">
+              <div class="card-body">
+                <table class="table table-sm table-bordered text-center align-middle">
+                  <thead>
+                    <tr>
+                      <th style="width: 20%;">Date</th>
+                      <th style="width: 30%;">Particulars</th>
+                      <th style="width: 20%;">Amount</th>
+                      <th style="width: 30%;">Remarks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td>Contract Amount</td>
+                      <td><input type="text" class="form-control text-end" id="contract_amount" name="contract_amount" readonly></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input type="date" class="form-control form-control-sm" name="dateMobilization"
+                              value="{{ $summary['mobilization']['date'] ?? '' }}">
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="fw-normal me-3">Mobilization</span>
+                          <input type="number" max="15" min="0" step="0.01"
+                                class="form-control form-control-sm w-50"
+                                id="percentMobi" name="percentMobi"
+                                placeholder="0–15"
+                                value="{{ old('percentMobi') }}">
+                          <span class="ms-1 text-muted small"><i class="fas fa-percentage"></i></span>
+                        </div>
+                      </td>
 
-                  <!-- Partial Billing Rows -->
-                  @for ($i = 1; $i <= 5; $i++)
+                      <td>
+                        <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                              name="amountMobilization" id="amountMobilization"
+                              value="{{ $summary['mobilization']['amount'] ?? '' }}">
+                      </td>
+                      <td colspan="2">
+                        <input type="text" class="form-control form-control-sm" name="remMobilization"
+                              value="{{ $summary['mobilization']['remarks'] ?? '' }}">
+                      </td>
+                    </tr>
+
+
+                    <!-- Partial Billing Rows -->
+                    @for ($i = 1; $i <= 5; $i++)
                     <tr class="partial-billing billing-{{ $i }}" style="{{ $i > 1 ? 'display: none;' : '' }}">
-                    <td>{{ $i }}{{ $i == 1 ? 'st' : ($i == 2 ? 'nd' : ($i == 3 ? 'rd' : 'th')) }} Partial Billing</td>
-                    <td>
-                      <input type="date" class="form-control form-control-sm " name="partialBillings[{{ $i }}][date]"
-                        value="{{ $partial_billings[$i - 1]['date'] ?? '' }}">
-                    </td>
-                    <td>
-                      <input type="text" class="form-control form-control-sm amount-input expenditure-amount"
-                        name="partialBillings[{{ $i }}][amount]" id="amountPartial{{ $i }}"
-                        value="{{ $partial_billings[$i - 1]['amount'] ?? '' }}">
-                    </td>
-                    <td>
-                      <input type="text" class="form-control form-control-sm" name="partialBillings[{{ $i }}][remarks]"
-                        value="{{ $partial_billings[$i - 1]['remarks'] ?? '' }}">
-                    </td>
+                      <td>
+                        <input type="date" class="form-control form-control-sm" name="partialBillings[{{ $i }}][date]"
+                              value="{{ $partial_billings[$i - 1]['date'] ?? '' }}">
+                      </td>
+                      <td>{{ $i }}{{ $i == 1 ? 'st' : ($i == 2 ? 'nd' : ($i == 3 ? 'rd' : 'th')) }} Partial Billing</td>
+                      <td>
+                        <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                              name="partialBillings[{{ $i }}][amount]" id="amountPartial{{ $i }}"
+                              value="{{ $partial_billings[$i - 1]['amount'] ?? '' }}">
+                      </td>
+                      <td colspan="2">
+                        <input type="text" class="form-control form-control-sm" name="partialBillings[{{ $i }}][remarks]"
+                              value="{{ $partial_billings[$i - 1]['remarks'] ?? '' }}">
+                      </td>
                     </tr>
                     @endfor
 
-
-
                     <tr>
+                      <td>
+                        <input type="date" class="form-control form-control-sm" name="dateFinal" value="{{ $summary['final']['date'] ?? '' }}">
+                      </td>
                       <td>Final Billing</td>
                       <td>
-                        <input type="date" class="form-control form-control-sm" name="dateFinal"
-                          value="{{ $summary['final']['date'] ?? '' }}">
+                        <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                              name="amountFinal" id="amountFinal" value="{{ $summary['final']['amount'] ?? '' }}">
                       </td>
-                      <td>
-                        <input type="text" class="form-control form-control-sm amount-input expenditure-amount"
-                          name="amountFinal" id="amountFinal" value="{{ $summary['final']['amount'] ?? '' }}">
-                      </td>
-                      <td>
-                        <input type="text" class="form-control form-control-sm" name="remFinal"
-                          value="{{ $summary['final']['remarks'] ?? '' }}">
+                      <td colspan="2">
+                        <input type="text" class="form-control form-control-sm" name="remFinal" value="{{ $summary['final']['remarks'] ?? '' }}">
                       </td>
                     </tr>
-
                     <tr>
-                      <td class="fw-bold">Balance</td>
                       <td></td>
+                      <td class="fw-bold">Balance</td>
                       <td id="contractBalance" class="fw-bold text-end">0.00</td>
                       <td></td>
                     </tr>
 
                     <!-- ENGINEERING Table -->
                     <tr>
-                    <td>Engineering</td>
-                    <td><input type="date" class="form-control form-control-sm" name="dateEng"
-                        value="{{ $summary['engineering']['date'] ?? '' }}"></td>
-                    <td><input type="text" class="form-control form-control-sm text-end expenditure-amount"
-                        name="amountEng" id="amountEng" value="{{ $summary['engineering']['amount'] ?? '' }}" readonly>
-                    </td>
-                    <td><input type="text" class="form-control form-control-sm" name="remEng"
-                        value="{{ $summary['engineering']['remarks'] ?? '' }}"></td>
-                    <td>
-                      <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="collapse"
-                        data-bs-target="#engDetails">
-                        <i class="fas fa-list-ul"></i>
-                      </button>
-                    </td>
-                  </tr>
+                      <td></td>
+                      <td>Engineering</td>
+                      <td>
+                        <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                              name="amountEng" id="amountEng" value="{{ $summary['engineering']['amount'] ?? '' }}" readonly>
+                      </td>
+                      <td colspan="2">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <input type="text" class="form-control form-control-sm me-2" name="remEng" 
+                                value="{{ $summary['engineering']['remarks'] ?? '' }}">
+                          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#engDetails">
+                            <i class="fas fa-list-ul"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
                   <tr class="collapse" id="engDetails">
                     <td colspan="5">
                       <table id="engineeringSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
                         <thead>
                           <tr>
-                            <th>Name (Month - Payment Period)</th>
+                            <th>Date</th>
+                            <th>Particulars</th>
                             <th>Amount</th>
+                            <th>Remarks</th>
                           </tr>
                         </thead>
                         <tbody>
                           @forelse($engineeringEntries as $eng)
                           <tr>
+                            <td>{{ $eng->date ?? '' }}</td>
                             <td>{{ $eng->name }} ({{ $eng->month }} - {{ $eng->payment_periods }})</td>
                             <td data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
+                            <td>{{ $eng->remarks ?? '' }}</td>
                           </tr>
                           @empty
                           <tr>
-                            <td></td>
-                            <td class="text-muted">No entries found.</td>
+                            <td colspan="4" class="text-muted">No entries found.</td>
                           </tr>
                           @endforelse
-
                         </tbody>
                       </table>
                     </td>
                   </tr>
 
+
                   <tr>
-                    <td class="fw-bold">Engineering Balance</td>
                     <td></td>
+                    <td class="fw-bold">Engineering Balance</td>
                     <td class="fw-bold text-end" id="formEngineeringBalance" data-balance="0.00">₱0.00</td>
                    <td colspan="2"></td>
                   </tr>
 
                   <!-- MQC TABLE -->
                   <tr>
-                    <td>MQC</td>
-                    <td><input type="date" class="form-control form-control-sm" name="dateMqc"
-                        value="{{ $summary['mqc']['date'] ?? '' }}"></td>
-                    <td><input type="text" class="form-control form-control-sm text-end expenditure-amount"
-                        name="amountMqc" id="amountMqc" value="{{ $summary['mqc']['amount'] ?? '' }}" readonly></td>
-                    <td><input type="text" class="form-control form-control-sm" name="remMqc"
-                        value="{{ $summary['mqc']['remarks'] ?? '' }}"></td>
-                    <td>
-                      <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="collapse"
-                        data-bs-target="#mqcDetails">
-                        <i class="fas fa-list-ul"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr class="collapse" id="mqcDetails">
-                    <td colspan="5">
-                      <table id="mqcSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
-                        <thead>
-                          <tr>
-                            <th>Name (Month - Payment Period)</th>
-                            <th>Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          @forelse($mqcEntries as $mqc)
-                          <tr>
-                            <td>{{ $mqc->name }} ({{ $mqc->month }} - {{ $mqc->payment_periods }})</td>
-                            <td data-amount="{{ $eng->amount }}">{{ number_format($mqc->amount, 2) }}</td>
-                          </tr>
-                          @empty
-                          <tr>
-                            <td></td>
-                            <td class="text-muted">No entries found.</td>
-                          </tr>
-                          @endforelse
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="fw-bold">MQC Balance</td>
                     <td></td>
+                    <td>MQC</td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                            name="amountMqc" id="amountMqc" value="{{ $summary['mqc']['amount'] ?? '' }}" readonly>
+                    </td>
+                    <td colspan="2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <input type="text" class="form-control form-control-sm me-2" name="remMqc" 
+                              value="{{ $summary['mqc']['remarks'] ?? '' }}">
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#mqcDetails">
+                          <i class="fas fa-list-ul"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                    <tr class="collapse" id="mqcDetails">
+                      <td colspan="5">
+                        <table id="mqcSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
+                          <thead>
+                            <tr>
+                              <th>Date</th>
+                              <th>Particulars</th>
+                              <th>Amount</th>
+                              <th>Remarks</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @forelse($mqcEntries as $mqc)
+                            <tr>
+                              <td>{{ $mqc->date ?? '' }}</td>
+                              <td>{{ $mqc->name }} ({{ $mqc->month }} - {{ $mqc->payment_periods }})</td>
+                              <td data-amount="{{ $mqc->amount }}">{{ number_format($mqc->amount, 2) }}</td>
+                              <td>{{ $mqc->remarks ?? '' }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                              <td colspan="4" class="text-muted">No entries found.</td>
+                            </tr>
+                            @endforelse
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                    <td></td>
+                    <td class="fw-bold">MQC Balance</td>
                     <td class="fw-bold text-end" id="formMqcBalance">0.00</td>
                     <td colspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Total Expenditures</td>
+                    <td><input type="text" class="form-control form-control-sm text-end" id="amountTotal" name="amountTotal"></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Total Savings</td>
+                    <td><input type="text" class="form-control form-control-sm text-end" id="amountSavings" name="amountSavings"></td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
           <!-- Add this somewhere in your Blade HTML template -->
-<div id="projectMeta" data-project-id="{{ $project['id'] ?? 0 }}"></div>
-
-
-          <!-- Totals Section Card -->
-          <div class="card border-0 mb-4 shadow-sm">
-              <table class="table table-sm table-bordered text-center align-middle">
-                <thead>
-                  <tr>
-                    <th style="width: 40%;">Category</th>
-                    <th style="width: 60%;">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Total Expenditures</td>
-                    <td><input type="text" class="form-control form-control-sm" id="amountTotal" name="amountTotal"></td>
-                  </tr>
-                  <tr>
-                    <td>Total Savings</td>
-                    <td><input type="text" class="form-control form-control-sm" id="amountSavings" name="amountSavings"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            </div>
-            </div>
+          <div id="projectMeta" data-project-id="{{ $project['id'] ?? 0 }}"></div>
+          </div>
+        </div>
 
             <div class="row text-end mt-2">
               <div class="text-end mt-4">

@@ -5,6 +5,33 @@ function getSanitizedValue(input) {
 
 document.addEventListener('DOMContentLoaded', function () {
 
+  const abcInput = document.getElementById('orig_abc');
+  const contractInput = document.getElementById('orig_contract_amount');
+  const savingsInput = document.getElementById('orig_bid');
+
+  function parseCurrency(value) {
+    if (!value) return 0;
+    // Remove peso sign, commas, and whitespace
+    return parseFloat(value.replace(/[₱,]/g, '').trim()) || 0;
+  }
+
+  function updateBidSavings() {
+    const abc = parseCurrency(abcInput.value);
+    const contract = parseCurrency(contractInput.value);
+    const savings = abc - contract;
+
+    if (savingsInput) {
+      savingsInput.value = savings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+  }
+
+  if (abcInput && contractInput && savingsInput) {
+    updateBidSavings(); // On page load
+
+    abcInput.addEventListener('input', updateBidSavings);
+    contractInput.addEventListener('input', updateBidSavings);
+  }
+
   const voCountInput = document.getElementById('voCount');
   let voCount = parseInt(voCountInput?.value) || 1;
 
@@ -126,24 +153,44 @@ document.addEventListener('DOMContentLoaded', function () {
   function calculateBalance(triggerInput = null) {
     const contractAmount = getSanitizedValue(actualContractAmountInput);
     let total = 0;
-
+  
     inputIds.forEach(id => {
       const input = document.getElementById(id);
       if (input) {
         total += getSanitizedValue(input);
       }
     });
-
-    const balance = contractAmount - total;
-
+  
+    // Ensure balance is never negative
+    let balance = contractAmount - total;
+    if (balance < 0) balance = 0;
+  
     if (balanceDisplay) {
       balanceDisplay.textContent = formatNumber(balance);
     }
-
+  
     if (contractAmountInput) {
       contractAmountInput.value = formatNumber(contractAmount);
     }
+  
+    const finalBillingInput = document.getElementById('amountFinal');
+
+    if (finalBillingInput) {
+      const finalValue = getSanitizedValue(finalBillingInput);
+    
+      // If the final billing input exceeds the available balance, clamp it
+      if (finalValue > balance) {
+        finalBillingInput.value = formatNumber(balance);
+      }
+    
+      // If the field is empty, pre-fill it with the remaining balance
+      if (finalBillingInput.value.trim() === '') {
+        finalBillingInput.value = formatNumber(balance);
+      }
+    }
+    
   }
+   
 
   inputIds.forEach(id => {
     const input = document.getElementById(id);

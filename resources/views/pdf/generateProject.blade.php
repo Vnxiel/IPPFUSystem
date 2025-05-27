@@ -12,7 +12,7 @@
   body {
     font-family: "Times New Roman", Times, serif;
     position: relative;
-    margin-bottom: 60px; /* make room for the footer */
+    margin-bottom: 60px;
   }
 
   footer {
@@ -29,85 +29,152 @@
     text-align: left;
   }
 
-    .header-table {
-      width: 100%;
-      margin-bottom: 2px;
-    }
-    .header-table td {
-      vertical-align: middle;
-      text-align: center;
-    }
-    .logo {
-      width: 80px;
-      height: 80px;
-    }
-    .header-text h5, .header-text h3, .header-text h6 {
-      margin: 2px 0;
-    }
-    .header-text h5 {
-      font-size: 14px;
-    }
-    .header-text h3 {
-      font-size: 20px;
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-    .header-text h6 {
-      font-size: 10px;
-    }
-    .contact-info {
-      text-align: center;
-      font-size: 14px;
-      margin-top: 2px;
-      padding-bottom: 5px;
-    }
-    .contact-info span {
-      font-weight: bold;
-      color: #d9534f;
-      text-decoration: underline;
-    }
-    .footer-image {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .footer-image img {
-      width: 90%;
-      height: auto;
-    }
-    .project-info-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    .project-info-table th,
-    .project-info-table td {
-      border: 1px solid black;
-      padding: 8px;
-      vertical-align: top;
-    }
-    .project-info-table th {
-      width: 35%;
-      text-align: right;
-      font-weight: normal;
-    }
-    .project-info-table td {
-      width: 65%;
-    }
-    .fit-text-row {
-        line-height: 1;
-    }
-    .fit-text-row th,
-    .fit-text-row td {
-        padding: 1 4px;
-        vertical-align: top;
-        font-size: 16px;
-    }
-    .sub-header {
-      font-weight: bold;
-      font-size: 13px;
-      text-align: center;
-    }
-  </style>
+  .header-table {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+
+  .header-table td {
+    vertical-align: middle;
+    text-align: center;
+  }
+
+  .logo {
+    width: 65px;
+    height: 65px;
+  }
+
+  .header-text h5, .header-text h3, .header-text h6 {
+    margin: 2px 0;
+  }
+
+  .header-text h5 {
+    font-size: 20px;
+  }
+
+  .header-text h4 {
+    font-size: 22px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .header-text h6 {
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  .header-text p {
+    font-size: 12px;
+    font-weight: normal;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .contact-row {
+    width: 100%;
+    font-size: 12px;
+    margin-top: 2px;
+    padding-bottom: 5px;
+  }
+
+  .contact-row td {
+    padding: 0 10px;
+    vertical-align: top;
+  }
+
+  .contact-left {
+    text-align: left;
+  }
+
+  .contact-right {
+    text-align: right;
+  }
+
+  .contact-row span {
+    font-weight: normal;
+    text-decoration: underline;
+  }
+
+  .footer-line {
+    border-top: 2px solid #000;
+    margin-top: 0px;
+    width: 100%;
+  }
+
+  .project-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  .project-info-table th,
+  .project-info-table td {
+    border: 0px;
+    padding: 8px;
+    vertical-align: top;
+  }
+
+  .project-info-table th {
+    width: 35%;
+    text-align: left;
+    font-weight: normal;
+    font-size: 12px;
+  }
+
+  .project-info-table td {
+    width: 65%;
+  }
+
+  .fit-text-row {
+    line-height: 1;
+  }
+
+  .fit-text-row th,
+  .fit-text-row td {
+    padding: 1 4px;
+    vertical-align: top;
+    font-size: 16px;
+  }
+
+  .sub-header {
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .contact-table {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.contact-table td {
+  padding: 0 10px;
+  vertical-align: middle;
+  white-space: nowrap; /* Prevent breaking */
+}
+
+.left-contact {
+  text-align: center;
+  width: 50%;
+}
+
+.right-contact {
+  text-align: center;
+  width: 50%;
+}
+
+.label {
+  font-weight: normal;
+}
+
+</style>
 </head>
 <body>
 
@@ -120,10 +187,10 @@
       </td>
       <td style="width: 70%;">
         <div class="header-text">
-          <h5>REPUBLIC OF THE PHILIPPINES</h5>
-          <h5>PROVINCIAL GOVERNMENT OF NUEVA VIZCAYA</h5>
-          <h3>PROVINCIAL ENGINEERING OFFICE</h3>
-          <h6>People’s Hall, Capitol Compound, Bayombong, Nueva Vizcaya, 3700</h6>
+          <h6>REPUBLIC OF THE PHILIPPINES</h6>
+          <h6>PROVINCIAL GOVERNMENT OF NUEVA VIZCAYA</h6>
+          <h4>PROVINCIAL ENGINEERING OFFICE</h4>
+          <p>People’s Hall, Capitol Compound, Bayombong, Nueva Vizcaya, 3700</p>
         </div>
       </td>
       <td style="width: 15%; text-align: right;">
@@ -132,16 +199,22 @@
     </tr>
   </table>
 
-  <!-- Contact Info -->
-  <div class="contact-info">
-    <span>Telephone:</span> (078) 332-3000 Loc 418 &nbsp; | &nbsp;
-    <span>E-mail:</span> plgunuevavizcaya.peo@gmail.com
+  <table class="contact-table">
+  <tr>
+    <td>
+      <span class="label">Telephone:</span> (078) 332-3000 Loc 418
+    </td>
+    <td style="text-align: right;">
+      <span class="label">E-mail:</span> plgunuevavizcaya.peo@gmail.com
+    </td>
+  </tr>
+</table>
+
+  <!-- Decorative Footer Line -->
+  <div class="footer-line">
+
   </div>
 
-  <!-- Decorative Footer -->
-  <div class="footer-image">
-    <img src="{{ public_path('img/Picture2.gif') }}" alt="Footer Design">
-  </div>
 
       <!-- Project Information -->
       <table class="project-info-table">

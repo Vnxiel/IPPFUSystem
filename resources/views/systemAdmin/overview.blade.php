@@ -577,7 +577,7 @@
                                                             <th>Date</th>
                                                             <th>Amount</th>
                                                             <th>Remarks</th>
-                                                            <th>Show Breakdown</th>
+                                                            <th>Breakdown</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody style="font-weight: normal;">
@@ -641,21 +641,23 @@
                                                             <td>-</td>
                                                         </tr>
 
+                                                       
                                                         @foreach ($partialBillings as $index => $billing)
-                                                        <tr>
-                                                            <td>{{ ordinal($index + 1) }} Partial Billing</td>
-                                                            <td>{{ $billing['date'] ?? '-' }}</td>
-                                                            <td>{{ number_format($billing['amount'] ?? 0, 2) }}</td>
-                                                            <td>{{ $billing['remarks'] ?? '-' }}</td>
-                                                            <td>
-                                                                @if (!empty($billing['breakdown']))
-                                                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                                                @else
-                                                                    -
-                                                                @endif
-                                                            </td>
-                                                        </tr>
+                                                            @php
+                                                                // Always show the first partial billing; show others only if they have content
+                                                                $hasValue = !empty($billing['amount']) || !empty($billing['remarks']) || !empty($billing['date']);
+                                                            @endphp
+
+                                                            @if ($index === 0 || $hasValue)
+                                                                <tr>
+                                                                    <td>{{ ordinal($index + 1) }} Partial Billing</td>
+                                                                    <td>{{ $billing['date'] ?? '-' }}</td>
+                                                                    <td>{{ number_format($billing['amount'] ?? 0, 2) }}</td>
+                                                                    <td>{{ $billing['remarks'] ?? '-' }}</td>
+                                                                </tr>
+                                                            @endif
                                                         @endforeach
+
 
                                                         <tr>
                                                             <td>{{ $labels['final'] }}</td>
@@ -681,7 +683,7 @@
                                                             <td>{{ $summary['engineering']['date'] ?? '-' }}</td>
                                                             <td>{{ number_format($engAmt, 2) }}</td>
                                                             <td>{{ $summary['engineering']['remarks'] ?? '-' }}</td>
-                                                            <td>
+                                                            <td style="width: 10%;">
                                                                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#engineeringBreakdown" aria-expanded="false" aria-controls="engineeringBreakdown">View</button>
                                                             </td>
                                                         </tr>
