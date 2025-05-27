@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="entryModal" tabindex="-1" aria-labelledby="entryModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl ">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Add Engineering / MQC Entry</h5>
@@ -8,6 +8,20 @@
       </div>
 
       <div class="modal-body">
+        <!-- Info Box for Real-time Balances
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="alert alert-info py-2">
+              <strong>Engineering Balance: </strong> <span id="engineeringBalance" data-balance="0">0.00</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="alert alert-info py-2">
+              <strong>MQC Balance: </strong> <span id="mqcBalance" data-balance="0">0.00</span>
+            </div>
+          </div>
+        </div> -->
+
         <!-- Form Inputs -->
         <div class="row g-2 mb-3 align-items-end">
           <div class="col-md-2">
@@ -66,6 +80,7 @@
                 <th>Month</th>
                 <th>Period</th>
                 <th>Amount</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id="entryTableBody">
@@ -82,42 +97,40 @@
     </div>
   </div>
 </div>
+
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   const entryName = document.getElementById('entryName');
   const suggestions = document.getElementById('nameSuggestions');
 
   const filterSuggestions = (query = '') => {
-    const items = suggestions.querySelectorAll('.suggestion-item');
-    items.forEach(item => {
+    suggestions.querySelectorAll('.suggestion-item').forEach(item => {
       item.style.display = item.textContent.toLowerCase().includes(query.toLowerCase()) ? 'block' : 'none';
     });
   };
 
-  const showSuggestions = () => suggestions.style.display = 'block';
-  const hideSuggestions = () => suggestions.style.display = 'none';
-
   entryName.addEventListener('focus', () => {
     filterSuggestions();
-    showSuggestions();
+    suggestions.style.display = 'block';
   });
 
   entryName.addEventListener('input', () => {
     filterSuggestions(entryName.value);
-    showSuggestions();
+    suggestions.style.display = 'block';
   });
 
-  suggestions.addEventListener('click', (e) => {
+  suggestions.addEventListener('click', e => {
     if (e.target.classList.contains('suggestion-item')) {
       entryName.value = e.target.textContent;
-      hideSuggestions();
+      suggestions.style.display = 'none';
     }
   });
 
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', e => {
     if (!entryName.contains(e.target) && !suggestions.contains(e.target)) {
-      hideSuggestions();
+      suggestions.style.display = 'none';
     }
   });
 });
+
 </script>

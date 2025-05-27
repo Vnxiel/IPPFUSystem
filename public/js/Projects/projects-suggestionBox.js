@@ -74,47 +74,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-function filterFunds() {
-    const input = document.getElementById("sourceOfFunds");
-    const filter = input.value.toLowerCase();
-    const dropdown = document.getElementById("sourceOfFundsDropdown");
-    const items = dropdown.querySelectorAll("button");
 
-    let hasVisible = false;
-
-    items.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        if (text.includes(filter)) {
-            item.style.display = "block";
-            hasVisible = true;
-        } else {
-            item.style.display = "none";
-        }
-    });
-
-    dropdown.style.display = hasVisible ? "block" : "none";
-}
-
-function selectFund(value) {
-    const input = document.getElementById("sourceOfFunds");
-    input.value = value;
-    hideFundsDropdown();
-}
-
-function showFundsDropdown() {
-    const dropdown = document.getElementById("sourceOfFundsDropdown");
-    if (dropdown) {
-        dropdown.style.display = "block";
-    }
-}
-
-function hideFundsDropdown() {
-    const dropdown = document.getElementById("sourceOfFundsDropdown");
-    if (dropdown) {
-        dropdown.style.display = "none";
-    }
-}
-
-function hideFundsDropdownDelayed() {
-    setTimeout(hideFundsDropdown, 150);
-}

@@ -418,10 +418,9 @@
     </tbody>
   </table>
 </div>
-<footer>
-  <div class="printed-by">
- <p>{{ $userName }}</p><br>   Printed by:  
+
+  <div class="printed-by" style="margin-top: 5px;"><br>
+ <p>{{ $userName }}</p><span>Printed by<span>
   </div>
-</footer>
 </body>
 </html>

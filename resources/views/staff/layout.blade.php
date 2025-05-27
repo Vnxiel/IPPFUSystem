@@ -138,27 +138,29 @@
         
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Account/register-user.js') }}"></script>
-        <script src="{{ asset('js/Account/fetch-pass_requests.js') }}"></script>
-        <script src="{{ asset('js/Account/change-new_pass.js') }}"></script>
+        <script src="{{ asset('js/Account/systemAdmin-change-new_pass.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
+        <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-setup.js') }}"></script>
-        <script src="{{ asset('js/Projects/addProject.js') }}"></script>
+
+       
+        <script src="{{ asset('js/Projects/projects-toggle.js') }}"></script>
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/generateProject.js') }}"></script>
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
-        <script src="{{ asset('js/Projects/add-set.js') }}"></script> 
+        <script src="{{ asset('js/Projects/projects-total_savings.js') }}"></script>
+
+
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
-        <script src="{{ asset('js/FundsUtilization/fundsUtilization.js') }}"></script>
-        <script src="{{ asset('js/FundsUtilization/fetchFundUtilizationSummary.js') }}"></script>
-        <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
+      
+         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>
         <script src="{{ asset('js/Account/logout.js') }}"></script>
-        
+ 
     </body>
 </html>
 

@@ -174,6 +174,74 @@ document.addEventListener("DOMContentLoaded", function () {
         applyTimeExtensionIfNoSuspension();
     });
         
+    function calculateTotalSuspensionExtension() {
+        const orderContainer = document.getElementById('orderContainer');
+        const suspensionInputs = orderContainer.querySelectorAll('input[id^="suspensionOrderNo"]');
+        const resumptionInputs = orderContainer.querySelectorAll('input[id^="resumeOrderNo"]');
+    
+        let totalExtensionDays = 0;
+    
+        suspensionInputs.forEach((suspensionInput, idx) => {
+            const suspensionValue = suspensionInput.value;
+            const resumeInput = resumptionInputs[idx];
+            const resumeValue = resumeInput ? resumeInput.value : null;
+    
+            if (suspensionValue && resumeValue) {
+                const suspendDate = new Date(suspensionValue);
+                const resumeDate = new Date(resumeValue);
+    
+                if (resumeDate > suspendDate) {
+                    // Calculate difference in days (excluding the first day)
+                    const diffTime = resumeDate - suspendDate;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) - 1; 
+                    totalExtensionDays += Math.max(0, diffDays);
+                }
+            }
+        });
+    
+        return totalExtensionDays;
+    }
+    
+    function updateExtensionFields() {
+        const totalExtensionDays = calculateTotalSuspensionExtension();
+    
+        if (totalExtensionDays > 0) {
+            extensionField.closest('.row').style.display = "flex";
+            revisedTargetField.closest('.row').style.display = "flex";
+            revisedCompletionField.closest('.row').style.display = "flex";
+    
+            extensionField.value = totalExtensionDays;
+    
+            if (targetCompletion.value) {
+                let newTarget = new Date(targetCompletion.value);
+                newTarget.setDate(newTarget.getDate() + totalExtensionDays);
+                revisedTargetField.valueAsDate = newTarget;
+            }
+    
+            if (actualCompletion.value) {
+                let newActual = new Date(actualCompletion.value);
+                newActual.setDate(newActual.getDate() + totalExtensionDays);
+                revisedCompletionField.valueAsDate = newActual;
+            }
+        } else {
+            // Hide extension fields or reset if no valid suspensions
+            extensionField.closest('.row').style.display = "none";
+            revisedTargetField.closest('.row').style.display = "none";
+            revisedCompletionField.closest('.row').style.display = "none";
+    
+            extensionField.value = "";
+            revisedTargetField.value = "";
+            revisedCompletionField.value = "";
+        }
+    }
+    
+    // Example: Call updateExtensionFields on any input change of suspension/resumption date fields
+    document.getElementById('orderContainer').addEventListener('input', e => {
+        if (e.target.matches('input[id^="suspensionOrderNo"], input[id^="resumeOrderNo"]')) {
+            updateExtensionFields();
+        }
+    });
+    
 
     // Trigger validation and restrictions only on blur
     originalStartDate.addEventListener("blur", () => {

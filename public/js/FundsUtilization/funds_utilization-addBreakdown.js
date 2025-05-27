@@ -1,31 +1,26 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   const entryAmountInput = document.getElementById("entryAmount");
-
-entryAmountInput.addEventListener("input", function (e) {
-  let value = this.value.replace(/,/g, ''); // Remove existing commas
-  value = value.replace(/[^0-9.]/g, '');    // Remove all non-numeric except '.'
-
-  // Ensure only one decimal point exists
-  const parts = value.split(".");
-  if (parts.length > 2) {
-    value = parts[0] + "." + parts.slice(1).join(""); // Keep first dot, remove others
-  }
-
-  // Format with commas if there's a valid number
-  if (!isNaN(value) && value !== '') {
-    const [intPart, decimalPart] = value.split(".");
-    let formatted = parseInt(intPart).toLocaleString();
-    if (decimalPart !== undefined) {
-      formatted += "." + decimalPart.slice(0, 2); // Limit to 2 decimals
-    }
-    this.value = formatted;
-  } else {
-    this.value = '';
-  }
-});
-
   const entries = [];
   const project_id = sessionStorage.getItem("project_id");
+
+  entryAmountInput.addEventListener("input", function () {
+    let value = this.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+    const parts = value.split(".");
+    if (parts.length > 2) {
+      value = parts[0] + "." + parts.slice(1).join("");
+    }
+    if (!isNaN(value) && value !== '') {
+      const [intPart, decimalPart] = value.split(".");
+      let formatted = parseInt(intPart).toLocaleString();
+      if (decimalPart !== undefined) {
+        formatted += "." + decimalPart.slice(0, 2);
+      }
+      this.value = formatted;
+    } else {
+      this.value = '';
+    }
+  });
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -47,33 +42,15 @@ entryAmountInput.addEventListener("input", function (e) {
   }
 
   function parseAmount(value) {
-    value = value?.toString().replace(/,/g, '').trim();
+    value = value?.toString().replace(/[₱,]/g, '').trim();
     return parseFloat(value) || 0;
   }
+  
 
   function updateBalances() {
-    // Parse total allocated amounts
-    const amountEng = parseAmount(document.getElementById("amountEng").value);
-    const amountMqc = parseAmount(document.getElementById("amountMqc").value);
-  
-    // Sum up entry amounts for engineering and mqc separately
-    const totalEng = entries
-      .filter(entry => entry.type === "engineering")
-      .reduce((sum, entry) => sum + parseAmount(entry.amount), 0);
-  
-    const totalMqc = entries
-      .filter(entry => entry.type === "mqc")
-      .reduce((sum, entry) => sum + parseAmount(entry.amount), 0);
-  
-    // Calculate balances
-    const engBalance = amountEng - totalEng;
-    const mqcBalance = amountMqc - totalMqc;
-  
-    // Display balances in the DOM
-    document.getElementById("engineeringBalance").textContent = engBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    document.getElementById("mqcBalance").textContent = mqcBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    updateEngineeringBalance();
+    updateMqcBalance();
   }
-  
 
   function renderTable() {
     const tbody = document.getElementById("entryTableBody");
@@ -85,8 +62,8 @@ entryAmountInput.addEventListener("input", function (e) {
         <td>${entry.name}</td>
         <td>${entry.month}</td>
         <td>${entry.period}</td>
-        <td>₱${parseFloat(entry.amount).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
-        <td><button class="removeEntryBtn" data-index="${index}">Remove</button></td>
+        <td>₱${parseFloat(entry.amount).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
+        <td><button class="removeEntryBtn btn btn-sm btn-danger" data-index="${index}">Remove</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -96,14 +73,11 @@ entryAmountInput.addEventListener("input", function (e) {
         const idx = parseInt(this.getAttribute("data-index"));
         entries.splice(idx, 1);
         renderTable();
-        updateBalances(); // ← Add this line after rendering the table
-        updateEngineeringBalance();
-        updateMqcBalance();
+        updateBalances();
       });
     });
 
-    updateEngineeringBalance();
-    updateMqcBalance();
+    updateBalances();
   }
 
   function isDuplicate(newEntry) {
@@ -116,6 +90,7 @@ entryAmountInput.addEventListener("input", function (e) {
   }
 
   document.getElementById("addEntryBtn").addEventListener("click", function () {
+    updateAmountFields();
     const type = document.getElementById("entryType").value;
     const name = document.getElementById("entryName").value.trim();
     const month = document.getElementById("entryMonth").value;
@@ -123,44 +98,24 @@ entryAmountInput.addEventListener("input", function (e) {
     const amountRaw = document.getElementById("entryAmount").value;
     const amount = parseFloat(cleanMoney(amountRaw));
 
-    
-  
     if (!type || !name || !month || !period || isNaN(amount) || amount <= 0) {
       return Swal.fire({ icon: "warning", title: "Please fill in all fields with valid data." });
     }
-  
+
     const newEntry = { type, name, month, period, amount };
-  
+
     if (isDuplicate(newEntry)) {
       return Swal.fire({ icon: "error", title: "Duplicate entry detected." });
     }
-  
-    // Calculate current balance for the selected type before adding
-    let currentBalance = 0;
-    if (type === "engineering") {
-      currentBalance = parseFloat(document.getElementById("engineeringBalance").getAttribute("data-balance")) || 0;
-    } else if (type === "mqc") {
-      currentBalance = parseFloat(document.getElementById("mqcBalance").getAttribute("data-balance")) || 0;
-    }
-  
-    if (amount > currentBalance) {
-      return Swal.fire({
-        icon: "error",
-        title: "Amount Exceeds Remaining Balance",
-        text: `The amount you entered (₱${amount.toLocaleString()}) exceeds the remaining balance (₱${currentBalance.toLocaleString()}) for ${type}.`,
-      });
-    }
-  
-    // If all good, add the entry
+
     entries.push(newEntry);
     renderTable();
-  
-    // Clear inputs
+
     document.getElementById("entryName").value = '';
     document.getElementById("entryPeriod").value = '';
     document.getElementById("entryAmount").value = '';
   });
-  
+
   document.getElementById("submitEntriesBtn").addEventListener("click", function () {
     if (entries.length === 0) {
       return Swal.fire({ icon: "warning", title: "No entries to submit." });
@@ -174,41 +129,30 @@ entryAmountInput.addEventListener("input", function (e) {
       success: function (response) {
         if (response.success) {
           Swal.fire({ icon: "success", title: "Entries submitted!" }).then(() => {
-            entries.length = 0;
-            renderTable(); // refresh entry table
-            updateBalances(); // refresh balances
-          
-            // Reload DataTables
-            ['#engineeringSubTable', '#mqcSubTable'].forEach(selector => {
-              try {
-                const table = $(selector).DataTable();
-                
-                // Check if the table is initialized and supports AJAX reload
-                if (table && typeof table.ajax === 'object' && typeof table.ajax.reload === 'function') {
-                  table.ajax.reload(null, false); // Reload via AJAX
-                } else if (table) {
-                  table.clear().draw(false); // Redraw static table
-                }
-              } catch (err) {
-                console.error(`Error reloading table ${selector}:`, err);
-              }
+            entries.forEach(entry => {
+              const tableId = entry.type === "engineering" ? "engineeringSubTable" : "mqcSubTable";
+              const tbody = document.querySelector(`#${tableId} tbody`);
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${entry.name} (${entry.month} - ${entry.period})</td>
+                <td data-amount="${entry.amount}">${parseFloat(entry.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+              `;
+              tbody.appendChild(tr);
             });
-            
-            
-            
 
-          
+            entries.length = 0;
+            renderTable();
+            updateBalances();
             $('#entryModal').modal('hide');
             updateAmountFields();
-          });    
-        }      
-
-      }    
-
-    });  
-  });          
-
-
+          });
+        }
+      },
+      error: function (xhr) {
+        Swal.fire({ icon: "error", title: "Submission failed", text: xhr.responseText || "An error occurred." });
+      }
+    });
+  });
 
   function updateAmountFields() {
     const engineeringValue = document.getElementById('actual_engineering')?.value || '';
@@ -224,66 +168,69 @@ entryAmountInput.addEventListener("input", function (e) {
     const amountContingencyInput = document.querySelector('input[name="amountContingency"]');
     if (amountContingencyInput) amountContingencyInput.value = contingencyValue;
 
-    updateEngineeringBalance();
-    updateMqcBalance();
+    updateBalances();
   }
-  
-  function updateEngineeringBalance() {
-    function parseAmount(value) {
-      value = value?.toString().replace(/[₱,]/g, '').trim();
-      return parseFloat(value) || 0;
-    }
-    const allotted = parseAmount(document.querySelector('input[name="amountEng"]')?.value);
 
-    // Sum up all visible engineering amounts rendered in the DOM table
+  function updateEngineeringBalance() {
+    const actual = parseAmount(document.getElementById('actual_engineering')?.value);
+  
+    // ✅ Only use the DOM values (already submitted ones)
     let used = 0;
     document.querySelectorAll('#engineeringSubTable tbody tr td[data-amount]').forEach(td => {
       used += parseFloat(td.dataset.amount) || 0;
     });
-
   
-    const balance = allotted - used;
   
-    console.log(`actual_engineering value: ${allotted}`);
-    console.log(`Engineering used from DOM table: ${used}`);
-    console.log(`Engineering Balance Calculation -> Allotted: ${allotted}, Used: ${used}, Balance: ${balance}`);
+    const balance = actual - used;
   
     const balanceEl = document.getElementById('engineeringBalance');
     if (balanceEl) {
       balanceEl.textContent = `₱${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-      balanceEl.setAttribute('data-balance', balance); // Store numeric value
+      balanceEl.setAttribute('data-balance', balance);
     }
-    
+  
+    const balanceForm = document.getElementById('formEngineeringBalance');
+    if (balanceForm) {
+      balanceForm.setAttribute('data-balance', balance);
+      balanceForm.innerText = `₱${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+    }
   }
   
-  function updateMqcBalance() {
-    function parseAmount(value) {
-      value = value?.toString().replace(/[₱,]/g, '').trim();
-      return parseFloat(value) || 0;
-    }
-    const allotted = parseAmount(document.querySelector('input[name="amountMqc"]')?.value);
 
-    // Sum up all visible engineering amounts rendered in the DOM table
+  function updateMqcBalance() {
+    const actualRaw = document.getElementById('actual_mqc')?.value || '0';
+    const actual = parseAmount(actualRaw); // properly removes commas and parses
+    
+    // Sum of amounts already shown in the DOM
     let used = 0;
     document.querySelectorAll('#mqcSubTable tbody tr td[data-amount]').forEach(td => {
       used += parseFloat(td.dataset.amount) || 0;
     });
-
   
-    const balance = allotted - used;
+    // Add pending entries that are not yet submitted
+    const usedPending = entries.filter(e => e.type === 'mqc')
+      .reduce((sum, e) => sum + parseAmount(e.amount), 0);
   
-    console.log(`actual_mqc value: ${allotted}`);
-    console.log(`Mqc used from DOM table: ${used}`);
-    console.log(`Mqc Balance Calculation -> Allotted: ${allotted}, Used: ${used}, Balance: ${balance}`);
+    const totalUsed = used + usedPending;
+    const balance = actual - totalUsed;
+  
+    // Optional debug log
+    console.log("MQC Balance Debug:", { actual, used, usedPending, totalUsed, balance });
   
     const balanceEl = document.getElementById('mqcBalance');
     if (balanceEl) {
       balanceEl.textContent = `₱${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
       balanceEl.setAttribute('data-balance', balance);
     }
+  
+    const balanceForm = document.getElementById('formMqcBalance');
+    if (balanceForm) {
+      balanceForm.setAttribute('data-balance', balance);
+      balanceForm.innerText = `₱${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+    }
   }
-
-
+  
+  
   ['actual_engineering', 'actual_mqc'].forEach(id => {
     const input = document.getElementById(id);
     if (input) {
@@ -294,43 +241,4 @@ entryAmountInput.addEventListener("input", function (e) {
   });
 
   updateAmountFields();
-
-  function initializeSubTables() {
-    if ($('#engineeringSubTable').length && !$.fn.DataTable.isDataTable('#engineeringSubTable')) {
-      $('#engineeringSubTable').DataTable({
-        paging: true,
-        searching: true,
-        ordering: true,
-        order: [[0, 'asc']]
-      });
-    }
-  
-    if ($('#mqcSubTable').length && !$.fn.DataTable.isDataTable('#mqcSubTable')) {
-      $('#mqcSubTable').DataTable({
-        paging: true,
-        searching: true,
-        ordering: true,
-        order: [[0, 'asc']]
-      });
-    }
-  }
-  
-  initializeSubTables();
-  
-  // Redraw + adjust tables on collapse show (no AJAX reload)
-  $('#engDetails').on('shown.bs.collapse', function () {
-    if ($.fn.DataTable.isDataTable('#engineeringSubTable')) {
-      $('#engineeringSubTable').DataTable().columns.adjust().draw(false);
-      updateEngineeringBalance();
-    }
-  });
-  
-  $('#mqcDetails').on('shown.bs.collapse', function () {
-    if ($.fn.DataTable.isDataTable('#mqcSubTable')) {
-      $('#mqcSubTable').DataTable().columns.adjust().draw(false);
-      updateMqcBalance();
-    }
-  });
-
-  
-  });
+});

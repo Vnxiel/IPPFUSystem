@@ -6,7 +6,7 @@
 <section class="container-fluid py-4">
   <!-- Header -->
   <div class="row">
-    <div class="col-12 d-flex align-items-center gap-2 mb-4" style="margin-top: 75px;">
+    <div class="col-12 d-flex align-items-center gap-2 mb-2" style="margin-top: 75px;">
       <a href="{{ url('/admin/overview/' . $project['id']) }}" 
          class="btn btn-outline-secondary btn-sm">
         <i class="fa fa-arrow-left"></i>
@@ -18,24 +18,23 @@
   <!-- Main Content -->
   <div class="card shadow">
     <form id="addFundUtilization" method="POST">
-      @csrf
-      
+      @csrf      
       <!-- Project Title Card -->
       <div class="card-header bg-light py-3">
         <h5 class="card-title mb-0 text-primary">{{ $project['projectTitle'] ?? 'Project Title' }}</h5>
       </div>
 
       <div class="card-body">
-        <fieldset class="mb-4">
-          <legend class="h5 text-primary mb-3">
+        <fieldset class="border rounded shadow-sm p-2 w-100 h-100 mb-2">
+          <legend class="float-none w-auto px-2 legend-text">
             <i class="fas fa-money-bill-wave me-2"></i>
             Fund Source and Utilization
           </legend>
 
           <!-- Fund Source Section -->
-          <div class="section mb-4">
-            <h5 class="section-title d-flex align-items-center gap-2 mb-3">
-              <i class="fas fa-money-bill-wave text-primary"></i>
+          <div class="section mb-2">
+            <h5 class="section-title d-flex align-items-center gap-2 mb-2">
+              <i class="fas fa-money-bill-wave"></i>
               Fund Source
             </h5>
             
@@ -63,7 +62,7 @@
                   'Appropriation' => 'appropriation',
                   'ABC' => 'abc',
                   'Contract Amount' => 'contract_amount',
-                  'Bid Difference' => 'bid',
+                  'Savings' => 'bid',
                   'Engineering' => 'engineering',
                   'MQC' => 'mqc',
                   'Contingency' => 'contingency',
@@ -130,11 +129,11 @@
               </button>
             </div>
         </div>
-
+        <hr>
         <!-- Fund Utilization Summary Section -->
-        <div class="section mb-4">
+        <div class="section mb-1">
           <h5 class="section-title d-flex align-items-center gap-2 mb-3">
-            <i class="fas fa-chart-pie text-primary"></i>
+            <i class="fas fa-chart-pie"></i>
             Fund Utilization Summary
           </h5>
 
@@ -169,14 +168,7 @@
 
           <!-- Contract Summary Card -->
           <div class="card border shadow-sm mb-4">
-            <div class="card-header bg-light py-2">
-              <h6 class="card-title mb-0">
-                <i class="fas fa-file-contract text-primary me-2"></i>
-                Contract Summary
-              </h6>
-            </div>
             <div class="card-body">
-              <h6 class="fw-bold mb-3">Contract Summary</h6>
               <table class="table table-sm table-bordered text-center align-middle">
                 <thead>
                   <tr>
@@ -255,33 +247,9 @@
                       <td id="contractBalance" class="fw-bold text-end">0.00</td>
                       <td></td>
                     </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- Engineering Section Card -->
-          <div class="card border shadow-sm mb-4">
-            <div class="card-header bg-light py-2">
-              <h6 class="card-title mb-0">
-                <i class="fas fa-hard-hat text-primary me-2"></i>
-                Engineering Details
-              </h6>
-            </div>
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">Engineering</h6>
-              <table class="table table-sm table-bordered text-center align-middle">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Category</th>
-                    <th style="width: 20%;">Date</th>
-                    <th style="width: 20%;">Amount</th>
-                    <th style="width: 30%;">Remarks</th>
-                    <th style="width: 10%;">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
+                    <!-- ENGINEERING Table -->
+                    <tr>
                     <td>Engineering</td>
                     <td><input type="date" class="form-control form-control-sm" name="dateEng"
                         value="{{ $summary['engineering']['date'] ?? '' }}"></td>
@@ -327,35 +295,11 @@
                   <tr>
                     <td class="fw-bold">Engineering Balance</td>
                     <td></td>
-                    <td class="fw-bold text-end" id="engineeringBalance">0.00</td>
-                    <td colspan="2"></td>
+                    <td class="fw-bold text-end" id="formEngineeringBalance" data-balance="0.00">₱0.00</td>
+                   <td colspan="2"></td>
                   </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- MQC Section Card -->
-          <div class="card border shadow-sm mb-4">
-            <div class="card-header bg-light py-2">
-              <h6 class="card-title mb-0">
-                <i class="fas fa-clipboard-check text-primary me-2"></i>
-                MQC Details
-              </h6>
-            </div>
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">MQC</h6>
-              <table class="table table-sm table-bordered text-center align-middle">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Category</th>
-                    <th style="width: 20%;">Date</th>
-                    <th style="width: 20%;">Amount</th>
-                    <th style="width: 30%;">Remarks</th>
-                    <th style="width: 10%;">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
+                  <!-- MQC TABLE -->
                   <tr>
                     <td>MQC</td>
                     <td><input type="date" class="form-control form-control-sm" name="dateMqc"
@@ -399,18 +343,19 @@
                   <tr>
                     <td class="fw-bold">MQC Balance</td>
                     <td></td>
-                    <td class="fw-bold text-end" id="mqcBalance">0.00</td>
+                    <td class="fw-bold text-end" id="formMqcBalance">0.00</td>
                     <td colspan="2"></td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+          <!-- Add this somewhere in your Blade HTML template -->
+<div id="projectMeta" data-project-id="{{ $project['id'] ?? 0 }}"></div>
+
 
           <!-- Totals Section Card -->
           <div class="card border-0 mb-4 shadow-sm">
-            <div class="card-body p-3">
-              <h6 class="fw-bold mb-3">Summary</h6>
               <table class="table table-sm table-bordered text-center align-middle">
                 <thead>
                   <tr>
@@ -430,24 +375,25 @@
                 </tbody>
               </table>
             </div>
-
-            <div class="text-end mt-3">
-
             </div>
-        </fieldset>
+            </div>
 
-        <!-- Save Button -->
-        <div class="text-end mt-4">
-          <button type="button" id="submitFundsUtilization" 
-                  class="btn btn-primary px-4">
-            <i class="fas fa-save me-2"></i>
-            Save Changes
-          </button>
-        </div>
-    </form>
-  </div>
-</section>
-
+            <div class="row text-end mt-2">
+              <div class="text-end mt-4">
+                <button type="button" id="submitFundsUtilization" 
+                        class="btn btn-primary px-4">
+                  <i class="fas fa-save me-2"></i>
+                  Save Changes
+                </button>
+              </div>
+            </div>
+            </div>
+            </fieldset>
+            </div>
+            </form>
+            </div>
+      </section>
+          
 
 
 <style>
@@ -488,7 +434,10 @@
 
 @endsection
 
-@include('admin.modals.Funds_Utilization.add-eng_mqc')
+
+
+@include('systemAdmin.modals.Funds_Utilization.add-eng_mqc')
+
 @section('page-scripts')
 <script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
 

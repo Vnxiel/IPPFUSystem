@@ -1,5 +1,15 @@
-let orderCount = 1;
+let orderCount = document.querySelectorAll('#orderContainer .order-set').length || 1;
+
 function addOrderFields() {
+    if (orderCount >= 5) {
+        Swal.fire({
+            icon: "info",
+            title: "Limit Reached",
+            text: "You can only add up to 5 suspension/resumption orders.",
+        });
+        return;
+    }
+
     orderCount++;
     const container = document.getElementById('orderContainer');
 
@@ -25,22 +35,18 @@ function addOrderFields() {
             <div class="col-md-3 mb-2">
                 <input type="date" class="form-control" id="${resumeKey}" name="${resumeKey}">
             </div>
-           
         </div>
         <div class="row mt-1 mb-2">
             <div class="col-md-3 mb-3 text-end">
-                <label for="${suspensionKey}Remarks" class="form-label">Suspension
-                    Remarks</label>
+                <label for="${suspensionKey}Remarks" class="form-label">Suspension Remarks</label>
             </div>
             <div class="col-9">
-                <textarea class="form-control" id="${suspensionKey}Remarks"
-                name="${suspensionKey}Remarks" rows="2"></textarea>
+                <textarea class="form-control" id="${suspensionKey}Remarks" name="${suspensionKey}Remarks" rows="2"></textarea>
             </div>
         </div>
     `;
-    container.appendChild(newSet);
+    container.appendChild(newSet); 
 }
-
 
 function removeLastOrderFields() {
     if (orderCount > 1) {

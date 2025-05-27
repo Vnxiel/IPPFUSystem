@@ -143,10 +143,10 @@
                                     class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                     style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                     @foreach($sourceOfFunds as $fund)
-                                        <button type="button" class="list-group-item list-group-item-action"
-                                                onclick="selectFund('{{ $fund->sourceOfFunds }}')">
-                                            {{ $fund->sourceOfFunds }}
-                                        </button>
+                                    <button type="button" class="list-group-item list-group-item-action"
+                                            onclick="selectFund('{{ trim($fund->sourceOfFunds) }}')">
+                                        {{ trim($fund->sourceOfFunds) }}
+                                    </button>
                                     @endforeach
                                 </div>
                             </div>
@@ -217,21 +217,18 @@
                         </div>
                       
                         <div class="row">
-                            <!-- Engineer Assigned (E.A) with Datalist -->
-                                    <div class="col-3 text-end">
-                                        <label for="ea" class="form-label">Project Engineer <span
-                                                    class="text-danger">*</span></label>
+                            <!-- Engineer Assigned (E.A) with Dynamic Dropdown -->
+                                    <div class="col-md-3">
+                                        <label for="ea" class="form-label">Project Engineer <span class="text-danger">*</span></label>
                                     </div>
-                                    <div class="col-4">
-                                        <input type="text" class="form-control" id="ea" name="ea" list="eaList"
-                                            placeholder="Enter Engineer Assigned">
-                                        <datalist id="eaList">
-                                            @foreach($projectEA as $ea)
-                                                <option value="{{ $ea->ea }}"></option>
-                                            @endforeach
-                                        </datalist>
-                                    </div>
-
+                                    <div class="col-md-4 position-relative">
+                                        <input type="text" class="form-control" id="ea" name="ea"
+                                         placeholder="Select or enter engineer name" autocomplete="off">
+                                        <div id="projectEngineerDropdown"
+                                            class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                            style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                        </div>
+                                     </div>
                                     <div class="col-1 text-end">
                                         <label for="ea_position" class="form-label">Position<span
                                                 class="text-danger">*</span></label>
@@ -254,7 +251,7 @@
                                     <input type="text" class="form-control currency-input" id="ea_monthlyRate" name="ea_monthlyRate">
                                 </div>
                             </div> -->
-                        </div>
+                        </div> 
                     </fieldset>
 
                     <!-- Contract Details Section -->
@@ -273,7 +270,6 @@
                                     <div class="col">                                        
                                             <input type="text" class="form-control currency-input" name="appropriation"
                                                 id="appropriation" required>
-                                   
                                     </div>
                                 </div>
                             </div>
@@ -285,7 +281,6 @@
                             </div>
                             <div class="col-3">
                                     <input type="text" class="form-control currency-input" id="abc" name="abc">
-                       
                             </div>
                            
                             <div class="col-3 text-end">
@@ -294,7 +289,6 @@
                             <div class="col-3">
                                     <input type="text" class="form-control currency-input" id="engineering"
                                         name="engineering">
-                              
                             </div>
                         </div>
 
@@ -306,32 +300,29 @@
                             <div class="col-3">
                                     <input type="text" class="form-control currency-input" id="contractAmount"
                                         name="contractAmount">
-                             
                             </div>
                             <div class="col-3 text-end">
                                 <label for="mqc" class="form-label">MQC</label>
                             </div>
                             <div class="col-3">
                                     <input type="text" class="form-control currency-input" id="mqc" name="mqc">
-                           
                             </div>
                         </div>
-
+                        <!-- Savings = Bid Difference -->
                         <div class="row mb-2">
                             <div class="col-3 text-end">
-                                <label for="bid" class="form-label">Bid Difference</label>
+                                <label for="bid" class="form-label">Savings</label>
                             </div>
                             <div class="col-3">
                                     <input type="text" class="form-control currency-input" id="bid" name="bid">
-                         
                             </div>
+
                             <div class="col-3 text-end">
                                 <label for="bid" class="form-label">Contingency</label>
                             </div>
                             <div class="col-3">
                                     <input type="text" name="contingency" class="form-control currency-input"
                                         id="contingency">
-                      
                             </div>
                         </div>
 
@@ -460,6 +451,16 @@
                                         name="targetCompletion">
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-3 mb-2 text-end">
+                                    <label for="" class="form-label">Actual Date of Completion
+                                        <span class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-9">
+                                    <input type="date" style="background-color: lightgray;" class="form-control"
+                                        id="completionDate" name="completionDate">
+                                </div>
+                            </div>
                             
                            
 
@@ -517,7 +518,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="timeExtension" class="form-label">Extension Date</label>
+                                    <label for="timeExtension" class="form-label">Number of Days Extensions</label>
                                 </div>                        
                                 <div class="col-9">
                                     <input type="number" class="form-control" id="timeExtension"
@@ -526,14 +527,14 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="revisedTargetDate" class="form-label">Revised Target Date</label>
+                                    <label for="revisedTargetDate" class="form-label">New Target Completion Date</label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="revisedTargetDate"
                                         name="revisedTargetDate">
                                 </div>
                                 <div class="col-3 text-end">
-                                    <label for="revisedCompletionDate" class="form-label">Revised Completion Date</label>
+                                    <label for="revisedCompletionDate" class="form-label">New Actual Completion Date</label>
                                 </div>                        
                                 <div class="col-3">
                                     <input type="date" class="form-control" id="revisedCompletionDate"
@@ -543,16 +544,7 @@
                             
                            
 
-                            <div class="row">
-                                <div class="col-3 mb-2 text-end">
-                                    <label for="" class="form-label">Actual Date of Completion
-                                        <span class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-9">
-                                    <input type="date" style="background-color: lightgray;" class="form-control"
-                                        id="completionDate" name="completionDate">
-                                </div>
-                            </div>
+     
                         </div>
                         </div>
                     </fieldset>
@@ -573,15 +565,22 @@
 
 <script id="contractor-data" type="application/json">
     {!! json_encode($contractors->pluck('name')) !!}
+  
 </script>
+<script id="engineer-data" type="application/json">
+  {!! json_encode($projectEA->pluck('ea')->map(fn($ea) => trim($ea))->values()) !!}
+</script>
+
 @section('page-scripts')
         <script src="{{ asset('js/Projects/projects-addSubmit.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-addOrder.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-currencyFormatting.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-dateValidation.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-location_contractorDropdown.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-restrictionsValue.js') }}"></script>
+       <script src="{{ asset('js/Projects/projects-restrictionsValue.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-suggestionBox.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-valueCalculations.js') }}"></script>
-
+        <script src="{{ asset('js/Filters/contractor-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/location-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/engineer-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/sourceOfFund-search.js') }}"></script>
 @endsection

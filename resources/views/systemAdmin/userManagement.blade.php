@@ -22,21 +22,21 @@
 
 
     <div class="row row-cols-1 row-cols-md-12 g-3">
-    <!-- Password Request Sidebar -->
+    <!-- Password Request Sidebar
     <div class="col-md-2 d-flex">
-    <div class="card w-100 d-flex flex-column">
-        <div class="card-header text-center fw-bold" style="font-size: 0.85rem;">
-            Password Requests
+        <div class="card w-100 d-flex flex-column">
+            <div class="card-header text-center fw-bold" style="font-size: 0.85rem;">
+                Password Requests
+            </div>
+            <div class="card-body p-2 flex-grow-1" style="overflow-y: auto;" id="passwordRequestsContainer">
+                <div class="text-muted text-center">Loading requests...</div>
+            </div>
         </div>
-        <div class="card-body p-2 flex-grow-1" style="overflow-y: auto;" id="passwordRequestsContainer">
-            <div class="text-muted text-center">Loading requests...</div>
-        </div>
-    </div>
-</div>
+    </div> -->
 
 
     <!-- Users Table Card -->
-    <div class="col-md-10 d-flex">
+    <div class="col-md-12 d-flex">
         <div class="card border-0 shadow-sm w-100 d-flex flex-column">
             <div class="card-body p-4 flex-grow-1">
                 <div class="table-responsive">

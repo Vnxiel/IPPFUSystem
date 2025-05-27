@@ -1,3 +1,131 @@
+function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  const toggleBtn = toggleBtnId ? document.getElementById(toggleBtnId) : null;
+  let selectedIndex = -1;
+
+  if (!input || !dropdown) {
+    console.warn(`Missing input or dropdown element: ${inputId}, ${dropdownId}`);
+    return;
+  }
+  function attachClickHandlers() {
+    const buttons = dropdown.querySelectorAll('button');
+    buttons.forEach(button => {
+      button.onclick = () => {
+        const value = button.textContent.trim();
+        input.value = value;
+
+        if (value.toLowerCase() === 'all contractor') {
+          buttons.forEach(btn => btn.style.display = '');
+        }
+
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        dropdown.style.display = 'none';
+        selectedIndex = -1;
+      };
+    });
+  }
+
+  function showDropdown() {
+    const buttons = dropdown.querySelectorAll('button');
+    buttons.forEach(button => button.style.display = '');
+    dropdown.style.display = 'block';
+    attachClickHandlers();
+    selectedIndex = -1;
+  }
+
+  function hideDropdown() {
+    setTimeout(() => {
+      dropdown.style.display = 'none';
+      selectedIndex = -1;
+    }, 200);
+  }
+
+  function filterDropdown() {
+    const filter = input.value.toLowerCase();
+    const buttons = dropdown.querySelectorAll('button');
+    buttons.forEach(button => {
+      const text = button.textContent.toLowerCase();
+      button.style.display = text.includes(filter) ? '' : 'none';
+    });
+    selectedIndex = -1;
+    updateActiveButton();
+  }
+
+  function updateActiveButton() {
+    const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(btn => btn.style.display !== 'none');
+    dropdown.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+    if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
+      visibleButtons[selectedIndex].classList.add('active');
+      visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+
+  input.addEventListener('focus', () => {
+    showDropdown();
+    filterDropdown();
+  });
+
+  input.addEventListener('input', () => {
+    dropdown.style.display = 'block';
+    filterDropdown();
+  });
+
+  input.addEventListener('blur', hideDropdown);
+
+  input.addEventListener('keydown', (e) => {
+    const isArrowKey = e.key === 'ArrowDown' || e.key === 'ArrowUp';
+
+    if (isArrowKey && dropdown.style.display !== 'block') {
+      showDropdown();
+    }
+
+    const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(btn => btn.style.display !== 'none');
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
+      updateActiveButton();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (selectedIndex > 0) selectedIndex--;
+      updateActiveButton();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
+        visibleButtons[selectedIndex].click();
+      }
+    } else if (e.key === 'Escape') {
+      dropdown.style.display = 'none';
+      selectedIndex = -1;
+    }
+  });
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+        selectedIndex = -1;
+      } else {
+        input.focus();
+      }
+    });
+  }
+
+  document.addEventListener('click', (event) => {
+    if (!input.contains(event.target) && !dropdown.contains(event.target)) {
+      dropdown.style.display = 'none';
+      selectedIndex = -1;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupDropdownHandlers('location_filter', 'location_filter_dropdown', 'locToggleBtn');
+});
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('projectLoc');
   const dropdown = document.getElementById('projectLocDropdown');
@@ -12,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   input.addEventListener('input', filterLocations);
   input.addEventListener('focus', showLocDropdown);
+
   input.addEventListener('blur', () => {
     setTimeout(() => {
       dropdown.style.display = 'none';
@@ -27,6 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   input.addEventListener('keydown', e => {
     const visibleButtons = Array.from(buttons).filter(b => b.style.display !== 'none');
+
+    // Show all options if user navigates with keyboard
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && dropdown.style.display !== 'block') {
+      showLocDropdown();
+    }
+
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
@@ -40,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (visibleButtons[selectedIndex]) {
         selectLoc(visibleButtons[selectedIndex].textContent);
       } else {
-        finalizeLocation(); // treat as custom input
+        finalizeLocation();
       }
     } else if (e.key === 'Escape') {
       dropdown.style.display = 'none';
@@ -71,13 +206,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const visibleButtons = Array.from(buttons).filter(btn => btn.style.display !== 'none');
 
-    // If only one visible suggestion, auto-select it
     if (visibleButtons.length === 1) {
       input.value = visibleButtons[0].textContent.trim() + ', Nueva Vizcaya';
       return;
     }
 
-    // Exact match
     const matchBtn = Array.from(buttons).find(
       btn => btn.textContent.toLowerCase().trim() === val.toLowerCase()
     );
@@ -106,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(buttons).forEach(b => b.classList.remove('active'));
     if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
       visibleButtons[selectedIndex].classList.add('active');
+      visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
   }
 

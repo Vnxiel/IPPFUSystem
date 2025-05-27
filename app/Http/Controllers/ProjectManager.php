@@ -25,212 +25,159 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class ProjectManager extends Controller
 {
     public function addProject(Request $request)
+    {
+        // Validate duplicates
+        if (Project::where('projectFPP', $request->input('projectFPP'))
+            ->where('projectRC', $request->input('projectRC'))
+            ->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'A project with the same FPP and RC already exists.'
+            ], 409);
+        }
+    
+        $dynamicFields = collect($request->all())->filter(function ($_, $key) {
+            return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d+$/', $key);
+        });
+    
+        // Extract remarks data
+        $remarksData = [];
+        foreach ($request->all() as $key => $value) {
+            if (preg_match('/^(suspensionOrderNo|resumeOrderNo)(\d+)$/', $key, $matches)) {
+                $index = $matches[2];
+                $remarksData[$index] = [
+                    'suspensionOrderRemarks' => trim($request->input("suspensionOrderNo{$index}Remarks")),
+                    'resumeOrderRemarks' => trim($request->input("resumeOrderNo{$index}Remarks")),
+                ];
+            }
+        }
+    
+        DB::beginTransaction();
+    
+        try {
+            // Add missing dynamic columns
+            if ($dynamicFields->isNotEmpty()) {
+                Schema::table('projects', function (Blueprint $table) use ($dynamicFields) {
+                    foreach ($dynamicFields as $field => $_) {
+                        if (!Schema::hasColumn('projects', $field)) {
+                            $table->string($field)->nullable();
+                        }
+                    }
+                });
+            }
+    
+            // Prepare standard project fields
+            $excludedFields = [
+                '_token', 'abc', 'contractAmount', 'engineering', 'mqc',
+                'contingency', 'bid', 'appropriation', 'projectDescription', 'ongoingDate',
+            ];
+            $projectData = $request->except($excludedFields);
+            $projectData['suspensionRemarks'] = json_encode($remarksData);
+            $projectData['projectStatus'] = $request->input('projectStatus');
+            $projectData['ongoingStatus'] = $request->input('ongoingStatus');
+            $projectData['othersContractor'] = $request->input('othersContractor');
+    
+            // Create project
+            $project = new Project($projectData);
+    
+            foreach ($dynamicFields as $field => $value) {
+                $project->{$field} = $value;
+            }
+    
+            $project->save();
+    
+            if (!$project->exists) {
+                throw new \Exception("Failed to save project data into the projects table.");
+            }
+    
+            // Add contractor if not existing
+            $contractorName = $request->input('projectContractor');
+            if ($contractorName && !Contractor::where('name', $contractorName)->exists()) {
+                Contractor::create(['name' => $contractorName]);
+            }
+    
+            // Insert description lines
+            $this->storeProjectDescriptions($project, $request->input('projectDescription'));
+    
+            // Fund utilization
+            FundsUtilization::create([
+                'project_id' => $project->id,
+                'orig_abc' => $this->cleanMoney($request->input('abc')),
+                'orig_contract_amount' => $this->cleanMoney($request->input('contractAmount')),
+                'orig_engineering' => $this->cleanMoney($request->input('engineering')),
+                'orig_mqc' => $this->cleanMoney($request->input('mqc')),
+                'orig_contingency' => $this->cleanMoney($request->input('contingency')),
+                'orig_bid' => $this->cleanMoney($request->input('bid')),
+                'orig_appropriation' => $this->cleanMoney($request->input('appropriation')),
+                'orig_completion_date' => $request->input('completionDate'),
+            ]);
+    
+            // Project status (if ongoing)
+            if (strtolower($request->input('projectStatus')) === 'ongoing') {
+                ProjectStatus::create([
+                    'project_id' => $project->id,
+                    'progress' => $request->input('projectStatus'),
+                    'percentage' => (explode(' - ', $request->input('ongoingStatus'))[0] ?? '0'),
+                    'date' => $request->input('ongoingDate') ?? now(),
+                ]);
+            }
+    
+            // Session & activity logging
+            $this->logUserAction($request, $project->projectTitle, 'Added a new project');
+    
+            DB::commit();
+            return response()->json(['status' => 'success', 'message' => 'Project added successfully!']);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error adding project: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Error adding project. ' . $e->getMessage()]);
+        }
+    }
+    protected function storeProjectDescriptions(Project $project, $description)
 {
-    $validator = \Validator::make($request->all(), [
-        'projectTitle' => 'required|string',
-        'projectLoc' => 'required|string',
-        'projectID' => 'required|string',
-        'projectYear' => 'integer',
-        'projectFPP' => 'required|string',
-        'projectRC' => 'required|string',
-        'projectContractor' => 'required|string',
-        'sourceOfFunds' => 'required|string',
-        'modeOfImplementation' => 'required|string',
-        'projectDescription' => 'string',
-        'projectStatus' => 'required|string',
-        'ongoingStatus' => 'nullable|string',
-        'projectContractDays' => 'required|integer',
-        'originalStartDate' => 'required|date',
-        'targetCompletion' => 'required|date',
-        'ea' => 'required|string',
-        'ea_position' => 'required|string',
+    if (empty($description)) return;
+
+    $lines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $description)));
+    foreach ($lines as $line) {
+        ProjectDescription::create([
+            'project_id' => $project->id,
+            'projectID' => $project->projectID,
+            'ProjectDescription' => $line,
+        ]);
+    }
+}
+
+protected function logUserAction(Request $request, $projectTitle, $actionPrefix)
+{
+    if (!session()->has('loggedIn')) {
+        throw new \Exception('Session not found');
+    }
+
+    $sessionData = session()->get('loggedIn');
+    $action = "{$actionPrefix}: {$projectTitle}";
+
+    $request->session()->put('AddedNewProject', [
+        'user_id' => $sessionData['user_id'],
+        'ofmis_id' => $sessionData['ofmis_id'],
+        'performedBy' => $sessionData['performedBy'],
+        'role' => $sessionData['role'],
+        'action' => $action,
     ]);
 
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Validation failed!',
-            'errors' => $validator->errors()
-        ], 422);
-    }
+    Log::info("User action logged: " . json_encode($request->session()->get('AddedNewProject')));
 
-    // Collect all dynamic field names (suspensionOrderNo1, suspensionOrderNo2, etc.)
-    $dynamicFields = collect($request->all())->filter(function ($_, $key) {
-        return preg_match('/^(suspensionOrderNo|resumeOrderNo)\d*$/', $key);
-    });
-
-    $existing = Project::where('projectFPP', $request->input('projectFPP'))
-    ->where('projectRC', $request->input('projectRC'))
-    ->exists();
-
-if ($existing) {
-    return response()->json([
-        'status' => 'error',
-        'message' => 'A project with the same FPP and RC already exists.'
-    ], 409);
+    (new ActivityLogs)->userAction(
+        $sessionData['user_id'],
+        $sessionData['ofmis_id'],
+        $sessionData['performedBy'],
+        $sessionData['role'],
+        $action
+    );
 }
 
 
-    // Begin DB transaction
-    DB::beginTransaction();
-
-    try {
-        // ✅ Create dynamic columns before starting the transaction
-        if ($dynamicFields->isNotEmpty()) {
-            Schema::table('projects', function (Blueprint $table) use ($dynamicFields) {
-                foreach ($dynamicFields as $field => $_) {
-                    // Add only if column doesn't exist
-                    if (!Schema::hasColumn('projects', $field)) {
-                        $table->string($field)->nullable();
-                    }
-                }
-            });
-        }
-
-            // Collect suspension and resumption remarks data
-            $suspensionData = [];
-            foreach ($request->all() as $key => $value) {
-                if (preg_match('/^suspensionOrderNo(\d+)$/', $key, $matches)) {
-                    $index = $matches[1];
-                    $suspensionOrderNo = (int)$value;
-
-                    $resumeOrderKey = "resumeOrderNo{$index}";
-                    $resumeOrderNo = (int)($request->input($resumeOrderKey) ?? null);
-
-                    $suspensionRemarks = $request->input("suspensionOrderNo{$index}Remarks");
-                    $resumeRemarks = $request->input("resumeOrderNo{$index}Remarks");
-
-                    if ($suspensionOrderNo || $resumeOrderNo || $suspensionRemarks || $resumeRemarks) {
-                        $suspensionData[$index] = [
-                            'suspensionOrderNo' => $suspensionOrderNo,
-                            'resumeOrderNo' => $resumeOrderNo,
-                            'suspensionOrderRemarks' => $suspensionRemarks,
-                            'resumeOrderRemarks' => $resumeRemarks,
-                        ];
-                    }
-                }
-            }
-
-
-
-        // Prepare project data
-        $standardFields = $request->except([
-            '_token',
-            'abc',
-            'contractAmount',
-            'engineering',
-            'mqc',
-            'contingency',
-            'bid',
-            'appropriation',
-            'projectDescription',
-            'ongoingDate',
-        ]);
-
-        // Add suspension remarks as a JSON field
-        $standardFields['remarksData'] = json_encode($suspensionData);
-        $standardFields['projectStatus'] = $request->input('projectStatus');
-        $standardFields['ongoingStatus'] = $request->input('ongoingStatus');
-        $standardFields['othersContractor'] = $request->input('othersContractor');
-
-        // Create project record
-        $project = new Project($standardFields);
-
-        // Assign dynamic field values to the project
-        foreach ($dynamicFields as $field => $value) {
-            $project->{$field} = $value;
-        }
-
-        $project->save();
-
-        if (!$project->exists) {
-            throw new \Exception("Failed to save project data into the projects table.");
-        }
-
-        //  Insert contractor if new
-        $contractorName = $request->input('projectContractor');
-        if ($contractorName && !Contractor::where('name', $contractorName)->exists()) {
-            Contractor::create(['name' => $contractorName]);
-        }
-
-        // Insert project description line-by-line if provided
-        $projectDescription = $request->input('projectDescription');
-        if (!empty($projectDescription)) {
-            $lines = preg_split('/\r\n|\r|\n/', $projectDescription);
-            foreach ($lines as $line) {
-                $trimmedLine = trim($line);
-                if ($trimmedLine !== '') {
-                    ProjectDescription::create([
-                        'project_id' => $project->id,
-                        'projectID' => $project->projectID,
-                        'ProjectDescription' => $trimmedLine,
-                    ]);
-                }
-            }
-        }
-
-        // Insert fund utilization record
-        FundsUtilization::create([
-            'project_id' => $project->id,
-            'orig_abc' => $this->cleanMoney($request->input('abc')),
-            'orig_contract_amount' => $this->cleanMoney($request->input('contractAmount')),
-            'orig_engineering' => $this->cleanMoney($request->input('engineering')),
-            'orig_mqc' => $this->cleanMoney($request->input('mqc')),
-            'orig_contingency' => $this->cleanMoney($request->input('contingency')),
-            'orig_bid' => $this->cleanMoney($request->input('bid')),
-            'orig_appropriation' => $this->cleanMoney($request->input('appropriation')),
-            'orig_completion_date' => $request->input('completionDate'),
-        ]);
-
-        // Insert project status if ongoing
-        if (strtolower($request->input('projectStatus')) === 'ongoing') {
-            ProjectStatus::create([
-                'project_id' => $project->id,
-                'progress' => $request->input('projectStatus'),
-                'percentage' => (explode(' - ', $request->input('ongoingStatus'))[0] ?? '0'),
-                'date' => $request->input('ongoingDate') ?? now(),
-            ]);
-        }
-
-        // User session logging
-        if (session()->has('loggedIn')) {
-            $sessionData = session()->get('loggedIn');
-            $action = "Added a new project: " . $request->input('projectTitle');
-
-            // Log the activity
-            $request->session()->put('AddedNewProject', [
-                'user_id' => $sessionData['user_id'],
-                'ofmis_id' => $sessionData['ofmis_id'],
-                'performedBy' => $sessionData['performedBy'],
-                'role' => $sessionData['role'],
-                'action' => $action,
-            ]);
-
-            Log::info("User action logged: " . json_encode($request->session()->get('AddedNewProject')));
-
-            // Activity log entry
-            (new ActivityLogs)->userAction(
-                $sessionData['user_id'],
-                $sessionData['ofmis_id'],
-                $sessionData['performedBy'],
-                $sessionData['role'],
-                $action
-            );
-        } else {
-            DB::rollBack();
-            Log::error("Session not found");
-            return response()->json(['status' => 'error', 'message' => 'Session not found'], 401);
-        }
-
-        // Commit the transaction
-        DB::commit();
-        return response()->json(['status' => 'success', 'message' => 'Project added successfull!']);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Error adding project: ' . $e->getMessage());
-        return response()->json(['status' => 'error', 'message' => 'Error adding project. ' . $e->getMessage()]);
-    }
-}
+    
     
     /**
      * Helper function to clean currency strings (₱, commas, etc.)
@@ -713,6 +660,11 @@ if ($existing) {
                 ]);
     
                 $project->fill($request->only(array_keys($oldValues)));
+                $project->revisedTargetDate = $request->input('revisedTargetDate');
+                $project->revisedCompletionDate = $request->input('revisedCompletionDate');
+                Log::debug('revisedTargetDate:', [$request->input('revisedTargetDate')]);
+                Log::debug('revisedCompletionDate:', [$request->input('revisedCompletionDate')]);
+                
     
                 foreach ($dynamicFields as $field => $value) {
                     if (\Schema::hasColumn('projects', $field)) {

@@ -386,15 +386,15 @@ public function getUserRole(Request $request)
     }
 
 
-   
     public function sendOtp(Request $request)
     {
         $username = $request->input('username');
+        Log::info("OTP request received for username: {$username}");
     
-        // Find user by username
         $user = User::where('username', $username)->first();
     
         if (!$user) {
+            Log::warning("OTP request failed: user '{$username}' not found.");
             return response()->json([
                 'success' => false,
                 'message' => 'User not found.'
@@ -402,25 +402,40 @@ public function getUserRole(Request $request)
         }
     
         if (empty($user->email)) {
+            Log::warning("OTP request failed: user '{$username}' has no associated email.");
             return response()->json([
                 'success' => false,
                 'message' => 'The user was found, but no email is associated with the account.'
             ]);
         }
     
-        $otp = rand(100000, 999999); // Generate OTP
+        $otp = rand(100000, 999999);
+        Log::info("Generated OTP {$otp} for user ID {$user->id} ({$user->username})");
     
-        // Save OTP to cache or database (optional)
-        // Cache::put('otp_' . $user->id, $otp, now()->addMinutes(5));
+        // Save OTP
+        $user->otp_code = $otp;
+        $user->otp_expires_at = now()->addMinutes(5);
+        $user->save();
+        Log::info("Saved OTP and expiry for user ID {$user->id}");
     
-        // Send OTP email
-        Mail::to($user->email)->send(new OtpMail($otp));
+        // Send email
+        try {
+            Mail::to($user->email)->send(new OtpMail($user, $otp));
+            Log::info("OTP email sent to {$user->email} for user ID {$user->id}");
+        } catch (\Exception $e) {
+            Log::error("Failed to send OTP email to {$user->email}: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send OTP email.'
+            ]);
+        }
     
         return response()->json([
             'success' => true,
             'message' => 'OTP sent to your email.'
         ]);
     }
+    
 
         public function changePassword(Request $request)
     {

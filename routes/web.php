@@ -25,6 +25,7 @@ Route::controller(UserManager::class)->group(function () {
     Route::post('/password/change-password', 'changePassword');
     Route::post('/password/send-otp', 'sendOtp');
     Route::get('/getUserRole', 'getUserRole');
+    
 
 });
 
@@ -71,6 +72,9 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
         Route::get('/getUsers', 'viewUserManagement')->name('getUsers');
         Route::get('/admin/userManagement', 'viewUserManagement')->name('admin.userManagement');
         Route::get('/admin/activityLogs', 'viewActivityLogs')->name('admin.activityLogs');
+        Route::get('/admin/trash', [ProjectManager::class, 'fetchTrashedProjects'])->name('admin.trash');
+   
+    
     });
 });
 
@@ -98,7 +102,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/projects/restore/{project_id}', 'restoreProject')->name('projects.restore');
         Route::post('/project-status/addStatus', 'addStatus');
         Route::get('/systemAdmin/trash', 'fetchTrashedProjects')->name('systemAdmin.trash');
-      
+       
     });
     
     Route::get('/projects/fund-utilization/{project_id}', [FundsUtilizationController::class, 'getFundsUtilization'])

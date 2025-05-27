@@ -20,8 +20,8 @@
                         <div class="row g-3">
                         <!-- Location Dropdown -->
                         <div class="col-md-2 position-relative">
-                            <input type="text" class="form-control" id="location_filter" name="location_filter"
-                                placeholder="Select or type location" autocomplete="off" onfocus="showLocationDropdown()" oninput="showLocationDropdown()" />
+                        <input type="text" class="form-control" id="location_filter" name="location_filter" placeholder="Select or type location" autocomplete="off"/>
+  
                             <div id="location_filter_dropdown"
                                 class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                 style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
@@ -34,17 +34,15 @@
                             </div>
                         </div>
 
-                        <!-- CONTRACTOR INPUT + DROPDOWN -->
+                       <!-- CONTRACTOR INPUT + DROPDOWN -->
                         <div class="col-md-3 position-relative">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="contractor_filter" name="contractor"
                                     placeholder="Select or enter contractor" autocomplete="off" />
-                                <button class="btn btn-outline-secondary" type="button" id="contractorToggleBtn">
-                                    ▼
-                                </button>
                             </div>
                             <div id="contractorDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                 style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                
                                 
                                 @foreach($contractors as $contractor)
                                     <button type="button" class="list-group-item list-group-item-action"
@@ -52,6 +50,7 @@
                                 @endforeach
                             </div>
                         </div>
+
 
                         <!-- Amount Filter -->
                         <div class="col-md-2">
@@ -169,246 +168,6 @@
         </div>
     </div>
 </div>
-
-
-<script>
-
-    function showLocationDropdown() {
-        const input = $('#location_filter').val().toLowerCase();
-        $('#location_filter_dropdown').show();
-
-        $('#location_filter_dropdown .list-group-item').each(function () {
-            const itemText = $(this).text().toLowerCase();
-            if (!input || itemText.includes(input)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    }
-
-    function selectLocation(location) {
-        $('#location_filter').val(location);
-        $('#location_filter_dropdown').hide();
-        $('#location_filter').trigger('input'); // Trigger DataTable filter
-    }
-
-    document.addEventListener('click', function(event) {
-    const input = document.getElementById('location_filter');
-    const dropdown = document.getElementById('location_filter_dropdown');
-
-    if (!input.contains(event.target) && !dropdown.contains(event.target)) {
-        dropdown.style.display = 'none';
-    }
-});
-
-
-</script>
-
-<script>
-    function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
-        const input = document.getElementById(inputId);
-        const dropdown = document.getElementById(dropdownId);
-        const toggleBtn = toggleBtnId ? document.getElementById(toggleBtnId) : null;
-
-        function selectLoc(value) {
-        const input = document.getElementById('location_filter');
-        input.value = value;
-        document.getElementById('projectLocDropdown').style.display = 'none';
-    }
-
-    function showDropdown() {
-        // Show all options first
-        const buttons = dropdown.querySelectorAll('button');
-        buttons.forEach(button => button.style.display = '');
-        
-        dropdown.style.display = 'block';
-        attachClickHandlers(); // Always ensure buttons have handlers
-    }
-
-
-        function hideDropdown() {
-            setTimeout(() => {
-                dropdown.style.display = 'none';
-            }, 200); // Allow time for clicks
-        }
-
-        function filterDropdown() {
-            const filter = input.value.toLowerCase();
-            const buttons = dropdown.querySelectorAll('button');
-            buttons.forEach(button => {
-                const text = button.textContent.toLowerCase();
-                button.style.display = text.includes(filter) ? '' : 'none';
-            });
-        }
-
-        function attachClickHandlers() {
-    const buttons = dropdown.querySelectorAll('button');
-    buttons.forEach(button => {
-        button.onclick = () => {
-            const value = button.textContent.trim();
-            input.value = value;
-
-            // If "All Contractor" is selected, show all buttons
-            if (value.toLowerCase() === 'all contractor') {
-                const allButtons = dropdown.querySelectorAll('button');
-                allButtons.forEach(btn => btn.style.display = '');
-            }
-
-            // Re-trigger the 'input' event to apply filtering logic if needed
-            const event = new Event('input', { bubbles: true });
-            input.dispatchEvent(event);
-
-            dropdown.style.display = 'none';
-        };
-    });
-}
-
-
-
-        input.addEventListener('focus', showDropdown);
-        input.addEventListener('input', () => {
-        dropdown.style.display = 'block'; // Ensure it's visible while typing
-            filterDropdown();
-        });
-
-        input.addEventListener('blur', hideDropdown);
-
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
-                if (dropdown.style.display === 'block') {
-                    dropdown.style.display = 'none';
-                } else {
-                    input.focus(); // triggers showDropdown
-                }
-            });
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        setupDropdownHandlers('location_filter', 'projectLocDropdown', 'locToggleBtn');
-        setupDropdownHandlers('contractor_filter', 'contractorDropdown', 'contractorToggleBtn');
-    });
-</script>
-
-
-    <script>
-        // 1) Define the function globally
-        function filterSuggestions(query) {
-            const box = document.getElementById('suggestionsBox');
-            const items = box.getElementsByClassName('suggestion-item');
-            const q = query.trim().toLowerCase();
-            let visible = false;
-
-            Array.from(items).forEach(item => {
-                const text = item.textContent.trim().toLowerCase();
-                if (q !== '' && text.includes(q)) {
-                    item.style.display = 'block';
-                    visible = true;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            box.style.display = visible ? 'block' : 'none';
-        }
-
-        // 2) Wire up events once DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('projectLoc');
-    const box = document.getElementById('suggestionsBox');
-
-    if (!input || !box) return; // Exit early if elements don't exist
-
-    const items = box.getElementsByClassName('suggestion-item');
-
-    input.addEventListener('keyup', e => filterSuggestions(e.target.value));
-
-    Array.from(items).forEach(item => {
-        item.addEventListener('click', () => {
-            input.value = item.textContent.trim();
-            box.style.display = 'none';
-        });
-    });
-
-    document.addEventListener('click', e => {
-        if (!box.contains(e.target) && e.target !== input) {
-            box.style.display = 'none';
-        }
-    });
-});
-</script>
-
-    
-    <script>
-
-        //load the contractors name this is example only
-        const contractors = ['Kristine Joy Briones', 'Janessa Guillermo', 'CJenalyn Jumawan', 'Arjay Ordinario'];
-
-        function showSuggestions(query) {
-            const suggestionsBox = document.getElementById('suggestionsBox');
-            suggestionsBox.innerHTML = ''; // Clear previous suggestions
-
-            if (query.length > 0) {
-                const filteredContractors = contractors.filter(contractor => contractor.toLowerCase().includes(query.toLowerCase()));
-
-                if (filteredContractors.length > 0) {
-                    suggestionsBox.style.display = 'block';
-                    filteredContractors.forEach(contractor => {
-                        const item = document.createElement('a');
-                        item.href = '#';
-                        item.className = 'list-group-item list-group-item-action';
-                        item.textContent = contractor;
-                        suggestionsBox.appendChild(item);
-                    });
-                } else {
-                    suggestionsBox.style.display = 'none';
-                }
-            } else {
-                suggestionsBox.style.display = 'none';
-            }
-        }
-
-
-        // Predefined list of municipalities in Nueva Vizcaya
-        const municipalities = [
-            'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
-            'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
-            'Villaverde', 'Ambaguio', 'Santa Fe', 'Lamut'
-        ];
-
-        function showMunicipalitySuggestions(query) {
-            const suggestionsBox = document.getElementById('suggestionsBox');
-            suggestionsBox.innerHTML = ''; // Clear previous suggestions
-
-            if (query.length > 0) {
-                // Filter the municipalities based on the user input
-                const filteredMunicipalities = municipalities.filter(municipality => municipality.toLowerCase().includes(query.toLowerCase()));
-
-                if (filteredMunicipalities.length > 0) {
-                    suggestionsBox.style.display = 'block';
-                    filteredMunicipalities.forEach(municipality => {
-                        const item = document.createElement('a');
-                        item.href = '#';
-                        item.className = 'list-group-item list-group-item-action';
-                        item.textContent = municipality;
-                        item.onclick = function () {
-                            document.getElementById('projectLoc').value = municipality + ', Nueva Vizcaya'; // Auto-format the location
-                            suggestionsBox.style.display = 'none'; // Hide suggestions after selection
-                        };
-                        suggestionsBox.appendChild(item);
-                    });
-                } else {
-                    suggestionsBox.style.display = 'none';
-                }
-            } else {
-                suggestionsBox.style.display = 'none';
-            }
-        }
-
-    </script>
-
-   
 
    
     @include('systemAdmin.modals.Projects.add-project')

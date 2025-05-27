@@ -1,3 +1,7 @@
+function getSanitizedValue(input) {
+  if (!input || !input.value) return 0;
+  return parseFloat(input.value.replace(/₱|,/g, '').trim()) || 0;
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -25,10 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  function getSanitizedValue(input) {
-    if (!input || !input.value) return 0;
-    return parseFloat(input.value.replace(/₱|,/g, '').trim()) || 0;
-  }
+
 
   function updateActualField(field, latestVO) {
     const latestVOInput = document.getElementById(`vo_${field}_${latestVO}`);
@@ -40,29 +41,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Initial set of actual_* fields on load
   pageLoadFields.forEach(function (field) {
-    let latestNonEmptyValue = '';
-    for (let i = voCount; i >= 1; i--) {
-      const voInput = document.getElementById(`vo_${field}_${i}`);
-      if (voInput && voInput.value.trim() !== '') {
-        latestNonEmptyValue = voInput.value.trim();
-        break;
+  let latestNonEmptyValue = '';
+  for (let i = voCount; i >= 1; i--) {
+    const voInput = document.getElementById(`vo_${field}_${i}`);
+    if (voInput && voInput.value.trim() !== '') {
+      latestNonEmptyValue = voInput.value.trim();
+      break;
+    }
+  }
+
+  const actualInput = document.getElementById(`actual_${field}`);
+  if (actualInput) {
+    if (latestNonEmptyValue) {
+      actualInput.value = latestNonEmptyValue;
+    } else if (field === 'contract_amount') {
+      // Retain orig fallback for contract_amount only
+      const origInput = document.getElementById(`orig_${field}`);
+      if (origInput) {
+        actualInput.value = origInput.value;
       }
     }
+  }
+});
 
-    const actualInput = document.getElementById(`actual_${field}`);
-    if (actualInput) {
-      if (latestNonEmptyValue) {
-        actualInput.value = latestNonEmptyValue;
-      } else {
-        const origInput = document.getElementById(`orig_${field}`);
-        if (origInput) {
-          actualInput.value = origInput.value;
-        }
-      }
-    }
-  });
 
-  // 🔄 Attach VO input listeners (initial + reusable)
+  // ✅ Initialize amountEng and amountMqc on load using actual_engineering and actual_mqc
+  const amountEng = document.getElementById('amountEng');
+  const actualEng = document.getElementById('actual_engineering');
+  if (amountEng && actualEng) {
+    amountEng.value = formatNumber(getSanitizedValue(actualEng));
+  }
+
+  const amountMqc = document.getElementById('amountMqc');
+  const actualMqc = document.getElementById('actual_mqc');
+  if (amountMqc && actualMqc) {
+    amountMqc.value = formatNumber(getSanitizedValue(actualMqc));
+  }
+  
+
+  // Attach VO input listeners (initial + reusable)
   function attachVOListeners() {
     voCount = parseInt(voCountInput?.value) || 1; // Refresh in case voCount was updated
     allFields.forEach(function (field) {
@@ -97,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function () {
               }
             }
           });
-          
 
           voInput.dataset.listenerAttached = "true";
         }
@@ -246,32 +262,39 @@ document.addEventListener('DOMContentLoaded', function () {
   // ✅ Make attachVOListeners globally callable
   window.attachVOListeners = attachVOListeners;
 
-    // 🔁 Auto-attach listeners when new VO fields are added
-    const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          attachVOListeners(); // Check for new VO inputs and attach listeners
-        }
+  // 🔁 Auto-attach listeners when new VO fields are added
+  const observer = new MutationObserver((mutationsList) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+        attachVOListeners(); // Check for new VO inputs and attach listeners
       }
-    });
-  
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 
 });
 
-// 🔹 Optional helper for Engineering and MQC balances
 function updateBalances() {
-  const engSum = entries
-    .filter(e => e.type === 'Engineering')
-    .reduce((acc, cur) => acc + parseFloat(cur.amount), 0);
+  const origEng = document.getElementById('orig_engineering');
+  const amountEng = document.getElementById('amountEng');
+  const engBalance = document.getElementById('engineeringBalance');
 
-  const mqcSum = entries
-    .filter(e => e.type === 'MQC')
-    .reduce((acc, cur) => acc + parseFloat(cur.amount), 0);
+  const origMqc = document.getElementById('orig_mqc');
+  const amountMqc = document.getElementById('amountMqc');
+  const mqcBalance = document.getElementById('mqcBalance');
 
-  document.getElementById('engineeringBalance').textContent = engSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  document.getElementById('mqcBalance').textContent = mqcSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const engDiff = getSanitizedValue(origEng) - getSanitizedValue(amountEng);
+  const mqcDiff = getSanitizedValue(origMqc) - getSanitizedValue(amountMqc);
+
+  if (engBalance) engBalance.textContent = formatNumber(engDiff);
+  if (mqcBalance) mqcBalance.textContent = formatNumber(mqcDiff);
 }
+
+updateBalances(); 
+
+
+

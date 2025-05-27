@@ -1,62 +1,128 @@
-const eaInput = document.getElementById('ea');
-const eaDropdown = document.getElementById('eaDropdown');
-const eaItems = eaDropdown.getElementsByTagName('button');
-let eaSelectedIndex = -1;
 
-function showEaDropdown() {
-    const filter = eaInput.value.toLowerCase().trim();
-    let anyVisible = false;
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('ea');
+  const dropdown = document.getElementById('projectEngineerDropdown');
+  const engineerDataScript = document.getElementById('engineer-data');
 
-    for (let i = 0; i < eaItems.length; i++) {
-        const text = eaItems[i].textContent.toLowerCase().trim();
-        const match = text.startsWith(filter);
-        eaItems[i].style.display = match ? '' : 'none';
-        if (match) anyVisible = true;
+  // Parse engineer data (array of strings)
+  const engineerData = engineerDataScript ? JSON.parse(engineerDataScript.textContent).map(name => name.trim()) : [];
+
+  let selectedIndex = -1;
+
+  input.addEventListener('input', filterEngineers);
+  input.addEventListener('focus', showEngineerDropdown);
+
+  input.addEventListener('blur', () => {
+    setTimeout(() => {
+      dropdown.style.display = 'none';
+      finalizeEngineer();
+    }, 150);
+  });
+
+  input.addEventListener('keydown', e => {
+    const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(b => b.style.display !== 'none');
+
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && dropdown.style.display !== 'block') {
+      showEngineerDropdown();
     }
-
-    eaDropdown.style.display = (filter.length > 0 && anyVisible) ? 'block' : 'none';
-    eaSelectedIndex = -1;
-}
-
-function selectEa(name) {
-    eaInput.value = name.trim();
-    eaDropdown.style.display = 'none';
-}
-
-eaInput.addEventListener('keydown', function (e) {
-    const visibleItems = Array.from(eaItems).filter(item => item.style.display !== 'none');
 
     if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (eaSelectedIndex < visibleItems.length - 1) eaSelectedIndex++;
-        updateEaActive(visibleItems);
+      e.preventDefault();
+      if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
+      updateActive(visibleButtons);
     } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        if (eaSelectedIndex > 0) eaSelectedIndex--;
-        updateEaActive(visibleItems);
+      e.preventDefault();
+      if (selectedIndex > 0) selectedIndex--;
+      updateActive(visibleButtons);
     } else if (e.key === 'Enter') {
-        e.preventDefault();
-        const visibleCount = visibleItems.length;
-        if (visibleCount === 1) {
-            selectEa(visibleItems[0].textContent);
-        } else if (visibleCount > 1 && eaSelectedIndex >= 0) {
-            selectEa(visibleItems[eaSelectedIndex].textContent);
-        }
+      e.preventDefault();
+      if (visibleButtons[selectedIndex]) {
+        selectEngineer(visibleButtons[selectedIndex].textContent);
+      } else {
+        finalizeEngineer();
+      }
     } else if (e.key === 'Escape') {
-        eaDropdown.style.display = 'none';
+      dropdown.style.display = 'none';
     }
-});
+  });
 
+  document.addEventListener('click', (e) => {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
 
-function updateEaActive(visibleItems) {
-    visibleItems.forEach((item, i) => {
-        item.classList.toggle('active', i === eaSelectedIndex);
+  function filterEngineers() {
+    const query = input.value.toLowerCase().trim();
+    dropdown.innerHTML = '';
+    let anyVisible = false;
+
+    const matches = engineerData
+      .map(name => ({
+        name,
+        score: name.toLowerCase().startsWith(query) ? 0 :
+               name.toLowerCase().includes(query) ? 1 : 2
+      }))
+      .filter(item => item.score < 2 || query === item.name.toLowerCase())
+      .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+
+    matches.forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'list-group-item list-group-item-action';
+      btn.textContent = item.name;
+      btn.style.display = '';
+      btn.addEventListener('click', () => selectEngineer(item.name));
+      dropdown.appendChild(btn);
+      anyVisible = true;
     });
-}
 
-document.addEventListener('click', function (e) {
-    if (!eaInput.contains(e.target) && !eaDropdown.contains(e.target)) {
-        eaDropdown.style.display = 'none';
+    dropdown.style.display = anyVisible ? 'block' : 'none';
+    selectedIndex = -1;
+  }
+
+  function showEngineerDropdown() {
+    dropdown.innerHTML = '';
+    engineerData.forEach(name => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'list-group-item list-group-item-action';
+      btn.textContent = name;
+      btn.addEventListener('click', () => selectEngineer(name));
+      dropdown.appendChild(btn);
+    });
+    dropdown.style.display = 'block';
+    selectedIndex = -1;
+  }
+
+  function finalizeEngineer() {
+    const val = input.value.trim();
+    if (val === '') return;
+
+    const match = engineerData.find(name => name.toLowerCase() === val.toLowerCase());
+
+    if (match) {
+      input.value = match;
+    } else {
+      input.value = toTitleCase(val);
     }
-});
+  }
 
+  function selectEngineer(name) {
+    input.value = name;
+    dropdown.style.display = 'none';
+    selectedIndex = -1;
+  }
+
+  function updateActive(visibleButtons) {
+    Array.from(dropdown.querySelectorAll('button')).forEach(b => b.classList.remove('active'));
+    if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
+      visibleButtons[selectedIndex].classList.add('active');
+      visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+
+  function toTitleCase(str) {
+    return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  }
+});

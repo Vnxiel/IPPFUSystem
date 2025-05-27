@@ -29,14 +29,14 @@
     <body class="montserrat d-flex flex-column min-vh-100">
         <div class="wrapper d-flex flex-column flex-grow-1">
             <!-- Enhanced Navbar -->
-            <nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background: linear-gradient(to right, #ffffff, #F8F2DE);">
+            <nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background-color: #ECDCBF;">
                 <div class="container-fluid px-4">
                     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
                     <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                        <a href="{{ route('admin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
+                        <a href="{{ route('systemAdmin.index') }}" class="navbar-brand col-lg-3 me-0 d-flex align-items-center mb-2 mb-lg-0">
                             <div class="d-flex align-items-center">
                                 <img src="{{ asset('img/temp_logo.png') }}" alt="Logo" width="50" height="40" class="img-fluid me-3">
                                 <div>
@@ -64,30 +64,19 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/userManagement') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('admin/userManagement') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    style="{{ Request::is('admin/userManagement') || Request::is('admin/overview') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
                                     href="{{ url('/admin/userManagement') }}">
                                     <i class="fas fa-users me-2"></i>User Management
                                     </a>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 {{ Request::is('admin/trash') || Request::is('systemAdmin/activityLogs') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('admin/trash') || Request::is('admin/activityLogs') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                    href="#" data-bs-toggle="dropdown">
-                                    <i class="fas fa-cog me-2"></i>Settings
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/trash') ? 'fw-bold text-white' : '' }}"
+                                    style="{{ Request::is('admin/trash') || Request::is('admin/overview') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
+                                    href="{{ url('/admin/trash') }}">
+                                    <i class="fas fa-users me-2"></i>Archive
                                     </a>
-                                    <ul class="dropdown-menu border-0 shadow-sm mt-2">
-                                        <li>
-                                            <a class="dropdown-item py-2 {{ Request::is('admin/trash') ? 'fw-bold text-primary' : '' }}" href="{{ url('/systemAdmin/trash') }}">
-                                                <i class="fas fa-archive me-2"></i>Archive
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item py-2 {{ Request::is('admin/activityLogs') ? 'fw-bold text-primary' : '' }}" href="{{ url('/systemAdmin/activityLogs') }}">
-                                                <i class="fas fa-history me-2"></i>Activity Logs
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </li>
+                               
                             </ul>
 
                             <div class="dropdown">
@@ -122,6 +111,7 @@
             </div>
         </div>
 
+        
         <!-- Footer -->
         <footer class="text-center p-2 bg-light mt-auto">
             <p>&copy; {{ date('Y') }} PEO. All Rights Reserved.</p>
@@ -132,7 +122,10 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-       
+       <!-- Include Select2 if not already included -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+
         <!-- DataTables JS -->
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
@@ -145,13 +138,13 @@
         
         <script src="{{ asset('js/Datatables/load-data.js') }}"></script>
         <script src="{{ asset('js/Account/register-user.js') }}"></script>
-        <script src="{{ asset('js/Account/fetch-pass_requests.js') }}"></script>
-        <script src="{{ asset('js/Account/change-new_pass.js') }}"></script>
+        <script src="{{ asset('js/Account/systemAdmin-change-new_pass.js') }}"></script>
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
 
        
+        <script src="{{ asset('js/Projects/projects-toggle.js') }}"></script>
         <script src="{{ asset('js/Projects/trashProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/updateProjects.js') }}"></script>
         <script src="{{ asset('js/Projects/restoreProjects.js') }}"></script>
@@ -162,17 +155,26 @@
 
 
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
-        <script src="{{ asset('js/Filters/location-search.js') }}"></script>
-        <script src="{{ asset('js/Filters/contractor-search.js') }}"></script>
-        <script src="{{ asset('js/Filters/sourceOfFund-search.js') }}"></script>
-        <script src="{{ asset('js/Filters/engineer-search.js') }}"></script>  
-
+      
          <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>
         <script src="{{ asset('js/Account/logout.js') }}"></script>
 
-        @yield('page-scripts') <!-- Add this line here -->
+        @yield('page-scripts') 
+        
+        @section('page-scripts')
+    @if (session('logout_soon'))
+    <script>
+        Swal.fire({
+            title: 'Role Reverted',
+            text: 'Your temporary role has expired and was reverted.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+    </script>
+    @endif
+@endsection
 
     </body>
 </html>

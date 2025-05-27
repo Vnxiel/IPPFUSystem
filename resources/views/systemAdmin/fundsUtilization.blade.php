@@ -295,8 +295,8 @@
                   <tr>
                     <td class="fw-bold">Engineering Balance</td>
                     <td></td>
-                    <td class="fw-bold text-end" id="engineeringBalance">0.00</td>
-                    <td colspan="2"></td>
+                    <td class="fw-bold text-end" id="formEngineeringBalance" data-balance="0.00">₱0.00</td>
+                   <td colspan="2"></td>
                   </tr>
 
                   <!-- MQC TABLE -->
@@ -343,14 +343,16 @@
                   <tr>
                     <td class="fw-bold">MQC Balance</td>
                     <td></td>
-                    <td class="fw-bold text-end" id="mqcBalance">0.00</td>
+                    <td class="fw-bold text-end" id="formMqcBalance">0.00</td>
                     <td colspan="2"></td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-          
+          <!-- Add this somewhere in your Blade HTML template -->
+<div id="projectMeta" data-project-id="{{ $project['id'] ?? 0 }}"></div>
+
 
           <!-- Totals Section Card -->
           <div class="card border-0 mb-4 shadow-sm">
@@ -435,10 +437,11 @@
 
 
 @include('systemAdmin.modals.Funds_Utilization.add-eng_mqc')
+
 @section('page-scripts')
-<script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
 
 <script src="{{ asset('js/FundsUtilization/funds_utilization-addBreakdown.js') }}"></script>
+<script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setCurrencyFormatting.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setvalue.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-valueLimit.js') }}"></script>

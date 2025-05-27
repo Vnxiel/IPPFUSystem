@@ -20,8 +20,8 @@
                         <div class="row g-3">
                         <!-- Location Dropdown -->
                         <div class="col-md-2 position-relative">
-                            <input type="text" class="form-control" id="location_filter" name="location_filter"
-                                placeholder="Select or type location" autocomplete="off" onfocus="showLocationDropdown()" oninput="showLocationDropdown()" />
+                        <input type="text" class="form-control" id="location_filter" name="location_filter" placeholder="Select or type location" autocomplete="off"/>
+  
                             <div id="location_filter_dropdown"
                                 class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                 style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
@@ -34,24 +34,26 @@
                             </div>
                         </div>
 
-                        <!-- CONTRACTOR INPUT + DROPDOWN -->
+                       <!-- CONTRACTOR INPUT + DROPDOWN -->
                         <div class="col-md-3 position-relative">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="contractor_filter" name="contractor"
                                     placeholder="Select or enter contractor" autocomplete="off" />
-                                <button class="btn btn-outline-secondary" type="button" id="contractorToggleBtn">
-                                    ▼
-                                </button>
                             </div>
                             <div id="contractorDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                 style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                 
+                                <!-- Add "All Contractors" Option -->
+                                <button type="button" class="list-group-item list-group-item-action"
+                                    onclick="selectContractor('All Contractors')">All Contractors</button>
+
                                 @foreach($contractors as $contractor)
                                     <button type="button" class="list-group-item list-group-item-action"
                                         onclick="selectContractor('{{ $contractor->name }}')">{{ $contractor->name }}</button>
                                 @endforeach
                             </div>
                         </div>
+
 
                         <!-- Amount Filter -->
                         <div class="col-md-2">
@@ -170,8 +172,7 @@
     </div>
 </div>
 
-
-
+   
     @include('admin.modals.Projects.add-project')
     @include('admin.modals.Projects.generate-report')
 @endsection

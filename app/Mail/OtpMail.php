@@ -13,10 +13,12 @@ class OtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $user;
     public $otp;
 
-    public function __construct($otp)
+    public function __construct($user, $otp)
     {
+        $this->user = $user;
         $this->otp = $otp;
     }
 
@@ -32,6 +34,8 @@ class OtpMail extends Mailable
         return new Content(
             view: 'emails.otp',
             with: [
+                'name' => $this->user->fullname ?? '',
+                'username' => $this->user->username ?? '',
                 'otp' => $this->otp,
             ],
         );

@@ -51,18 +51,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ─── Sum contract + eng + mqc balances ─────────────────────────────
   function calculateSavings() {
-    let sum = 0;
-    balanceSelectors.forEach(sel => {
+    const appropriationEl = document.querySelector("#orig_appropriation");
+    const appropriation = appropriationEl ? parseCurrency(appropriationEl.value || appropriationEl.textContent) : 0;
+  
+    let expenditures = 0;
+    amountSelectors.forEach(sel => {
       const el = document.querySelector(sel);
       if (el) {
-        sum += parseCurrency(el.textContent);
+        expenditures += parseCurrency(el.value);
       }
     });
+  
+    const savings = appropriation - expenditures;
+  
     savingsOutputs.forEach(sel => {
       const out = document.querySelector(sel);
-      if (out) out.value = formatPeso(sum);
+      if (out) out.value = formatPeso(savings);
     });
   }
+  
 
   // ─── Run both ───────────────────────────────────────────────────────
   function calculateAll() {

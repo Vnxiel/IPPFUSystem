@@ -92,16 +92,29 @@ $(document).on("submit", "#addProjectForm", function (event) {
             $(this).val($(this).val().replace(/[₱,]/g, ""));
         });
 
-        const statusValue = $("#projectStatus").val();
-        const ongoingInput = $("#ongoingStatus");
-        const percentage = ongoingInput.val().trim();
-        const date = $("#ongoingDate").val().trim();
-
-        if (statusValue === "Ongoing" && percentage && date) {
-            if (!ongoingInput.val().includes(" - ")) {
-                ongoingInput.val(`${percentage} - ${date}`);
+            const statusValue = $("#projectStatus").val();
+            const ongoingInput = $("#ongoingStatus");
+            const percentage = ongoingInput.val().trim();
+            const date = $("#ongoingDate").val().trim();
+            
+            if (statusValue === "Ongoing") {
+                const numericPercentage = parseFloat(percentage);
+            
+                if (isNaN(numericPercentage) || numericPercentage <= 0 || numericPercentage >= 100) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Invalid Percentage Completion",
+                        text: "Percentage must be a number between 1 and 99.",
+                        confirmButtonText: "OK"
+                    });
+                    return; // Stop submission
+                }
+            
+                if (percentage && date && !ongoingInput.val().includes(" - ")) {
+                    ongoingInput.val(`${percentage} - ${date}`);
+                }
             }
-        }
+        
 
         $.ajax({
             headers: {
@@ -125,6 +138,8 @@ $(document).on("submit", "#addProjectForm", function (event) {
                     $('#addNewProjectModal').on('hidden.bs.modal', function () {
                         $("#addProjectForm")[0].reset();
                         $(this).off('hidden.bs.modal');
+                        // Reload the page after modal is fully hidden
+                        location.reload();
                     });
 
                     $("#addNewProjectModal").modal("hide");
