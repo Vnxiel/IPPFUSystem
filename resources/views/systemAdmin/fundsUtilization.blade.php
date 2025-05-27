@@ -50,7 +50,7 @@
                     <th>V.O. {{ $vo->vo_number }}</th>
                     @endif
                     @endforeach
-                    <th>Actual</th>
+                    <th>Actual Utilization</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -187,7 +187,16 @@
                     <td></td>
                   </tr>
                   <tr>
-                    <td>Mobilization</td>
+                    <td class="align-middle">
+                      <div class="d-flex align-items-center">
+                        <input type="number" max="15" min="0" step="0.01"
+                          class="form-control form-control-sm me-2"
+                          id="percentMobi" name="percentMobi"
+                          style="width: 60px;"
+                          placeholder="0-15"> 
+                        <span style="white-space: nowrap;">% Mobilization</span>
+                      </div>
+                    </td>
                     <td>
                       <input type="date" class="form-control form-control-sm" name="dateMobilization"
                         value="{{ $summary['mobilization']['date'] ?? '' }}">
@@ -271,22 +280,21 @@
                         <thead>
                           <tr>
                             <th>Name (Month - Payment Period)</th>
-                            <th>Amount</th>
+                            <th class="text-end">Amount</th>
                           </tr>
                         </thead>
                         <tbody>
                           @forelse($engineeringEntries as $eng)
-                          <tr>
-                            <td>{{ $eng->name }} ({{ $eng->month }} - {{ $eng->payment_periods }})</td>
-                            <td data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
-                          </tr>
+                            <tr>
+                              <td>{{ $eng->name }} ({{ $eng->month }} - {{ $eng->payment_periods }})</td>
+                              <td class="text-end" data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
+                            </tr>
                           @empty
-                          <tr>
-                            <td></td>
-                            <td class="text-muted">No entries found.</td>
-                          </tr>
+                            <tr>
+                              <td></td>
+                              <td class="text-end text-muted">No entries found.</td>
+                            </tr>
                           @endforelse
-
                         </tbody>
                       </table>
                     </td>
@@ -351,9 +359,7 @@
             </div>
           </div>
           <!-- Add this somewhere in your Blade HTML template -->
-<div id="projectMeta" data-project-id="{{ $project['id'] ?? 0 }}"></div>
-
-
+        <div id="projectMeta" data-project-id="{{ $project['id'] ?? 0 }}"></div>
           <!-- Totals Section Card -->
           <div class="card border-0 mb-4 shadow-sm">
               <table class="table table-sm table-bordered text-center align-middle">
@@ -366,15 +372,19 @@
                 <tbody>
                   <tr>
                     <td>Total Expenditures</td>
-                    <td><input type="text" class="form-control form-control-sm" id="amountTotal" name="amountTotal"></td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end" id="amountTotal" name="amountTotal">
+                    </td>
                   </tr>
                   <tr>
                     <td>Total Savings</td>
-                    <td><input type="text" class="form-control form-control-sm" id="amountSavings" name="amountSavings"></td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end" id="amountSavings" name="amountSavings">
+                    </td>
                   </tr>
+
                 </tbody>
               </table>
-            </div>
             </div>
             </div>
 
@@ -385,7 +395,6 @@
                   <i class="fas fa-save me-2"></i>
                   Save Changes
                 </button>
-              </div>
             </div>
             </div>
             </fieldset>
@@ -393,6 +402,7 @@
             </form>
             </div>
       </section>
+      
           
 
 

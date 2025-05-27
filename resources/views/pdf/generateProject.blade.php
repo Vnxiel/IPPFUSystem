@@ -9,11 +9,11 @@
     margin: 10mm 10mm 10mm 15mm;
   }
 
-  body {
-    font-family: "Times New Roman", Times, serif;
-    position: relative;
-    margin-bottom: 60px; /* make room for the footer */
-  }
+ body {
+  font-family: Calibri, sans-serif;
+  position: relative;
+  margin-bottom: 60px; /* make room for the footer */
+}
 
   footer {
     position: fixed;
@@ -419,8 +419,23 @@
   </table>
 </div>
 
-  <div class="printed-by" style="margin-top: 5px;"><br>
- <p>{{ $userName }}</p><span>Printed by<span>
-  </div>
+<table style="width: 100%; margin-top: 30px; border-collapse: separate; border-spacing: 0 10px;">
+  <tr>
+    <td style="text-align: center; vertical-align: bottom; padding-bottom: 5px;">
+      <p style="margin: 0; font-weight: bold;">{{ $userName }}</p>
+      <span>Printed by</span>
+    </td>
+    <td style="text-align: center; vertical-align: bottom; padding-bottom: 5px;">
+      <p style="margin: 0; font-weight: bold;">{{ $userName }}</p>
+      <span>Reviewed by</span>
+    </td>
+    <td style="text-align: center; vertical-align: bottom; padding-bottom: 5px;">
+      <p style="margin: 0; font-weight: bold;">{{ $userName }}</p>
+      <span>Noted by</span>
+    </td>
+  </tr>
+</table>
+
+</div>
 </body>
 </html>
