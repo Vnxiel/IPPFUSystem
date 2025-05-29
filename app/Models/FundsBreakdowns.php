@@ -14,6 +14,7 @@ class FundsBreakdowns extends Model
         'type',
         'name',
         'month',
+        'breakdown_date',
         'payment_periods',
         'amount',
         'date',

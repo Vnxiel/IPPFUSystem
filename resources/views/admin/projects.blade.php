@@ -43,10 +43,6 @@
                             <div id="contractorDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                 style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                 
-                                <!-- Add "All Contractors" Option -->
-                                <button type="button" class="list-group-item list-group-item-action"
-                                    onclick="selectContractor('All Contractors')">All Contractors</button>
-
                                 @foreach($contractors as $contractor)
                                     <button type="button" class="list-group-item list-group-item-action"
                                         onclick="selectContractor('{{ $contractor->name }}')">{{ $contractor->name }}</button>
@@ -125,7 +121,7 @@
                             <th style="width: 8%; white-space: nowrap;"><small>Status</small></th>
                             <th style="width: 10%; white-space: nowrap;"><small>Contract Amount</small></th>
                             <th style="width: 12%; white-space: nowrap;"><small>Contractor</small></th>
-                            <th style="width: 6%; white-space: nowrap;"><small>Duration</small></th>
+                            <th style="width: 6%; white-space: nowrap;"><small>Contract Days</small></th>
                             <th style="width: 15%; white-space: nowrap;"><small>Action</small></th>
                         </tr>
                     </thead>

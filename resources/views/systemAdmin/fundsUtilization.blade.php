@@ -50,7 +50,7 @@
                     <th>V.O. {{ $vo->vo_number }}</th>
                     @endif
                     @endforeach
-                    <th>Actual</th>
+                    <th>Actual Utilization</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -87,13 +87,13 @@
 
                     {{-- Original --}}
                     <td>
-                      <input type="text" class="form-control amount-input" id="orig_{{ $key }}" name="orig_{{ $key }}"
+                      <input type="text" class="form-control amount-input text-end" id="orig_{{ $key }}" name="orig_{{ $key }}"
                         value="{{ $funds['orig_' . $key] ?? '' }}">
                     </td>
 
                     {{-- Always show VO 1 --}}
                     <td>
-                      <input type="text" class="form-control amount-input" id="vo_{{ $key }}_1" name="vo_{{ $key }}_1"
+                      <input type="text" class="form-control amount-input text-end" id="vo_{{ $key }}_1" name="vo_{{ $key }}_1"
                         value="{{ $vo1 ? $vo1->{'vo_' . $key} : '' }}">
                     </td>
 
@@ -101,7 +101,7 @@
                     @foreach ($variationOrders as $vo)
                     @if ($vo->vo_number != 1)
                     <td>
-                      <input type="text" class="form-control amount-input" id="vo_{{ $key }}_{{ $vo->vo_number }}"
+                      <input type="text" class="form-control amount-input text-end" id="vo_{{ $key }}_{{ $vo->vo_number }}"
                         name="vo_{{ $key }}_{{ $vo->vo_number }}" value="{{ $vo->{'vo_' . $key} ?? '' }}">
                     </td>
                     @endif
@@ -109,17 +109,36 @@
 
                     {{-- Actual --}}
                     <td>
-                        <input type="text" class="form-control amount-input bg-light" id="actual_{{ $key }}" name="actual_{{ $key }}"
-                              value="{{ $funds['actual_' . $key] ?? '' }}" readonly>
+                        <input type="text" class="form-control amount-input text-end" id="actual_{{ $key }}" name="actual_{{ $key }}"
+                              value="{{ $funds['actual_' . $key] ?? '' }}" >
                       </td>
-
-
                   @endforeach
 
-                  <tr class="fw-bold">
-                    <td>Total</td>
-                    <td><input type="text" class="form-control" id="orig_total" name="orig_total" readonly></td>
+                  <tr class="fw-bold table-warning">
+                      <td>Total</td>
+                      <td>
+                          <input type="text" class="form-control text-end" id="orig_total" name="orig_total" readonly>
+                      </td>
+
+                      {{-- Dynamically render empty <td>s for each VO column --}}
+                      @php
+                          $voCount = count($variationOrders);
+                      @endphp
+                      @for ($i = 0; $i < $voCount; $i++)
+                          <td></td>
+                      @endfor
+
+                      {{-- Actual Total Cell --}}
+                      <td class="text-end">
+                          {{ number_format(
+                              ($funds['actual_contract_amount'] ?? 0) +
+                              ($funds['actual_engineering'] ?? 0) +
+                              ($funds['actual_mqc'] ?? 0) +
+                              ($funds['actual_contingency'] ?? 0), 2)
+                          }}
+                      </td>
                   </tr>
+
                 </tbody>
               </table>
             </div>
@@ -168,6 +187,12 @@
                   <tbody>
                     <tr>
                       <td></td>
+                      <td>Total Appropriation</td>
+                      <td><input type="text" class="form-control text-end" id="totalAppro" name="totalAppro"  value="{{ $funds['orig_appropriation'] ?? '' }}" readonly></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
                       <td>Contract Amount</td>
                       <td><input type="text" class="form-control text-end" id="contract_amount" name="contract_amount" readonly></td>
                       <td></td>
@@ -183,8 +208,8 @@
                           <input type="number" max="15" min="0" step="0.01"
                                 class="form-control form-control-sm w-50"
                                 id="percentMobi" name="percentMobi"
-                                placeholder="0–15"
-                                value="{{ old('percentMobi') }}">
+                                placeholder="0–15"  value="{{ $summary['mobilization']['percentMobi'] ?? '' }}"
+                               >
                           <span class="ms-1 text-muted small"><i class="fas fa-percentage"></i></span>
                         </div>
                       </td>
@@ -265,26 +290,27 @@
                       <table id="engineeringSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
                         <thead>
                           <tr>
-                            <th>Date</th>
-                            <th>Particulars</th>
+                          <th>Date</th>
+                            <th>Name - (Payment Period)</th>
                             <th>Amount</th>
-                            <th>Remarks</th>
                           </tr>
                         </thead>
                         <tbody>
-                          @forelse($engineeringEntries as $eng)
-                          <tr>
-                            <td>{{ $eng->date ?? '' }}</td>
-                            <td>{{ $eng->name }} ({{ $eng->month }} - {{ $eng->payment_periods }})</td>
-                            <td data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
-                            <td>{{ $eng->remarks ?? '' }}</td>
-                          </tr>
-                          @empty
-                          <tr>
-                            <td colspan="4" class="text-muted">No entries found.</td>
-                          </tr>
-                          @endforelse
+                          @if($engineeringEntries->count() > 0)
+                            @foreach($engineeringEntries as $eng)
+                              <tr>
+                                <td style="width: 20%;">{{ $eng->breakdown_date ? \Carbon\Carbon::parse($eng->breakdown_date)->format('Y-m-d') : 'N/A' }}</td>
+                                <td style="width: 43%;">{{ $eng->name }} - {{ $eng->payment_periods }}</td>
+                                <td class="text-end" data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
+                              </tr>
+                            @endforeach
+                          @else
+                            <tr>
+                              <td colspan="3" class="text-muted">No entries found.</td>
+                            </tr>
+                          @endif
                         </tbody>
+
                       </table>
                     </td>
                   </tr>
@@ -318,31 +344,30 @@
 
                     <tr class="collapse" id="mqcDetails">
                       <td colspan="5">
-                        <table id="mqcSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
-                          <thead>
-                            <tr>
-                              <th>Date</th>
-                              <th>Particulars</th>
-                              <th>Amount</th>
-                              <th>Remarks</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @forelse($mqcEntries as $mqc)
-                            <tr>
-                              <td>{{ $mqc->date ?? '' }}</td>
-                              <td>{{ $mqc->name }} ({{ $mqc->month }} - {{ $mqc->payment_periods }})</td>
-                              <td data-amount="{{ $mqc->amount }}">{{ number_format($mqc->amount, 2) }}</td>
-                              <td>{{ $mqc->remarks ?? '' }}</td>
-                            </tr>
-                            @empty
-                            <tr>
-                              <td colspan="4" class="text-muted">No entries found.</td>
-                            </tr>
-                            @endforelse
-                          </tbody>
-                        </table>
-                      </td>
+                      <table id="mqcSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
+                        <thead>
+                          <tr>
+                          <th>Date</th>
+                            <th>Name (Month - Payment Period)</th>
+                            <th>Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @forelse($mqcEntries as $mqc)
+                          <tr>
+                          <td style="width: 20%;">{{ $mqc->breakdown_date ? \Carbon\Carbon::parse($mqc->breakdown_date)->format('M d, Y') : 'N/A' }}</td>
+                            <td style="width: 43%;">{{ $mqc->name }} ({{ $mqc->month }} - {{ $mqc->payment_periods }})</td>
+                            <td class="text-end" data-amount="{{ $mqc->amount }}">{{ number_format($mqc->amount, 2) }}</td>
+                          </tr>
+                          @empty
+                          <tr>
+                            <td></td>
+                            <td class="text-muted">No entries found.</td>
+                          </tr>
+                          @endforelse
+                        </tbody>
+                      </table>
+                    </td>
                     </tr>
                     <tr>
                     <td></td>
@@ -430,7 +455,13 @@
 @include('systemAdmin.modals.Funds_Utilization.add-eng_mqc')
 
 @section('page-scripts')
+<script>
+ 
 
+  </script>
+
+
+<script src="{{ asset('js/FundsUtilization/funds_utilization-percentMobi.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-addBreakdown.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setCurrencyFormatting.js') }}"></script>

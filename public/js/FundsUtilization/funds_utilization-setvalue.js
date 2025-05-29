@@ -53,9 +53,14 @@ document.addEventListener('DOMContentLoaded', function () {
   ];
 
   function formatNumber(num) {
-    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (num === null || num === undefined || num === '') return '';
+    const str = num.toString().replace(/[^0-9.]/g, '');
+    const parts = str.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
   }
-
+  
+  
 
 
   function updateActualField(field, latestVO) {
@@ -149,58 +154,69 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   attachVOListeners(); // Initial run
-
   function calculateBalance(triggerInput = null) {
     const contractAmount = getSanitizedValue(actualContractAmountInput);
-    let total = 0;
+    let sum = 0;
   
     inputIds.forEach(id => {
-      const input = document.getElementById(id);
-      if (input) {
-        total += getSanitizedValue(input);
+      if (id !== 'amountFinal') {
+        sum += getSanitizedValue(document.getElementById(id));
       }
     });
   
-    // Ensure balance is never negative
-    let balance = contractAmount - total;
-    if (balance < 0) balance = 0;
+    const finalInput = document.getElementById('amountFinal');
+    const finalAmount = Math.max(0, contractAmount - sum);
+    if (finalInput) finalInput.value = formatNumber(finalAmount);
   
-    if (balanceDisplay) {
-      balanceDisplay.textContent = formatNumber(balance);
+    const balance = contractAmount - (sum + finalAmount);
+  
+    if (balance < 0 && triggerInput) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Contract Balance',
+        text: 'The total amount exceeds the contract amount. Please adjust your inputs.',
+      }).then(() => {
+        triggerInput.value = '';
+        triggerInput.focus();
+      });
+      return;
     }
   
-    if (contractAmountInput) {
-      contractAmountInput.value = formatNumber(contractAmount);
-    }
-  
-    const finalBillingInput = document.getElementById('amountFinal');
-
-    if (finalBillingInput) {
-      const finalValue = getSanitizedValue(finalBillingInput);
-    
-      // If the final billing input exceeds the available balance, clamp it
-      if (finalValue > balance) {
-        finalBillingInput.value = formatNumber(balance);
-      }
-    
-      // If the field is empty, pre-fill it with the remaining balance
-      if (finalBillingInput.value.trim() === '') {
-        finalBillingInput.value = formatNumber(balance);
-      }
-    }
-    
+    if (balanceDisplay) balanceDisplay.textContent = formatNumber(Math.max(0, balance));
+    if (contractAmountInput) contractAmountInput.value = formatNumber(contractAmount);
   }
-   
-
+  
   inputIds.forEach(id => {
     const input = document.getElementById(id);
-    if (input) {
-      input.addEventListener('input', () => calculateBalance(input));
-      input.addEventListener('blur', function () {
-        const val = getSanitizedValue(this);
-        this.value = val ? formatNumber(val) : '';
-      });
-    }
+    if (!input) return;
+
+    input.addEventListener('input', function () {
+
+      if (id === 'amountFinal') {
+        const raw = this.value.replace(/[^0-9.]/g, '');
+        let value = parseFloat(raw);
+        const contractAmount = getSanitizedValue(actualContractAmountInput);
+        let sumBeforeFinal = 0;
+    
+        inputIds.forEach(otherId => {
+          if (otherId !== 'amountFinal') {
+            sumBeforeFinal += getSanitizedValue(document.getElementById(otherId));
+          }
+        });
+    
+        const maxFinal = contractAmount - sumBeforeFinal;
+        if (isNaN(value)) value = 0;
+        if (value > maxFinal) value = maxFinal;
+    
+        this.value = formatNumber(value);
+      }
+    
+      calculateBalance(this); // Pass the triggering input
+    });
+    
+    input.addEventListener('blur', function () {
+      this.value = this.value ? formatNumber(getSanitizedValue(this)) : '';
+    });
   });
 
   const actualFields = ['actual_contract_amount', 'actual_engineering', 'actual_mqc'];
@@ -342,6 +358,4 @@ function updateBalances() {
 }
 
 updateBalances(); 
-
-
 

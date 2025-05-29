@@ -76,14 +76,15 @@ document.addEventListener("DOMContentLoaded", function () {
     entries.forEach((entry, index) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${entry.type}</td>
-        <td>${entry.name}</td>
-        <td>${entry.month}</td>
-        <td>${entry.period}</td>
-        <td>₱${parseFloat(entry.amount).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
-        <td><button class="removeEntryBtn btn btn-sm btn-danger" data-index="${index}">Remove</button></td>
-      `;
-      tbody.appendChild(tr);
+      <td>${entry.type}</td>
+      <td>${entry.name}</td>
+      <td>${entry.month}</td>
+      <td>${entry.date}</td>
+      <td>${entry.period}</td>
+      <td>₱${parseFloat(entry.amount).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
+      <td><button class="removeEntryBtn btn btn-sm btn-danger" data-index="${index}">Remove</button></td>
+    `;
+          tbody.appendChild(tr);
     });
 
     document.querySelectorAll(".removeEntryBtn").forEach(btn => {
@@ -112,11 +113,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const type = document.getElementById("entryType").value;
     const name = document.getElementById("entryName").value.trim();
     const month = document.getElementById("entryMonth").value;
+    const date = document.getElementById("entryDate").value;
     const period = document.getElementById("entryPeriod").value;
     const amountRaw = document.getElementById("entryAmount").value;
     const amount = parseFloat(cleanMoney(amountRaw));
   
-    if (!type || !name || !month || !period || isNaN(amount) || amount <= 0) {
+    if (!type || !name || !month || !period || !date || isNaN(amount) || amount <= 0) {
       return Swal.fire({ icon: "warning", title: "Please fill in all fields with valid data." });
     }
   
@@ -133,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   
-    const newEntry = { type, name, month, period, amount };
+    const newEntry = { type, name, month, date, period, amount };
   
     if (isDuplicate(newEntry)) {
       return Swal.fire({ icon: "error", title: "Duplicate entry detected." });
@@ -172,10 +174,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   
     $.ajax({
-      headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
+      headers: {
+        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        "Content-Type": "application/json"
+      },
       url: `/projects/fund-utilization/${project_id}/details`,
       method: "POST",
-      data: { entries },
+      data: JSON.stringify({ entries }),
       success: function (response) {
         if (response.success) {
           Swal.fire({ icon: "success", title: "Entries submitted!" }).then(() => {
@@ -184,19 +189,19 @@ document.addEventListener("DOMContentLoaded", function () {
               const tbody = document.querySelector(`#${tableId} tbody`);
               const tr = document.createElement("tr");
               tr.innerHTML = `
-                <td>${entry.name} (${entry.month} - ${entry.period})</td>
-                <td data-amount="${entry.amount}">${parseFloat(entry.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                <td>${entry.date}</td>  
+                <td>${entry.name} - ${entry.period}</td>
+                <td class="text-end" data-amount="${entry.amount}">₱${parseFloat(entry.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
               `;
               tbody.appendChild(tr);
-  
-              // ✅ Update actual_* field
+    
               const actualInputId = entry.type === 'engineering' ? 'actual_engineering' : 'actual_mqc';
               const actualInput = document.getElementById(actualInputId);
               const currentActual = parseAmount(actualInput.value);
               const newActual = currentActual + parseAmount(entry.amount);
               actualInput.value = newActual.toLocaleString(undefined, { minimumFractionDigits: 2 });
             });
-  
+    
             entries.length = 0;
             renderTable();
             updateBalances();
@@ -209,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Swal.fire({ icon: "error", title: "Submission failed", text: xhr.responseText || "An error occurred." });
       }
     });
+    
   });
   
   function updateAmountFields() {

@@ -258,36 +258,52 @@ protected function logUserAction(Request $request, $projectTitle, $actionPrefix)
     return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
 }
 
-        public function fetchTrashedProjects()
-        {
-            try {
-                $projects = Project::where('is_hidden', 1)
-                    ->orderBy('created_at', 'desc')
-                    ->get()
-                    ->map(function ($project) {
-                        $amount = optional($project->fundsUtilization)->orig_contract_amount;
-                        $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
+public function fetchTrashedProjects()
+{
+    try {
+        $projects = Project::where('is_hidden', 1)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($project) {
+                $amount = optional($project->fundsUtilization)->orig_contract_amount;
+                $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
 
-                        return [
-                            'title' => $project->projectTitle ?? 'N/A',
-                            'location' => $project->projectLoc ?? 'N/A',
-                            'status' => $project->projectStatus ?? 'N/A',
-                            'amount' => $formattedAmount,
-                            'contractor' => (strtolower($project->projectContractor) === 'others')
-                                ? ($project->othersContractor ?? 'N/A')
-                                : ($project->projectContractor ?? 'N/A'),
-                            'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
-                            'action' => '<button class="btn btn-primary btn-sm restore-btn" data-id="' . $project->id . '">Restore</button>',
-                        ];
-                    });
+                return [
+                    'title' => $project->projectTitle ?? 'N/A',
+                    'location' => $project->projectLoc ?? 'N/A',
+                    'status' => $project->projectStatus ?? 'N/A',
+                    'amount' => $formattedAmount,
+                    'contractor' => (strtolower($project->projectContractor) === 'others')
+                        ? ($project->othersContractor ?? 'N/A')
+                        : ($project->projectContractor ?? 'N/A'),
+                    'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
+                    'action' => '<button class="btn btn-primary btn-sm restore-btn" data-id="' . $project->id . '">Restore</button>',
+                ];
+            });
 
-                return view('systemAdmin.trash', compact('projects'));
-            } catch (\Exception $e) {
-                \Log::error('Error fetching trashed projects: ' . $e->getMessage());
-
-                return back()->with('error', 'Failed to load trashed projects. Please try again.');
-            }
+        $role = auth()->user()->role;
+        switch ($role) {
+            case 'System Admin':
+                $view = 'systemAdmin.trash';
+                break;
+            case 'Admin':
+                $view = 'admin.trash';
+                break;
+            case 'Staff':
+                $view = 'staff.trash';
+                break;
+            default:
+                return redirect()->back()->withErrors(['Unauthorized role.']);
         }
+
+        return view($view, compact('projects'));
+
+    } catch (\Exception $e) {
+        \Log::error('Error fetching trashed projects: ' . $e->getMessage());
+        return back()->with('error', 'Failed to load trashed projects. Please try again.');
+    }
+}
+
 
     
         public function restoreProject(Request $request, $id)

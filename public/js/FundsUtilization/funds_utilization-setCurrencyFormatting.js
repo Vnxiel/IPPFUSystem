@@ -1,4 +1,4 @@
-function formatNumber(num) {
+function formatNumber1(num) {
     if (!num) return '';
     const parts = num.toString().split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -51,7 +51,7 @@ function formatInputLive(input) {
       return;
     }
   
-    input.value = '₱' + formatNumber(floatVal.toFixed(2));
+    input.value = '₱' + formatNumber1(floatVal.toFixed(2));
   }
   
   function initAmountInputs() {

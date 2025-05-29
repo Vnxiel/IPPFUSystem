@@ -208,11 +208,12 @@ class FundsUtilizationController extends Controller
             $entries = $request->input('entries', []);
     
             // Fallback to single entry if 'entries' array is not used
-            if (empty($entries) && $request->has(['type', 'name', 'month', 'period', 'amount'])) {
+            if (empty($entries) && $request->has(['type', 'name', 'month', 'date', 'period', 'amount'])) {
                 $entries = [[
                     'type' => $request->input('type'),
                     'name' => $request->input('name'),
                     'month' => $request->input('month'),
+                    'date' => $request->input('date'),
                     'period' => $request->input('period'),
                     'amount' => $request->input('amount'),
                 ]];
@@ -225,10 +226,12 @@ class FundsUtilizationController extends Controller
                 $type = $entry['type'] ?? null;
                 $name = trim($entry['name'] ?? '');
                 $month = trim($entry['month'] ?? '');
+                $date = $entry['date'] ?? null;
+Log::info('Date format:', ['date' => $date]);
                 $paymentPeriod = $entry['period'] ?? null;
                 $amount = $entry['amount'] ?? null;
     
-                if (!$type || !$name || !$month || !$paymentPeriod || !$amount) {
+                if (!$type || !$name || !$month || !$date || !$paymentPeriod || !$amount) {
                     Log::warning("Skipping incomplete entry: " . json_encode($entry));
                     continue;
                 }
@@ -238,6 +241,7 @@ class FundsUtilizationController extends Controller
                     ->where('type', $type)
                     ->where('name', $name)
                     ->where('month', $month)
+                    ->where('breakdown_date', $date)
                     ->where('payment_periods', $paymentPeriod)
                     ->first();
     
@@ -251,9 +255,9 @@ class FundsUtilizationController extends Controller
                     'type' => $type,
                     'name' => $name,
                     'month' => $month,
+                    'breakdown_date' => $date,
                     'payment_periods' => $paymentPeriod,
                     'amount' => $this->cleanMoney($amount),
-                    'date' => now(),
                     'remarks' => null,
                 ]);
     

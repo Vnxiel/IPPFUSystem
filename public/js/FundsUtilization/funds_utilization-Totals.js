@@ -103,3 +103,43 @@ document.addEventListener("DOMContentLoaded", function () {
   // ─── Initial calculation on page load ──────────────────────────────
   calculateAll();
 });
+
+
+
+  // ─── Total actual ──────────────────────────────
+function parseFloatSafe(val) {
+  let num = parseFloat(val.replace(/,/g, ''));
+  return isNaN(num) ? 0 : num;
+}
+
+function calculateActualTotal() {
+  const fields = ['contract_amount', 'engineering', 'mqc', 'contingency'];
+  let total = 0;
+
+  fields.forEach(key => {
+    const input = document.getElementById('actual_' + key);
+    if (input) {
+      total += parseFloatSafe(input.value);
+    }
+  });
+
+  // Format as currency
+  document.getElementById('actual_total').value = total.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+// Recalculate total whenever any actual field is changed
+document.addEventListener('DOMContentLoaded', () => {
+  const fields = ['contract_amount', 'engineering', 'mqc', 'contingency'];
+  fields.forEach(key => {
+    const input = document.getElementById('actual_' + key);
+    if (input) {
+      input.addEventListener('input', calculateActualTotal);
+    }
+  });
+
+  // Initial calculation on page load
+  calculateActualTotal();
+});

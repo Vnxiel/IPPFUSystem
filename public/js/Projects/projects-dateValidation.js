@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-
+    // ================================
+    // 1. Populate Year Options
+    // ================================
         const selectYear = document.getElementById("projectYear");
         if (!selectYear) return;
     
@@ -21,13 +23,15 @@ document.addEventListener("DOMContentLoaded", function () {
     
 
 
-
+    // ================================
+    // 2. Initialize Fields
+    // ================================
 
     const originalStartDate = document.getElementById("originalStartDate");
     const suspensionDate = document.getElementById("suspensionOrderNo1");
     const resumeDate = document.getElementById("resumeOrderNo1");
     const targetCompletion = document.getElementById("targetCompletion");
-    const actualCompletion = document.getElementById("completionDate");
+    const actualCompletion = document.getElementById("revisedCompletionDate");
     const revisedTargetField = document.getElementById("revisedTargetDate");
     const revisedCompletionField = document.getElementById("revisedCompletionDate");
     const extensionField = document.getElementById("timeExtension");
@@ -74,6 +78,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+     // ================================
+    // 5. Set Minimum Allowed Dates
+    // ================================
     function setMinDates() {
         const start = originalStartDate.value;
         if (start) {
@@ -90,6 +97,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+     // ================================
+    // 6. Validate if Date is After Start Date
+    // ================================
     function validateAfterStart(field, label) {
         const startDate = new Date(originalStartDate.value);
         const date = new Date(field.value);
@@ -100,6 +110,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
     }
 
+    // ================================
+    // 7. Validate NTP Issued Date vs Start Date
+    // ================================
     function validateOriginalStartVsNTP() {
         const ntpDate = new Date(ntpIssuedDate.value);
         const startDate = new Date(originalStartDate.value);
@@ -110,6 +123,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
     }
 
+     // ================================
+    // 8. Validate Suspension & Resumption Dates
+    // ================================
     function validateSuspensionAndResumption() {
         const suspend = new Date(suspensionDate.value);
         const resume = new Date(resumeDate.value);
@@ -144,36 +160,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function applyTimeExtensionIfNoSuspension() {
-        const extension = parseInt(extensionField.value || "0");
-        if (
-            extension > 0 &&
-            !suspensionDate.value &&
-            !resumeDate.value &&
-            targetCompletion.value
-        ) {
-            extensionField.closest('.row').style.display = "flex";
-            revisedTargetField.closest('.row').style.display = "flex";
-            revisedCompletionField.closest('.row').style.display = "flex";
     
-            const baseTargetDate = new Date(targetCompletion.value);
-            const newTargetDate = new Date(baseTargetDate);
-            newTargetDate.setDate(newTargetDate.getDate() + extension);
-    
-            revisedTargetField.valueAsDate = newTargetDate;
-    
-            if (actualCompletion.value) {
-                const baseActualDate = new Date(actualCompletion.value);
-                const newActualDate = new Date(baseActualDate);
-                newActualDate.setDate(newActualDate.getDate() + extension);
-                revisedCompletionField.valueAsDate = newActualDate;
-            }
-        }
-    }
     extensionField.addEventListener("input", () => {
-        applyTimeExtensionIfNoSuspension();
+        updateRevisedTargetCompletion();
     });
-        
+    
+       // ================================
+    // 9. Calculate Total Suspension Days
+    // ================================   
     function calculateTotalSuspensionExtension() {
         const orderContainer = document.getElementById('orderContainer');
         const suspensionInputs = orderContainer.querySelectorAll('input[id^="suspensionOrderNo"]');
@@ -202,45 +196,115 @@ document.addEventListener("DOMContentLoaded", function () {
         return totalExtensionDays;
     }
     
-    function updateExtensionFields() {
-        const totalExtensionDays = calculateTotalSuspensionExtension();
+    function calculateTotalSuspensionExtension() {
+        const orderContainer = document.getElementById('orderContainer');
+        const suspensionInputs = orderContainer.querySelectorAll('input[id^="suspensionOrderNo"]');
+        const resumptionInputs = orderContainer.querySelectorAll('input[id^="resumeOrderNo"]');
     
-        if (totalExtensionDays > 0) {
-            extensionField.closest('.row').style.display = "flex";
-            revisedTargetField.closest('.row').style.display = "flex";
-            revisedCompletionField.closest('.row').style.display = "flex";
+        let totalSuspensionDays = 0;
     
-            extensionField.value = totalExtensionDays;
+        suspensionInputs.forEach((suspensionInput, idx) => {
+            const suspensionValue = suspensionInput.value;
+            const resumeInput = resumptionInputs[idx];
+            const resumeValue = resumeInput ? resumeInput.value : null;
     
-            if (targetCompletion.value) {
-                let newTarget = new Date(targetCompletion.value);
-                newTarget.setDate(newTarget.getDate() + totalExtensionDays);
-                revisedTargetField.valueAsDate = newTarget;
+            if (suspensionValue && resumeValue) {
+                const suspendDate = new Date(suspensionValue);
+                const resumeDate = new Date(resumeValue);
+    
+                if (resumeDate > suspendDate) {
+                    const diffTime = resumeDate - suspendDate;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    totalSuspensionDays += diffDays;
+                }
             }
+        });
     
-            if (actualCompletion.value) {
-                let newActual = new Date(actualCompletion.value);
-                newActual.setDate(newActual.getDate() + totalExtensionDays);
-                revisedCompletionField.valueAsDate = newActual;
-            }
-        } else {
-            // Hide extension fields or reset if no valid suspensions
-            extensionField.closest('.row').style.display = "none";
-            revisedTargetField.closest('.row').style.display = "none";
-            revisedCompletionField.closest('.row').style.display = "none";
+        return totalSuspensionDays;
+    }
     
-            extensionField.value = "";
-            revisedTargetField.value = "";
-            revisedCompletionField.value = "";
+    function updateRevisedTargetCompletion() {
+        const targetDate = targetCompletion.value ? new Date(targetCompletion.value) : null;
+        const actualDate = actualCompletion && actualCompletion.value
+            ? new Date(actualCompletion.value)
+            : null;
+
+        const extension = parseInt(extensionField.value || "0");
+        const suspensionDays = calculateTotalSuspensionExtension();
+    
+        if (!targetDate) return;
+    
+        const totalDaysToAdd = suspensionDays + extension;
+    
+        const revisedTargetDate = new Date(targetDate);
+        revisedTargetDate.setDate(revisedTargetDate.getDate() + totalDaysToAdd);
+    
+        // Display revised fields
+        extensionField.closest('.row').style.display = "flex";
+        revisedTargetField.closest('.row').style.display = "flex";
+        revisedCompletionField.closest('.row').style.display = "flex";
+    
+        revisedTargetField.valueAsDate = revisedTargetDate;
+    
+        if (actualDate) {
+            const revisedActualDate = new Date(actualDate);
+            revisedActualDate.setDate(revisedActualDate.getDate() + totalDaysToAdd);
+            revisedCompletionField.valueAsDate = revisedActualDate;
         }
     }
     
     // Example: Call updateExtensionFields on any input change of suspension/resumption date fields
     document.getElementById('orderContainer').addEventListener('input', e => {
         if (e.target.matches('input[id^="suspensionOrderNo"], input[id^="resumeOrderNo"]')) {
-            updateExtensionFields();
+            updateRevisedTargetCompletion();
         }
     });
+
+    const orderContainer = document.getElementById('orderContainer');
+
+orderContainer.addEventListener('input', function (e) {
+    if (e.target.matches('input[id^="suspensionOrderNo"]') || e.target.matches('input[id^="resumeOrderNo"]')) {
+        validateSuspensionOrderSequence();
+        updateRevisedTargetCompletion();
+    }
+});
+
+function validateSuspensionOrderSequence() {
+    const suspensionInputs = orderContainer.querySelectorAll('input[id^="suspensionOrderNo"]');
+    const resumptionInputs = orderContainer.querySelectorAll('input[id^="resumeOrderNo"]');
+
+    let latestResumptionDate = null;
+
+    for (let i = 0; i < suspensionInputs.length; i++) {
+        const suspensionInput = suspensionInputs[i];
+        const resumptionInput = resumptionInputs[i];
+
+        const suspensionDate = suspensionInput.value ? new Date(suspensionInput.value) : null;
+        const resumptionDate = resumptionInput.value ? new Date(resumptionInput.value) : null;
+
+        // Validate that the suspension date of the current order is not before the latest resumption date
+        if (suspensionDate && latestResumptionDate && suspensionDate <= latestResumptionDate) {
+            showError(
+                `Suspension Date for Order No.${i + 1} must be after the latest Resumption Date of the previous orders.`,
+                suspensionInput
+            );
+            return;
+        }
+
+        // Update latestResumptionDate if the current resumption date is valid
+        if (resumptionDate && (!latestResumptionDate || resumptionDate > latestResumptionDate)) {
+            latestResumptionDate = resumptionDate;
+        }
+
+        // Validate suspension < resumption within the same order
+        if (suspensionDate && resumptionDate && resumptionDate <= suspensionDate) {
+            showError(`Resumption Date must be after Suspension Date in Order No.${i + 1}.`, resumptionInput);
+            return;
+        }
+    }
+}
+
+    
     
 
     // Trigger validation and restrictions only on blur
@@ -407,3 +471,95 @@ originalStartDate.addEventListener("change", updateTargetCompletion);
 originalStartDate.addEventListener("input", updateTargetCompletion);
 contractDays.addEventListener('input', updateTargetCompletion);
 
+function checkOrderInputs() {
+    const suspensionInput = document.querySelector('input[name^="suspensionOrderNo"]');
+    const extensionInput = document.getElementById('timeExtension');
+
+    const hasSuspension = suspensionInput && suspensionInput.value.trim() !== '';
+    const hasExtension = extensionInput && extensionInput.value.trim() !== '';
+
+    const newDates = document.getElementById('newDatesSection');
+    const actualDate = document.getElementById('actualCompletionSection');
+
+    if (hasSuspension || hasExtension) {
+        newDates.style.display = 'flex';
+        actualDate.style.display = 'none';
+    } else {
+        newDates.style.display = 'none';
+        actualDate.style.display = 'flex';
+    }
+}
+
+// Trigger check on load and on input
+window.addEventListener('DOMContentLoaded', checkOrderInputs);
+document.getElementById('timeExtension').addEventListener('input', checkOrderInputs);
+document.querySelector('input[name^="suspensionOrderNo"]').addEventListener('input', checkOrderInputs);
+
+
+function enforceSuspensionDateConstraints() {
+    const orderContainer = document.getElementById("orderContainer");
+    const suspensionInputs = orderContainer.querySelectorAll('input[id^="suspensionOrderNo"]');
+    const resumptionInputs = orderContainer.querySelectorAll('input[id^="resumeOrderNo"]');
+
+    let lastAllowedDate = originalStartDate.value ? new Date(originalStartDate.value) : null;
+
+    suspensionInputs.forEach((suspInput, index) => {
+        const resumeInput = resumptionInputs[index];
+
+        if (suspInput) {
+            if (lastAllowedDate) {
+                const nextDay = new Date(lastAllowedDate);
+                nextDay.setDate(nextDay.getDate() + 1);
+                const minDate = nextDay.toISOString().split('T')[0];
+                suspInput.min = minDate;
+                resumeInput.min = minDate;
+            }
+
+            // Add validation listener
+            suspInput.addEventListener("change", () => {
+                const suspDate = new Date(suspInput.value);
+                if (lastAllowedDate && suspDate <= lastAllowedDate) {
+                    showError(`Suspension Date No.${index + 1} must be after the previous resumption date or the original start date.`, suspInput);
+                }
+            });
+
+            resumeInput.addEventListener("change", () => {
+                const resumeDate = new Date(resumeInput.value);
+                const suspDate = new Date(suspInput.value);
+
+                if (resumeDate <= suspDate) {
+                    showError(`Resumption Date No.${index + 1} must be after Suspension Date No.${index + 1}.`, resumeInput);
+                } else if (lastAllowedDate && resumeDate <= lastAllowedDate) {
+                    showError(`Resumption Date No.${index + 1} must be after the previous resumption date or the original start date.`, resumeInput);
+                } else {
+                    // Update lastAllowedDate for next round
+                    lastAllowedDate = resumeDate;
+                }
+            });
+
+            // If already filled, update lastAllowedDate
+            if (resumeInput.value) {
+                const resumeDate = new Date(resumeInput.value);
+                if (resumeDate > lastAllowedDate) {
+                    lastAllowedDate = resumeDate;
+                }
+            }
+        }
+    });
+}
+
+// Call this AFTER originalStartDate is set
+originalStartDate.addEventListener("change", () => {
+    setMinDates();
+    enforceSuspensionDateConstraints();
+});
+
+suspensionDate.addEventListener("change", () => {
+    validateSuspensionAndResumption();
+    enforceSuspensionDateConstraints();
+});
+
+resumeDate.addEventListener("change", () => {
+    validateSuspensionAndResumption();
+    enforceSuspensionDateConstraints();
+});
