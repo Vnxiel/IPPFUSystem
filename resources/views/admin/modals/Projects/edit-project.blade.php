@@ -268,7 +268,7 @@
                             <div class="col-4">
                                 <select class="form-select" id="ea_position" name="ea_position" required>
                                     <option value="" disabled {{ old('ea_position', $project['ea_position'] ?? '') == '' ? 'selected' : '' }}>Select Position</option>
-                                    <option value="Engineer Aid" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Aid' ? 'selected' : '' }}>Engineer Aid</option>
+                                    <option value="Engineer Aide" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Aide' ? 'selected' : '' }}>Engineer Aide</option>
                                     <option value="Engineer Assistant" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Assistant' ? 'selected' : '' }}>Engineer Assistant</option>
                                     <option value="Engineer I" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer I' ? 'selected' : '' }}>Engineer I</option>
                                 </select>
@@ -587,7 +587,7 @@
                                     <!-- Revised Dates and Extension -->
                                             <div class="row mb-2">
                                                 <div class="col-3 p">
-                                                    <label for="revisedTargetDate" class="form-label">Revised Target Date
+                                                    <label for="revisedTargetDate" class="form-label">New Target Completion Date
                                                     </label>
                                                 </div>
                                                 <div class="col-3">
@@ -595,7 +595,7 @@
                                                         value="{{ old('revisedTargetDate', $project['revisedTargetDate'] ?? '') }}">
                                                 </div>
                                                 <div class="col-3 p">
-                                                    <label for="revisedCompletionDate" class="form-label">Revised Completion Date
+                                                    <label for="revisedCompletionDate" class="form-label">Actual Completion Dat
                                                     </label>
                                                 </div>
                                                 <div class="col-3">

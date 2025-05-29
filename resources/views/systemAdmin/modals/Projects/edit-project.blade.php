@@ -18,7 +18,7 @@
                             <div class="row g-3 mb-2">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <div class="col-3 p">
+                                        <div class="col-3 text-end">
                                             <label for="projectTitle" class="form-label">Project Title <span
                                                     class="text-danger">*</span></label>
                                         </div>
@@ -31,7 +31,7 @@
                             <div class="row g-3 mb-2">
                                 <div class="col-md-12  mb-2">
                                     <div class="row">
-                                        <div class="col-3 p">
+                                        <div class="col-3 text-end">
                                             <label for="projectID" class="form-label">Project ID <span
                                                     class="text-danger">*</span></label>
                                         </div>
@@ -44,7 +44,7 @@
                             </div>
                                 <!-- Project Year with Datalist -->
                                 <div class="row g-3 mb-2">
-                                    <div class="col-md-3 p">
+                                    <div class="col-md-3 text-end">
                                         <label for="projectYear" class="form-label">Year <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-3">
@@ -60,7 +60,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-2 text-end">
                                         <label for="projectFPP" class="form-label">FPP <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -69,7 +69,7 @@
                                           </div>
                                 </div>
                                 <div class="row mb-2 g-3">
-                                    <div class="col-md-3">
+                                    <div class="col-md-3 text-end">
                                         <label for="projectRC" class="form-label">Responsibility Center<span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -78,7 +78,7 @@
                                         </div>
                                 </div>
                                 <div class="row g-3 mb-2 p">
-                            <div class="col-md-3">
+                            <div class="col-md-3 text-end">
                                 <label for="projectLoc" class="form-label">Location
                                     <span class="text-danger">*</span>
                                 </label>
@@ -105,7 +105,7 @@
                         </div>
 
                         <div class="row mb-2 g-3">
-                            <div class="col-3 p">
+                            <div class="col-3 text-end">
                                 <label for="projectDescription" class="form-label">Project Description<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -115,7 +115,7 @@
                             </div>
                         </div>
                          <!-- Contractor Input with Dynamic Suggestions -->
-                         <div class="row g-3 mb-2 p">
+                         <div class="row g-3 mb-2 text-end">
                             <div class="col-md-3">
                                 <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
@@ -150,16 +150,7 @@
                                     <input type="text" class="form-control" id="othersContractor"
                                         name="othersContractor" placeholder="Enter new contractor name">
                                 </div> -->
-
-                        <div class="row mb-2 align-items-center">
-                            <label for="modeOfImplementation" class="col-3 p form-label">Mode of Implementation
-                                <span class="text-danger">*</span></label>
-                            <div class="col-9">
-                                <input type="text" class="form-control" id="modeOfImplementation" name="modeOfImplementation" value="{{ old('modeOfImplementation', $project['modeOfImplementation'] ?? '') }}" readonly>
-                            </div>
-                        </div>
-
-                        
+                    
                         <div class="row mb-2 g-3 text-end">
                             <div class="col-md-3 text-end">
                                 <label for="sourceOfFunds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
@@ -184,7 +175,7 @@
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-3 p">
+                                    <div class="col-md-3 text-end">
                                         <label for="contractDays" class="form-label">Contract Days (Calendar days) <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -236,7 +227,7 @@
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-3 p">
+                                    <div class="col-md-3 text-end">
                                             <label for="projectSlippage" class="form-label">Slippage</label>
                                     </div>
                                     <div class="col-md-9">
@@ -268,7 +259,7 @@
                             <div class="col-4">
                                 <select class="form-select" id="ea_position" name="ea_position" required>
                                     <option value="" disabled {{ old('ea_position', $project['ea_position'] ?? '') == '' ? 'selected' : '' }}>Select Position</option>
-                                    <option value="Engineer Aid" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Aid' ? 'selected' : '' }}>Engineer Aid</option>
+                                    <option value="Engineer Aide" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Aide' ? 'selected' : '' }}>Engineer Aide</option>
                                     <option value="Engineer Assistant" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Assistant' ? 'selected' : '' }}>Engineer Assistant</option>
                                     <option value="Engineer I" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer I' ? 'selected' : '' }}>Engineer I</option>
                                 </select>

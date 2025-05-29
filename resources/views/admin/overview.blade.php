@@ -31,6 +31,17 @@
                                 <i class="fa fa-edit"></i>
                                 <span class="d-none d-md-inline">Edit</span>
                             </button>
+                            
+                            <!-- Report Button -->
+                            <button type="button"
+                                    id="generateProjectBtn"
+                                    class="btn btn-info btn-sm d-flex align-items-center gap-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#generateProjectModal"
+                                    title="Generate/Download Report">
+                                <i class="fa fa-download"></i>
+                                <span class=" d-md-inline">Report</span>
+                            </button>
 
                             <button type="button" id="trashProjectBtn"
                                 class="btn btn-danger btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"

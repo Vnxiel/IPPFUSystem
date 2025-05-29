@@ -236,7 +236,7 @@
                                     <div class="col-4">
                                         <select class="form-select" id="ea_position" name="ea_position" required>
                                             <option value="" disabled selected>Select Position</option>
-                                            <option value="Engineer Aid">Engineer Aid</option>
+                                            <option value="Engineer Aide">Engineer Aide</option>
                                             <option value="Engineer Assistant">Engineer Assistant</option>
                                             <option value="Engineer I">Engineer I</option>
                                         </select>

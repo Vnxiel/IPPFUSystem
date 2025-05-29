@@ -121,7 +121,7 @@
       <td style="width: 70%;">
         <div class="header-text">
           <h5>REPUBLIC OF THE PHILIPPINES</h5>
-          <h5>PROVINCIAL GOVERNMENT OF NUEVA VIZCAYA</h5>
+          <h5>PROVINCE OF NUEVA VIZCAYA</h5>
           <h3>PROVINCIAL ENGINEERING OFFICE</h3>
           <h6>People’s Hall, Capitol Compound, Bayombong, Nueva Vizcaya, 3700</h6>
         </div>
@@ -148,7 +148,7 @@
         <tbody>
           <tr class="fit-text-row">
             <th>Project Title:</th>
-            <td colspan="3" style="font-size: 18px; font-weight: bold">{{ $project->projectTitle }}</td>
+            <td colspan="3" style="font-size: 18px; font-weight: bold;text-transform: uppercase;">{{ $project->projectTitle }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Location:</th>
@@ -274,6 +274,11 @@
       <td>ORIGINAL</td>
       <td>V.O.1</td>
       <td>ACTUAL</td>
+    </tr>
+    <tr class="fit-text-row">
+            <th>Appropriation:</th>
+            <td colspan="4" class="text-end">{{ number_format((float) $projectFundsUtilization['orig_appropriation'], 2) }}</td>
+
     </tr>
     <tr class="fit-text-row">
       <th>ABC:</th>
