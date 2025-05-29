@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('month');
+            $table->date('breakdown_date');
             $table->string('payment_periods');
             $table->decimal('amount', 15, 2);
             $table->date('date');

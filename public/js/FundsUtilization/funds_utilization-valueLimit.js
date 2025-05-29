@@ -127,27 +127,8 @@ document.addEventListener('DOMContentLoaded', function () {
         showAlert('Please select entry type.', 'info');
         return;
       }
-      const amountEng = document.querySelector('input[name="amountEng"]');
-      const amountMqc = document.querySelector('input[name="amountMqc"]');
-
-      if (type === 'engineering') {
-        if (!amountEng || !amountEng.value || parseFloat(amountEng.value) <= 0) {
-          e.preventDefault();
-          showAlert('Engineering amount is missing or zero.', 'error');
-          return;
-        } 
-      }
-
-      if (type === 'mqc') {
-        if (!amountMqc || !amountMqc.value || parseFloat(amountMqc.value) <= 0) {
-          e.preventDefault();
-          showAlert('MQC amount is missing or zero.', 'error');
-          return;
-        }
-
-        
-      }
-
+    
+    
       // Allow adding entry logic here
     });
   }

@@ -8,67 +8,60 @@
       </div>
 
       <div class="modal-body">
-        <!-- Info Box for Real-time Balances
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="alert alert-info py-2">
-              <strong>Engineering Balance: </strong> <span id="engineeringBalance" data-balance="0">0.00</span>
+
+        <!-- Form Inputs at the Top -->
+        <fieldset class="border rounded-3 p-3 mb-3">
+          <legend class="float-none w-auto fs-6 px-2">Entry Information</legend>
+          <div class="row g-2 align-items-end">
+            <div class="col-md-2">
+              <label for="entryType" class="form-label form-label-sm">Type</label>
+              <select id="entryType" class="form-select form-select-sm">
+                <option value="" disabled selected>Select Type</option>
+                <option value="engineering">Engineering</option>
+                <option value="mqc">MQC</option>
+              </select>
+            </div>
+
+            <div class="col-md-2 position-relative">
+              <label for="entryName" class="form-label form-label-sm">Name</label>
+              <input type="text" id="entryName" class="form-control form-control-sm" placeholder="Type or select name" autocomplete="off">
+              <div id="nameSuggestions" class="list-group position-absolute w-100 shadow-sm" style="z-index: 1050; display: none; max-height: 160px; overflow-y: auto;">
+                @foreach ($allNames as $name)
+                  <div class="list-group-item list-group-item-action suggestion-item">{{ $name }}</div>
+                @endforeach
+              </div>
+            </div>
+
+            <div class="col-md-1">
+              <label for="entryMonth" class="form-label form-label-sm">Month</label>
+              <select id="entryMonth" class="form-select form-select-sm">
+                <option value="" disabled selected>Select Month</option>
+                <!-- JS fills options -->
+              </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label form-label-sm mb-1">Period (From - To)</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">From</span>
+                  <input type="date" id="entryDateFrom" class="form-control" aria-label="Start date">
+                  <span class="input-group-text">To</span>
+                  <input type="date" id="entryDateTo" class="form-control" aria-label="End date">
+                </div>
+              </div>
+
+           
+
+            <div class="col-md-2">
+              <label for="entryAmount" class="form-label form-label-sm">Amount</label>
+              <input type="text" id="entryAmount" class="form-control form-control-sm" placeholder="Amount">
+            </div>
+
+            <div class="col-md-1 d-grid">
+              <button type="button" id="addEntryBtn" class="btn btn-success btn-sm mt-4"><i class="fa fa-plus"></i></button>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="alert alert-info py-2">
-              <strong>MQC Balance: </strong> <span id="mqcBalance" data-balance="0">0.00</span>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- Form Inputs -->
-        <div class="row g-2 mb-3 align-items-end">
-          <div class="col-md-2">
-            <label for="entryType" class="form-label form-label-sm">Type</label>
-            <select id="entryType" class="form-select form-select-sm">
-              <option value="" disabled selected>Select Type</option>
-              <option value="engineering">Engineering</option>
-              <option value="mqc">MQC</option>
-            </select>
-          </div>
-
-          <div class="col-md-3 position-relative">
-            <label for="entryName" class="form-label form-label-sm">Name</label>
-            <input type="text" id="entryName" class="form-control form-control-sm" placeholder="Type or select name" autocomplete="off">
-            <div id="nameSuggestions" class="list-group position-absolute w-100 shadow-sm" style="z-index: 1050; display: none; max-height: 160px; overflow-y: auto;">
-              @foreach ($allNames as $name)
-                <div class="list-group-item list-group-item-action suggestion-item">{{ $name }}</div>
-              @endforeach
-            </div>
-          </div>
-
-          <div class="col-md-2">
-            <label for="entryMonth" class="form-label form-label-sm">Month</label>
-            <select id="entryMonth" class="form-select form-select-sm">
-              <option value="" disabled selected>Select Month</option>
-              <!-- JS fills options -->
-            </select>
-          </div>
-
-          <div class="col-md-2">
-            <label for="entryPeriod" class="form-label form-label-sm">Period</label>
-            <select id="entryPeriod" class="form-select form-select-sm">
-              <option value="" disabled selected>Select Period</option>
-              <option value="1st Quincena">1st Quincena</option>
-              <option value="2nd Quincena">2nd Quincena</option>
-            </select>
-          </div>
-
-          <div class="col-md-2">
-            <label for="entryAmount" class="form-label form-label-sm">Amount</label>
-            <input type="text" id="entryAmount" class="form-control form-control-sm" placeholder="Amount">
-          </div>
-
-          <div class="col-md-1 d-grid">
-            <button type="button" id="addEntryBtn" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></button>
-          </div>
-        </div>
+        </fieldset>
 
         <!-- Preview Table -->
         <div id="entryPreview" class="table-responsive">
@@ -78,6 +71,7 @@
                 <th>Type</th>
                 <th>Name</th>
                 <th>Month</th>
+                <th>Date</th>
                 <th>Period</th>
                 <th>Amount</th>
                 <th>Action</th>
@@ -97,6 +91,7 @@
     </div>
   </div>
 </div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {

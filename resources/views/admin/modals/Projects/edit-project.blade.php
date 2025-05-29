@@ -160,8 +160,8 @@
                         </div>
 
                         
-                        <div class="row mb-2 g-3 text-end">
-                            <div class="col-md-3 text-end">
+                        <div class="row mb-2 g-3">
+                            <div class="col-md-3 p">
                                 <label for="sourceOfFunds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9 position-relative">
@@ -244,6 +244,16 @@
                                             placeholder="Enter slippage">
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <!-- Actual length-->
+                            <div class="col-3 p">
+                                <label for="actual_length" class="form-label">Actual Length:</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control" id="actual_length" name="actual_length" value="{{ old('actual_length', $project['actual_length'] ?? '') }}"
+                                    placeholder="Enter projects actual length">
                             </div>
                         </div>
 
@@ -475,7 +485,7 @@
                                             value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
                                     </div>
                                 </div>
-                                <div class="row mb-2">
+                                <!-- <div class="row mb-2">
                                         <div class="col-3 mb-2 p">
                                             <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
                                         </div>
@@ -484,7 +494,7 @@
                                                 value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
                                                 style="background-color: lightgray;">
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                 
 
@@ -575,7 +585,7 @@
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-3 ">
-                                            <label for="timeExtension" class="form-label">Extension Date
+                                            <label for="timeExtension" class="form-label">Number of Days Extensions
                                             </label>
                                         </div>
                                         <div class="col-3">
@@ -584,28 +594,34 @@
                                                 value="{{ old('timeExtension', $project['timeExtension'] ?? '') }}">
                                         </div>
                                     </div>
-                                    <!-- Revised Dates and Extension -->
-                                            <div class="row mb-2">
-                                                <div class="col-3 p">
-                                                    <label for="revisedTargetDate" class="form-label">New Target Completion Date
-                                                    </label>
-                                                </div>
-                                                <div class="col-3">
-                                                    <input type="date" class="form-control" id="revisedTargetDate" name="revisedTargetDate"
-                                                        value="{{ old('revisedTargetDate', $project['revisedTargetDate'] ?? '') }}">
-                                                </div>
-                                                <div class="col-3 p">
-                                                    <label for="revisedCompletionDate" class="form-label">Actual Completion Dat
-                                                    </label>
-                                                </div>
-                                                <div class="col-3">
-                                                    <input type="date" class="form-control" id="revisedCompletionDate"
-                                                        name="revisedCompletionDate"
-                                                        value="{{ old('revisedCompletionDate', $project['revisedCompletionDate'] ?? '') }}">
-                                                </div>
-                                            </div>    
+                                    <div id="newDatesSection" class="row mb-2" style="display: none;">
+                                        <div class="col-3 text-end">
+                                            <label for="revisedTargetDate" class="form-label">New Target Completion Date</label>
+                                        </div>                        
+                                        <div class="col-3">
+                                            <input type="date" class="form-control" id="revisedTargetDate" name="revisedTargetDate"  value="{{ old('revisedTargetDate', $project['revisedTargetDate'] ?? '') }}">
+                                        </div>
+                                        <div class="col-3 text-end">
+                                            <label for="revisedCompletionDate" class="form-label">Actual Completion Date</label>
+                                        </div>                        
+                                        <div class="col-3">
+                                            <input type="date" class="form-control" id="revisedCompletionDate" name="revisedCompletionDate" value="{{ old('revisedCompletionDate', $project['revisedCompletionDate'] ?? '') }}">
+                                        </div>
                                     </div>
-                                </fieldset>
+
+                                    <!-- Actual Completion Date (Default View) -->
+                                    <div id="actualCompletionSection" class="row mb-2">
+                                        <div class="col-3 mb-2">
+                                            <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-9">
+                                            <input type="date" class="form-control" id="completionDate" name="completionDate"
+                                                value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
+                                                style="background-color: lightgray;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
 
 
                             <!-- Modal Footer -->

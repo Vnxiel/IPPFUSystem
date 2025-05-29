@@ -5,6 +5,33 @@ function getSanitizedValue(input) {
 
 document.addEventListener('DOMContentLoaded', function () {
 
+  const abcInput = document.getElementById('orig_abc');
+  const contractInput = document.getElementById('orig_contract_amount');
+  const savingsInput = document.getElementById('orig_bid');
+
+  function parseCurrency(value) {
+    if (!value) return 0;
+    // Remove peso sign, commas, and whitespace
+    return parseFloat(value.replace(/[₱,]/g, '').trim()) || 0;
+  }
+
+  function updateBidSavings() {
+    const abc = parseCurrency(abcInput.value);
+    const contract = parseCurrency(contractInput.value);
+    const savings = abc - contract;
+
+    if (savingsInput) {
+      savingsInput.value = savings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+  }
+
+  if (abcInput && contractInput && savingsInput) {
+    updateBidSavings(); // On page load
+
+    abcInput.addEventListener('input', updateBidSavings);
+    contractInput.addEventListener('input', updateBidSavings);
+  }
+
   const voCountInput = document.getElementById('voCount');
   let voCount = parseInt(voCountInput?.value) || 1;
 
@@ -26,9 +53,14 @@ document.addEventListener('DOMContentLoaded', function () {
   ];
 
   function formatNumber(num) {
-    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (num === null || num === undefined || num === '') return '';
+    const str = num.toString().replace(/[^0-9.]/g, '');
+    const parts = str.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
   }
-
+  
+  
 
 
   function updateActualField(field, latestVO) {
@@ -122,38 +154,69 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   attachVOListeners(); // Initial run
-
   function calculateBalance(triggerInput = null) {
     const contractAmount = getSanitizedValue(actualContractAmountInput);
-    let total = 0;
-
+    let sum = 0;
+  
     inputIds.forEach(id => {
-      const input = document.getElementById(id);
-      if (input) {
-        total += getSanitizedValue(input);
+      if (id !== 'amountFinal') {
+        sum += getSanitizedValue(document.getElementById(id));
       }
     });
-
-    const balance = contractAmount - total;
-
-    if (balanceDisplay) {
-      balanceDisplay.textContent = formatNumber(balance);
+  
+    const finalInput = document.getElementById('amountFinal');
+    const finalAmount = Math.max(0, contractAmount - sum);
+    if (finalInput) finalInput.value = formatNumber(finalAmount);
+  
+    const balance = contractAmount - (sum + finalAmount);
+  
+    if (balance < 0 && triggerInput) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Contract Balance',
+        text: 'The total amount exceeds the contract amount. Please adjust your inputs.',
+      }).then(() => {
+        triggerInput.value = '';
+        triggerInput.focus();
+      });
+      return;
     }
-
-    if (contractAmountInput) {
-      contractAmountInput.value = formatNumber(contractAmount);
-    }
+  
+    if (balanceDisplay) balanceDisplay.textContent = formatNumber(Math.max(0, balance));
+    if (contractAmountInput) contractAmountInput.value = formatNumber(contractAmount);
   }
-
+  
   inputIds.forEach(id => {
     const input = document.getElementById(id);
-    if (input) {
-      input.addEventListener('input', () => calculateBalance(input));
-      input.addEventListener('blur', function () {
-        const val = getSanitizedValue(this);
-        this.value = val ? formatNumber(val) : '';
-      });
-    }
+    if (!input) return;
+
+    input.addEventListener('input', function () {
+
+      if (id === 'amountFinal') {
+        const raw = this.value.replace(/[^0-9.]/g, '');
+        let value = parseFloat(raw);
+        const contractAmount = getSanitizedValue(actualContractAmountInput);
+        let sumBeforeFinal = 0;
+    
+        inputIds.forEach(otherId => {
+          if (otherId !== 'amountFinal') {
+            sumBeforeFinal += getSanitizedValue(document.getElementById(otherId));
+          }
+        });
+    
+        const maxFinal = contractAmount - sumBeforeFinal;
+        if (isNaN(value)) value = 0;
+        if (value > maxFinal) value = maxFinal;
+    
+        this.value = formatNumber(value);
+      }
+    
+      calculateBalance(this); // Pass the triggering input
+    });
+    
+    input.addEventListener('blur', function () {
+      this.value = this.value ? formatNumber(getSanitizedValue(this)) : '';
+    });
   });
 
   const actualFields = ['actual_contract_amount', 'actual_engineering', 'actual_mqc'];
@@ -295,6 +358,4 @@ function updateBalances() {
 }
 
 updateBalances(); 
-
-
 

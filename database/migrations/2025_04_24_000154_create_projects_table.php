@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('projectYear');
             $table->string('projectRC');
             $table->string('projectFPP');
+            $table->string('actual_length');
 
 
             $table->date('originalStartDate');

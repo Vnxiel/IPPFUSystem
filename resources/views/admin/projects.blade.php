@@ -43,10 +43,6 @@
                             <div id="contractorDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                 style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                 
-                                <!-- Add "All Contractors" Option -->
-                                <button type="button" class="list-group-item list-group-item-action"
-                                    onclick="selectContractor('All Contractors')">All Contractors</button>
-
                                 @foreach($contractors as $contractor)
                                     <button type="button" class="list-group-item list-group-item-action"
                                         onclick="selectContractor('{{ $contractor->name }}')">{{ $contractor->name }}</button>

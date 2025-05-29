@@ -215,9 +215,20 @@
                                     placeholder="Enter project slippage">
                             </div>
                         </div>
+                        <div class="row mb-2">
+                            <!-- Actual length-->
+                            <div class="col-3 text-end">
+                                <label for="actual_length" class="form-label">Actual Length:</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control" id="actual_length" name="actual_length"
+                                    placeholder="Enter projects actual length">
+                            </div>
+                        </div>
                       
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Dynamic Dropdown -->
+                                    <div class="col-md-3 text-end">
                                     <div class="col-md-3 text-end">
                                         <label for="ea" class="form-label">Project Engineer <span class="text-danger">*</span></label>
                                     </div>
@@ -425,7 +436,7 @@
                         </legend>
 
                         <div class="container">
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-2 text-end">
                                 <label for="modeOfImplementation" class="col-3 form-label">Mode of Implementation
                                     <span class="text-danger">*</span></label>
                                 <div class="col-9">
@@ -436,6 +447,7 @@
                             <!-- Bagong add -->
                             <div class="row mb-2 align-items-center">
                                 <div class="col-3 text-end">
+                                    <label for="" class="form-label">Target Starting Date
                                     <label for="" class="form-label">Target Starting Date
                                     <span class="text-danger">*</span></label>
                                 </div>                        
@@ -451,17 +463,8 @@
                                         name="targetCompletion">
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-3 mb-2 text-end">
-                                    <label for="" class="form-label">Actual Date of Completion
-                                        <span class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-9">
-                                    <input type="date" style="background-color: lightgray;" class="form-control"
-                                        id="completionDate" name="completionDate">
-                                </div>
-                            </div>
-                            
+                          
+
                            
 
                             <div class="row">
@@ -524,23 +527,34 @@
                                         name="timeExtension">
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <!-- New Target and Completion Dates -->
+                            <div id="newDatesSection" class="row mb-2" style="display: none;">
                                 <div class="col-3 text-end">
                                     <label for="revisedTargetDate" class="form-label">New Target Completion Date</label>
                                 </div>                        
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="revisedTargetDate"
-                                        name="revisedTargetDate">
+                                    <input type="date" class="form-control" id="revisedTargetDate" name="revisedTargetDate">
                                 </div>
                                 <div class="col-3 text-end">
-                                    <label for="revisedCompletionDate" class="form-label">Actual Completion Date</label>
+                                    <label for="completionDate" class="form-label">Actual Completion Date</label>
                                 </div>                        
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="revisedCompletionDate"
-                                        name="revisedCompletionDate">
+                                    <input type="date" class="form-control" id="completionDate" name="completionDate">
                                 </div>
                             </div>
-                            
+
+                            <!-- Actual Completion Date (Default View) -->
+                            <div id="actualCompletionSection" class="row mb-2">
+                                <div class="col-3 mb-2">
+                                    <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-9">
+                                    <input type="date" class="form-control" id="completionDate" name="completionDate"
+                                        value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
+                                        style="background-color: lightgray;">
+                                </div>
+                            </div>
+
                            
 
      
