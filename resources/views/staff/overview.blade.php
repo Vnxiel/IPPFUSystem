@@ -1,3 +1,4 @@
+
 @extends('staff.layout')
 
 @section('title', 'Overview Page')
@@ -274,7 +275,7 @@
                                         </div>
                                         <div class="row mb-0">
                                             <div class="col-md-5">
-                                                <p class="font-base">Original Starting Date:</p>
+                                                <p class="font-base">Target Starting Date:</p>
                                             </div>
                                             <div class="col-md-7">
                                                 <p style="font-weight: normal; color: black;">
@@ -284,7 +285,7 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-5 ">
-                                                <p class="font-base">Target Date:</p>
+                                                <p class="font-base">Target Completion Date:</p>
                                             </div>
                                             <div class="col-md-7">
                                                 <p style="font-weight: normal; color: black;">

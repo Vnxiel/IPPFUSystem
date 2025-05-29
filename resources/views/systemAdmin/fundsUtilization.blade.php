@@ -51,6 +51,7 @@
                     @endif
                     @endforeach
                     <th>Actual Utilization</th>
+                    <th>Actual Utilization</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -385,6 +386,7 @@
                     <td>Total Savings</td>
                     <td><input type="text" class="form-control form-control-sm text-end" id="amountSavings" name="amountSavings"></td>
                   </tr>
+
                 </tbody>
               </table>
             </div>
@@ -401,7 +403,6 @@
                   <i class="fas fa-save me-2"></i>
                   Save Changes
                 </button>
-              </div>
             </div>
             </div>
             </fieldset>
@@ -409,6 +410,7 @@
             </form>
             </div>
       </section>
+      
           
 
 

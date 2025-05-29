@@ -221,6 +221,7 @@
                                     </table>
                                 </div>
                             </div>
+                            </div>
 
                             <div class="row align-items-stretch">
                                 <!-- Left Column: Project Description -->
@@ -253,13 +254,19 @@
                                         </div>
 
                                         <div class="row mb-0" style="margin-bottom: 1px !important;">
+
+                                        <div class="row mb-0" style="margin-bottom: 1px !important;">
                                             <div class="col-md-12">
+                                                <div class="row" style="margin-bottom: 1px !important;">
+                                                    <div class="col-md-5"></div>
                                                 <div class="row" style="margin-bottom: 1px !important;">
                                                     <div class="col-md-5"></div>
                                                     <div class="col-md-3">
                                                         <span style="font-weight: bold; font-size: 0.875rem;">Issued Date</span>
+                                                        <span style="font-weight: bold; font-size: 0.875rem;">Issued Date</span>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <span style="font-weight: bold; font-size: 0.875rem;">Received Date</span>
                                                         <span style="font-weight: bold; font-size: 0.875rem;">Received Date</span>
                                                     </div>
                                                 </div>
@@ -267,7 +274,12 @@
                                         </div>
 
                                         <div class="row mb-0" style="margin-bottom: 1px !important;">
+
+                                        <div class="row mb-0" style="margin-bottom: 1px !important;">
                                             <div class="col-md-12">
+                                                <div class="row" style="margin-bottom: 1px !important; align-items: center;">
+                                                    <div class="col-md-5">
+                                                        <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice of Award:</p>
                                                 <div class="row" style="margin-bottom: 1px !important; align-items: center;">
                                                     <div class="col-md-5">
                                                         <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice of Award:</p>
@@ -283,7 +295,12 @@
                                         </div>
 
                                         <div class="row mb-0" style="margin-bottom: 1px !important;">
+
+                                        <div class="row mb-0" style="margin-bottom: 1px !important;">
                                             <div class="col-md-12">
+                                                <div class="row" style="margin-bottom: 1px !important; align-items: center;">
+                                                    <div class="col-md-5">
+                                                        <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice to Proceed:</p>
                                                 <div class="row" style="margin-bottom: 1px !important; align-items: center;">
                                                     <div class="col-md-5">
                                                         <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice to Proceed:</p>
@@ -298,6 +315,7 @@
                                             </div>
                                         </div>
                                         <div class="row mb-0" style="margin-bottom: 2px !important; align-items: center;">
+                                        <div class="row mb-0" style="margin-bottom: 2px !important; align-items: center;">
                                             <div class="col-md-5">
                                                 <p class="font-base">Target Starting Date:</p>
                                             </div>
@@ -309,6 +327,7 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-5 ">
+                                                <p class="font-base">Target Completion Date:</p>
                                                 <p class="font-base">Target Completion Date:</p>
                                             </div>
                                             <div class="col-md-7">
@@ -488,8 +507,8 @@
                                                                 ['label' => 'Contract Amount', 'key' => 'contract_amount'],
                                                                 ['label' => 'Savings', 'key' => 'bid'],
                                                                 ['label' => 'Wages', 'key' => null, 'is_header' => true],
-                                                                ['label' => 'Engineering', 'key' => 'engineering', 'child_of' => 'Wages', 'text_end' => true],
-                                                                ['label' => 'MQC', 'key' => 'mqc', 'child_of' => 'Wages', 'text_end' => true],
+                                                                ['label' => 'Engineering', 'key' => 'engineering', 'child_of' => 'Wages', 'align_label_right' => true],
+                                                                ['label' => 'MQC', 'key' => 'mqc', 'child_of' => 'Wages', 'align_label_right' => true],
                                                                 ['label' => 'Contingency', 'key' => 'contingency'],
                                                             ];
 
@@ -517,9 +536,14 @@
                                                                     if (in_array($key, $proposedTotalKeys)) {
                                                                         $proposedTotal += $orig;
                                                                     }
+
+                                                                    $labelClasses = [];
+                                                                    if (!empty($row['align_label_right'])) $labelClasses[] = 'text-end';
+                                                                    if (!empty($row['child_of'])) $labelClasses[] = 'ps-4';
                                                                 @endphp
                                                                 <tr>
-                                                                    <td class="{{ isset($row['child_of']) ? 'ps-4' : '' }} {{ !empty($row['text_end']) ? 'text-end' : '' }}">
+                                                                    <!-- Label column -->
+                                                                    <td class="{{ implode(' ', $labelClasses) }}">
                                                                         {{ $row['label'] }}
                                                                     </td>
                                                                     <td class="text-end">{{ number_format($orig, 2) }}</td>
@@ -528,6 +552,7 @@
                                                                         @php
                                                                             $voVal = collect($vos)->firstWhere('vo_number', $voNum)['vo_' . $key] ?? 0;
                                                                         @endphp
+                                                                        <td class="text-end">{{ number_format($voVal, 2) }}</td>
                                                                         <td class="text-end">{{ number_format($voVal, 2) }}</td>
                                                                     @endforeach
                                                                     <td class="text-end">{{ number_format($actual, 2) }}</td>
@@ -656,6 +681,7 @@
                                                             <td>{{ $summary['final']['remarks'] ?? '-' }}</td>
                                                         </tr>
 
+
                                                         <tr>
                                                             <td>-</td>
                                                             <td>Balance</td>
@@ -663,6 +689,7 @@
                                                             <td></td>
                                                         </tr>
 
+                                                        {{-- Engineering --}}
                                                         {{-- Engineering --}}
                                                         <tr>
                                                             <td>-</td>
@@ -706,6 +733,7 @@
                                                             <td></td>
                                                         </tr>
 
+                                                        {{-- MQC --}}
                                                         {{-- MQC --}}
                                                         <tr>
                                                             <td>-</td>
@@ -764,6 +792,7 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
+
 
                                             </div>
                                         </fieldset>

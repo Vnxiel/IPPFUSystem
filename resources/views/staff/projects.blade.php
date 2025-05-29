@@ -110,7 +110,7 @@
                             <th style="width: 8%; white-space: nowrap;"><small>Status</small></th>
                             <th style="width: 10%; white-space: nowrap;"><small>Contract Amount</small></th>
                             <th style="width: 12%; white-space: nowrap;"><small>Contractor</small></th>
-                            <th style="width: 6%; white-space: nowrap;"><small>Duration</small></th>
+                            <th style="width: 6%; white-space: nowrap;"><small>Contract Days</small></th>
                             <th style="width: 15%; white-space: nowrap;"><small>Action</small></th>
                         </tr>
                     </thead>

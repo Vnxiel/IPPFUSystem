@@ -447,6 +447,7 @@
                             <div class="row mb-2 align-items-center">
                                 <div class="col-3 text-end">
                                     <label for="" class="form-label">Target Starting Date
+                                    <label for="" class="form-label">Target Starting Date
                                     <span class="text-danger">*</span></label>
                                 </div>                        
                                 <div class="col-3">
@@ -487,8 +488,7 @@
                                              <!-- Remarks Row -->
                                             <div class="row mt-1 mb-2">
                                                 <div class="col-md-3 mb-3 text-end">
-                                                    <label for="suspensionOrderNo1Remarks" class="form-label">Suspension
-                                                        Remarks</label>
+                                                    <label for="suspensionOrderNo1Remarks" class="form-label">Reason for Suspension</label>
                                                 </div>
                                                 <div class="col-9">
                                                     <textarea class="form-control" id="suspensionOrderNo1Remarks"

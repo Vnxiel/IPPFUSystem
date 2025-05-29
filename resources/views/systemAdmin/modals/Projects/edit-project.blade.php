@@ -259,7 +259,7 @@
 
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                            <div class="col-3 p">
+                            <div class="col-3 text-end">
                                 <label for="ea" class="form-label">Project Engineer</label>
                             </div>
                             <div class="col-md-4 position-relative">
@@ -472,6 +472,7 @@
                                 <div class="row mb-2 align-items-center">
                                     <div class="col-3 p">
                                         <label class="form-label">Target Starting Date <span class="text-danger">*</span></label>
+                                        <label class="form-label">Target Starting Date <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-3">
                                         <input type="date" class="form-control" id="originalStartDate" name="originalStartDate"
@@ -553,7 +554,7 @@
                                                     <div class="row mt-1 mb-2">
                                                         <div class="col-md-3 mb-3 p">
                                                             <label for="suspensionOrderNo{{ $order['index'] }}Remarks" class="form-label">
-                                                                Suspension Remarks
+                                                                Reason for Suspension
                                                             </label>
                                                         </div>
                                                         <div class="col-9">
