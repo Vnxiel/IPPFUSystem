@@ -18,7 +18,7 @@
                             <div class="row g-3 mb-2">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 ">
                                             <label for="projectTitle" class="form-label">Project Title <span
                                                     class="text-danger">*</span></label>
                                         </div>
@@ -31,7 +31,7 @@
                             <div class="row g-3 mb-2">
                                 <div class="col-md-12  mb-2">
                                     <div class="row">
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 ">
                                             <label for="projectID" class="form-label">Project ID <span
                                                     class="text-danger">*</span></label>
                                         </div>
@@ -44,7 +44,7 @@
                             </div>
                                 <!-- Project Year with Datalist -->
                                 <div class="row g-3 mb-2">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 ">
                                         <label for="projectYear" class="form-label">Year <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-3">
@@ -60,7 +60,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-md-2 text-end">
+                                    <div class="col-md-2 ">
                                         <label for="projectFPP" class="form-label">FPP <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -69,7 +69,7 @@
                                           </div>
                                 </div>
                                 <div class="row mb-2 g-3">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 ">
                                         <label for="projectRC" class="form-label">Responsibility Center<span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -78,7 +78,7 @@
                                         </div>
                                 </div>
                                 <div class="row g-3 mb-2 p">
-                            <div class="col-md-3 text-end">
+                            <div class="col-md-3 ">
                                 <label for="projectLoc" class="form-label">Location
                                     <span class="text-danger">*</span>
                                 </label>
@@ -105,7 +105,7 @@
                         </div>
 
                         <div class="row mb-2 g-3">
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="projectDescription" class="form-label">Project Description<span
                                         class="text-danger">*</span></label>
                             </div>
@@ -115,7 +115,7 @@
                             </div>
                         </div>
                          <!-- Contractor Input with Dynamic Suggestions -->
-                         <div class="row g-3 mb-2 text-end">
+                         <div class="row g-3 mb-2 ">
                             <div class="col-md-3">
                                 <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
@@ -150,15 +150,6 @@
                                     <input type="text" class="form-control" id="othersContractor"
                                         name="othersContractor" placeholder="Enter new contractor name">
                                 </div> -->
-
-                        <div class="row mb-2 align-items-center">
-                            <label for="modeOfImplementation" class="col-3 p form-label">Mode of Implementation
-                                <span class="text-danger">*</span></label>
-                            <div class="col-9">
-                                <input type="text" class="form-control" id="modeOfImplementation" name="modeOfImplementation" value="{{ old('modeOfImplementation', $project['modeOfImplementation'] ?? '') }}" readonly>
-                            </div>
-                        </div>
-
                         
                         <div class="row mb-2 g-3">
                             <div class="col-md-3 p">
@@ -184,7 +175,7 @@
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 ">
                                         <label for="contractDays" class="form-label">Contract Days (Calendar days) <span
                                                 class="text-danger">*</span></label>
                                     </div>
@@ -236,7 +227,7 @@
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-3 ">
                                             <label for="projectSlippage" class="form-label">Slippage</label>
                                     </div>
                                     <div class="col-md-9">
@@ -246,20 +237,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
-                            <!-- Actual length-->
-                            <div class="col-3 p">
-                                <label for="actual_length" class="form-label">Actual Length:</label>
-                            </div>
-                            <div class="col-9">
-                                <input type="text" class="form-control" id="actual_length" name="actual_length" value="{{ old('actual_length', $project['actual_length'] ?? '') }}"
-                                    placeholder="Enter projects actual length">
-                            </div>
-                        </div>
+
 
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
-                            <div class="col-3 text-end">
+                            <div class="col-3 ">
                                 <label for="ea" class="form-label">Project Engineer</label>
                             </div>
                             <div class="col-md-4 position-relative">
@@ -373,16 +355,16 @@
                
                         <div class="row">
                             <div class="row">
-                                <h6 class=" m-1 fw-bold">Notice of Award</h6>
+                                <h6 class="fw-bold">Notice of Award</h6>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-3 p">
+                                <div class="col-3">
                                     <label for="noaIssuedDate" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
                                 <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate" value="{{ old('noaIssuedDate', $project['noaIssuedDate'] ?? '') }}">
                                 </div>
-                                <div class="col-3 p">
+                                <div class="col-3">
                                     <label for="noaReceivedDate" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
@@ -392,7 +374,7 @@
 
                             <div class="row">
                                 <div class="row">
-                                    <h6 class=" m-1 fw-bold">Notice to Proceed</h6>
+                                    <h6 class="fw-bold">Notice to Proceed</h6>
                                 </div>
                             </div>
 
@@ -471,8 +453,7 @@
                                 <!-- Original and Target Dates -->
                                 <div class="row mb-2 align-items-center">
                                     <div class="col-3 p">
-                                        <label class="form-label">Target Starting Date <span class="text-danger">*</span></label>
-                                        <label class="form-label">Target Starting Date <span class="text-danger">*</span></label>
+                                        <label class="form-label">Starting Date <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-3">
                                         <input type="date" class="form-control" id="originalStartDate" name="originalStartDate"
@@ -568,7 +549,7 @@
                                         </div>
                                     </div>
 
-                                <div class="row text-end mb-1">
+                                <div class="row  mb-1">
                                      <div class="col-md-10">
                                             <hr>
                                         </div>
@@ -586,7 +567,7 @@
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-3 ">
-                                            <label for="timeExtension" class="form-label">Number of Days Extensions
+                                            <label for="timeExtension" class="form-label">Number of Days Extension
                                             </label>
                                         </div>
                                         <div class="col-3">
@@ -596,13 +577,13 @@
                                         </div>
                                     </div>
                                     <div id="newDatesSection" class="row mb-2" style="display: none;">
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 ">
                                             <label for="revisedTargetDate" class="form-label">New Target Completion Date</label>
                                         </div>                        
                                         <div class="col-3">
                                             <input type="date" class="form-control" id="revisedTargetDate" name="revisedTargetDate"  value="{{ old('revisedTargetDate', $project['revisedTargetDate'] ?? '') }}">
                                         </div>
-                                        <div class="col-3 text-end">
+                                        <div class="col-3 ">
                                             <label for="revisedCompletionDate" class="form-label">Actual Completion Date</label>
                                         </div>                        
                                         <div class="col-3">
@@ -613,17 +594,24 @@
                                     <!-- Actual Completion Date (Default View) -->
                                     <div id="actualCompletionSection" class="row mb-2">
                                         <div class="col-3 mb-2">
-                                            <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
+                                            <label class="form-label">Actual Date of Completion</label>
                                         </div>
-                                        <div class="col-9">
+                                        <div class="col-3">
                                             <input type="date" class="form-control" id="completionDate" name="completionDate"
                                                 value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
                                                 style="background-color: lightgray;">
                                         </div>
-                                    </div>
+                                        <!-- Actual length-->
+                                        <div class="col-2">
+                                            <label for="actual_length" class="form-label">Actual Length:</label>
+                                        </div>
+                                        <div class="col-4">
+                                            <input type="text" class="form-control" id="actual_length" name="actual_length" value="{{ old('actual_length', $project['actual_length'] ?? '') }}"
+                                                placeholder="Enter projects actual length">
+                                        </div>
+                                    </div>                                   
                                 </div>
                             </fieldset>
-
 
                             <!-- Modal Footer -->
                             <div class="modal-footer bg-light">

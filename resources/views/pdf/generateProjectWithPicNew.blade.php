@@ -75,14 +75,23 @@ body {
       width: 65%;
     }
     .fit-text-row {
-        line-height: 1;
-    }
-    .fit-text-row th,
+    line-height: 1.5;
+  }
+
+  .fit-text-row th {
+    padding: 1 4px;
+    font-weight: normal;
+    vertical-align: top;
+    margin-left: 15px;
+    font-size: 14px;
+  }
     .fit-text-row td {
-        padding: 1 4px;
-        vertical-align: top;
-        font-size: 16px;
-    }
+    padding: 2 4px;
+    vertical-align: top;
+    font-size: 14px;
+
+    
+  }
     .sub-header {
       font-weight: bold;
       font-size: 13px;

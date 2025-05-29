@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('ea');
   const dropdown = document.getElementById('projectEngineerDropdown');
@@ -19,32 +18,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 150);
   });
 
-  input.addEventListener('keydown', e => {
-    const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(b => b.style.display !== 'none');
+input.addEventListener('keydown', e => {
+  const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(b => b.style.display !== 'none');
 
-    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && dropdown.style.display !== 'block') {
-      showEngineerDropdown();
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && dropdown.style.display !== 'block') {
+    showEngineerDropdown();
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
+    updateActive(visibleButtons);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (selectedIndex > 0) selectedIndex--;
+    updateActive(visibleButtons);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (visibleButtons.length === 1) {
+      // Auto-select the only visible option
+      selectEngineer(visibleButtons[0].textContent);
+    } else if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
+      selectEngineer(visibleButtons[selectedIndex].textContent);
+    } else {
+      finalizeEngineer();
     }
 
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
-      updateActive(visibleButtons);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (selectedIndex > 0) selectedIndex--;
-      updateActive(visibleButtons);
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (visibleButtons[selectedIndex]) {
-        selectEngineer(visibleButtons[selectedIndex].textContent);
-      } else {
-        finalizeEngineer();
-      }
-    } else if (e.key === 'Escape') {
-      dropdown.style.display = 'none';
+    // Move to next field (ea_position)
+    const nextInput = document.getElementById('ea_position');
+    if (nextInput) {
+      nextInput.focus();
     }
-  });
+  } else if (e.key === 'Escape') {
+    dropdown.style.display = 'none';
+  }
+});
+
 
   document.addEventListener('click', (e) => {
     if (!input.contains(e.target) && !dropdown.contains(e.target)) {
@@ -57,13 +66,18 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdown.innerHTML = '';
     let anyVisible = false;
 
+    // Filter and score engineers by startsWith and includes
     const matches = engineerData
-      .map(name => ({
-        name,
-        score: name.toLowerCase().startsWith(query) ? 0 :
-               name.toLowerCase().includes(query) ? 1 : 2
-      }))
-      .filter(item => item.score < 2 || query === item.name.toLowerCase())
+      .map(name => {
+        const lower = name.toLowerCase();
+        let score = 2; // default no match
+
+        if (lower.startsWith(query)) score = 0;
+        else if (lower.includes(query)) score = 1;
+
+        return { name, score };
+      })
+      .filter(item => item.score < 2)
       .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
 
     matches.forEach(item => {
@@ -79,6 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dropdown.style.display = anyVisible ? 'block' : 'none';
     selectedIndex = -1;
+
+    // Auto highlight if only 1 match
+    if (matches.length === 1) {
+      const onlyBtn = dropdown.querySelector('button');
+      if (onlyBtn) {
+        onlyBtn.classList.add('active');
+        selectedIndex = 0;
+      }
+    }
   }
 
   function showEngineerDropdown() {

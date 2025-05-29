@@ -3,6 +3,19 @@ const fundDropdown = document.getElementById('sourceOfFundsDropdown');
 const fundItems = fundDropdown.getElementsByTagName('button');
 let fundSelectedIndex = -1;
 
+// Helper: Get next focusable element after the current one
+function getNextFocusableElement(current) {
+    const focusableSelectors = 'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])';
+    const focusables = Array.from(document.querySelectorAll(focusableSelectors))
+        .filter(el => !el.disabled && el.offsetParent !== null); // visible and enabled only
+
+    const currentIndex = focusables.indexOf(current);
+    if (currentIndex === -1 || currentIndex === focusables.length - 1) {
+        return null; // no next focusable
+    }
+    return focusables[currentIndex + 1];
+}
+
 // Filter dropdown based on input value
 function filterFunds() {
     const filter = fundInput.value.toLowerCase().trim();
@@ -16,17 +29,24 @@ function filterFunds() {
     }
 
     fundDropdown.style.display = (filter.length > 0 && anyVisible) ? 'block' : 'none';
-    fundSelectedIndex = -1;
+    fundSelectedIndex = -1; // Reset selection every time you filter
 }
 
-// Select a fund and hide dropdown
+// Select a fund and hide dropdown + focus next element
 function selectFund(name) {
     fundInput.value = name.trim();
     hideFundsDropdown();
+
+    // Move focus to next input after a slight delay to avoid conflicts
+    setTimeout(() => {
+        const nextInput = getNextFocusableElement(fundInput);
+        if (nextInput) nextInput.focus();
+    }, 100);
 }
 
 // Show dropdown and reset index
 function showFundsDropdown() {
+    filterFunds(); // Always filter before showing dropdown
     fundDropdown.style.display = 'block';
     fundSelectedIndex = -1;
 }
@@ -53,20 +73,15 @@ function updateFundActive(visibleItems) {
 
 // --- Event Listeners ---
 
-// Filter when typing
 fundInput.addEventListener('input', filterFunds);
 
-// Show dropdown on focus
 fundInput.addEventListener('focus', showFundsDropdown);
 
-// Hide dropdown when input loses focus
 fundInput.addEventListener('blur', hideFundsDropdownDelayed);
 
-// Keyboard navigation
 fundInput.addEventListener('keydown', function (e) {
     const visibleItems = Array.from(fundItems).filter(item => item.style.display !== 'none');
 
-    // Redisplay dropdown if hidden and using arrow keys
     if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && fundDropdown.style.display !== 'block') {
         showFundsDropdown();
     }
@@ -81,22 +96,27 @@ fundInput.addEventListener('keydown', function (e) {
         updateFundActive(visibleItems);
     } else if (e.key === 'Enter') {
         e.preventDefault();
-        if (visibleItems[fundSelectedIndex]) {
+        if (visibleItems.length === 0) {
+            hideFundsDropdown();
+            return;
+        }
+
+        if (fundSelectedIndex >= 0 && visibleItems[fundSelectedIndex]) {
             selectFund(visibleItems[fundSelectedIndex].textContent);
+        } else {
+            selectFund(visibleItems[0].textContent);
         }
     } else if (e.key === 'Escape') {
         hideFundsDropdown();
     }
 });
 
-// Hide dropdown when clicking outside
 document.addEventListener('click', function (e) {
     if (!fundInput.contains(e.target) && !fundDropdown.contains(e.target)) {
         hideFundsDropdown();
     }
 });
 
-// Click to select from dropdown
 Array.from(fundItems).forEach(button => {
     button.addEventListener('click', () => {
         selectFund(button.textContent);

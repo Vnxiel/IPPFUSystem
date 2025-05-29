@@ -247,3 +247,35 @@ document.addEventListener('DOMContentLoaded', () => {
     return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
   }
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const focusableElements = Array.from(document.querySelectorAll('input, textarea'));
+
+  focusableElements.forEach((el, idx) => {
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        // Skip if inside a textarea — allow new line
+        if (el.tagName.toLowerCase() === 'textarea') {
+          return; // Just let Enter do its normal thing
+        }
+
+        e.preventDefault();
+
+        let nextEl = null;
+        for (let i = idx + 1; i < focusableElements.length; i++) {
+          const next = focusableElements[i];
+          if (!next.disabled && next.offsetParent !== null) {
+            nextEl = next;
+            break;
+          }
+        }
+
+        if (nextEl) {
+          nextEl.focus();
+          if (nextEl.select) nextEl.select();
+        }
+      }
+    });
+  });
+});

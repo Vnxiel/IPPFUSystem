@@ -253,19 +253,13 @@
                                         </div>
 
                                         <div class="row mb-0" style="margin-bottom: 1px !important;">
-
-                                        <div class="row mb-0" style="margin-bottom: 1px !important;">
                                             <div class="col-md-12">
-                                                <div class="row" style="margin-bottom: 1px !important;">
-                                                    <div class="col-md-5"></div>
                                                 <div class="row" style="margin-bottom: 1px !important;">
                                                     <div class="col-md-5"></div>
                                                     <div class="col-md-3">
                                                         <span style="font-weight: bold; font-size: 0.875rem;">Issued Date</span>
-                                                        <span style="font-weight: bold; font-size: 0.875rem;">Issued Date</span>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <span style="font-weight: bold; font-size: 0.875rem;">Received Date</span>
                                                         <span style="font-weight: bold; font-size: 0.875rem;">Received Date</span>
                                                     </div>
                                                 </div>
@@ -273,12 +267,7 @@
                                         </div>
 
                                         <div class="row mb-0" style="margin-bottom: 1px !important;">
-
-                                        <div class="row mb-0" style="margin-bottom: 1px !important;">
                                             <div class="col-md-12">
-                                                <div class="row" style="margin-bottom: 1px !important; align-items: center;">
-                                                    <div class="col-md-5">
-                                                        <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice of Award:</p>
                                                 <div class="row" style="margin-bottom: 1px !important; align-items: center;">
                                                     <div class="col-md-5">
                                                         <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice of Award:</p>
@@ -293,48 +282,49 @@
                                             </div>
                                         </div>
 
-                                        <div class="row mb-0" style="margin-bottom: 1px !important;">
-
-                                        <div class="row mb-0" style="margin-bottom: 1px !important;">
-                                            <div class="col-md-12">
-                                                <div class="row" style="margin-bottom: 1px !important; align-items: center;">
-                                                    <div class="col-md-5">
-                                                        <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice to Proceed:</p>
-                                                <div class="row" style="margin-bottom: 1px !important; align-items: center;">
-                                                    <div class="col-md-5">
-                                                        <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice to Proceed:</p>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <span style="font-size: 0.875rem;">{{ $project['ntpIssuedDate'] ?? '' }}</span>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <span style="font-size: 0.875rem;">{{ $project['ntpReceivedDate'] ?? '' }}</span>
-                                                    </div>
+                                    <!-- Group: Notice to Proceed -->
+                                    <div class="row mb-2"> <!-- Slightly more spacing here -->
+                                        <div class="col-md-12">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-5">
+                                                    <p class="font-base mb-0" style="font-size: 0.875rem;">Notice to Proceed:</p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <span style="font-size: 0.875rem;">{{ $project['ntpIssuedDate'] ?? '' }}</span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span style="font-size: 0.875rem;">{{ $project['ntpReceivedDate'] ?? '' }}</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-0" style="margin-bottom: 2px !important; align-items: center;">
-                                        <div class="row mb-0" style="margin-bottom: 2px !important; align-items: center;">
-                                            <div class="col-md-5">
-                                                <p class="font-base">Target Starting Date:</p>
-                                            </div>
-                                            <div class="col-md-7">
-                                                <p style="margin-bottom: 0; font-weight: normal; color: black; font-size: 0.875rem;">
-                                                    {{ $project['originalStartDate'] ?? ' ' }}
-                                                </p>
-                                            </div>
+                                    </div>
+
+                                    <!-- Spacer -->
+                                    <div class="mb-2"></div> <!-- This adds clear spacing -->
+
+                                    <!-- Group: Start and Completion Dates -->
+                                    <div class="row mb-1 align-items-center">
+                                        <div class="col-md-5">
+                                            <p class="font-base mb-0">Starting Date:</p>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col-md-5 ">
-                                                <p class="font-base">Target Completion Date:</p>
-                                                <p class="font-base">Target Completion Date:</p>
-                                            </div>
-                                            <div class="col-md-7">
-                                                <p style="font-weight: normal; color: black; font-size: 0.875rem;">
-                                                    {{ $project['targetCompletion'] ?? '' }}
-                                                </p>
-                                            </div>
+                                        <div class="col-md-7">
+                                            <p class="mb-0" style="font-weight: normal; color: black; font-size: 0.875rem;">
+                                                {{ $project['originalStartDate'] ?? ' ' }}
+                                            </p>
                                         </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-5">
+                                            <p class="font-base mb-0">Target Completion Date:</p>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <p class="mb-0" style="font-weight: normal; color: black; font-size: 0.875rem;">
+                                                {{ $project['targetCompletion'] ?? '' }}
+                                            </p>
+                                        </div>
+                                    </div>
+
                                        
                                         @php
                                             $hasSuspension = false;
@@ -387,7 +377,7 @@
                                                             <p style="margin-bottom: 0; font-weight: normal; color: black; font-size: 0.875rem;">{{ $suspensionValue ?? '' }}</p>
                                                         </div>
                                                     </div>
-                                                    <div class="row mb-3">
+                                                    <div class="row mb-0">
                                                         <div class="col-md-5">
                                                             <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Reason for Suspension:</p>
                                                         </div>
@@ -395,12 +385,12 @@
                                                             <p style="font-weight: normal; color: black; font-size: 0.875rem;">{{ trim($remarks ?? '') }}</p>
                                                         </div>
                                                     </div>
-                                                    <div class="row mb-0" style="margin-bottom: 2px !important; align-items: center;">
+                                                    <div class="row mb-3" style="margin-bottom: 2px !important; align-items: center;">
                                                         <div class="col-md-5">
-                                                            <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Resumption Order No. {{ $index }}:</p>
+                                                            <p class="font-base" style="margin-bottom: 3; font-size: 0.875rem;">Resumption Order No. {{ $index }}:</p>
                                                         </div>
                                                         <div class="col-md-7">
-                                                            <p style="margin-bottom: 0; font-weight: normal; color: black; font-size: 0.875rem;">{{ $resumeValue ?? '' }}</p>
+                                                            <p style="margin-bottom: 3; font-weight: normal; color: black; font-size: 0.875rem;">{{ $resumeValue ?? '' }}</p>
                                                         </div>
                                                     </div>
                                                 @endif
@@ -421,7 +411,7 @@
                                             @endif
 
                                             {{-- Revised Dates --}}
-                                            <div class="row mb-0" style="margin-bottom: 2px !important; align-items: center;">
+                                            <div class="row mb-3" style="margin-bottom: 2px !important; align-items: center;">
                                                 <div class="col-md-5">
                                                     <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">New Target Completion Date:</p>
                                                 </div>
@@ -440,6 +430,16 @@
                                             <div class="col-md-7">
                                                 <p style="font-weight: normal; color: black;">
                                                     {{ $project['completionDate'] ?? '' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-0">
+                                            <div class="col-md-5 ">
+                                                <p class="font-base">Actual Length:</p>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <p style="font-weight: normal; color: black;">
+                                                    --Actual Length--
                                                 </p>
                                             </div>
                                         </div>
@@ -559,7 +559,6 @@
                                                             @endif
                                                         @endforeach
 
-                                                        <!-- Total Row for Proposed Column Only -->
                                                        <!-- Total Row for Proposed Column Only -->
                                                        <tr class="table-warning fw-bold">
                                                             <td>Total</td>

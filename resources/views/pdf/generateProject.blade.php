@@ -47,7 +47,7 @@
   }
 
   .header-text h5, .header-text h3, .header-text h6, .header-text h4 {
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Old English MT", serif;
   margin: 2px 0;
 }
 
@@ -67,6 +67,7 @@
   .header-text h6 {
     font-size: 12px;
     font-weight: normal;
+    font-family: 'Old English MT', serif;
   }
 
   .header-text p {
@@ -130,7 +131,7 @@
  
 
   .fit-text-row {
-    line-height: 1;
+    line-height: 1.5;
   }
 
   .fit-text-row th {
@@ -138,12 +139,14 @@
     font-weight: normal;
     vertical-align: top;
     margin-left: 15px;
-    font-size: 12px;
+    font-size: 14px;
   }
     .fit-text-row td {
     padding: 2 4px;
     vertical-align: top;
-    font-size: 12px;
+    font-size: 14px;
+
+    
   }
 
     .fit-text-table {
@@ -180,12 +183,14 @@
 
   .contact-table {
   width: 100%;
-  font-size: 12px;
+  font-size: 8px;
   border-collapse: collapse;
   margin-top: 0px;
   margin-bottom: 0px;
-  text-align: center;
+  
+  /* text-align: center; */
   vertical-align: middle;
+  font-weight: bold;
 }
 
 .contact-table td {
@@ -219,11 +224,24 @@
       <td style="width: 15%; text-align: left;">
         <img src="{{ public_path('img/temp_logo.png') }}" class="logo">
       </td>
-      <td style="width: 70%;">
+      <td style="width: 70%; vertical-align: middle; font-family: serif;">
         <div class="header-text">
-          <h6>REPUBLIC OF THE PHILIPPINES</h6>
-          <h6>PROVINCIAL GOVERNMENT OF NUEVA VIZCAYA</h6>
-          <h4>PROVINCIAL ENGINEERING OFFICE</h4>
+          <div style="font-family: 'Old English MT', serif; font-size: 18px; font-weight: normal;">
+            Republic of the Philippines
+          </div>          <div style="font-weight: bold; font-size: 14px; margin-top: 2px;">
+            PROVINCE OF NUEVA VIZCAYA
+          </div>
+
+          <div style="font-weight: bold; font-size: 14px; margin-top: 2px;">
+            BAYOMBONG
+          </div>
+          <div style="font-size: 12px; margin-top: -4px;">
+            -o0o-
+          </div>
+
+          <div style="font-weight: bold; font-size: 16px; margin-top: 2px;">
+            PROVINCIAL ENGINEERING OFFICE
+          </div>
           <p>People’s Hall, Capitol Compound, Bayombong, Nueva Vizcaya, 3700</p>
         </div>
       </td>
@@ -233,13 +251,13 @@
     </tr>
   </table>
 
-  <table class="contact-table">
+  <table class="contact-table mt-2">
   <tr>
-    <td>
-      <span class="label">Telephone:</span> (078) 332-3000 Loc 418
+    <td class="text-left">
+      <span class="label"><b> TEL .NO.: </span> (078) 332-3000 Loc 418</b>
     </td>
     <td style="text-align: right;">
-      <span class="label">E-mail:</span> plgunuevavizcaya.peo@gmail.com
+      <span class="label"><b>E_MAIL:</span> PLGYNUEVAVIZCAYA.PEO@GMAIL.COM</b>
     </td>
   </tr>
 </table>
@@ -256,9 +274,9 @@
            <tr class="fit-text-title" >
             <th>PROJECT PROFILE</th>
           </tr>
-          <tr class="fit-text-row">
+          <tr class="fit-text-row ">
             <th style="width: 30%;">Project Title:</th>
-            <td colspan="4" style="font-size: 14px; font-weight: bold">{{ $project->projectTitle }}</td>
+            <td colspan="4" style="font-size: 14px; font-weight: bold; text-transform: uppercase;">{{ $project->projectTitle }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Location:</th>
@@ -266,8 +284,8 @@
           </tr>
           <tr class="fit-text-row"> 
                 <th style="text-align: left; vertical-align: top;">Project Description:</th>
-                <td colspan="3">
-                    <ul style="margin: 0; padding-left: 0; list-style: none;">
+                <td colspan="6">
+                    <ul style="margin: 0; padding-left: 0; list-style: none; text-align: justify">
                         @foreach ($projectDescriptions as $desc)
                             <li>{{ $desc }}</li>
                         @endforeach
@@ -276,39 +294,38 @@
             </tr>
             <tr class="fit-text-row">
             <th>Contractor:</th>
-            <td colspan="3">{{ $project->projectContractor }}</td>
+            <td colspan="4">{{ $project->projectContractor }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Project ID:</th>
-            <td colspan="3">{{ $project->projectID }}</td>
+            <td colspan="4">{{ $project->projectID }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Source of Fund:</th>
-            <td colspan="3">{{ $project->sourceOfFunds }}</td>
+            <td colspan="4">{{ $project->sourceOfFunds }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Appropriation:</th>
-            <td colspan="3">{{ number_format((float) $projectFundsUtilization['orig_appropriation'], 2) }}</td>
+            <td colspan="4">{{ number_format((float) $projectFundsUtilization['orig_appropriation'], 2) }}</td>
 
           </tr>
           <tr class="fit-text-row">
             <th>Contract Days:</th>
-            <td colspan="1" style="text-align: center;">{{ $project->projectContractDays }}</td>
-            <td colspan="2">Calendar Days</td>
+            <td colspan="4">{{ $project->projectContractDays }} &nbsp;Calendar Days</td>
           </tr>
           <tr class="fit-text-row">
               <th>Notice of Award:</th>
-              <td><i>Issued Date</i></td>
+              <td colspan="2"><i>Issued Date</i></td>
               <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->noaIssuedDate)->format('F d, Y') }}</td>
-              <td><i>Received Date</i></td>
+              <td colspan="2"><i>Received Date</i></td>
               <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->noaReceivedDate)->format('F d, Y') }}</td>
           </tr>
 
           <tr class="fit-text-row">
               <th>Notice to Proceed:</th>
-              <td><i>Issued Date</i></td>
+              <td colspan="2"><i>Issued Date</i></td>
               <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntpIssuedDate)->format('F d, Y') }}</td>
-              <td><i>Received Date</i></td>
+              <td colspan="2"><i>Received Date</i></td>
               <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntpReceivedDate)->format('F d, Y') }}</td>
           </tr>
 
@@ -344,19 +361,20 @@
         @endphp
 
             <tr class="fit-text-row">
-                <th>Target Start Date:</th>
-                <td colspan="3">
+                <th>Starting Date:</th>
+                <td colspan="2">
                     {{ $project->originalStartDate ? \Carbon\Carbon::parse($project->originalStartDate)->format('F d, Y') : 'N/A' }}
                 </td>
-            </tr>
-            <tr class="fit-text-row">
-                <th>Target Completion Date:</th>
-                <td colspan="3">
+                <th colspan="2">Target Completion Date:</th>
+                <td colspan="2">
                     {{ $project->targetCompletion ? \Carbon\Carbon::parse($project->targetCompletion)->format('F d, Y') : 'N/A' }}
                 </td>
             </tr>
-              <!-- Blank row for spacing -->
-            <tr><td colspan="3"></td></tr>
+            <tr class="fit-text-row">
+                
+            </tr>
+            <!-- Blank row for spacing -->
+            <!--<tr><td colspan="4"></td></tr>-->
 
 
             @if ($hasSuspension || $project->timeExtension)
@@ -367,11 +385,11 @@
                     <td style="white-space: nowrap;">
                         {{ $pair['suspension'] ? \Carbon\Carbon::parse($pair['suspension'])->format('F d, Y') : ' ' }}
                     </td>
-                    <td colspan="2">Reason for suspension: {{ $pair['remarks'] ?: '' }}</td>
+                    <td colspan="3">Reason for suspension: {{ $pair['remarks'] ?: '' }}</td>
                 </tr>
                 <tr class="fit-text-row">
                     <th>Resume Order No. {{ $pair['index'] }}</th>
-                    <td colspan="3" style="white-space: nowrap;">
+                    <td colspan="4" style="white-space: nowrap;">
                         {{ $pair['resume'] ? \Carbon\Carbon::parse($pair['resume'])->format('F d, Y') : ' ' }}
                     </td>
                 </tr>
@@ -379,17 +397,17 @@
 
             <tr class="fit-text-row">
                 <th>No. of Days of Extension:</th>
-                <td colspan="3">{{ $project->timeExtension ?? 'N/A' }}</td>
+                <td colspan="4">{{ $project->timeExtension ?? 'N/A' }}</td>
             </tr>
             <tr class="fit-text-row">
                 <th>Revised Target Completion:</th>
-                <td colspan="3">
+                <td colspan="4">
                     {{ $project->revisedTargetDate ? \Carbon\Carbon::parse($project->revisedTargetDate)->format('F d, Y') : 'N/A' }}
                 </td>
             </tr>
             <tr class="fit-text-row">
                 <th>Actual Completion Date:</th>
-                <td colspan="3">
+                <td colspan="4">
                     {{ $project->revisedCompletionDate ? \Carbon\Carbon::parse($project->revisedCompletionDate)->format('F d, Y') : 'N/A' }}
                 </td>
             </tr>
@@ -397,7 +415,7 @@
             {{-- Show only actual completion date --}}
             <tr class="fit-text-row">
                 <th>Actual Completion Date:</th>
-                <td colspan="3">
+                <td colspan="4">
                     {{ $project->revisedCompletionDate ? \Carbon\Carbon::parse($project->revisedCompletionDate)->format('F d, Y') : 'N/A' }}
                 </td>
             </tr>
@@ -405,25 +423,25 @@
         {{-- Actual Length --}}
             <tr class="fit-text-row">
                 <th>Actual Length:</th>
-                <td colspan="3">
+                <td colspan="4">
                   {{ $project->actual_length }}
                 </td>
             </tr>
 
     <!-- Blank row for spacing -->
-    <tr><td colspan="3"></td></tr>
+    <!--<tr><td colspan="4"></td></tr>-->
 
         <!-- ABC Section -->
     <tr class="fit-text-title" >
         <th>SUMMARY (FUND SOURCE)</th>
       </tr>
     <tr>
-      <td colspan="6"  style="margin: 0px; padding: 0px;">
+      <td colspan="7"  style="margin: 0px; padding: 0px;">
             <table class="fit-text-table" style="width: 100%; border-collapse: collapse;">
               <tr class="sub-header">
                 <td>DESCRIPTION</td>
                 <td>ORIGINAL</td>
-                <td colspan="2">V.O.1</td>
+                <td colspan="2">Variation Order</td>
                 <td>ACTUAL</td>
               </tr>
               <tr class="fit-text-table">
@@ -571,7 +589,7 @@
     
     
     <tr>
-      <td colspan="6"  style="margin: 0px; padding: 0px;">
+      <td colspan="7"  style="margin: 0px; padding: 0px;">
             <table class="fit-text-table" style="width: 100%; border-collapse: collapse;">
               <tr class="sub-header">
                 <td>DATE COVERED</td>
