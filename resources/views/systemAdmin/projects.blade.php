@@ -18,9 +18,9 @@
                         </div>
 
                         <div class="row g-3">
-                        <!-- Location Dropdown -->
-                        <div class="col-md-2 position-relative">
-                        <input type="text" class="form-control" id="location_filter" name="location_filter" placeholder="Select or type location" autocomplete="off"/>
+                            <!-- Location Dropdown -->
+                            <div class="col-md-2 position-relative">
+                            <input type="text" class="form-control" id="location_filter" name="location_filter" placeholder="Select or type location" autocomplete="off"/>
   
                             <div id="location_filter_dropdown"
                                 class="list-group position-absolute w-100 shadow-sm bg-white rounded"

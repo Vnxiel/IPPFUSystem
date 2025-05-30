@@ -32,52 +32,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row g-3 mb-2">
-                                <div class="col-md-12  mb-2">
-                                    <div class="row">
-                                        <div class="col-3 ">
-                                            <label for="projectID" class="form-label">Project ID <span
-                                                    class="text-danger">*</span></label>
-                                        </div>
-                                        <div class="col">
-                                            <input type="text" class="form-control" id="projectID" name="projectID"
-                                            title="Only numbers and hyphens are allowed" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-3 mb-2 ">
-                                <div class="col-md-3 ">
-                                    <label for="projectYear" class="form-label">Year <span
-                                            class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="form-select form-select-sm" id="projectYear" name="projectYear" required>
-                                        <option value="" disabled selected>Select Year</option>
-                                        <!-- Year options will be injected here by JavaScript -->
-                                    </select>
-                                </div>
-
-                                <div class="col-md-2 ">
-                                    <label for="projectFPP" class="form-label">FPP <span
-                                            class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" id="projectFPP" name="projectFPP" required>
-                                </div>
-                            </div>
-                            <div class="row mb-2 g-3 ">
-                                <div class="col-md-3 ">
-                                    <label for="projectRC" class="form-label">Responsibility Center<span
-                                            class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-md-9">
-                                    <input type="text" class="form-control" id="projectRC" name="projectRC" required>
-                                </div>
-                            </div>
+                           
                             <div class="row g-3 mb-2 ">
                                 <div class="col-md-3">
-                                    <label for="projectLoc" class="form-label">Location
+                                    <label for="projectLoc" class="form-label">Location of Project
                                         <span class="text-danger">*</span>
                                     </label>
                                 </div>
@@ -89,8 +47,8 @@
 
                                     <!-- Place dropdown outside input -->
                                     <div id="projectLocDropdown"
-                                        class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                        style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                        class="list-group position-absolute w-111 shadow-sm bg-white rounded"
+                                        style="display: none; max-height: 181px; overflow-y: auto; z-index: 1151;">
                                         @foreach($locations as $location)
                                             <button type="button" class="list-group-item list-group-item-action"
                                                 onclick="selectLoc('{{ $location }}')">
@@ -100,22 +58,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Project Description -->
-                            <div class="row mb-2 g-3">
-                                <div class="col-3 ">
-                                    <label for="projectDescription" class="form-label">Project Description<span
-                                            class="text-danger">*</span></label>
-                                </div>
-                                <div class="col">
-                                    <textarea class="form-control" id="projectDescription" name="projectDescription"
-                                        rows="4" required></textarea>
+
+                            <div class="row mb-2 align-items-center">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-3 ">
+                                            <label for="nameOfFirm" class="form-label">Name of Firm <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="number" class="form-control" id="nameOfFirm"
+                                                name="nameOfFirm" min="1" required>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Contractor Input with Dynamic Suggestions -->
                             <div class="row g-3 mb-2 ">
                                 <div class="col-md-3">
-                                    <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
+                                    <label for="projectContractor" class="form-label">Contractor's Name <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-md-9 position-relative">
                                     <input type="text" class="form-control" id="projectContractor" name="projectContractor"
@@ -124,15 +86,33 @@
 
                                     <!-- Container for dynamically inserted buttons -->
                                     <div id="projectContractorDropdown"
-                                        class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                        style="dis  play: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                        class="list-group position-absolute w-111 shadow-sm bg-white rounded"
+                                        style="dis  play: none; max-height: 181px; overflow-y: auto; z-index: 1151;">
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Address of Contractor or Firm-->
+                            <div class="row g-3 mb-2 ">
+                                <div class="col-md-3">
+                                    <label for="projectContractor" class="form-label">Address of Contractor/Firm <span class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-md-9 position-relative">
+                                    <input type="text" class="form-control" id="projectContractor" name="projectContractor"
+                                        placeholder="Select or enter contractor name" autocomplete="off"
+                                        oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
+<!-- 
+                                    Container for dynamically inserted buttons
+                                    <div id="projectContractorDropdown"
+                                        class="list-group position-absolute w-111 shadow-sm bg-white rounded"
+                                        style="dis  play: none; max-height: 181px; overflow-y: auto; z-index: 1151;">
+                                    </div> -->
                                 </div>
                             </div>
 
                             <div class="row mb-2 g-3 ">
                                 <div class="col-md-3 ">
-                                    <label for="sourceOfFunds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
+                                    <label for="sourceOfFunds" class="form-label">Source/s of Fund <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-md-9 position-relative">
                                     <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
@@ -140,8 +120,8 @@
                                         oninput="filterFunds()" onfocus="showFundsDropdown()" onblur="hideFundsDropdownDelayed()" required>
 
                                     <div id="sourceOfFundsDropdown"
-                                        class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                        style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                        class="list-group position-absolute w-111 shadow-sm bg-white rounded"
+                                        style="display: none; max-height: 181px; overflow-y: auto; z-index: 1151;">
                                         @foreach($sourceOfFunds as $fund)
                                         <button type="button" class="list-group-item list-group-item-action"
                                                 onclick="selectFund('{{ trim($fund->sourceOfFunds) }}')">
@@ -152,8 +132,93 @@
                                 </div>
                             </div>
 
+                            <div class="row g-3 mb-2">
+                                <div class="col-md-12  mb-2">
+                                    <div class="row">
+                                        <div class="col-3 ">
+                                            <label for="projectID" class="form-label">Project ID (Reference Code) <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="projectID" name="projectID"
+                                            title="Only numbers and hyphens are allowed" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <div class="row mb-2 align-items-center">
+                            <div class="row g-3 mb-2">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-3 ">
+                                            <label for="appropriation" class="form-label">Appropriation <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col">                                        
+                                                <input type="text" class="form-control currency-input" name="appropriation"
+                                                    id="appropriation" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <div class="row g-3 mb-2">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-3 ">
+                                            <label for="appropriation" class="form-label">Approved Budget for the Contract<span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col">                                        
+                                                <input type="text" class="form-control currency-input" name="appropriation"
+                                                    id="appropriation" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-2">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-3 ">
+                                            <label for="appropriation" class="form-label">Original Contract Amount<span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col">                                        
+                                                <input type="text" class="form-control currency-input" name="appropriation"
+                                                    id="appropriation" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-2">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <label for="1stRevisedContractAmount" class="form-label">1st Revised Contract Amount</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control currency-input" name="1stRevisedContractAmount"
+                                                id="1stRevisedContractAmount" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Placeholder for new fields -->
+                            <div id="revisedAmountsContainer"></div>
+
+                            <!-- Buttons -->
+                            <div class="mb-3">
+                                <button type="button" id="addRevisedAmountBtn" class="btn btn-primary btn-sm" title="Add Revised Contract Amount">
+                                    <i class="fas fa-plus"></i> Add Revision
+                                </button>
+                                <button type="button" id="removeRevisedAmountBtn" class="btn btn-danger btn-sm" title="Add Revised Contract Amount">
+                                    <i class="fas fa-minus"></i> Remove
+                                </button>
+                            </div>
+
+                            <!-- <div class="row mb-2 align-items-center">
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-3 ">
@@ -162,7 +227,7 @@
                                         </div>
                                         <div class="col-md-9">
                                             <input type="number" class="form-control" id="projectContractDays"
-                                                name="projectContractDays" min="0" required>
+                                                name="projectContractDays" min="1" required>
                                         </div>
                                     </div>
                                 </div>
@@ -188,367 +253,104 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>-->
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr class="table-primary">
+                                            <th colspan="7" class="text-center h6 py-2 border-bottom">
+                                                <i class="fas fa-clock me-2"></i>Time Line of the Project
+                                            </th>
+                                        </tr>
+                                        <tr class="text-center align-middle bg-light">
+                                            <th rowspan="2" width="5%" class="py-2 small">#</th>
+                                            <th rowspan="2" width="25%" class="py-2 small">Event</th>
+                                            <th rowspan="2"width="15%" class="py-2 small">Date/Days</th>
+                                            <th width="15%" class="py-2 small">Days</th>
+                                            <th width="15%" class="py-2 small">Total Time</th>
+                                            <th width="15%" class="py-2 small">Total Revised</th>
+                                            <th width="10%" class="py-2 small">Action</th>
+                                        </tr>
+                                        <tr class="text-center align-middle bg-light">        
+                                            <th width="15%" class="py-2 small">Suspended</th>
+                                            <th width="15%" class="py-2 small">Extension Granted</th>
+                                            <th width="15%" class="py-2 small">Contract Time</th>
+                                            <th width="10%" class="py-2 small">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class=" small">
+                                        <tr class="align-middle">
+                                            <th class="text-center">1</th>
+                                            <th>Date of Notice to Proceed</th>
+                                            <td><input type="date" id="noticeToProceed" name="noticeToProceed" class="form-control form-control-sm"></td>
+                                            <td><input type="number" id="noticeSuspendedDays" name="noticeSuspendedDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="noticeExtensionDays" name="noticeExtensionDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="noticeRevisedDays" name="noticeRevisedDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="align-middle">
+                                            <th class="text-center">2</th>
+                                            <th>Official Start of Project</th>
+                                            <td><input type="date" id="projectStart" name="projectStart" class="form-control form-control-sm"></td>
+                                            <td><input type="number" id="startSuspendedDays" name="startSuspendedDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="startExtensionDays" name="startExtensionDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="startRevisedDays" name="startRevisedDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="align-middle">
+                                            <th class="text-center">3</th>
+                                            <th>Contract Time</th>
+                                            <td><input type="number" id="contractTime" name="contractTime" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="contractSuspendedDays" name="contractSuspendedDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="contractExtensionDays" name="contractExtensionDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="contractRevisedDays" name="contractRevisedDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="align-middle">
+                                            <th class="text-center">4</th>
+                                            <th>Original Expiry Date</th>
+                                            <td><input type="date" id="expiryDate" name="expiryDate" class="form-control form-control-sm"></td>
+                                            <td><input type="number" id="expirySuspendedDays" name="expirySuspendedDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="expiryExtensionDays" name="expiryExtensionDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td><input type="number" id="expiryRevisedDays" name="expiryRevisedDays" min="0" class="form-control form-control-sm text-end"></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody id="dynamic-extensions" class="small">
+                                        <tr class="align-middle">
+                                            <th class="text-center" rowspan="2">5</th>
+                                            <th>
+                                                Time Extension Due to
+                                                <input type="text" class="form-control form-control-sm mt-1" placeholder="Reason (e.g. Holiday, VO#1)">
+                                            </th>
+                                            <td><input type="number" class="form-control form-control-sm text-end" min="0"></td>
+                                            <td><input type="number" class="form-control form-control-sm text-end" min="0" placeholder="0"></td>
+                                            <td><input type="number" class="form-control form-control-sm text-end" placeholder="0"></td>
+                                            <td><input type="number" class="form-control form-control-sm text-end" placeholder="0"></td>
+                                            <td rowspan="2" class="text-center">
+                                            </td>
+                                        </tr>
+                                        <tr class="align-middle">
+                                            <th>
+                                                Revised Expiry Due to
+                                                <input type="text" class="form-control form-control-sm mt-1" placeholder="Reason (e.g. Holiday, VO#1)">
+                                            </th>
+                                            <td><input type="date" class="form-control form-control-sm"></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-end mt-3">
+                                <button type="button" class="btn btn-primary" onclick="addExtension()">
+                                    <i class="fas fa-plus-circle me-2"></i>Add Extension
+                                </button>
                             </div>
 
-                            <!-- Hidden text input for 'Ongoing' -->
-                            <div id="ongoingStatusContainer" class="mt-2 mb-2" style="display: none;">
-                                <div class="row">
-                                    <div class="offset-3 col-md-9">
-                                        <label for="ongoingStatus" class="form-label">Please specify percentage
-                                            completion </label>
-
-                                        <div class="d-flex gap-2">
-                                            <input type="text" id="ongoingStatus" name="ongoingStatus"
-                                                class="form-control w-50" placeholder="Enter percentage">
-                                            <input type="date" id="ongoingDate" class="form-control w-50">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <!-- Engineer project slippage -->
-                                <div class="col-3 ">
-                                    <label for="projectSlippage" class="form-label">Project Slippage</label>
-                                </div>
-                                <div class="col-9">
-                                    <input type="text" class="form-control" id="projectSlippage" name="projectSlippage"
-                                        placeholder="Enter project slippage">
-                                </div>
-                            </div>
-                            
-                        
-                            <div class="row">
-                                <div class="col-md-3 ">
-                                    <label for="ea" class="form-label">Project Engineer <span class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-md-4 position-relative">
-                                    <input type="text" class="form-control" id="ea" name="ea"
-                                    placeholder="Select or enter engineer name" autocomplete="off">
-                                    <div id="projectEngineerDropdown"
-                                        class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                        style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                    </div>
-                                </div>
-                                <div class="col-1 ">
-                                    <label for="ea_position" class="form-label">Position<span
-                                            class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-4">
-                                    <select class="form-select" id="ea_position" name="ea_position" required>
-                                        <option value="" disabled selected>Select Position</option>
-                                        <option value="Engineer Aid">Engineer Aid</option>
-                                        <option value="Engineer Assistant">Engineer Assistant</option>
-                                        <option value="Engineer I">Engineer I</option>
-                                    </select>
-                                </div>
-                                <!-- <div class="col-3 ">
-                                    <label for="ea_monthlyRate" class="form-label">Monthly Rate<span
-                                            class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">₱</span>
-                                        <input type="text" class="form-control currency-input" id="ea_monthlyRate" name="ea_monthlyRate">
-                                    </div>
-                                </div> -->
-                            </div> 
-                        </fieldset>
-
-                        <!-- Contract Details Section -->
-                        <fieldset class="border p-3 mb-4 rounded shadow-sm">
-                            <legend class="float-none w-auto px-3 fw-bold text-primary">
-                                <i class="fas fa-file-contract me-2"></i>Contract Details
-                            </legend>
-
-                            <div class="row g-3 mb-2">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-3 ">
-                                            <label for="appropriation" class="form-label">Appropriation <span
-                                                    class="text-danger">*</span></label>
-                                        </div>
-                                        <div class="col">                                        
-                                                <input type="text" class="form-control currency-input" name="appropriation"
-                                                    id="appropriation" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mb-2">
-                                <div class="col-3 ">
-                                    <label for="abc" class="form-label">ABC</label>
-                                </div>
-                                <div class="col-3">
-                                        <input type="text" class="form-control currency-input" id="abc" name="abc">
-                                </div>
-                            
-                                <div class="col-3 ">
-                                    <label for="engineering" class="form-label">Engineering</label>
-                                </div>
-                                <div class="col-3">
-                                        <input type="text" class="form-control currency-input" id="engineering"
-                                            name="engineering">
-                                </div>
-                            </div>
-
-                            <div class="row mb-2">
-                            
-                                <div class="col-3 ">
-                                    <label for="contractAmount" class="form-label">Contract Amount</label>
-                                </div>
-                                <div class="col-3">
-                                        <input type="text" class="form-control currency-input" id="contractAmount"
-                                            name="contractAmount">
-                                </div>
-                                <div class="col-3 ">
-                                    <label for="mqc" class="form-label">MQC</label>
-                                </div>
-                                <div class="col-3">
-                                        <input type="text" class="form-control currency-input" id="mqc" name="mqc">
-                                </div>
-                            </div>
-                            <!-- Savings = Bid Difference -->
-                            <div class="row mb-2">
-                                <div class="col-3 ">
-                                    <label for="bid" class="form-label">Savings</label>
-                                </div>
-                                <div class="col-3">
-                                        <input type="text" class="form-control currency-input" id="bid" name="bid">
-                                </div>
-
-                                <div class="col-3 ">
-                                    <label for="bid" class="form-label">Contingency</label>
-                                </div>
-                                <div class="col-3">
-                                        <input type="text" name="contingency" class="form-control currency-input"
-                                            id="contingency">
-                                </div>
-                            </div>
-
-
-
-                            <div class="row">
-                                <div class="row">
-                                    <h6 class=" m-1 fw-bold">Notice of Award</h6>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-3 ">
-                                        <label for="noaIssuedDate" class="form-label">Issued Date</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
-                                    </div>
-                                    <div class="col-3 ">
-                                        <label for="noaReceivedDate" class="form-label">Received Date</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate">
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="row">
-                                        <h6 class=" m-1 fw-bold">Notice to Proceed</h6>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-3 ">
-                                        <label for="ntpIssuedDate" class="form-label">Issued Date</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate">
-                                    </div>
-                                    <div class="col-3 ">
-                                        <label for="ntpReceivedDate" class="form-label">Received Date</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate">
-                                    </div>
-                                </div>
-                                <!-- <div class="row mb-2">
-                                    <div class="col-3 ">
-                                        <label for="originalStartDate" class="form-label">Official Start<span
-                                                class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="originalStartDate" name="originalStartDate">
-                                    </div>
-                                    <div class="col-3 ">
-                                        <label for="targetCompletion" class="form-label">Target Completion Date<span
-                                                class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="targetCompletion"
-                                            name="targetCompletion">
-                                    </div>
-                                </div> -->
-
-
-                                <!-- <div class="row mb-2">
-                                    <div class="col-3 ">
-                                        <label for="completionDate" class="form-label">Completion Date<span
-                                                class="text-danger">*</span>
-                                        </label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="date" style="background-color: lightgray;" class="form-control"
-                                            id="completionDate" name="completionDate">
-                                    </div>
-                                    <div class="col-3 ">
-                                        <label for="revisedCompletionDate" class="form-label">Revised Completion
-                                            Date</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="revisedCompletionDate"
-                                            name="revisedCompletionDate">
-                                    </div>
-                                </div> -->
-                            </div>
-                        </fieldset>
-
-                        <!-- <div class="row">
-                                <div class="mb-2">
-                                    <label for="revisedTargetCompletion" class="form-label">Revised Target
-                                        Completion</label>
-                                    <input type="date" class="form-control" style="background-color: lightgray;"
-                                        id="revisedTargetCompletion" name="revisedTargetCompletion">
-                                </div> 
-                            </div> -->
-
-                        <!-- Implementation Details -->
-                        <div class="border p-3 mb-4 rounded shadow-sm">
-                            <legend class="float-none w-auto px-3 fw-bold text-primary">
-                                <i class="fas fa-info-circle me-2"></i>Implementation Details
-                            </legend>
-
-                            <div class="container">
-                                <div class="row mb-2 ">
-                                    <label for="modeOfImplementation" class="col-3 form-label">Mode of Implementation
-                                        <span class="text-danger">*</span></label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="modeOfImplementation"
-                                            name="modeOfImplementation" value="By contract." readonly required>
-                                    </div>
-                                </div>
-                                <!-- Bagong add -->
-                                <div class="row mb-2 align-items-center">
-                                    <div class="col-3 ">
-                                        <label for="" class="form-label">Starting Date
-                                        <span class="text-danger">*</span></label>
-                                    </div>                        
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="originalStartDate" name="originalStartDate">
-                                    </div>
-                                    <div class="col-3 mb-2 ">
-                                        <label for="" class="form-label">Target Completion Date
-                                            <span class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-3">
-                                            <input type="date" class="form-control" id="targetCompletion"
-                                            name="targetCompletion">
-                                    </div>
-                                </div>
-                          
-                                <div class="row">
-                                    <!-- Order pair container -->
-                                    <div id="orderContainer" class="col-12 ">
-                                        <div class="row mt-2 mb-2 order-set" id="orderSet1">
-                                            <!-- Suspension and Resumption Order Row -->
-                                            <div class="row mb-2">
-                                                <div class="col-3 ">
-                                                    <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1</label>
-                                                </div>                        
-                                                <div class="col-3">
-                                                    <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
-                                                </div>
-                                                <div class="col-3 mb-2 ">
-                                                    <label for="resumeOrderNo1" class="form-label">Resumption Order No.1</label>
-                                                </div>
-                                                <div class="col-3">
-                                                        <input type="date" class="form-control" id="resumeOrderNo1"
-                                                        name="resumeOrderNo1">
-                                                </div>
-                                                <!-- Remarks Row -->
-                                                <div class="row mt-1 mb-2">
-                                                    <div class="col-md-3 mb-3 ">
-                                                        <label for="suspensionOrderNo1Remarks" class="form-label">Reason for Suspension</label>
-                                                    </div>
-                                                    <div class="col-9">
-                                                        <textarea class="form-control" id="suspensionOrderNo1Remarks"
-                                                            name="suspensionOrderNo1Remarks" rows="2"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-1">
-                                    <div class="col-md-10">
-                                        <hr>
-                                    </div>
-                                    <div class="col-2 text-center mb-2">
-                                        <button type="button" class="btn btn-outline-primary btn-sm mr-1"
-                                            onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="Add Suspension and Resumption Order">
-                                            <span class="fa-solid fa-square-plus"></span> </button>
-                                        <button type="button" class="btn btn-outline-danger btn-sm"
-                                            onclick="removeLastOrderFields()" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Suspension and Resumption Order">
-                                            <span class="fa-solid fa-circle-minus"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-3 ">
-                                        <label for="timeExtension" class="form-label">Number of Days Extension</label>
-                                    </div>                        
-                                    <div class="col-9">
-                                        <input type="number" class="form-control" id="timeExtension"
-                                            name="timeExtension">
-                                    </div>
-                                </div>
-                                <!-- New Target and Completion Dates -->
-                                <div id="newDatesSection" class="row mb-2" style="display: none;">
-                                    <div class="col-3 ">
-                                        <label for="revisedTargetDate" class="form-label">New Target Completion Date</label>
-                                    </div>                        
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="revisedTargetDate" name="revisedTargetDate">
-                                    </div>
-                                    <div class="col-3 ">
-                                        <label for="completionDate" class="form-label">Actual Completion Date</label>
-                                    </div>                        
-                                    <div class="col-3">
-                                        <input type="date" class="form-control" id="completionDate" name="completionDate">
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <!-- Actual Completion Date (Default View) -->
-                                    <div class="row mb-2">
-                                        <div class="col-3">
-                                            <label class="form-label">Actual Date of Completion</label>
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="date" class="form-control" id="completionDate" name="completionDate"
-                                                value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
-                                                style="background-color: lightgray;">
-                                        </div>
-                                        <div class="col-2 ">
-                                            <label for="actual_length" class="form-label">Actual Length:</label>
-                                        </div>
-                                        <div class="col-4">
-                                            <input type="text" class="form-control" id="actual_length" name="actual_length"
-                                                placeholder="Enter project's actual length">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
+                           </fieldset>
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fas fa-times me-2"></i>Cancel
@@ -556,7 +358,6 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-2"></i>Save Project
                         </button>
-                    </div>
                     </div>
                 </form>
             </div>
@@ -570,6 +371,135 @@
 <script id="engineer-data" type="application/json">
   {!! json_encode($projectEA->pluck('ea')->map(fn($ea) => trim($ea))->values()) !!}
 </script>
+<script>
+    const container = document.getElementById('revisedAmountsContainer');
+    const addBtn = document.getElementById('addRevisedAmountBtn');
+    const removeBtn = document.getElementById('removeRevisedAmountBtn');
+
+    let count = 2;
+    const maxCount = 11;
+    const suffixes = ['2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '11th'];
+
+    addBtn.addEventListener('click', () => {
+        if (count > maxCount) {
+            alert('You can only add up to the 11th Revised Contract Amount.');
+            return;
+        }
+
+        const suffix = suffixes[count - 2];
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'row g-3 mb-2 revised-field';
+        inputGroup.setAttribute('data-suffix', suffix);
+        inputGroup.innerHTML = `
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-3">
+                        <label for="${suffix}RevisedContractAmount" class="form-label">${suffix} Revised Contract Amount</label>
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control currency-input" name="${suffix}RevisedContractAmount"
+                            id="${suffix}RevisedContractAmount" required>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(inputGroup);
+        count++;
+    });
+
+    removeBtn.addEventListener('click', () => {
+        if (count <= 2) {
+            alert('Only 1st Revised Contract Amount is required. Nothing to remove.');
+            return;
+        }
+
+        const lastField = container.querySelector('.revised-field:last-of-type');
+        if (lastField) {
+            container.removeChild(lastField);
+            count--;
+        }
+    });
+
+</script>
+
+<script>
+let extensionCount = 1; // Starts from 1 since "5" is the first one
+
+function addExtension() {
+    const tbody = document.getElementById('dynamic-extensions');
+    const currentNumber = 5 + extensionCount;
+
+    const row1 = document.createElement('tr');
+    row1.className = 'align-middle';
+    row1.innerHTML = `
+        <th class="text-center" rowspan="2">${currentNumber}</th>
+        <th>
+            Time Extension Due to
+            <input type="text" class="form-control form-control-sm mt-1" placeholder="Reason (e.g. Holiday, VO#1)">
+        </th>
+        <td><input type="number" class="form-control form-control-sm text-end" min="0"></td>
+        <td><input type="number" class="form-control form-control-sm text-end" min="0"" placeholder="0"></td>
+        <td><input type="number" class="form-control form-control-sm text-end" placeholder="0"></td>
+        <td><input type="number" class="form-control form-control-sm text-end" placeholder="0"></td>
+        <td rowspan="2" class="text-center">
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                <i class="fa fa-trash"></i>
+            </button>
+        </td>
+    `;
+
+    const row2 = document.createElement('tr');
+    row2.className = 'align-middle';
+    row2.innerHTML = `
+        <th>
+            Revised Expiry Due to
+            <input type="text" class="form-control form-control-sm mt-1" placeholder="Reason (e.g. Holiday, VO#1)">
+        </th>
+        <td><input type="date" class="form-control form-control-sm"></td>
+        <td></td>
+        <td>></td>
+        <td></td>
+    `;
+
+    tbody.appendChild(row1);
+    tbody.appendChild(row2);
+    extensionCount++;
+}
+
+function removeRow(button) {
+    const row = button.closest('tr');
+    const tbody = document.getElementById('dynamic-extensions');
+    const index = Array.from(tbody.children).indexOf(row);
+
+    // Protect the first pair (rows 0 and 1)
+    if (index <= 1) {
+        alert("You can't delete the original extension.");
+        return;
+    }
+
+    const nextRow = row.nextElementSibling;
+    row.remove();
+    if (nextRow) nextRow.remove();
+
+    extensionCount--;
+    renumberExtensions();
+}
+
+function renumberExtensions() {
+    const tbody = document.getElementById('dynamic-extensions');
+    let number = 5;
+    for (let i = 0; i < tbody.children.length; i += 2) {
+        const row = tbody.children[i];
+        const th = row.querySelector('th');
+        if (th) {
+            th.textContent = number++;
+        }
+    }
+}
+</script>
+
+
 
 
 
