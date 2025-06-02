@@ -12,7 +12,7 @@
 //                     tableBody.append(`
 //                         <tr>
 //                             <td>${log.id}</td>
-//                             <td>${log.performedBy}</td>
+//                             <td>${log.performed_by}</td>
 //                             <td>${log.role}</td>
 //                             <td>${log.action}</td>
 //                             <td>${log.created_at}</td>

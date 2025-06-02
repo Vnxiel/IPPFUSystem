@@ -9,9 +9,9 @@ return new class extends Migration {
         Schema::create('project_files', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
-            $table->string('fileName');
-            $table->string('fileID');
-            $table->string('actionBy');
+            $table->string('file_name');
+            $table->string('file_id');
+            $table->string('action_by');
 
             $table->timestamps();
         });

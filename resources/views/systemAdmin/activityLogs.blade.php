@@ -45,7 +45,7 @@
                                         <div class="icon-circle me-2" style="background: rgba(33, 150, 243, 0.1); padding: 8px; border-radius: 50%;">
                                             <i class="fas fa-user" style="color: #2196F3;"></i>
                                         </div>
-                                        <span>{{ $log->performedBy }}</span>
+                                        <span>{{ $log->performed_by }}</span>
                                     </div>
                                 </td>
                                 <td>

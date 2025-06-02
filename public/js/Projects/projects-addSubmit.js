@@ -1,7 +1,7 @@
 function validateFinancialFields() {
     const requiredFields = [
         "#appropriation",
-        "#contractAmount",
+        "#orig_contract_amount",
         "#engineering",
         "#abc",
         "#mqc"
@@ -92,8 +92,8 @@ $(document).on("submit", "#addProjectForm", function (event) {
             $(this).val($(this).val().replace(/[₱,]/g, ""));
         });
 
-            const statusValue = $("#projectStatus").val();
-            const ongoingInput = $("#ongoingStatus");
+            const statusValue = $("#physical_status").val();
+            const ongoingInput = $("#ongoing_status");
             const percentage = ongoingInput.val().trim();
             const date = $("#ongoingDate").val().trim();
             

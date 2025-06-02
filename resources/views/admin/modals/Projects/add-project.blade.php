@@ -22,11 +22,11 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-3 text-end">
-                                        <label for="projectTitle" class="form-label">Project Title <span
+                                        <label for="title" class="form-label">Project Title <span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col">
-                                        <textarea class="form-control" id="projectTitle" name="projectTitle" rows="3"
+                                        <textarea class="form-control" id="title" name="title" rows="3"
                                             required></textarea>
                                     </div>
                                 </div>
@@ -48,41 +48,41 @@
                         </div>
                         <div class="row g-3 mb-2 text-end">
                             <div class="col-md-3 text-end">
-                                <label for="projectYear" class="form-label">Year <span
+                                <label for="year" class="form-label">Year <span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-3">
-                                <select class="form-select form-select-sm" id="projectYear" name="projectYear" required>
+                                <select class="form-select form-select-sm" id="year" name="year" required>
                                     <option value="" disabled selected>Select Year</option>
                                     <!-- Year options will be injected here by JavaScript -->
                                 </select>
                             </div>
 
                             <div class="col-md-2 text-end">
-                                <label for="projectFPP" class="form-label">FPP <span
+                                <label for="fpp" class="form-label">FPP <span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="projectFPP" name="projectFPP" required>
+                                <input type="text" class="form-control" id="fpp" name="fpp" required>
                             </div>
                         </div>
                         <div class="row mb-2 g-3 text-end">
                             <div class="col-md-3 text-end">
-                                <label for="projectRC" class="form-label">Responsibility Center<span
+                                <label for="responsibility_center" class="form-label">Responsibility Center<span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="projectRC" name="projectRC" required>
+                                <input type="text" class="form-control" id="responsibility_center" name="responsibility_center" required>
                             </div>
                         </div>
                         <div class="row g-3 mb-2 text-end">
                             <div class="col-md-3">
-                                <label for="projectLoc" class="form-label">Location
+                                <label for="location" class="form-label">Location
                                     <span class="text-danger">*</span>
                                 </label>
                             </div>
                             <div class="col-md-9 position-relative">
-                            <input type="text" class="form-control" id="projectLoc" name="projectLoc"
+                            <input type="text" class="form-control" id="location" name="location"
                                     placeholder="Select or enter location" autocomplete="off"
                                     oninput="filterLocations()" onblur="finalizeLocation()" onfocus="showLocDropdown()" />
 
@@ -103,11 +103,11 @@
                         <!-- Project Description -->
                         <div class="row mb-2 g-3">
                             <div class="col-3 text-end">
-                                <label for="projectDescription" class="form-label">Project Description<span
+                                <label for="description" class="form-label">Project Description<span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col">
-                                <textarea class="form-control" id="projectDescription" name="projectDescription"
+                                <textarea class="form-control" id="description" name="description"
                                     rows="4" required></textarea>
                             </div>
                         </div>
@@ -115,10 +115,10 @@
                         <!-- Contractor Input with Dynamic Suggestions -->
                         <div class="row g-3 mb-2 text-end">
                             <div class="col-md-3">
-                                <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
+                                <label for="firm_name" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="projectContractor" name="projectContractor"
+                                <input type="text" class="form-control" id="firm_name" name="firm_name"
                                     placeholder="Select or enter contractor name" autocomplete="off"
                                     oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
 
@@ -132,20 +132,20 @@
 
                         <div class="row mb-2 g-3 text-end">
                             <div class="col-md-3 text-end">
-                                <label for="sourceOfFunds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
+                                <label for="source_of_funds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
+                                <input type="text" class="form-control" id="source_of_funds" name="source_of_funds"
                                     placeholder="Select or enter source" autocomplete="off"
                                     oninput="filterFunds()" onfocus="showFundsDropdown()" onblur="hideFundsDropdownDelayed()" required>
 
                                 <div id="sourceOfFundsDropdown"
                                     class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                     style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                    @foreach($sourceOfFunds as $fund)
+                                    @foreach($source_of_funds as $fund)
                                     <button type="button" class="list-group-item list-group-item-action"
-                                            onclick="selectFund('{{ trim($fund->sourceOfFunds) }}')">
-                                        {{ trim($fund->sourceOfFunds) }}
+                                            onclick="selectFund('{{ trim($fund->source_of_funds) }}')">
+                                        {{ trim($fund->source_of_funds) }}
                                     </button>
                                     @endforeach
                                 </div>
@@ -161,8 +161,8 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input type="number" class="form-control" id="projectContractDays"
-                                            name="projectContractDays" min="0" required>
+                                        <input type="number" class="form-control" id="contract_days"
+                                            name="contract_days" min="0" required>
                                     </div>
                                 </div>
                             </div>
@@ -171,11 +171,11 @@
                             <div class="col-md-12 ">
                                 <div class="row align-items-center">
                                     <div class="col-md-3 text-end">
-                                        <label for="projectStatus" class="form-label">Status <span
+                                        <label for="physical_status" class="form-label">Status <span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-9 d-flex gap-2">
-                                        <select id="projectStatus" name="projectStatus" class="form-select"
+                                        <select id="physical_status" name="physical_status" class="form-select"
                                             onchange="toggleOngoingStatus()" required>
                                             <option value="" disabled selected>Select Status</option>
                                             <option value="Not Started"><i class="fas fa-not-equal"></i>Not Started
@@ -194,11 +194,11 @@
                         <div id="ongoingStatusContainer" class="mt-2 mb-2" style="display: none;">
                             <div class="row">
                                 <div class="offset-3 col-md-9">
-                                    <label for="ongoingStatus" class="form-label">Please specify percentage
+                                    <label for="ongoing_status" class="form-label">Please specify percentage
                                         completion </label>
 
                                     <div class="d-flex gap-2">
-                                        <input type="text" id="ongoingStatus" name="ongoingStatus"
+                                        <input type="text" id="ongoing_status" name="ongoing_status"
                                             class="form-control w-50" placeholder="Enter percentage">
                                         <input type="date" id="ongoingDate" class="form-control w-50">
                                     </div>
@@ -208,10 +208,10 @@
                         <div class="row mb-2">
                             <!-- Engineer project slippage -->
                             <div class="col-3 text-end">
-                                <label for="projectSlippage" class="form-label">Project Slippage</label>
+                                <label for="project_slippage" class="form-label">Project Slippage</label>
                             </div>
                             <div class="col-9">
-                                <input type="text" class="form-control" id="projectSlippage" name="projectSlippage"
+                                <input type="text" class="form-control" id="project_slippage" name="project_slippage"
                                     placeholder="Enter project slippage">
                             </div>
                         </div>
@@ -229,10 +229,10 @@
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Dynamic Dropdown -->
                                     <div class="col-md-3 text-end">
-                                        <label for="ea" class="form-label">Project Engineer <span class="text-danger">*</span></label>
+                                        <label for="engineer_name" class="form-label">Project Engineer <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-4 position-relative">
-                                        <input type="text" class="form-control" id="ea" name="ea"
+                                        <input type="text" class="form-control" id="engineer_name" name="engineer_name"
                                          placeholder="Select or enter engineer name" autocomplete="off">
                                         <div id="projectEngineerDropdown"
                                             class="list-group position-absolute w-100 shadow-sm bg-white rounded"
@@ -240,11 +240,11 @@
                                         </div>
                                      </div>
                                     <div class="col-1 text-end">
-                                        <label for="ea_position" class="form-label">Position<span
+                                        <label for="engineer_position" class="form-label">Position<span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-4">
-                                        <select class="form-select" id="ea_position" name="ea_position" required>
+                                        <select class="form-select" id="engineer_position" name="engineer_position" required>
                                             <option value="" disabled selected>Select Position</option>
                                             <option value="Engineer Aide">Engineer Aide</option>
                                             <option value="Engineer Assistant">Engineer Assistant</option>
@@ -305,11 +305,11 @@
                         <div class="row mb-2">
                            
                             <div class="col-3 text-end">
-                                <label for="contractAmount" class="form-label">Contract Amount</label>
+                                <label for="orig_contract_amount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
-                                    <input type="text" class="form-control currency-input" id="contractAmount"
-                                        name="contractAmount">
+                                    <input type="text" class="form-control currency-input" id="orig_contract_amount"
+                                        name="orig_contract_amount">
                             </div>
                             <div class="col-3 text-end">
                                 <label for="mqc" class="form-label">MQC</label>
@@ -345,16 +345,16 @@
 
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="noaIssuedDate" class="form-label">Issued Date</label>
+                                    <label for="noa_issued_date" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate">
+                                    <input type="date" class="form-control" id="noa_issued_date" name="noa_issued_date">
                                 </div>
                                 <div class="col-3 text-end">
-                                    <label for="noaReceivedDate" class="form-label">Received Date</label>
+                                    <label for="noa_received_date" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate">
+                                    <input type="date" class="form-control" id="noa_received_date" name="noa_received_date">
                                 </div>
                             </div>
 
@@ -366,46 +366,46 @@
 
                             <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="ntpIssuedDate" class="form-label">Issued Date</label>
+                                    <label for="ntp_issued_date" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate">
+                                    <input type="date" class="form-control" id="ntp_issued_date" name="ntp_issued_date">
                                 </div>
                                 <div class="col-3 text-end">
-                                    <label for="ntpReceivedDate" class="form-label">Received Date</label>
+                                    <label for="ntp_received_date" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate">
+                                    <input type="date" class="form-control" id="ntp_received_date" name="ntp_received_date">
                                 </div>
                             </div>
                             <!-- <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="originalStartDate" class="form-label">Official Start<span
+                                    <label for="official_starting_date" class="form-label">Official Start<span
                                             class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="originalStartDate" name="originalStartDate">
+                                    <input type="date" class="form-control" id="official_starting_date" name="official_starting_date">
                                 </div>
                                 <div class="col-3 text-end">
-                                    <label for="targetCompletion" class="form-label">Target Completion Date<span
+                                    <label for="target_completion_date" class="form-label">Target Completion Date<span
                                             class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="targetCompletion"
-                                        name="targetCompletion">
+                                    <input type="date" class="form-control" id="target_completion_date"
+                                        name="target_completion_date">
                                 </div>
                             </div> -->
 
 
                             <!-- <div class="row mb-2">
                                 <div class="col-3 text-end">
-                                    <label for="completionDate" class="form-label">Completion Date<span
+                                    <label for="actual_completion_date" class="form-label">Completion Date<span
                                             class="text-danger">*</span>
                                     </label>
                                 </div>
                                 <div class="col-3">
                                     <input type="date" style="background-color: lightgray;" class="form-control"
-                                        id="completionDate" name="completionDate">
+                                        id="actual_completion_date" name="actual_completion_date">
                                 </div>
                                 <div class="col-3 text-end">
                                     <label for="revisedCompletionDate" class="form-label">Revised Completion
@@ -436,11 +436,11 @@
 
                         <div class="container">
                             <div class="row mb-2 text-end">
-                                <label for="modeOfImplementation" class="col-3 form-label">Mode of Implementation
+                                <label for="mode_of_implementation" class="col-3 form-label">Mode of Implementation
                                     <span class="text-danger">*</span></label>
                                 <div class="col-9">
-                                    <input type="text" class="form-control" id="modeOfImplementation"
-                                        name="modeOfImplementation" value="By contract." readonly required>
+                                    <input type="text" class="form-control" id="mode_of_implementation"
+                                        name="mode_of_implementation" value="By contract." readonly required>
                                 </div>
                             </div>
                             <!-- Bagong add -->
@@ -451,15 +451,15 @@
                                     <span class="text-danger">*</span></label>
                                 </div>                        
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="originalStartDate" name="originalStartDate">
+                                    <input type="date" class="form-control" id="official_starting_date" name="official_starting_date">
                                 </div>
                                 <div class="col-3 mb-2 text-end">
                                     <label for="" class="form-label">Target Completion Date
                                         <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-3">
-                                        <input type="date" class="form-control" id="targetCompletion"
-                                        name="targetCompletion">
+                                        <input type="date" class="form-control" id="target_completion_date"
+                                        name="target_completion_date">
                                 </div>
                             </div>
                           
@@ -529,16 +529,16 @@
                             <!-- New Target and Completion Dates -->
                             <div id="newDatesSection" class="row mb-2" style="display: none;">
                                 <div class="col-3 text-end">
-                                    <label for="revisedTargetDate" class="form-label">New Target Completion Date</label>
+                                    <label for="revised_target_date" class="form-label">New Target Completion Date</label>
                                 </div>                        
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="revisedTargetDate" name="revisedTargetDate">
+                                    <input type="date" class="form-control" id="revised_target_date" name="revised_target_date">
                                 </div>
                                 <div class="col-3 text-end">
-                                    <label for="completionDate" class="form-label">Actual Completion Date</label>
+                                    <label for="actual_completion_date" class="form-label">Actual Completion Date</label>
                                 </div>                        
                                 <div class="col-3">
-                                    <input type="date" class="form-control" id="completionDate" name="completionDate">
+                                    <input type="date" class="form-control" id="actual_completion_date" name="actual_completion_date">
                                 </div>
                             </div>
 
@@ -548,8 +548,8 @@
                                     <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-9">
-                                    <input type="date" class="form-control" id="completionDate" name="completionDate"
-                                        value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
+                                    <input type="date" class="form-control" id="actual_completion_date" name="actual_completion_date"
+                                        value="{{ old('actual_completion_date', $project['actual_completion_date'] ?? '') }}"
                                         style="background-color: lightgray;">
                                 </div>
                             </div>
@@ -580,7 +580,7 @@
   
 </script>
 <script id="engineer-data" type="application/json">
-  {!! json_encode($projectEA->pluck('ea')->map(fn($ea) => trim($ea))->values()) !!}
+  {!! json_encode($projectEA->pluck('engineer_name')->map(fn($engineer_name) => trim($engineer_name))->values()) !!}
 </script>
 
 @section('page-scripts')

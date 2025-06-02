@@ -20,10 +20,8 @@ return new class extends Migration
             $table->string('time_frame');
             $table->string('time_limit')->nullable();
             $table->string('temp_role')->nullable();
-            $table->boolean('request_pass')->default(0);
-            $table->string('reason')->nullable();
-            $table->string('otp_code', 10)->nullable()->after('reason');
-            $table->timestamp('otp_expires_at')->nullable()->after('otp_code');
+            $table->string('otp_code', 10)->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
             $table->timestamps();
         });
         

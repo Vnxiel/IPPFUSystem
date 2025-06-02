@@ -1,149 +1,239 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('projectContractor');
-  const dropdown = document.getElementById('projectContractorDropdown');
-  const contractorDataScript = document.getElementById('contractor-data');
-  // example array if no backend script tag
-  const contractorNames = contractorDataScript ? JSON.parse(contractorDataScript.textContent) : [
-    "Archi Building",
-    "Acme Builders",
-    "Bravo Construction",
-    "Crestline Contractors",
-    "Delta Developments",
-    "Everest Engineering"
-  ];
+function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  const toggleBtn = toggleBtnId ? document.getElementById(toggleBtnId) : null;
+  let selectedIndex = -1;
+  if (!input || !dropdown) {
+    console.warn(`Missing input or dropdown element: ${inputId}, ${dropdownId}`);
+    return;
+  }
 
+  function attachClickHandlers() {
+      const buttons = dropdown.querySelectorAll('button');
+      buttons.forEach(button => {
+          button.onmousedown = () => {
+              const value = button.textContent.trim();
+
+              // Reset input value
+              if (value.toLowerCase() === 'all contractors') {
+                  input.value = '';
+              } else {
+                  input.value = value;
+              }
+
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+              dropdown.style.display = 'none';
+              selectedIndex = -1;
+          };
+      });
+  }
+
+  function showDropdown(showAll = false) {
+      const buttons = dropdown.querySelectorAll('button');
+      buttons.forEach(button => button.style.display = showAll ? '' : button.style.display);
+      dropdown.style.display = 'block';
+      attachClickHandlers();
+      selectedIndex = -1;
+  }
+
+  function hideDropdown() {
+      setTimeout(() => {
+          dropdown.style.display = 'none';
+          selectedIndex = -1;
+      }, 200);
+  }
+
+  function filterDropdown() {
+      const filter = input.value.toLowerCase();
+      const buttons = dropdown.querySelectorAll('button');
+      buttons.forEach(button => {
+          const text = button.textContent.toLowerCase();
+          button.style.display = text.includes(filter) ? '' : 'none';
+      });
+      selectedIndex = -1;
+      updateActiveButton();
+  }
+
+  function updateActiveButton() {
+      const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(btn => btn.style.display !== 'none');
+      dropdown.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+      if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
+          visibleButtons[selectedIndex].classList.add('active');
+          visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+  }
+
+  input.addEventListener('focus', () => {
+      // Always show all buttons when refocusing
+      showDropdown(true);
+  });
+
+  input.addEventListener('input', () => {
+      dropdown.style.display = 'block';
+      filterDropdown();
+  });
+
+  input.addEventListener('blur', hideDropdown);
+
+  input.addEventListener('keydown', (e) => {
+      const isArrowKey = e.key === 'ArrowDown' || e.key === 'ArrowUp';
+
+      if (isArrowKey && dropdown.style.display !== 'block') {
+          showDropdown(true); // Show all options on arrow key when hidden
+      }
+
+      const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(btn => btn.style.display !== 'none');
+
+      if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
+          updateActiveButton();
+      } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (selectedIndex > 0) selectedIndex--;
+          updateActiveButton();
+      } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
+              visibleButtons[selectedIndex].click();
+          }
+      } else if (e.key === 'Escape') {
+          dropdown.style.display = 'none';
+          selectedIndex = -1;
+      }
+  });
+
+  if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+          if (dropdown.style.display === 'block') {
+              dropdown.style.display = 'none';
+              selectedIndex = -1;
+          } else {
+              input.focus();
+          }
+      });
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (event) => {
+      if (!input.contains(event.target) && !dropdown.contains(event.target)) {
+          dropdown.style.display = 'none';
+          selectedIndex = -1;
+      }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupDropdownHandlers('contractor_filter', 'contractorDropdown', 'contractorToggleBtn');
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupDropdown('firm_name', 'firmDropdown');
+  setupDropdown('contractor_name', 'contractorNameDropdown');
+  setupDropdown('contractor_address', 'contractor_addressDropdown');
+});
+
+function setupDropdown(inputId, dropdownId) {
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  const buttons = dropdown.getElementsByTagName('button');
   let selectedIndex = -1;
 
-  input.addEventListener('input', filterContractors);
-  input.addEventListener('focus', showContractorDropdown);
+  input.addEventListener('input', () => filterOptions());
+  input.addEventListener('focus', () => showAllOptions());
 
   input.addEventListener('blur', () => {
     setTimeout(() => {
       dropdown.style.display = 'none';
-      finalizeContractor();
+      finalizeSelection();
     }, 150);
   });
 
-input.addEventListener('keydown', e => {
-  const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(b => b.style.display !== 'none');
+  Array.from(buttons).forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectValue(btn.textContent);
+    });
+  });
 
-  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && dropdown.style.display !== 'block') {
-    showContractorDropdown();
-  }
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
-    updateActive(visibleButtons);
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (selectedIndex > 0) selectedIndex--;
-    updateActive(visibleButtons);
-  } else if (e.key === 'Enter') {
-    e.preventDefault();
-
-    if (visibleButtons[selectedIndex]) {
-      // User explicitly selected a visible button
-      selectContractor(visibleButtons[selectedIndex].textContent);
-    } else {
-      // No button selected: try to autocomplete from the list
-      const val = input.value.trim().toLowerCase();
-
-      // Find first contractor starting with input value
-      const match = contractorNames.find(name => name.toLowerCase().startsWith(val));
-
-      if (match) {
-        selectContractor(match);
-      } else {
-        // fallback: keep user input but title case it
-        finalizeContractor();
-      }
+  input.addEventListener('keydown', e => {
+    const visible = Array.from(buttons).filter(btn => btn.style.display !== 'none');
+  
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && dropdown.style.display !== 'block') {
+      showAllOptions();
     }
-
-    // Move cursor to next input
-    focusNextInput(input);
-  } else if (e.key === 'Escape') {
-    dropdown.style.display = 'none';
-  }
-});
-
-
-  document.addEventListener('click', (e) => {
-    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+  
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (selectedIndex < visible.length - 1) selectedIndex++;
+      updateActive(visible);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (selectedIndex > 0) selectedIndex--;
+      updateActive(visible);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (visible[selectedIndex]) {
+        selectValue(visible[selectedIndex].textContent);
+      } else {
+        finalizeSelection();
+      }
+    } else if (e.key === 'Tab') {
+      if (dropdown.style.display === 'block') {
+        if (visible[selectedIndex]) {
+          selectValue(visible[selectedIndex].textContent);
+        } else {
+          finalizeSelection();
+        }
+        dropdown.style.display = 'none';
+      }
+    } else if (e.key === 'Escape') {
       dropdown.style.display = 'none';
     }
   });
-
-  function filterContractors() {
-    const query = input.value.toLowerCase().trim();
-    dropdown.innerHTML = '';
+  
+  function filterOptions() {
+    const filter = input.value.toLowerCase().trim();
     let anyVisible = false;
 
-    const matches = contractorNames
-      .map(name => ({
-        name,
-        score: name.toLowerCase().startsWith(query) ? 0 :
-               name.toLowerCase().includes(query) ? 1 : 2
-      }))
-      .filter(item => item.score < 2 || query === item.name.toLowerCase())
-      .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
-
-    matches.forEach(item => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'list-group-item list-group-item-action';
-      btn.textContent = item.name;
-      btn.style.display = '';
-      btn.addEventListener('click', () => {
-        selectContractor(item.name);
-        focusNextInput(input);
-      });
-      dropdown.appendChild(btn);
-      anyVisible = true;
-    });
+    for (let i = 0; i < buttons.length; i++) {
+      const text = buttons[i].textContent.toLowerCase().trim();
+      if (text.includes(filter)) {
+        buttons[i].style.display = '';
+        anyVisible = true;
+      } else {
+        buttons[i].style.display = 'none';
+      }
+    }
 
     dropdown.style.display = anyVisible ? 'block' : 'none';
     selectedIndex = -1;
   }
 
-  function showContractorDropdown() {
-    dropdown.innerHTML = '';
-    contractorNames.forEach(name => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'list-group-item list-group-item-action';
-      btn.textContent = name;
-      btn.addEventListener('click', () => {
-        selectContractor(name);
-        focusNextInput(input);
-      });
-      dropdown.appendChild(btn);
-    });
+  function showAllOptions() {
+    Array.from(buttons).forEach(btn => btn.style.display = '');
     dropdown.style.display = 'block';
     selectedIndex = -1;
   }
 
-  function finalizeContractor() {
+  function finalizeSelection() {
     const val = input.value.trim();
     if (val === '') return;
 
-    const match = contractorNames.find(name => name.toLowerCase() === val.toLowerCase());
+    const match = Array.from(buttons).find(
+      btn => btn.textContent.toLowerCase().trim() === val.toLowerCase()
+    );
 
-    if (match) {
-      input.value = match;
-    } else {
-      input.value = toTitleCase(val);
-    }
+    input.value = match ? match.textContent.trim() : toTitleCase(val);
   }
 
-  function selectContractor(name) {
-    input.value = name;
+  function selectValue(value) {
+    input.value = value.trim();
     dropdown.style.display = 'none';
-    selectedIndex = -1;
   }
 
   function updateActive(visibleButtons) {
-    Array.from(dropdown.querySelectorAll('button')).forEach(b => b.classList.remove('active'));
+    Array.from(buttons).forEach(b => b.classList.remove('active'));
     if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
       visibleButtons[selectedIndex].classList.add('active');
       visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -153,14 +243,4 @@ input.addEventListener('keydown', e => {
   function toTitleCase(str) {
     return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
   }
-
-  // New helper function to move focus to the next form control
-  function focusNextInput(currentInput) {
-    const focusableElements = Array.from(document.querySelectorAll('input, select, textarea, button, [tabindex]:not([tabindex="-1"])'))
-      .filter(el => !el.disabled && el.offsetParent !== null);
-    const index = focusableElements.indexOf(currentInput);
-    if (index > -1 && index < focusableElements.length - 1) {
-      focusableElements[index + 1].focus();
-    }
-  }
-});
+}

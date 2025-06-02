@@ -128,11 +128,11 @@ function setupAppropriationValidation(limitedFields = [], appropriationId = 'app
 document.addEventListener('DOMContentLoaded', () => {
     setupCurrencyInputs();
     setupAppropriationValidation(
-        ['abc', 'contractAmount', 'engineering', 'mqc', 'contingency']
+        ['abc', 'orig_contract_amount', 'engineering', 'mqc', 'contingency']
     );
 
     // === Bind updateBidDifference to input blur events ===
     document.getElementById('abc')?.addEventListener('blur', updateBidDifference);
-    document.getElementById('contractAmount')?.addEventListener('blur', updateBidDifference);
+    document.getElementById('orig_contract_amount')?.addEventListener('blur', updateBidDifference);
 
 });

@@ -71,7 +71,6 @@
                 <th>Type</th>
                 <th>Name</th>
                 <th>Month</th>
-                <th>Date</th>
                 <th>Period</th>
                 <th>Amount</th>
                 <th>Action</th>

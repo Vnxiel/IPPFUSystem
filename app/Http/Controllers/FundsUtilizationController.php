@@ -150,10 +150,10 @@ class FundsUtilizationController extends Controller
             VariationOrder::where('funds_utilization_id', $fundUtilization->id)->delete();
 
             // Limit to max 3 VOs
-            if (count($variationOrders) > 3) {
+            if (count($variationOrders) > 5) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Only up to 3 Variation Orders are allowed.'
+                    'message' => 'Only up to 5 Variation Orders are allowed.'
                 ], 400);
             }
 
@@ -197,89 +197,109 @@ class FundsUtilizationController extends Controller
     }
     
     public function storeFundDetail(Request $request, $id)
-    {
-        try {
-            $fundUtilization = FundsUtilization::where('project_id', $id)->first();
-    
-            if (!$fundUtilization) {
-                return response()->json(['success' => false, 'message' => 'Fund utilization record not found.']);
-            }
-    
-            $entries = $request->input('entries', []);
-    
-            // Fallback to single entry if 'entries' array is not used
-            if (empty($entries) && $request->has(['type', 'name', 'month', 'date', 'period', 'amount'])) {
-                $entries = [[
-                    'type' => $request->input('type'),
-                    'name' => $request->input('name'),
-                    'month' => $request->input('month'),
-                    'date' => $request->input('date'),
-                    'period' => $request->input('period'),
-                    'amount' => $request->input('amount'),
-                ]];
-            }
-    
-            $duplicates = [];
-            $saved = 0;
-    
-            foreach ($entries as $entry) {
-                $type = $entry['type'] ?? null;
-                $name = trim($entry['name'] ?? '');
-                $month = trim($entry['month'] ?? '');
-                $date = $entry['date'] ?? null;
-Log::info('Date format:', ['date' => $date]);
-                $paymentPeriod = $entry['period'] ?? null;
-                $amount = $entry['amount'] ?? null;
-    
-                if (!$type || !$name || !$month || !$date || !$paymentPeriod || !$amount) {
-                    Log::warning("Skipping incomplete entry: " . json_encode($entry));
-                    continue;
-                }
-    
-                // Check for duplicate
-                $existing = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
-                    ->where('type', $type)
-                    ->where('name', $name)
-                    ->where('month', $month)
-                    ->where('breakdown_date', $date)
-                    ->where('payment_periods', $paymentPeriod)
-                    ->first();
-    
-                if ($existing) {
-                    $duplicates[] = "$name ($month, $paymentPeriod)";
-                    continue;
-                }
-    
-                FundsBreakdowns::create([
-                    'funds_utilization_id' => $fundUtilization->id,
-                    'type' => $type,
-                    'name' => $name,
-                    'month' => $month,
-                    'breakdown_date' => $date,
-                    'payment_periods' => $paymentPeriod,
-                    'amount' => $this->cleanMoney($amount),
-                    'remarks' => null,
-                ]);
-    
-                $saved++;
-            }
-    
-            if ($saved > 0 && count($duplicates) > 0) {
-                return response()->json([
-                    'success' => true,
-                    'message' => "$saved entr" . ($saved > 1 ? "ies" : "y") . " saved. Some duplicates were skipped: " . implode(', ', $duplicates)
-                ]);
-            } elseif ($saved > 0) {
-                return response()->json(['success' => true, 'message' => 'All entries saved successfully.']);
-            } else {
-                return response()->json(['success' => false, 'message' => 'All entries were duplicates or invalid. Nothing saved.']);
-            }
-    
-        } catch (\Exception $e) {
-            Log::error("Failed to store fund detail: " . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to save.']);
+{
+    try {
+        $fundUtilization = FundsUtilization::where('project_id', $id)->first();
+
+        if (!$fundUtilization) {
+            return response()->json(['success' => false, 'message' => 'Fund utilization record not found.']);
         }
+
+        $entries = $request->input('entries', []);
+
+        // Fallback to single entry if 'entries' array is not used
+        if (empty($entries) && $request->has(['type', 'name', 'month', 'date_from', 'date_to', 'amount'])) {
+            $entries = [[
+                'type' => $request->input('type'),
+                'name' => $request->input('name'),
+                'month' => $request->input('month'),
+                'date_from' => $request->input('date_from'),
+                'date_to' => $request->input('date_to'),
+                'amount' => $request->input('amount'),
+            ]];
+        }
+
+        $duplicates = [];
+        $saved = 0;
+
+        $engineeringTotal = 0;
+        $mqcTotal = 0;
+
+        foreach ($entries as $entry) {
+            $type = $entry['type'] ?? null;
+            $name = trim($entry['name'] ?? '');
+            $month = trim($entry['month'] ?? '');
+            $dateFrom = $entry['date_from'] ?? null;
+            $dateTo = $entry['date_to'] ?? null;
+            $amount = $entry['amount'] ?? null;
+
+            if (!$type || !$name || !$month || !$dateFrom || !$dateTo || !$amount) {
+                Log::warning("Skipping incomplete entry: " . json_encode($entry));
+                continue;
+            }
+
+            // Check for duplicate based on all identifiers
+            $existing = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
+                ->where('type', $type)
+                ->where('name', $name)
+                ->where('month', $month)
+                ->where('date_from', $dateFrom)
+                ->where('date_to', $dateTo)
+                ->first();
+
+            if ($existing) {
+                $duplicates[] = "$name ($month)";
+                continue;
+            }
+
+            $cleanAmount = $this->cleanMoney($amount);
+
+            FundsBreakdowns::create([
+                'funds_utilization_id' => $fundUtilization->id,
+                'type' => $type,
+                'name' => $name,
+                'month' => $month,
+                'date_from' => $dateFrom,
+                'date_to' => $dateTo,
+                'amount' => $cleanAmount,
+                'remarks' => null,
+            ]);
+
+            // Sum actual values
+            if (strtolower($type) === 'engineering') {
+                $engineeringTotal += $cleanAmount;
+            } elseif (strtolower($type) === 'mqc') {
+                $mqcTotal += $cleanAmount;
+            }
+
+            $saved++;
+        }
+
+        // Update actual_engineering and actual_mqc
+        if ($engineeringTotal > 0 || $mqcTotal > 0) {
+            $fundUtilization->update([
+                'actual_engineering' => DB::raw("COALESCE(actual_engineering, 0) + {$engineeringTotal}"),
+                'actual_mqc' => DB::raw("COALESCE(actual_mqc, 0) + {$mqcTotal}"),
+            ]);
+        }
+
+        if ($saved > 0 && count($duplicates) > 0) {
+            return response()->json([
+                'success' => true,
+                'message' => "$saved entr" . ($saved > 1 ? "ies" : "y") . " saved. Some duplicates were skipped: " . implode(', ', $duplicates)
+            ]);
+        } elseif ($saved > 0) {
+            return response()->json(['success' => true, 'message' => 'All entries saved successfully.']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'All entries were duplicates or invalid. Nothing saved.']);
+        }
+
+    } catch (\Exception $e) {
+        Log::error("Failed to store fund detail: " . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Failed to save.']);
     }
+}
+
     
     
     

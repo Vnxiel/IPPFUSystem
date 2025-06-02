@@ -8,17 +8,15 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
     console.warn(`Missing input or dropdown element: ${inputId}, ${dropdownId}`);
     return;
   }
+
   function attachClickHandlers() {
     const buttons = dropdown.querySelectorAll('button');
-    buttons.forEach(button => {
+    buttons.forEach((button, index) => {
       button.onclick = () => {
         const value = button.textContent.trim();
         input.value = value;
 
-        if (value.toLowerCase() === 'all contractor') {
-          buttons.forEach(btn => btn.style.display = '');
-        }
-
+  
         input.dispatchEvent(new Event('input', { bubbles: true }));
         dropdown.style.display = 'none';
         selectedIndex = -1;
@@ -35,10 +33,11 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
   }
 
   function hideDropdown() {
+    // Only hide after slight delay to allow button click
     setTimeout(() => {
       dropdown.style.display = 'none';
       selectedIndex = -1;
-    }, 200);
+    }, 150);
   }
 
   function filterDropdown() {
@@ -57,7 +56,7 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
     dropdown.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
     if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
       visibleButtons[selectedIndex].classList.add('active');
-      visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest' });
     }
   }
 
@@ -67,31 +66,54 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
   });
 
   input.addEventListener('input', () => {
-    dropdown.style.display = 'block';
+    showDropdown();
     filterDropdown();
   });
 
-  input.addEventListener('blur', hideDropdown);
+  input.addEventListener('blur', () => {
+    // Delay hiding only if user isn't clicking on a dropdown button
+    setTimeout(() => {
+      if (!dropdown.contains(document.activeElement)) {
+        dropdown.style.display = 'none';
+        selectedIndex = -1;
+      }
+    }, 150);
+  });
+  
 
   input.addEventListener('keydown', (e) => {
-    const isArrowKey = e.key === 'ArrowDown' || e.key === 'ArrowUp';
-
-    if (isArrowKey && dropdown.style.display !== 'block') {
-      showDropdown();
+    const allButtons = Array.from(dropdown.querySelectorAll('button'));
+  
+    // Tab key allows normal behavior
+    if (e.key === 'Tab') {
+      dropdown.style.display = 'none';
+      selectedIndex = -1;
+      return;
     }
-
-    const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(btn => btn.style.display !== 'none');
-
+  
     if (e.key === 'ArrowDown') {
       e.preventDefault();
+      if (dropdown.style.display !== 'block') {
+        showDropdown(); // show all
+      } else {
+        allButtons.forEach(button => button.style.display = '');
+      }
+      const visibleButtons = allButtons.filter(btn => btn.style.display !== 'none');
       if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
       updateActiveButton();
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
+      if (dropdown.style.display !== 'block') {
+        showDropdown(); // show all
+      } else {
+        allButtons.forEach(button => button.style.display = '');
+      }
+      const visibleButtons = allButtons.filter(btn => btn.style.display !== 'none');
       if (selectedIndex > 0) selectedIndex--;
       updateActiveButton();
     } else if (e.key === 'Enter') {
       e.preventDefault();
+      const visibleButtons = allButtons.filter(btn => btn.style.display !== 'none');
       if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
         visibleButtons[selectedIndex].click();
       }
@@ -100,7 +122,7 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
       selectedIndex = -1;
     }
   });
-
+  
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
       if (dropdown.style.display === 'block') {
@@ -112,6 +134,7 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
     });
   }
 
+  // Hide when clicking outside
   document.addEventListener('click', (event) => {
     if (!input.contains(event.target) && !dropdown.contains(event.target)) {
       dropdown.style.display = 'none';
@@ -120,14 +143,17 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
   });
 }
 
+// Example setup
 document.addEventListener('DOMContentLoaded', () => {
   setupDropdownHandlers('location_filter', 'location_filter_dropdown', 'locToggleBtn');
+  setupDropdownHandlers('year_filter_input', 'year_filter_dropdown'); // for your year input
 });
 
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('projectLoc');
+  const input = document.getElementById('location');
   const dropdown = document.getElementById('projectLocDropdown');
   const buttons = dropdown.getElementsByTagName('button');
   let selectedIndex = -1;
@@ -249,33 +275,33 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  const focusableElements = Array.from(document.querySelectorAll('input, textarea'));
+// document.addEventListener('DOMContentLoaded', () => {
+//   const focusableElements = Array.from(document.querySelectorAll('input, textarea'));
 
-  focusableElements.forEach((el, idx) => {
-    el.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        // Skip if inside a textarea — allow new line
-        if (el.tagName.toLowerCase() === 'textarea') {
-          return; // Just let Enter do its normal thing
-        }
+//   focusableElements.forEach((el, idx) => {
+//     el.addEventListener('keydown', (e) => {
+//       if (e.key === 'Enter') {
+//         // Skip if inside a textarea — allow new line
+//         if (el.tagName.toLowerCase() === 'textarea') {
+//           return; // Just let Enter do its normal thing
+//         }
 
-        e.preventDefault();
+//         e.preventDefault();
 
-        let nextEl = null;
-        for (let i = idx + 1; i < focusableElements.length; i++) {
-          const next = focusableElements[i];
-          if (!next.disabled && next.offsetParent !== null) {
-            nextEl = next;
-            break;
-          }
-        }
+//         let nextEl = null;
+//         for (let i = idx + 1; i < focusableElements.length; i++) {
+//           const next = focusableElements[i];
+//           if (!next.disabled && next.offsetParent !== null) {
+//             nextEl = next;
+//             break;
+//           }
+//         }
 
-        if (nextEl) {
-          nextEl.focus();
-          if (nextEl.select) nextEl.select();
-        }
-      }
-    });
-  });
-});
+//         if (nextEl) {
+//           nextEl.focus();
+//           if (nextEl.select) nextEl.select();
+//         }
+//       }
+//     });
+//   });
+// });

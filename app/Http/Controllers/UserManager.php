@@ -15,7 +15,6 @@ use App\Mail\PasswordChanged;
 use App\Models\User;
 use App\Models\ActivityLog;
 use App\Http\Controllers\ActivityLogs;
-use App\Models\Contractor;
 use App\Models\Project;
 
 class UserManager extends Controller
@@ -45,6 +44,7 @@ class UserManager extends Controller
             'ofmis_id' => 'required', 
             'fullname' => 'required|min:3',
             'position' => 'required',
+            'email' => 'required',
             'username' => 'required|unique:users,username',
             'password' => 'required|min:6|confirmed',
         ]);
@@ -63,6 +63,7 @@ class UserManager extends Controller
             'ofmis_id' => $request->ofmis_id,
             'fullname' => $request->fullname,
             'position' => $request->position,
+            'email' => $request->email,
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'role' => $isFirstUser ? 'System Admin' : 'Staff', 
@@ -111,7 +112,7 @@ class UserManager extends Controller
         $user->time_frame = $request->time_frame;
         $user->save();
     
-        // ✅ Activity logging
+        //  Activity logging
         if (session()->has('loggedIn')) {
             $sessionData = session()->get('loggedIn');
             $action = "Changed role of user '{$user->username}' to '{$user->role}' ({$request->time_frame})";
@@ -119,7 +120,7 @@ class UserManager extends Controller
             $request->session()->put('ChangedUserRole', [
                 'user_id' => $sessionData['user_id'],
                 'ofmis_id' => $sessionData['ofmis_id'],
-                'performedBy' => $sessionData['performedBy'],
+                'performed_by' => $sessionData['performed_by'],
                 'role' => $sessionData['role'],
                 'action' => $action,
             ]);
@@ -129,7 +130,7 @@ class UserManager extends Controller
             (new ActivityLogs)->userAction(
                 $sessionData['user_id'],
                 $sessionData['ofmis_id'],
-                $sessionData['performedBy'],
+                $sessionData['performed_by'],
                 $sessionData['role'],
                 $action
             );
@@ -168,7 +169,7 @@ public function userLogin(Request $request)
         $request->session()->put('loggedIn', [
             'user_id' => $user->id,
             'ofmis_id' => $user->ofmis_id,
-            'performedBy' => $user->username,
+            'performed_by' => $user->username,
             'role' => $user->role,
             'action' => "Logged in into the system.",
             'time_limit' => $user->time_limit, // Save user's expiration time
@@ -180,7 +181,7 @@ public function userLogin(Request $request)
             (new ActivityLogs)->userAction(
                 $log['user_id'],
                 $log['ofmis_id'],
-                $log['performedBy'],
+                $log['performed_by'],
                 $log['role'],
                 $log['action']
             );
@@ -268,7 +269,7 @@ public function getUserRole(Request $request)
             //  Step 6: Kung tugma, i-log in ang user at i-save ang session
             $request->session()->put('loggedIn', [
                 'ofmis_id' => $user->ofmis_id,
-                'performedBy' => $user->username,
+                'performed_by' => $user->username,
                 'role' => $user->role,
                 'action' => "Logged in into the system.",
             ]);
@@ -292,7 +293,7 @@ public function getUserRole(Request $request)
         $response = Http::post($authUrl, [
             'username' => 'administrator',
             'password' => 'Junnie%123',
-            'FileName' => ''
+            'file_name' => ''
         ]);
 
         return $response->json(); // Ibalik ang response mula sa API (kasama ang token kung successful)
@@ -323,16 +324,16 @@ public function getUserRole(Request $request)
   
     public function projects()
     {
-        $contractors = Contractor::orderBy('name')->get();
+        $contractors = Project::orderBy('firm_name')->get();
         $staticLocations = [ 
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
             'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
             'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
         
-        $dbLocationsRaw = Project::select('projectLoc')
-            ->whereNotNull('projectLoc')
-            ->pluck('projectLoc')
+        $dbLocationsRaw = Project::select('location')
+            ->whereNotNull('location')
+            ->pluck('location')
             ->toArray();
         
         // Extract only the municipality (first part before the comma)
@@ -353,25 +354,25 @@ public function getUserRole(Request $request)
 
         
 
-        $sourceOfFunds = Project::select('sourceOfFunds')
+        $source_of_funds = Project::select('source_of_funds')
         ->distinct()
-        ->whereNotNull('sourceOfFunds')
-        ->orderBy('sourceOfFunds')
+        ->whereNotNull('source_of_funds')
+        ->orderBy('source_of_funds')
         ->get();
-        $projectYear = Project::select('projectYear')
+        $year = Project::select('year')
         ->distinct()
-        ->whereNotNull('projectYear')
-        ->orderBy('projectYear')
+        ->whereNotNull('year')
+        ->orderBy('year')
         ->get();
-        $projectEA = Project::select('ea')
+        $projectEA = Project::select('engineer_name')
         ->distinct()
-        ->whereNotNull('ea')
-        ->orderBy('ea')
+        ->whereNotNull('engineer_name')
+        ->orderBy('engineer_name')
         ->get();
 
 
         // default to system admin
-        return view('systemAdmin.projects', compact('contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+        return view('systemAdmin.projects', compact('contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
     }
     
     
@@ -379,7 +380,7 @@ public function getUserRole(Request $request)
     public function overview()
     {
         // 1. Load your data
-        $contractors = Contractor::orderBy('name')->get();
+        $contractors = Project::orderBy('firm_name')->get();
     
         // 3. Otherwise, show the system‑admin overview
         return view('systemAdmin.overview', compact('contractors'));
@@ -487,7 +488,7 @@ public function getUserRole(Request $request)
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            // ✅ Return JSON instead of redirect
+            //  Return JSON instead of redirect
             return response()->json(['message' => 'Logged out successfully']);
         }
 

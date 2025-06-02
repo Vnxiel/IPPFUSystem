@@ -9,23 +9,22 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\PasswordChanged;
 use App\Models\User;
 use App\Models\ActivityLog;
-use App\Models\Contractor;
 use App\Models\Project;
 
 class SystemAdminManager extends Controller
 {
     public function index(){
     
-        $contractors = Contractor::orderBy('name', 'asc')->get();
+        $contractors = Project::orderBy('firm_name', 'asc')->get();
         $staticLocations = [ 
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
             'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
             'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
         
-        $dbLocationsRaw = Project::select('projectLoc')
-            ->whereNotNull('projectLoc')
-            ->pluck('projectLoc')
+        $dbLocationsRaw = Project::select('location')
+            ->whereNotNull('location')
+            ->pluck('location')
             ->toArray();
         
         // Extract only the municipality (first part before the comma)
@@ -45,24 +44,24 @@ class SystemAdminManager extends Controller
             ->values();
 
 
-        $sourceOfFunds = Project::select('sourceOfFunds')
+        $source_of_funds = Project::select('source_of_funds')
         ->distinct()
-        ->whereNotNull('sourceOfFunds')
-        ->orderBy('sourceOfFunds')
+        ->whereNotNull('source_of_funds')
+        ->orderBy('source_of_funds')
         ->get();
 
-        $projectYear = Project::select('projectYear')
+        $year = Project::select('year')
         ->distinct()
-        ->whereNotNull('projectYear')
-        ->orderBy('projectYear')
+        ->whereNotNull('year')
+        ->orderBy('year')
         ->get();
-        $projectEA = Project::select('ea')
+        $projectEA = Project::select('engineer_name')
         ->distinct()
-        ->whereNotNull('ea')
-        ->orderBy('ea')
+        ->whereNotNull('engineer_name')
+        ->orderBy('engineer_name')
         ->get();
 
-         return view('systemAdmin.index', compact('contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+         return view('systemAdmin.index', compact('contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
 }
 
     public function userManagement(){
@@ -222,29 +221,4 @@ class SystemAdminManager extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function addProjects(Request $request){
-
-    }
-    public function viewProjects(Request $request){
-
-    }
-    public function searchProjects(Request $request){
-
-    }
-
-    public function generateReports(Request $request){
-
-    }
-
-    public function restoreProject(Request $request){
-
-    }
-
-    public function temporaryDeleteProject(Request $request){
-
-    }
-
-    public function ViewProjectStatus(Request $request){
-
-    }
-}
+  }

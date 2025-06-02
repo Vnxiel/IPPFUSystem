@@ -15,14 +15,14 @@ class CheckRoleExpiration
             if ($user->time_frame === 'Temporary' && $user->time_limit && now()->gt($user->time_limit)) {
                 session()->flash('logout_soon', true);
 
-                 // ✅ Revert the role
+                 //  Revert the role
                  $user->role = $user->temp_role ?? 'Staff';
                  $user->temp_role = null;
                  $user->time_limit = null;
                  $user->time_frame = 'Permanent';
                  $user->save();
  
-                 // ✅ Log the role expiration if needed (optional)
+                 //  Log the role expiration if needed (optional)
              (new \App\Http\Controllers\ActivityLogs)->userAction(
                      $user->id,
                       $user->ofmis_id,

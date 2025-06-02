@@ -12,41 +12,42 @@ return new class extends Migration
             $table->id(); // Primary key
             $table->string('projectID'); // External/public identifier
 
-            $table->string('projectTitle');
-            $table->string('projectLoc');
+            $table->string('title');
+            $table->string('location');
 
-            $table->string('projectContractor');
-            $table->string('sourceOfFunds');
+            $table->string('firm_name');
+            $table->string('source_of_funds');
             $table->string('otherFund')->nullable();
-            $table->string('modeOfImplementation');
-            $table->integer('projectContractDays');
-            $table->integer('projectYear');
-            $table->string('projectRC');
-            $table->string('projectFPP');
-            $table->string('actual_length');
+            $table->string('mode_of_implementation');
+            $table->integer('contract_days');
+            $table->integer('year');
+            $table->string('responsibility_center');
+            $table->string('fpp');
+            $table->string('actual_length')->nullable();
 
 
-            $table->date('originalStartDate');
-            $table->date('targetCompletion');
+            $table->date('official_starting_date');
+            $table->date('target_completion_date');
             $table->string('timeExtension')->nullable();
             $table->date('revisedTargetCompletion')->nullable();
-            $table->date('completionDate')->nullable();
+            $table->date('actual_completion_date')->nullable();
 
-            $table->date('revisedTargetDate')->nullable();
+            $table->date('revised_target_date')->nullable();
             $table->date('revisedCompletionDate')->nullable();
-            $table->date('noaIssuedDate')->nullable();
-            $table->date('noaReceivedDate')->nullable();
-            $table->date('ntpIssuedDate')->nullable();
-            $table->date('ntpReceivedDate')->nullable();
+            $table->date('noa_issued_date')->nullable();
+            $table->date('noa_received_date')->nullable();
+            $table->date('ntp_issued_date')->nullable();
+            $table->date('ntp_received_date')->nullable();
 
-            $table->string('projectSlippage')->nullable();
-            $table->string('totalExpenditure')->nullable();
-            $table->string('ea')->nullable();
-            $table->string('ea_position')->nullable();
-            $table->string('othersContractor')->nullable();
-            $table->string('projectStatus')->nullable();
-            $table->string('ongoingStatus')->nullable();
-            $table->string('suspensionRemarks')->nullable();
+            $table->string('project_slippage')->nullable();
+            $table->string('total_expenditure')->nullable();
+            $table->string('engineer_name')->nullable();
+            $table->string('engineer_position')->nullable();
+            $table->string('contractor_name')->nullable();
+            $table->string('contractor_address')->nullable();
+            $table->string('physical_status')->nullable();
+            $table->string('ongoing_status')->nullable();
+            $table->string('reason_for_suspension')->nullable();
             $table->boolean('is_hidden')->default(false); // Better as boolean
 
             $table->timestamps();

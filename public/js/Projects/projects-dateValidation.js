@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ================================
     // 1. Populate Year Options
     // ================================
-        const selectYear = document.getElementById("projectYear");
+        const selectYear = document.getElementById("year");
         if (!selectYear) return;
     
         const currentYear = new Date().getFullYear();
@@ -27,32 +27,32 @@ document.addEventListener("DOMContentLoaded", function () {
     // 2. Initialize Fields
     // ================================
 
-    const originalStartDate = document.getElementById("originalStartDate");
+    const official_starting_date = document.getElementById("official_starting_date");
     const suspensionDate = document.getElementById("suspensionOrderNo1");
     const resumeDate = document.getElementById("resumeOrderNo1");
-    const targetCompletion = document.getElementById("targetCompletion");
-    const actualCompletion = document.getElementById("revisedCompletionDate");
-    const revisedTargetField = document.getElementById("revisedTargetDate");
+    const target_completion_date = document.getElementById("target_completion_date");
+    const actualCompletion = document.getElementById("actual_completion_date");
+    const revisedTargetField = document.getElementById("revised_target_date");
     const revisedCompletionField = document.getElementById("revisedCompletionDate");
     const extensionField = document.getElementById("timeExtension");
 
-    const ntpIssuedDate = document.getElementById("ntpIssuedDate");
-    const ntpReceivedDate = document.getElementById("ntpReceivedDate");
+    const ntp_issued_date = document.getElementById("ntp_issued_date");
+    const ntp_received_date = document.getElementById("ntp_received_date");
 
     // // Hide optional rows initially
     // extensionField.closest('.row').style.display = "none";
     // revisedTargetField.closest('.row').style.display = "none";
     // revisedCompletionField.closest('.row').style.display = "none";
 
-    const contractDays = document.getElementById("projectContractDays");
+    const contractDays = document.getElementById("contract_days");
 
     function updateTargetCompletion() {
-        if (originalStartDate.value && contractDays.value) {
-            const start = new Date(originalStartDate.value);
+        if (official_starting_date.value && contractDays.value) {
+            const start = new Date(official_starting_date.value);
             const days = parseInt(contractDays.value);
             if (!isNaN(days)) {
                 start.setDate(start.getDate() + days - 1); // subtract 1 to include the start day
-                targetCompletion.value = start.toISOString().split('T')[0];
+                target_completion_date.value = start.toISOString().split('T')[0];
 
                 // Optional: reset dependent fields
                 actualCompletion.value = '';
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    originalStartDate.addEventListener("change", updateTargetCompletion);
+    official_starting_date.addEventListener("change", updateTargetCompletion);
     contractDays.addEventListener("input", updateTargetCompletion);
 
     function showError(message, field) {
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 5. Set Minimum Allowed Dates
     // ================================
     function setMinDates() {
-        const start = originalStartDate.value;
+        const start = official_starting_date.value;
         if (start) {
             const nextDay = new Date(start);
             nextDay.setDate(nextDay.getDate() + 1);
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             suspensionDate.min = minDate;
             resumeDate.min = minDate;
-            targetCompletion.min = minDate;
+            target_completion_date.min = minDate;
             actualCompletion.min = minDate;
             revisedTargetField.min = minDate;
             revisedCompletionField.min = minDate;
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 6. Validate if Date is After Start Date
     // ================================
     function validateAfterStart(field, label) {
-        const startDate = new Date(originalStartDate.value);
+        const startDate = new Date(official_starting_date.value);
         const date = new Date(field.value);
         if (field.value && (date <= startDate)) {
             showError(`${label} must be strictly after the Official Starting Date.`, field);
@@ -114,10 +114,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // 7. Validate NTP Issued Date vs Start Date
     // ================================
     function validateOriginalStartVsNTP() {
-        const ntpDate = new Date(ntpIssuedDate.value);
-        const startDate = new Date(originalStartDate.value);
-        if (originalStartDate.value && ntpIssuedDate.value && startDate < ntpDate) {
-            showError("Original Starting Date must be on or after the NTP Issued Date.", originalStartDate);
+        const ntpDate = new Date(ntp_issued_date.value);
+        const startDate = new Date(official_starting_date.value);
+        if (official_starting_date.value && ntp_issued_date.value && startDate < ntpDate) {
+            showError("Original Starting Date must be on or after the NTP Issued Date.", official_starting_date);
             return false;
         }
         return true;
@@ -146,8 +146,8 @@ document.addEventListener("DOMContentLoaded", function () {
             revisedCompletionField.closest('.row').style.display = "flex";
             extensionField.value = extensionDays;
 
-            if (targetCompletion.value) {
-                let newTarget = new Date(targetCompletion.value);
+            if (target_completion_date.value) {
+                let newTarget = new Date(target_completion_date.value);
                 newTarget.setDate(newTarget.getDate() + extensionDays);
                 revisedTargetField.valueAsDate = newTarget;
             }
@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     function updateRevisedTargetCompletion() {
-        const targetDate = targetCompletion.value ? new Date(targetCompletion.value) : null;
+        const targetDate = target_completion_date.value ? new Date(target_completion_date.value) : null;
         const actualDate = actualCompletion && actualCompletion.value
             ? new Date(actualCompletion.value)
             : null;
@@ -236,15 +236,15 @@ document.addEventListener("DOMContentLoaded", function () {
     
         const totalDaysToAdd = suspensionDays + extension;
     
-        const revisedTargetDate = new Date(targetDate);
-        revisedTargetDate.setDate(revisedTargetDate.getDate() + totalDaysToAdd);
+        const revised_target_date = new Date(targetDate);
+        revised_target_date.setDate(revised_target_date.getDate() + totalDaysToAdd);
     
         // Display revised fields
         extensionField.closest('.row').style.display = "flex";
         revisedTargetField.closest('.row').style.display = "flex";
         revisedCompletionField.closest('.row').style.display = "flex";
     
-        revisedTargetField.valueAsDate = revisedTargetDate;
+        revisedTargetField.valueAsDate = revised_target_date;
     
         if (actualDate) {
             const revisedActualDate = new Date(actualDate);
@@ -308,7 +308,7 @@ function validateSuspensionOrderSequence() {
     
 
     // Trigger validation and restrictions only on blur
-    originalStartDate.addEventListener("blur", () => {
+    official_starting_date.addEventListener("blur", () => {
         if (!validateOriginalStartVsNTP()) return;
         setMinDates();
         suspensionDate.value = '';
@@ -319,7 +319,7 @@ function validateSuspensionOrderSequence() {
     });
 
 
-    ntpIssuedDate.addEventListener("change", () => {
+    ntp_issued_date.addEventListener("change", () => {
         validateOriginalStartVsNTP();
     });
 
@@ -331,8 +331,8 @@ function validateSuspensionOrderSequence() {
         validateSuspensionAndResumption();
     });
 
-    targetCompletion.addEventListener("change", () => {
-        validateAfterStart(targetCompletion, "Target Completion Date");
+    target_completion_date.addEventListener("change", () => {
+        validateAfterStart(target_completion_date, "Target Completion Date");
     });
 
     actualCompletion.addEventListener("change", () => {
@@ -386,8 +386,8 @@ function restrictDateOrderAllowSame(issuedId, receivedId) {
 }
 
 // Apply for NOA and NTP
-restrictDateOrderAllowSame('noaIssuedDate', 'noaReceivedDate');
-restrictDateOrderAllowSame('ntpIssuedDate', 'ntpReceivedDate');
+restrictDateOrderAllowSame('noa_issued_date', 'noa_received_date');
+restrictDateOrderAllowSame('ntp_issued_date', 'ntp_received_date');
 
 function restrictNTPAfterNOAReceived(noaReceivedId, ntpIssuedId) {
     const noaReceived = document.getElementById(noaReceivedId);
@@ -431,7 +431,7 @@ function restrictNTPAfterNOAReceived(noaReceivedId, ntpIssuedId) {
 }
 
 // Apply the restriction
-restrictNTPAfterNOAReceived('noaReceivedDate', 'ntpIssuedDate');
+restrictNTPAfterNOAReceived('noa_received_date', 'ntp_issued_date');
 
 document.querySelectorAll('.order-set').forEach(order => {
     const suspension = order.querySelector('input[id^="suspensionOrderNo"]');
@@ -455,20 +455,20 @@ document.querySelectorAll('.order-set').forEach(order => {
     }
 });
 
-const originalStartDate = document.getElementById('originalStartDate');
-const contractDays = document.getElementById('projectContractDays');
-const targetCompletion = document.getElementById('targetCompletion');
+const official_starting_date = document.getElementById('official_starting_date');
+const contractDays = document.getElementById('contract_days');
+const target_completion_date = document.getElementById('target_completion_date');
 
 function updateTargetCompletion() {
-    if (originalStartDate.value && contractDays.value) {
-        const start = new Date(originalStartDate.value);
+    if (official_starting_date.value && contractDays.value) {
+        const start = new Date(official_starting_date.value);
         start.setDate(start.getDate() + parseInt(contractDays.value) - 1);
-        targetCompletion.value = start.toISOString().split('T')[0];
+        target_completion_date.value = start.toISOString().split('T')[0];
     }
 }
-// Update logic on change/input (calculate targetCompletion etc.)
-originalStartDate.addEventListener("change", updateTargetCompletion);
-originalStartDate.addEventListener("input", updateTargetCompletion);
+// Update logic on change/input (calculate target_completion_date etc.)
+official_starting_date.addEventListener("change", updateTargetCompletion);
+official_starting_date.addEventListener("input", updateTargetCompletion);
 contractDays.addEventListener('input', updateTargetCompletion);
 
 function checkOrderInputs() {
@@ -501,7 +501,7 @@ function enforceSuspensionDateConstraints() {
     const suspensionInputs = orderContainer.querySelectorAll('input[id^="suspensionOrderNo"]');
     const resumptionInputs = orderContainer.querySelectorAll('input[id^="resumeOrderNo"]');
 
-    let lastAllowedDate = originalStartDate.value ? new Date(originalStartDate.value) : null;
+    let lastAllowedDate = official_starting_date.value ? new Date(official_starting_date.value) : null;
 
     suspensionInputs.forEach((suspInput, index) => {
         const resumeInput = resumptionInputs[index];
@@ -548,8 +548,8 @@ function enforceSuspensionDateConstraints() {
     });
 }
 
-// Call this AFTER originalStartDate is set
-originalStartDate.addEventListener("change", () => {
+// Call this AFTER official_starting_date is set
+official_starting_date.addEventListener("change", () => {
     setMinDates();
     enforceSuspensionDateConstraints();
 });

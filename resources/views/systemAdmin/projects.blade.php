@@ -17,54 +17,59 @@
                             </h6>
                         </div>
 
-                        <div class="row g-3">
-                        <!-- Location Dropdown -->
-                        <div class="col-md-2 position-relative">
-                        <input type="text" class="form-control" id="location_filter" name="location_filter" placeholder="Select or type location" autocomplete="off"/>
-  
-                            <div id="location_filter_dropdown"
-                                class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                @foreach($locations as $location)
-                                    <button type="button" class="list-group-item list-group-item-action"
-                                        onclick="selectLocation('{{ $location }}')">
-                                        {{ $location }}
-                                    </button>
-                                @endforeach
+                        <div class="row align-items-end g-2">
+                            <!-- Location Filter -->
+                            <div class="col-md-2 position-relative">
+                                <input type="text" class="form-control" id="location_filter" name="location_filter" placeholder="Location" autocomplete="off"/>
+                                <div id="location_filter_dropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                    @foreach($locations as $location)
+                                        <button type="button" class="list-group-item list-group-item-action" onclick="selectLocation('{{ $location }}')">
+                                            {{ $location }}
+                                        </button>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
 
-                       <!-- CONTRACTOR INPUT + DROPDOWN -->
-                        <div class="col-md-3 position-relative">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="contractor_filter" name="contractor"
-                                    placeholder="Select or enter contractor" autocomplete="off" />
+                            <!-- Contractor Filter -->
+                            <div class="col-md-2 position-relative">
+                                <input type="text" class="form-control" id="contractor_filter" name="contractor" placeholder="Contractor" autocomplete="off"/>
+                                <div id="contractorDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                    @foreach($contractors->pluck('firm_name')->unique()->sort() as $firm)
+                                        <button type="button" class="list-group-item list-group-item-action" onclick="selectContractor('{{ $firm }}')">
+                                            {{ $firm }}
+                                        </button>
+                                    @endforeach
+
+                                </div>
                             </div>
-                            <div id="contractorDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                
-                                
-                                @foreach($contractors as $contractor)
-                                    <button type="button" class="list-group-item list-group-item-action"
-                                        onclick="selectContractor('{{ $contractor->name }}')">{{ $contractor->name }}</button>
-                                @endforeach
+
+                            <!-- Amount Filter -->
+                            <div class="col-md-2">
+                                <input type="text" class="form-control" id="amount_filter" name="amount_filter" placeholder="Amount" />
                             </div>
-                        </div>
 
-
-                        <!-- Amount Filter -->
-                        <div class="col-md-2">
-                            <div class="">
-                                <input type="text" class="form-control" id="amount_filter" name="amount_filter"
-                                    placeholder="Enter amount"> <!-- Keep this non-empty -->
+                          
+                          <!-- Year Filter -->
+                            <div class="col-md-2 position-relative">
+                                <input type="text" class="form-control" id="year_filter_input" name="year_filter"
+                                    placeholder="Year" maxlength="4" minlength="4" autocomplete="off"
+                                    oninput="validateYearInput(this)" />
+                                <div id="year_filter_dropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                    @for ($y = 2015; $y <= now()->year; $y++)
+                                        <button type="button" class="list-group-item list-group-item-action"
+                                                onclick="selectYear('{{ $y }}')">{{ $y }}</button>
+                                    @endfor
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Status Filter -->
-                        <div class="col-md-2">
-                            <div class="">
+
+                            <!-- Status Filter -->
+                            <div class="col-md-2">
                                 <select id="status_filter" class="form-select">
-                                    <option value="">Select Status</option>
+                                    <option value="">-- Status --</option>
                                     <option value="Not Started">Not Started</option>
                                     <option value="Ongoing">Ongoing</option>
                                     <option value="Completed">Completed</option>
@@ -72,33 +77,27 @@
                                     <option value="Suspended">Suspended</option>
                                 </select>
                             </div>
-                        </div>
-                            
-                        <!-- Add Project -->
-                        <div class="col-md-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="ms-auto">
-                                    <button class="btn btn-sm btn-primary"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#addNewProjectModal"
-                                            style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
-                                        <i class="fas fa-plus-circle me-2"></i>Add New Project
-                                    </button>
-                                </div>
+
+                            <!-- Add Button -->
+                            <div class="col-md-2 d-flex justify-content-end">
+                                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addNewProjectModal"
+                                        style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);">
+                                    <i class="fas fa-plus-circle me-2"></i>Add Project
+                                </button>
                             </div>
                         </div>
 
-                        <div class="d-flex">
-                            <!-- View All Projects Checkbox -->
-                            <div class="form-check mx-2">
-                                <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
-                                <label class="form-check-label fw-semibold mr-1" for="view_all_checkbox">
-                                    View All Projects
-                                </label>
+                        <!-- Additional Options Row -->
+                        <div class="row mt-2">
+                            <div class="col-md-6 d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
+                                    <label class="form-check-label fw-semibold" for="view_all_checkbox">View All Projects</label>
+                                </div>
+                                <button type="button" id="clear_filters_btn" class="btn btn-sm btn-secondary">Clear</button>
                             </div>
-                            <button type="button" id="clear_filters_btn" class="btn btn-sm btn-secondary">Clear</button>
                         </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -123,40 +122,44 @@
                             <th style="width: 10%; white-space: nowrap;"><small>Contract Amount</small></th>
                             <th style="width: 12%; white-space: nowrap;"><small>Contractor</small></th>
                             <th style="width: 6%; white-space: nowrap;"><small>Contract Days</small></th>
+                            <th style="width: 6%; white-space: nowrap;"><small>Year</small></th>
                             <th style="width: 15%; white-space: nowrap;"><small>Action</small></th>
                         </tr>
                     </thead>
                     <tbody class="small">
-                        @forelse($mappedProjects as $project)
-                            <tr data-id="{{ $project['id'] }}">
-                                <td class="text-muted">{{ $project['id'] }}</td>
-                                <td>{{ $project['title'] }}</td>
-                                <td>{{ $project['location'] }}</td>
-                                <td>{{ $project['status'] }}</td>
-                                <td>₱{{ $project['amount'] }}</td>
-                                <td>{{ $project['contractor'] }}</td>
-                                <td>{{ $project['duration'] }}</td>
-                                <td>
-                                    <div class="d-flex gap-1 flex-wrap">
-                                        <!-- View Button -->
-                                        <button class="btn btn-primary btn-sm overview-btn d-flex align-items-center gap-1"
-                                                data-id="{{ $project['id'] }}">
-                                            <i class="fas fa-eye fa-sm"></i>
-                                            <span class=" d-md-inline">View</span>
-                                        </button>
-                                        <!-- Report Button -->
-                                        <button type="button"
-                                                id="generateProjectBtn"
-                                                class="btn btn-info btn-sm d-flex align-items-center gap-1"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#generateProjectModal"
-                                                title="Generate/Download Report">
-                                            <i class="fa fa-download"></i>
-                                            <span class=" d-md-inline">Report</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                    @forelse($mappedProjects as $project)
+                        <tr data-id="{{ $project['id'] }}">
+                        <td class="text-muted">{{ $project['id'] }}</td>
+                        <td>{{ $project['title'] }}</td>
+                        <td>{{ $project['location'] }}</td>
+                        <td>{{ $project['status'] }}</td>
+                        <td>₱{{ $project['amount'] }}</td>
+                        <td>{{ $project['contractor'] }}</td>
+                        <td>{{ $project['duration'] }}</td>
+                        <td>{{ $project['year'] }}</td>
+                        <td>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <!-- View Button -->
+                                <button class="btn btn-primary btn-sm overview-btn d-flex align-items-center gap-1"
+                                        data-id="{{ $project['id'] }}">
+                                    <i class="fas fa-eye fa-sm"></i>
+                                    <span class=" d-md-inline">View</span>
+                                </button>
+                                <!-- Report Button -->
+                                <button type="button"
+                                        id="generateProjectBtn"
+                                        class="btn btn-info btn-sm d-flex align-items-center gap-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#generateProjectModal"
+                                        title="Generate/Download Report">
+                                    <i class="fa fa-download"></i>
+                                    <span class=" d-md-inline">Report</span>
+                                </button>
+                            </div>
+                        </td>
+                        </tr>
+
+                        
                         @empty
                             <tr>
                                 <td colspan="8" class="text-center text-muted">There are no currently added projects.</td>

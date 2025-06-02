@@ -15,7 +15,6 @@
                         <label for="progress" class="form-label">Progress</label>
                         <select class="form-select" id="progress" aria-label="Select project progress">
                             <option value="">Select Status</option>
-                            <option value="Not Started">Not Started</option>
                             <option value="Ongoing">Ongoing</option>
                             <option value="Completed">Completed</option>
                             <option value="Discontinued">Discontinued</option>
@@ -66,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const autoDate = document.getElementById('autoDate');
     const dateInput = document.getElementById('date');
 
-    const historyData = @json($projectStatusData['ongoingStatus']);
+    const historyData = @json($projectStatusData['ongoing_status']);
     const existingPercentages = historyData.map(entry => parseInt(entry.percentage));
     const totalUsedPercentage = existingPercentages.reduce((sum, val) => sum + val, 0);
     const remainingPercentage = 100 - totalUsedPercentage;
@@ -99,12 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
         percentageInput.setCustomValidity(`Only ${remainingPercentage}% remaining. Please enter a value within the limit.`);
     }
 
-    // ✅ Automatically set progress to "Completed" if user enters remaining %
+    //  Automatically set progress to "Completed" if user enters remaining %
     if (currentValue === remainingPercentage && progressSelect.value !== 'Completed') {
         progressSelect.value = 'Completed';
     }
 
-    // ✅ If user reduces value again, allow manual override of status
+    //  If user reduces value again, allow manual override of status
     if (currentValue < remainingPercentage && progressSelect.value === 'Completed') {
         progressSelect.value = ''; // or revert to previous status if you track it
     }

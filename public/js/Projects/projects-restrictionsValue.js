@@ -10,7 +10,7 @@ function restrictToNumbersAndHyphen(event) {
 // ========== Apply Restrictions ==========
 document.addEventListener('DOMContentLoaded', () => {
     // Restrict for specific fields
-    ['projectFPP', 'projectRC', 'projectID'].forEach(id => {
+    ['fpp', 'responsibility_center', 'projectID'].forEach(id => {
         const field = document.getElementById(id);
         if (field) {
             field.addEventListener('input', restrictToNumbersAndHyphen);
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
    // ========== Avoid contract amount higher than abc ==========
         const abcInput = document.getElementById("abc");
-        const contractInput = document.getElementById("contractAmount");
+        const contractInput = document.getElementById("orig_contract_amount");
     
         if (!abcInput || !contractInput) return;
     

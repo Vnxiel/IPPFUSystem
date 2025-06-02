@@ -1,189 +1,184 @@
 <?php
 
+// Define the namespace for this controller
 namespace App\Http\Controllers;
 
+// Import necessary classes for use within this controller
 use Illuminate\Http\Request;
-
-use App\Models\Contractor;
 use App\Models\Location;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\ActivityLog;
 
+// Define the AdminManager controller
 class AdminManager extends Controller
 {
 
+    // Method for loading the admin dashboard page
     public function index(){
-    
-        $contractors = Contractor::orderBy('name', 'asc')->get();
+        
+        // Fetch all contractors ordered by name (ascending)
+        $contractors = Project::orderBy('firm_name', 'asc')->get();
+
+        // Static list of municipalities in Nueva Vizcaya
         $staticLocations = [
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
             'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
             'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
-    
-        $dbLocationsRaw = Project::select('projectLoc')
-            ->whereNotNull('projectLoc')
-            ->pluck('projectLoc')
+
+        // Get unique project locations from the database (raw)
+        $dbLocationsRaw = Project::select('location')
+            ->whereNotNull('location')
+            ->pluck('location')
             ->toArray();    
-    
-        // Extract only the municipality (first part before the comma)
-            $dbLocations = array_map(function ($loc) {
-                return trim(explode(',', $loc)[0]);
-            }, $dbLocationsRaw);
 
-            // Merge, de-duplicate, and sort
-            $locations = collect(array_merge($staticLocations, $dbLocations))
-                ->unique()
-                ->sort()
-                ->values();
+        // Extract only the first part (municipality) from each location string
+        $dbLocations = array_map(function ($loc) {
+            return trim(explode(',', $loc)[0]);
+        }, $dbLocationsRaw);
 
+        // Combine static and DB-based locations, remove duplicates, sort alphabetically
+        $locations = collect(array_merge($staticLocations, $dbLocations))
+            ->unique()
+            ->sort()
+            ->values();
 
-        $sourceOfFunds = Project::select('sourceOfFunds')
-        ->distinct()
-        ->whereNotNull('sourceOfFunds')
-        ->orderBy('sourceOfFunds')
-        ->get();
+        // Get distinct list of all source of funds
+        $source_of_funds = Project::select('source_of_funds')
+            ->distinct()
+            ->whereNotNull('source_of_funds')
+            ->orderBy('source_of_funds')
+            ->get();
 
-        $projectYear = Project::select('projectYear')
-        ->distinct()
-        ->whereNotNull('projectYear')
-        ->orderBy('projectYear')
-        ->get();
-        $projectEA = Project::select('ea')
-        ->distinct()
-        ->whereNotNull('ea')
-        ->orderBy('ea')
-        ->get();
+        // Get distinct list of project years
+        $year = Project::select('year')
+            ->distinct()
+            ->whereNotNull('year')
+            ->orderBy('year')
+            ->get();
 
-         return view('admin.index', compact('contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
-}
+        // Get distinct list of implementing/executing agencies
+        $projectEA = Project::select('engineer_name')
+            ->distinct()
+            ->whereNotNull('engineer_name')
+            ->orderBy('engineer_name')
+            ->get();
 
+        // Return the admin.index view with required data
+        return view('admin.index', compact('contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
+    }
 
-public function projects()
-{
-    $projects = Project::select('id', 'projectTitle', 'projectLoc', 'projectStatus', 'projectContractor', 'othersContractor', 'projectContractDays')
-    ->with('fundsUtilization')
-    ->where(function ($query) {
-        $query->whereNull('is_hidden')->orWhere('is_hidden', 0);
-    })
-    ->orderBy('created_at', 'desc')
-    ->get();
-    $contractors = Contractor::orderBy('name')->get();
-    $staticLocations = [
-        'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
-        'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
-        'Villaverde', 'Ambaguio', 'Santa Fe'
-    ];
-    $dbLocationsRaw = Project::select('projectLoc')
-    ->whereNotNull('projectLoc')
-    ->pluck('projectLoc')
-    ->toArray();    
+    // Method to return the admin.projects view with mapped project details
+    public function projects()
+    {
+        // Fetch all visible projects with select fields and related funds utilization
+        $projects = Project::select('id', 'title', 'location', 'physical_status', 'firm_name', 'othersContractor', 'contract_days')
+            ->with('fundsUtilization')
+            ->where(function ($query) {
+                $query->whereNull('is_hidden')->orWhere('is_hidden', 0);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-// Extract only the municipality (first part before the comma)
-    $dbLocations = array_map(function ($loc) {
-        return trim(explode(',', $loc)[0]);
-    }, $dbLocationsRaw);
+        // Fetch contractors
+        $contractors = Project::orderBy('firm_name')->get();
 
-
-    // Merge, de-duplicate, and sort
-    $locations = collect(array_merge($staticLocations, $dbLocations))
-        ->unique()
-        ->sort()
-        ->values();
-
-    $sourceOfFunds = Project::select('sourceOfFunds')
-    ->distinct()
-    ->whereNotNull('sourceOfFunds')
-    ->orderBy('sourceOfFunds')
-    ->get();
-    $projectYear = Project::select('projectYear')
-    ->distinct()
-    ->whereNotNull('projectYear')
-    ->orderBy('projectYear')
-    ->get();
-    $projectEA = Project::select('ea')
-    ->distinct()
-    ->whereNotNull('ea')
-    ->orderBy('ea')
-    ->get();
-
-
-    $mappedProjects = $projects->map(function ($project) {
-        $amount = optional($project->fundsUtilization)->orig_contract_amount;
-        $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
-
-        return [
-            'title' => $project->projectTitle ?? 'N/A',
-            'location' => $project->projectLoc ?? 'N/A',
-            'status' => $project->projectStatus ?? 'N/A',
-            'amount' => $formattedAmount,
-            'contractor' => (strtolower($project->projectContractor) === 'others')
-                ? ($project->othersContractor ?? 'N/A')
-                : ($project->projectContractor ?? 'N/A'),
-            'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
-            'id' => $project->id,
+        // Static locations again
+        $staticLocations = [
+            'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
+            'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
+            'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
-    });
 
-    return view('admin.projects', compact('mappedProjects', 'contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
-}
+        // Extract project locations from DB
+        $dbLocationsRaw = Project::select('location')
+            ->whereNotNull('location')
+            ->pluck('location')
+            ->toArray();    
 
+        // Extract municipalities only
+        $dbLocations = array_map(function ($loc) {
+            return trim(explode(',', $loc)[0]);
+        }, $dbLocationsRaw);
+
+        // Merge and clean up location list
+        $locations = collect(array_merge($staticLocations, $dbLocations))
+            ->unique()
+            ->sort()
+            ->values();
+
+        // Get source of funds, project years, and executing agencies
+        $source_of_funds = Project::select('source_of_funds')
+            ->distinct()
+            ->whereNotNull('source_of_funds')
+            ->orderBy('source_of_funds')
+            ->get();
+
+        $year = Project::select('year')
+            ->distinct()
+            ->whereNotNull('year')
+            ->orderBy('year')
+            ->get();
+
+        $projectEA = Project::select('engineer_name')
+            ->distinct()
+            ->whereNotNull('engineer_name')
+            ->orderBy('engineer_name')
+            ->get();
+
+        // Transform each project into a simplified array format for display
+        $mappedProjects = $projects->map(function ($project) {
+            $amount = optional($project->fundsUtilization)->orig_contract_amount;
+            $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
+
+            return [
+                'title' => $project->title ?? 'N/A',
+                'location' => $project->location ?? 'N/A',
+                'status' => $project->physical_status ?? 'N/A',
+                'amount' => $formattedAmount,
+                'contractor' => (strtolower($project->firm_name) === 'others')
+                    ? ($project->othersContractor ?? 'N/A')
+                    : ($project->firm_name ?? 'N/A'),
+                'duration' => $project->contract_days ? $project->contract_days . ' days' : 'N/A',
+                'id' => $project->id,
+            ];
+        });
+
+        // Return the view with prepared data
+        return view('admin.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
+    }
+
+    // Loads the activity logs page (view only)
     public function activityLogs() {
         return view('admin.activityLogs');  // Returns the 'activityLogs.blade.php' view
     }
 
+    // Fetches and displays activity logs from database
     public function viewActivityLogs(Request $request){
-        $activityLogs = activityLog::all();
-
+        $activityLogs = activityLog::all(); // Fetch all activity logs
         return view('admin.activityLogs', [
             'activityLogs' => $activityLogs,
         ]);
     }
 
+    // Loads the admin overview page
     public function overview() {
-        return view('admin.overview');  // Returns the 'trash.blade.php' view
+        return view('admin.overview');  // Returns the 'overview.blade.php' view
     }
 
+    // Loads the admin trash page
     public function trash() {
         return view('admin.trash');  // Returns the 'trash.blade.php' view
     }
 
-    public function userManagement(){
-        return view('admin.userManagement'); 
-    }
-
+    // Loads the user management page and passes the user data
     public function viewUserManagement(Request $request)
     {
-        $users = User::all(); 
+        $users = User::all();  // Get all users
         return view('admin.userManagement', [
             'users'=> $users
         ]);
     }
 
-
-    public function addProjects(Request $request){
-
-    }
-    public function viewProjects(Request $request){
-
-    }
-    public function searchProjects(Request $request){
-
-    }
-    public function generateReports(Request $request){
-
-    }
-
-    public function temporaryDeleteProject(Request $request){
-
-    }
-
-    public function restoreProject(Request $request){
-
-    }
-
-    public function viewProjectStatus(Request $request){
-
-    }
 }

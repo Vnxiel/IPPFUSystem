@@ -19,11 +19,11 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-3 p">
-                                            <label for="projectTitle" class="form-label">Project Title <span
+                                            <label for="title" class="form-label">Project Title <span
                                                     class="text-danger">*</span></label>
                                         </div>
                                         <div class="col">
-                                             <input type="text" class="form-control" id="projectTitle" name="projectTitle" value="{{ old('projectTitle', $project['projectTitle'] ?? '') }}" required>
+                                             <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $project['title'] ?? '') }}" required>
                                         </div>
                                     </div>
                                 </div>
@@ -45,13 +45,13 @@
                                 <!-- Project Year with Datalist -->
                                 <div class="row g-3 mb-2">
                                     <div class="col-md-3 p">
-                                        <label for="projectYear" class="form-label">Year <span class="text-danger">*</span></label>
+                                        <label for="year" class="form-label">Year <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-3">
-                                        <select class="form-select form-select-sm" id="projectYear" name="projectYear" required>
-                                            <option value="" disabled {{ old('projectYear', $project['projectYear'] ?? '') == '' ? 'selected' : '' }}>Select Year</option>
+                                        <select class="form-select form-select-sm" id="year" name="year" required>
+                                            <option value="" disabled {{ old('year', $project['year'] ?? '') == '' ? 'selected' : '' }}>Select Year</option>
                                             @php
-                                                $selectedYear = old('projectYear', $project['projectYear'] ?? '');
+                                                $selectedYear = old('year', $project['year'] ?? '');
                                                 $currentYear = date('Y');
                                             @endphp
                                             @for ($year = $currentYear; $year >= 2000; $year--)
@@ -61,31 +61,31 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <label for="projectFPP" class="form-label">FPP <span
+                                        <label for="fpp" class="form-label">FPP <span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-4">
-                                    <input type="text" class="form-control" id="projectFPP" name="projectFPP" value="{{ old('projectFPP', $project['projectFPP'] ?? '') }}" required>
+                                    <input type="text" class="form-control" id="fpp" name="fpp" value="{{ old('fpp', $project['fpp'] ?? '') }}" required>
                                           </div>
                                 </div>
                                 <div class="row mb-2 g-3">
                                     <div class="col-md-3">
-                                        <label for="projectRC" class="form-label">Responsibility Center<span
+                                        <label for="responsibility_center" class="form-label">Responsibility Center<span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-9">
-                                    <input type="text" class="form-control" id="projectRC" name="projectRC" value="{{ old('projectRC', $project['projectRC'] ?? '') }}" required>
+                                    <input type="text" class="form-control" id="responsibility_center" name="responsibility_center" value="{{ old('responsibility_center', $project['responsibility_center'] ?? '') }}" required>
                                         </div>
                                 </div>
                                 <div class="row g-3 mb-2 p">
                             <div class="col-md-3">
-                                <label for="projectLoc" class="form-label">Location
+                                <label for="location" class="form-label">Location
                                     <span class="text-danger">*</span>
                                 </label>
                             </div>
                             <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="projectLoc" name="projectLoc"
-                                    value="{{ old('projectLoc', $project['projectLoc'] ?? '') }}"
+                                <input type="text" class="form-control" id="location" name="location"
+                                    value="{{ old('location', $project['location'] ?? '') }}"
                                     placeholder="Select or enter location" autocomplete="off"
                                     oninput="filterLocations()" onblur="finalizeLocation()" onfocus="showLocDropdown()"/>
                                 
@@ -106,23 +106,23 @@
 
                         <div class="row mb-2 g-3">
                             <div class="col-3 p">
-                                <label for="projectDescription" class="form-label">Project Description<span
+                                <label for="description" class="form-label">Project Description<span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col">
-                            <textarea class="form-control" id="projectDescription" name="projectDescription" style="height: 100px">{{ old('projectDescription', isset($project['projectDescriptions']) ? implode("\n", $project['projectDescriptions']) : '') }}</textarea>
+                            <textarea class="form-control" id="description" name="description" style="height: 100px">{{ old('description', isset($project['projectDescriptions']) ? implode("\n", $project['projectDescriptions']) : '') }}</textarea>
                                       
                             </div>
                         </div>
                          <!-- Contractor Input with Dynamic Suggestions -->
                          <div class="row g-3 mb-2 p">
                             <div class="col-md-3">
-                                <label for="projectContractor" class="form-label">Contractor <span class="text-danger">*</span></label>
+                                <label for="firm_name" class="form-label">Contractor <span class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="projectContractor" name="projectContractor"
+                                <input type="text" class="form-control" id="firm_name" name="firm_name"
                                     placeholder="Select or enter contractor name" autocomplete="off"
-                                    value="{{ old('projectContractor', $project['projectContractor'] ?? '') }}"
+                                    value="{{ old('firm_name', $project['firm_name'] ?? '') }}"
                                     oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
 
                                 <!-- Container for dynamically inserted buttons -->
@@ -134,9 +134,9 @@
                         </div>
 
                             <!-- <div class="mb-2">
-                                <label for="projectContractor" class="form-label">Contractor <span
+                                <label for="firm_name" class="form-label">Contractor <span
                                         class="text-danger">*</span></label>
-                                <select id="projectContractor" name="projectContractor" class="form-select">
+                                <select id="firm_name" name="firm_name" class="form-select">
                                     <option value="">--Select Contractor--</option>
                                     @foreach($contractors as $contractor)
                                         <option value="{{ $contractor->name }}">{{ $contractor->name }}</option>
@@ -152,30 +152,30 @@
                                 </div> -->
 
                         <div class="row mb-2 align-items-center">
-                            <label for="modeOfImplementation" class="col-3 p form-label">Mode of Implementation
+                            <label for="mode_of_implementation" class="col-3 p form-label">Mode of Implementation
                                 <span class="text-danger">*</span></label>
                             <div class="col-9">
-                                <input type="text" class="form-control" id="modeOfImplementation" name="modeOfImplementation" value="{{ old('modeOfImplementation', $project['modeOfImplementation'] ?? '') }}" readonly>
+                                <input type="text" class="form-control" id="mode_of_implementation" name="mode_of_implementation" value="{{ old('mode_of_implementation', $project['mode_of_implementation'] ?? '') }}" readonly>
                             </div>
                         </div>
 
                         
                         <div class="row mb-2 g-3">
                             <div class="col-md-3 p">
-                                <label for="sourceOfFunds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
+                                <label for="source_of_funds" class="form-label">Source of Fund <span class="text-danger">*</span></label>
                             </div>
                             <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="sourceOfFunds" name="sourceOfFunds"
+                                <input type="text" class="form-control" id="source_of_funds" name="source_of_funds"
                                     placeholder="Select or enter source" autocomplete="off"
-                                    oninput="filterFunds()" onfocus="showFundsDropdown()" onblur="hideFundsDropdownDelayed()" value="{{ old('sourceOfFunds', $project['sourceOfFunds'] ?? '') }}" required>
+                                    oninput="filterFunds()" onfocus="showFundsDropdown()" onblur="hideFundsDropdownDelayed()" value="{{ old('source_of_funds', $project['source_of_funds'] ?? '') }}" required>
 
                                 <div id="sourceOfFundsDropdown"
                                     class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                     style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                    @foreach($sourceOfFunds as $fund)
+                                    @foreach($source_of_funds as $fund)
                                     <button type="button" class="list-group-item list-group-item-action"
-                                            onclick="selectFund('{{ trim($fund->sourceOfFunds) }}')">
-                                        {{ trim($fund->sourceOfFunds) }}
+                                            onclick="selectFund('{{ trim($fund->source_of_funds) }}')">
+                                        {{ trim($fund->source_of_funds) }}
                                     </button>
                                     @endforeach
                                 </div>
@@ -189,7 +189,7 @@
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input type="number" class="form-control" id="projectContractDays" name="projectContractDays" min="0" value="{{ old('projectContractDays', $project['projectContractDays'] ?? '') }}">
+                                        <input type="number" class="form-control" id="contract_days" name="contract_days" min="0" value="{{ old('contract_days', $project['contract_days'] ?? '') }}">
                                    
                                     </div>
                                 </div>
@@ -199,11 +199,11 @@
                             <div class="col-md-12 ">
                                 <div class="row align-items-center">
                                     <div class="col-md-3 p">
-                                        <label for="projectStatus" class="form-label">Status <span
+                                        <label for="physical_status" class="form-label">Status <span
                                                 class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-md-9 d-flex gap-2">
-                                        <select id="projectStatus" name="projectStatus" class="form-select"
+                                        <select id="physical_status" name="physical_status" class="form-select"
                                             onchange="toggleOngoingStatus()" required>
                                             <option value="" disabled selected>Select Status</option>
                                             <option value="Not Started"><i class="fas fa-not-equal"></i>Not Startedd
@@ -222,11 +222,11 @@
                         <!-- <div id="ongoingStatusContainer" class="mt-2" style="display: none;">
                             <div class="row">
                                 <div class="offset-3 col-md-9">
-                                    <label for="ongoingStatus" class="form-label">Please specify percentage
+                                    <label for="ongoing_status" class="form-label">Please specify percentage
                                         completion </label>
 
                                     <div class="d-flex gap-2">
-                                        <input type="text" id="ongoingStatus" name="ongoingStatus"
+                                        <input type="text" id="ongoing_status" name="ongoing_status"
                                             class="form-control w-50" placeholder="Enter percentage">
                                         <input type="date" id="ongoingDate" class="form-control w-50">
                                     </div>
@@ -237,10 +237,10 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-3 p">
-                                            <label for="projectSlippage" class="form-label">Slippage</label>
+                                            <label for="project_slippage" class="form-label">Slippage</label>
                                     </div>
                                     <div class="col-md-9">
-                                            <input type="number" class="form-control" id="projectSlippage" name="projectSlippage"  value="{{ old('projectSlippage', $project['projectSlippage'] ?? '') }}"
+                                            <input type="number" class="form-control" id="project_slippage" name="project_slippage"  value="{{ old('project_slippage', $project['project_slippage'] ?? '') }}"
                                             placeholder="Enter slippage">
                                     </div>
                                 </div>
@@ -260,11 +260,11 @@
                         <div class="row">
                             <!-- Engineer Assigned (E.A) with Datalist -->
                             <div class="col-3 p">
-                                <label for="ea" class="form-label">Project Engineer</label>
+                                <label for="engineer_name" class="form-label">Project Engineer</label>
                             </div>
                             <div class="col-md-4 position-relative">
-                                        <input type="text" class="form-control" id="ea" name="ea"
-                                         placeholder="Select or enter engineer name" autocomplete="off" value="{{ old('ea', $project['ea'] ?? '') }}">
+                                        <input type="text" class="form-control" id="engineer_name" name="engineer_name"
+                                         placeholder="Select or enter engineer name" autocomplete="off" value="{{ old('engineer_name', $project['engineer_name'] ?? '') }}">
                                         <div id="projectEngineerDropdown"
                                             class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                             style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
@@ -272,15 +272,15 @@
                                      </div>
 
                             <div class="col-1 p">
-                                <label for="ea_position" class="form-label">Position<span
+                                <label for="engineer_position" class="form-label">Position<span
                                         class="text-danger">*</span></label>
                             </div>
                             <div class="col-4">
-                                <select class="form-select" id="ea_position" name="ea_position" required>
-                                    <option value="" disabled {{ old('ea_position', $project['ea_position'] ?? '') == '' ? 'selected' : '' }}>Select Position</option>
-                                    <option value="Engineer Aide" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Aide' ? 'selected' : '' }}>Engineer Aide</option>
-                                    <option value="Engineer Assistant" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer Assistant' ? 'selected' : '' }}>Engineer Assistant</option>
-                                    <option value="Engineer I" {{ old('ea_position', $project['ea_position'] ?? '') == 'Engineer I' ? 'selected' : '' }}>Engineer I</option>
+                                <select class="form-select" id="engineer_position" name="engineer_position" required>
+                                    <option value="" disabled {{ old('engineer_position', $project['engineer_position'] ?? '') == '' ? 'selected' : '' }}>Select Position</option>
+                                    <option value="Engineer Aide" {{ old('engineer_position', $project['engineer_position'] ?? '') == 'Engineer Aide' ? 'selected' : '' }}>Engineer Aide</option>
+                                    <option value="Engineer Assistant" {{ old('engineer_position', $project['engineer_position'] ?? '') == 'Engineer Assistant' ? 'selected' : '' }}>Engineer Assistant</option>
+                                    <option value="Engineer I" {{ old('engineer_position', $project['engineer_position'] ?? '') == 'Engineer I' ? 'selected' : '' }}>Engineer I</option>
                                 </select>
                             </div>
 
@@ -334,12 +334,12 @@
 
                         <div class="row mb-2">
                             <div class="col-3 ">
-                                <label for="contractAmount" class="form-label">Contract Amount</label>
+                                <label for="orig_contract_amount" class="form-label">Contract Amount</label>
                             </div>
                             <div class="col-3">
                                 <div class="input-group">
-                                    <input type="text" class="form-control currency-input" id="contractAmount"
-                                        name="contractAmount" value="{{ old('orig_contract_amount', $project['funds']['orig_contract_amount'] ?? '') }}">
+                                    <input type="text" class="form-control currency-input" id="orig_contract_amount"
+                                        name="orig_contract_amount" value="{{ old('orig_contract_amount', $project['funds']['orig_contract_amount'] ?? '') }}">
                                 </div>
                             </div>
                             <div class="col-3 ">
@@ -377,16 +377,16 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-3 p">
-                                    <label for="noaIssuedDate" class="form-label">Issued Date</label>
+                                    <label for="noa_issued_date" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
-                                <input type="date" class="form-control" id="noaIssuedDate" name="noaIssuedDate" value="{{ old('noaIssuedDate', $project['noaIssuedDate'] ?? '') }}">
+                                <input type="date" class="form-control" id="noa_issued_date" name="noa_issued_date" value="{{ old('noa_issued_date', $project['noa_issued_date'] ?? '') }}">
                                 </div>
                                 <div class="col-3 p">
-                                    <label for="noaReceivedDate" class="form-label">Received Date</label>
+                                    <label for="noa_received_date" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
-                                <input type="date" class="form-control" id="noaReceivedDate" name="noaReceivedDate" value="{{ old('noaReceivedDate', $project['noaReceivedDate'] ?? '') }}">
+                                <input type="date" class="form-control" id="noa_received_date" name="noa_received_date" value="{{ old('noa_received_date', $project['noa_received_date'] ?? '') }}">
                                 </div>
                             </div>
 
@@ -398,40 +398,40 @@
 
                             <div class="row mb-2">
                                 <div class="col-3 p">
-                                    <label for="ntpIssuedDate" class="form-label">Issued Date</label>
+                                    <label for="ntp_issued_date" class="form-label">Issued Date</label>
                                 </div>
                                 <div class="col-3">
-                                <input type="date" class="form-control" id="ntpIssuedDate" name="ntpIssuedDate" value="{{ old('ntpIssuedDate', $project['ntpIssuedDate'] ?? '') }}">
+                                <input type="date" class="form-control" id="ntp_issued_date" name="ntp_issued_date" value="{{ old('ntp_issued_date', $project['ntp_issued_date'] ?? '') }}">
                                 </div>
                                 <div class="col-3 p">
-                                    <label for="ntpReceivedDate" class="form-label">Received Date</label>
+                                    <label for="ntp_received_date" class="form-label">Received Date</label>
                                 </div>
                                 <div class="col-3">
-                                <input type="date" class="form-control" id="ntpReceivedDate" name="ntpReceivedDate" value="{{ old('ntpReceivedDate', $project['ntpReceivedDate'] ?? '') }}">
+                                <input type="date" class="form-control" id="ntp_received_date" name="ntp_received_date" value="{{ old('ntp_received_date', $project['ntp_received_date'] ?? '') }}">
                                 </div>
                             </div>
                                 <!-- <div class="row mb-2">
                                     <div class="col-3 p">
-                                        <label for="originalStartDate" class="form-label">Official Start</label>
+                                        <label for="official_starting_date" class="form-label">Official Start</label>
                                     </div>
                                     <div class="col-3">
-                                    <input type="date" class="form-control" id="originalStartDate" name="originalStartDate" value="{{ old('originalStartDate', $project['originalStartDate'] ?? '') }}">
+                                    <input type="date" class="form-control" id="official_starting_date" name="official_starting_date" value="{{ old('official_starting_date', $project['official_starting_date'] ?? '') }}">
                                     </div>
                                     <div class="col-3 p">
-                                        <label for="targetCompletion" class="form-label">Target Completion Date</label>
+                                        <label for="target_completion_date" class="form-label">Target Completion Date</label>
                                     </div>
                                     <div class="col-3">
-                                    <input type="date" class="form-control" id="targetCompletion" name="targetCompletion" value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
+                                    <input type="date" class="form-control" id="target_completion_date" name="target_completion_date" value="{{ old('target_completion_date', $project['target_completion_date'] ?? '') }}">
                                     </div>
                                 </div> -->
 
 
                                 <!-- <div class="row mb-2">
                                     <div class="col-3 p">
-                                        <label for="completionDate" class="form-label">Completion Date</label>
+                                        <label for="actual_completion_date" class="form-label">Completion Date</label>
                                     </div>
                                     <div class="col-3">
-                                    <input type="date" class="form-control" id="completionDate" name="completionDate" value="{{ old('completionDate', $project['completionDate'] ?? '') }}">
+                                    <input type="date" class="form-control" id="actual_completion_date" name="actual_completion_date" value="{{ old('actual_completion_date', $project['actual_completion_date'] ?? '') }}">
                                     </div>
                                     <div class="col-3 p">
                                         <label for="revisedCompletionDate" class="form-label">Revised Completion
@@ -460,11 +460,11 @@
 
                             <div class="container">
                                 <div class="row mb-2 align-items-center">
-                                    <label for="modeOfImplementation" class="col-3 p form-label">Mode of Implementation
+                                    <label for="mode_of_implementation" class="col-3 p form-label">Mode of Implementation
                                         <span class="text-danger">*</span></label>
                                     <div class="col-9">
-                                        <input type="text" class="form-control" id="modeOfImplementation"
-                                            name="modeOfImplementation" value="By contract." readonly required>
+                                        <input type="text" class="form-control" id="mode_of_implementation"
+                                            name="mode_of_implementation" value="By contract." readonly required>
                                     </div>
                                 </div>
 
@@ -474,15 +474,15 @@
                                         <label class="form-label">Target Starting Date <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-3">
-                                        <input type="date" class="form-control" id="originalStartDate" name="originalStartDate"
-                                            value="{{ old('originalStartDate', $project['originalStartDate'] ?? '') }}">
+                                        <input type="date" class="form-control" id="official_starting_date" name="official_starting_date"
+                                            value="{{ old('official_starting_date', $project['official_starting_date'] ?? '') }}">
                                     </div>
                                     <div class="col-3 p">
                                         <label class="form-label">Target Completion Date <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-3">
-                                        <input type="date" class="form-control" id="targetCompletion" name="targetCompletion"
-                                            value="{{ old('targetCompletion', $project['targetCompletion'] ?? '') }}">
+                                        <input type="date" class="form-control" id="target_completion_date" name="target_completion_date"
+                                            value="{{ old('target_completion_date', $project['target_completion_date'] ?? '') }}">
                                     </div>
                                 </div>
                                 <!-- <div class="row mb-2">
@@ -490,8 +490,8 @@
                                             <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-9">
-                                            <input type="date" class="form-control" id="completionDate" name="completionDate"
-                                                value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
+                                            <input type="date" class="form-control" id="actual_completion_date" name="actual_completion_date"
+                                                value="{{ old('actual_completion_date', $project['actual_completion_date'] ?? '') }}"
                                                 style="background-color: lightgray;">
                                         </div>
                                     </div> -->
@@ -596,10 +596,10 @@
                                     </div>
                                     <div id="newDatesSection" class="row mb-2" style="display: none;">
                                         <div class="col-3 text-end">
-                                            <label for="revisedTargetDate" class="form-label">New Target Completion Date</label>
+                                            <label for="revised_target_date" class="form-label">New Target Completion Date</label>
                                         </div>                        
                                         <div class="col-3">
-                                            <input type="date" class="form-control" id="revisedTargetDate" name="revisedTargetDate"  value="{{ old('revisedTargetDate', $project['revisedTargetDate'] ?? '') }}">
+                                            <input type="date" class="form-control" id="revised_target_date" name="revised_target_date"  value="{{ old('revised_target_date', $project['revised_target_date'] ?? '') }}">
                                         </div>
                                         <div class="col-3 text-end">
                                             <label for="revisedCompletionDate" class="form-label">Actual Completion Date</label>
@@ -615,8 +615,8 @@
                                             <label class="form-label">Actual Date of Completion <span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-9">
-                                            <input type="date" class="form-control" id="completionDate" name="completionDate"
-                                                value="{{ old('completionDate', $project['completionDate'] ?? '') }}"
+                                            <input type="date" class="form-control" id="actual_completion_date" name="actual_completion_date"
+                                                value="{{ old('actual_completion_date', $project['actual_completion_date'] ?? '') }}"
                                                 style="background-color: lightgray;">
                                         </div>
                                     </div>
@@ -642,7 +642,7 @@
         {!! json_encode($contractors->pluck('name')) !!}
     </script>
     <script id="engineer-data" type="application/json">
-    {!! json_encode($projectEA->pluck('ea')->map(fn($ea) => trim($ea))->values()) !!}
+    {!! json_encode($projectEA->pluck('engineer_name')->map(fn($engineer_name) => trim($engineer_name))->values()) !!}
     </script>
 
 

@@ -1,9 +1,22 @@
 function getSanitizedValue(input) {
   if (!input || !input.value) return 0;
-  return parseFloat(input.value.replace(/₱|,/g, '').trim()) || 0;
+  return parseFloat(input.value.replace(/[^0-9.,]/g, '').replace(/,/g, '')) || 0;
 }
 
+
 document.addEventListener('DOMContentLoaded', function () {
+
+  //total appropriation display
+  const origApproInput = document.getElementById('orig_appropriation');
+  const totalApproOutput = document.getElementById('totalAppro');
+
+  if (origApproInput && totalApproOutput) {
+    origApproInput.addEventListener('input', function () {
+      totalApproOutput.value = origApproInput.value;
+    });
+  }
+
+
 
   const abcInput = document.getElementById('orig_abc');
   const contractInput = document.getElementById('orig_contract_amount');
@@ -59,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return parts.join('.');
   }
+  
   
   
 
@@ -290,37 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
   actualContractAmountInput.addEventListener('input', calculateMobilization);
   calculateMobilization();
 
-  // 🔹 Calculate total of original values (excluding appropriation)
-  function calculateOrigTotal() {
-    const fieldsToSum = ['contract_amount', 'bid', 'engineering', 'mqc', 'contingency'];
-    let total = 0;
+  
 
-    fieldsToSum.forEach(field => {
-      const input = document.getElementById(`orig_${field}`);
-      if (input) {
-        total += getSanitizedValue(input);
-      }
-    });
-
-    const totalInput = document.getElementById('orig_total');
-    if (totalInput) {
-      totalInput.value = formatNumber(total);
-    }
-  }
-
-  calculateOrigTotal();
-
-  ['abc', 'contract_amount', 'bid', 'engineering', 'mqc', 'contingency'].forEach(field => {
-    const input = document.getElementById(`orig_${field}`);
-    if (input) {
-      input.addEventListener('input', calculateOrigTotal);
-      input.addEventListener('blur', function () {
-        const val = getSanitizedValue(this);
-        this.value = val ? formatNumber(val) : '';
-        calculateOrigTotal();
-      });
-    }
-  });
 
   // ✅ Make attachVOListeners globally callable
   window.attachVOListeners = attachVOListeners;

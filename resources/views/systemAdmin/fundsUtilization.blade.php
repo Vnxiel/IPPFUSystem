@@ -21,7 +21,7 @@
       @csrf      
       <!-- Project Title Card -->
       <div class="card-header bg-light py-3">
-        <h5 class="card-title mb-0 text-primary">{{ $project['projectTitle'] ?? 'Project Title' }}</h5>
+        <h5 class="card-title mb-0 text-primary">{{ $project['title'] ?? 'Project Title' }}</h5>
       </div>
 
       <div class="card-body">
@@ -50,7 +50,6 @@
                     <th>V.O. {{ $vo->vo_number }}</th>
                     @endif
                     @endforeach
-                    <th>Actual Utilization</th>
                     <th>Actual Utilization</th>
                   </tr>
                 </thead>
@@ -110,8 +109,9 @@
 
                     {{-- Actual --}}
                     <td>
-                        <input type="text" class="form-control amount-input text-end" id="actual_{{ $key }}" name="actual_{{ $key }}"
-                              value="{{ $funds['actual_' . $key] ?? '' }}" >
+                      <input type="text" class="form-control amount-input text-end actual-input" id="actual_{{ $key }}" name="actual_{{ $key }}"
+                       value="{{ $funds['actual_' . $key] ?? '' }}">
+
                       </td>
                   @endforeach
 
@@ -130,16 +130,10 @@
                       @endfor
 
                       {{-- Actual Total Cell --}}
-                      <td class="text-end">
-                          {{ number_format(
-                              ($funds['actual_contract_amount'] ?? 0) +
-                              ($funds['actual_engineering'] ?? 0) +
-                              ($funds['actual_mqc'] ?? 0) +
-                              ($funds['actual_contingency'] ?? 0), 2)
-                          }}
+                      <td>   
+                        <input type="text" class="form-control text-end" id="actual_total" name="actual_total" readonly>
                       </td>
                   </tr>
-
                 </tbody>
               </table>
             </div>
@@ -179,38 +173,34 @@
                 <table class="table table-sm table-bordered text-center align-middle">
                   <thead>
                     <tr>
-                      <th style="width: 20%;">Date</th>
-                      <th style="width: 30%;">Particulars</th>
+                      <th style="width: 20%;">Particulars</th>
                       <th style="width: 20%;">Amount</th>
+                      <th style="width: 20%;">Retention Percentage</th>
+                      <th style="width: 20%;">Retention Amount</th>
                       <th style="width: 30%;">Remarks</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td></td>
                       <td>Total Appropriation</td>
                       <td><input type="text" class="form-control text-end" id="totalAppro" name="totalAppro"  value="{{ $funds['orig_appropriation'] ?? '' }}" readonly></td>
                       <td></td>
+                      <td></td>
                     </tr>
                     <tr>
-                      <td></td>
                       <td>Contract Amount</td>
                       <td><input type="text" class="form-control text-end" id="contract_amount" name="contract_amount" readonly></td>
                       <td></td>
+                      <td></td>
                     </tr>
                     <tr>
-                      <td>
-                        <input type="date" class="form-control form-control-sm" name="dateMobilization"
-                              value="{{ $summary['mobilization']['date'] ?? '' }}">
-                      </td>
                       <td>
                         <div class="d-flex align-items-center">
                           <span class="fw-normal me-3">Mobilization</span>
                           <input type="number" max="15" min="0" step="0.01"
                                 class="form-control form-control-sm w-50"
                                 id="percentMobi" name="percentMobi"
-                                placeholder="0–15"  value="{{ $summary['mobilization']['percentMobi'] ?? '' }}"
-                               >
+                                placeholder="0–15"  value="{{ $summary['mobilization']['percentMobi'] ?? '' }}">
                           <span class="ms-1 text-muted small"><i class="fas fa-percentage"></i></span>
                         </div>
                       </td>
@@ -220,6 +210,16 @@
                               name="amountMobilization" id="amountMobilization"
                               value="{{ $summary['mobilization']['amount'] ?? '' }}">
                       </td>
+                      
+                      <td>
+                        <input type="text" class="form-control form-control-sm text-end"
+                              name="retentionMobiPercent" id="retentionMobiPercent"
+                              value="10%">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                              name="retentionMobiAmount" id="retentionMobiAmount">
+                      </td>
                       <td colspan="2">
                         <input type="text" class="form-control form-control-sm" name="remMobilization"
                               value="{{ $summary['mobilization']['remarks'] ?? '' }}">
@@ -227,41 +227,58 @@
                     </tr>
 
 
-                    <!-- Partial Billing Rows -->
                     @for ($i = 1; $i <= 5; $i++)
-                    <tr class="partial-billing billing-{{ $i }}" style="{{ $i > 1 ? 'display: none;' : '' }}">
-                      <td>
-                        <input type="date" class="form-control form-control-sm" name="partialBillings[{{ $i }}][date]"
-                              value="{{ $partial_billings[$i - 1]['date'] ?? '' }}">
-                      </td>
+                      @php
+                        $amount = $partial_billings[$i - 1]['amount'] ?? '';
+                        $remarks = $partial_billings[$i - 1]['remarks'] ?? '';
+                        $showRow = $i == 1 || !empty($amount);
+                      @endphp
+                      <tr class="partial-billing billing-{{ $i }}" style="{{ $showRow ? '' : 'display: none;' }}">
                       <td>{{ $i }}{{ $i == 1 ? 'st' : ($i == 2 ? 'nd' : ($i == 3 ? 'rd' : 'th')) }} Partial Billing</td>
                       <td>
                         <input type="text" class="form-control form-control-sm text-end expenditure-amount"
                               name="partialBillings[{{ $i }}][amount]" id="amountPartial{{ $i }}"
-                              value="{{ $partial_billings[$i - 1]['amount'] ?? '' }}">
+                              value="{{ $amount }}">
                       </td>
-                      <td colspan="2">
-                        <input type="text" class="form-control form-control-sm" name="partialBillings[{{ $i }}][remarks]"
-                              value="{{ $partial_billings[$i - 1]['remarks'] ?? '' }}">
-                      </td>
-                    </tr>
-                    @endfor
-
-                    <tr>
                       <td>
-                        <input type="date" class="form-control form-control-sm" name="dateFinal" value="{{ $summary['final']['date'] ?? '' }}">
+                        <input type="text" class="form-control form-control-sm text-end"
+                              name="partialBillings[{{ $i }}][retentionPercent]" id="retentionPartialPercent{{ $i }}"
+                              value="10%" readonly>
                       </td>
-                      <td>Final Billing</td>
                       <td>
                         <input type="text" class="form-control form-control-sm text-end expenditure-amount"
-                              name="amountFinal" id="amountFinal" value="{{ $summary['final']['amount'] ?? '' }}">
+                              name="partialBillings[{{ $i }}][retentionAmount]" id="retentionPartialAmount{{ $i }}">
                       </td>
                       <td colspan="2">
-                        <input type="text" class="form-control form-control-sm" name="remFinal" value="{{ $summary['final']['remarks'] ?? '' }}">
+                        <input type="text" class="form-control form-control-sm"
+                              name="partialBillings[{{ $i }}][remarks]"
+                              value="{{ $remarks }}">
                       </td>
                     </tr>
+                  @endfor
+
+                  <tr>
+                    <td>Final Billing</td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                            name="amountFinal" id="amountFinal" value="{{ $summary['final']['amount'] ?? '' }}">
+                    </td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end"
+                            name="retentionFinalPercent" id="retentionFinalPercent"
+                            value="10%" readonly>
+                    </td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                            name="retentionFinalAmount" id="retentionFinalAmount">
+                    </td>
+                    <td colspan="2">
+                      <input type="text" class="form-control form-control-sm"
+                            name="remFinal" value="{{ $summary['final']['remarks'] ?? '' }}">
+                    </td>
+                  </tr>
+
                     <tr>
-                      <td></td>
                       <td class="fw-bold">Balance</td>
                       <td id="contractBalance" class="fw-bold text-end">0.00</td>
                       <td></td>
@@ -269,7 +286,6 @@
 
                     <!-- ENGINEERING Table -->
                     <tr>
-                      <td></td>
                       <td>Engineering</td>
                       <td>
                         <input type="text" class="form-control form-control-sm text-end expenditure-amount"
@@ -291,26 +307,35 @@
                       <table id="engineeringSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
                         <thead>
                           <tr>
-                          <th>Date</th>
-                            <th>Name - (Payment Period)</th>
+                          <th>Date Period</th>
+                            <th>Name - (Month)</th>
                             <th>Amount</th>
                           </tr>
                         </thead>
+                        @php
+                            $validEntries = $engineeringEntries->filter(function($eng) {
+                                return $eng->date_from || $eng->date_to || $eng->name || $eng->month || $eng->amount;
+                            });
+                        @endphp
+
                         <tbody>
-                          @if($engineeringEntries->count() > 0)
-                            @foreach($engineeringEntries as $eng)
-                              <tr>
-                                <td style="width: 20%;">{{ $eng->breakdown_date ? \Carbon\Carbon::parse($eng->breakdown_date)->format('Y-m-d') : 'N/A' }}</td>
-                                <td style="width: 43%;">{{ $eng->name }} - {{ $eng->payment_periods }}</td>
-                                <td class="text-end" data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
-                              </tr>
-                            @endforeach
-                          @else
+                          @forelse($validEntries as $eng)
+                            <tr>
+                              <td style="width: 20%;">
+                                @if($eng->date_from && $eng->date_to)
+                                  {{ \Carbon\Carbon::parse($eng->date_from)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($eng->date_to)->format('Y-m-d') }}
+                                @endif
+                              </td>
+                              <td style="width: 30%;">{{ $eng->name }} - {{ $eng->month }}</td>
+                              <td class="text-end" data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
+                            </tr>
+                          @empty
                             <tr>
                               <td colspan="3" class="text-muted">No entries found.</td>
                             </tr>
-                          @endif
+                          @endforelse
                         </tbody>
+
 
                       </table>
                     </td>
@@ -318,7 +343,6 @@
 
 
                   <tr>
-                    <td></td>
                     <td class="fw-bold">Engineering Balance</td>
                     <td class="fw-bold text-end" id="formEngineeringBalance" data-balance="0.00">₱0.00</td>
                    <td colspan="2"></td>
@@ -326,7 +350,6 @@
 
                   <!-- MQC TABLE -->
                   <tr>
-                    <td></td>
                     <td>MQC</td>
                     <td>
                       <input type="text" class="form-control form-control-sm text-end expenditure-amount"
@@ -348,18 +371,24 @@
                       <table id="mqcSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
                         <thead>
                           <tr>
-                          <th>Date</th>
-                            <th>Name (Month - Payment Period)</th>
+                             <th>Date Period</th>
+                            <th>Name - (Month)</th>
                             <th>Amount</th>
                           </tr>
                         </thead>
                         <tbody>
                           @forelse($mqcEntries as $mqc)
                           <tr>
-                          <td style="width: 20%;">{{ $mqc->breakdown_date ? \Carbon\Carbon::parse($mqc->breakdown_date)->format('M d, Y') : 'N/A' }}</td>
-                            <td style="width: 43%;">{{ $mqc->name }} ({{ $mqc->month }} - {{ $mqc->payment_periods }})</td>
-                            <td class="text-end" data-amount="{{ $mqc->amount }}">{{ number_format($mqc->amount, 2) }}</td>
-                          </tr>
+                          <td style="width: 20%;">
+                                    @if($eng->date_from && $eng->date_to)
+                                        {{ \Carbon\Carbon::parse($mqc->date_from)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($mqc->date_to)->format('Y-m-d') }}
+                                    @else
+                                        
+                                    @endif
+                                </td>
+                               <td style="width: 30%;">{{ $mqc->name }} - {{ $mqc->month }}</td>
+                                <td class="text-end" data-amount="{{ $mqc->amount }}">{{ number_format($mqc->amount, 2) }}</td>
+                              </tr>
                           @empty
                           <tr>
                             <td></td>
@@ -371,22 +400,18 @@
                     </td>
                     </tr>
                     <tr>
-                    <td></td>
                     <td class="fw-bold">MQC Balance</td>
                     <td class="fw-bold text-end" id="formMqcBalance">0.00</td>
                     <td colspan="2"></td>
                   </tr>
                   <tr>
-                    <td></td>
                     <td>Total Expenditures</td>
                     <td><input type="text" class="form-control form-control-sm text-end" id="amountTotal" name="amountTotal"></td>
                   </tr>
                   <tr>
-                    <td></td>
                     <td>Total Savings</td>
                     <td><input type="text" class="form-control form-control-sm text-end" id="amountSavings" name="amountSavings"></td>
                   </tr>
-
                 </tbody>
               </table>
             </div>
@@ -403,6 +428,7 @@
                   <i class="fas fa-save me-2"></i>
                   Save Changes
                 </button>
+              </div>
             </div>
             </div>
             </fieldset>
@@ -410,7 +436,6 @@
             </form>
             </div>
       </section>
-      
           
 
 
@@ -457,18 +482,17 @@
 @include('systemAdmin.modals.Funds_Utilization.add-eng_mqc')
 
 @section('page-scripts')
-<script>
- 
 
-  </script>
 
 
 <script src="{{ asset('js/FundsUtilization/funds_utilization-percentMobi.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-addBreakdown.js') }}"></script>
+
+<script src="{{ asset('js/FundsUtilization/funds_utilization-format-amounts.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setCurrencyFormatting.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setvalue.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-valueLimit.js') }}"></script>
-<script src="{{ asset('js/FundsUtilization/add-set.js') }}"></script>
+<script src="{{ asset('js/FundsUtilization/funds_utilization-add-set.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-Totals.js') }}"></script>
 @endsection

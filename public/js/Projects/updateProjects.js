@@ -17,11 +17,11 @@ $(document).ready(function () {
 
         let updatedData = {};
         let fieldIDs = [
-            "projectTitle", "projectLoc", "projectID", "projectContractor", "sourceOfFunds", "modeOfImplementation",
-            "projectDescription", "projectContractDays", "noticeOfAward",
-            "noticeToProceed", "originalStartDate", "targetCompletion", "timeExtension", "revisedTargetDate", "revisedCompletionDate",
-            "completionDate", "abc", "contractAmount", "engineering", "mqc", "contingency", "bid", "appropriation",
-            "noaIssuedDate", "noaReceivedDate", "ntpIssuedDate", "ntpReceivedDate", "totalExpenditure", "projectSlippage", "ea", "ea_position", "ea_monthlyRate", "othersContractor", "projectYear", "projectFPP", "projectRC"
+            "title", "location", "projectID", "firm_name", "source_of_funds", "mode_of_implementation",
+            "description", "contract_days", "contractor_name",
+            "contractor_address", "official_starting_date", "target_completion_date", "timeExtension", "revised_target_date", "revisedCompletionDate",
+            "actual_completion_date", "abc", "orig_contract_amount", "engineering", "mqc", "contingency", "bid", "appropriation",
+            "noa_issued_date", "noa_received_date", "ntp_issued_date", "ntp_received_date", "total_expenditure", "project_slippage", "engineer_name", "engineer_position", "actual_length", "othersContractor", "year", "fpp", "responsibility_center"
         ];
 
         // Collect fixed fields
@@ -36,18 +36,35 @@ $(document).ready(function () {
             updatedData[fieldID] = $(this).val();
         });
 
+        // Add dynamic Time Extension fields
+        let timeExtensions = [];
+
+        for (let i = 1; i <= extensionCounter; i++) {
+            let extension = {
+                days: $(`#timeExtension${i}`).val(),
+                reason: $(`#extensionReason${i}`).val(),
+                revised: $(`#revisedExpiry${i}`).val(),
+                revised_reason: $(`#revisedReason${i}`).val()
+            };
+        
+            timeExtensions.push(extension);
+        }
+        
+        updatedData.time_extensions = timeExtensions;
+        
+
         // Handle "Ongoing" status formatting
-        if (updatedData.projectStatus === "Ongoing") {
-            let ongoingStatus = $("#ongoingStatus").val();
+        if (updatedData.physical_status === "Ongoing") {
+            let ongoing_status = $("#ongoing_status").val();
             let ongoingDate = $("#ongoingDate").val();
 
-            if (ongoingStatus && ongoingDate) {
-                if (!ongoingStatus.includes(" - ")) {
-                    updatedData.ongoingStatus = `${ongoingStatus} - ${ongoingDate}`;
+            if (ongoing_status && ongoingDate) {
+                if (!ongoing_status.includes(" - ")) {
+                    updatedData.ongoing_status = `${ongoing_status} - ${ongoingDate}`;
                 }
             }
         } else {
-            updatedData.ongoingStatus = null;
+            updatedData.ongoing_status = null;
         }
 
         // AJAX request to update the project

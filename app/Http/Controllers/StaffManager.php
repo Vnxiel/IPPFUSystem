@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\Contractor;
 use App\Models\Location;
 use App\Models\User;
 use App\Models\Project;
@@ -15,16 +14,16 @@ class StaffManager extends Controller
 
     public function index(){
     
-        $contractors = Contractor::orderBy('name', 'asc')->get();
+        $contractors = Project::orderBy('firm_name', 'asc')->get();
         $staticLocations = [
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
             'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
             'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
     
-        $dbLocations = Project::select('projectLoc')
-            ->whereNotNull('projectLoc')
-            ->pluck('projectLoc')
+        $dbLocations = Project::select('location')
+            ->whereNotNull('location')
+            ->pluck('location')
             ->toArray();
     
         // Merge and remove duplicates
@@ -33,46 +32,46 @@ class StaffManager extends Controller
             ->sort()
             ->values();
 
-        $sourceOfFunds = Project::select('sourceOfFunds')
+        $source_of_funds = Project::select('source_of_funds')
         ->distinct()
-        ->whereNotNull('sourceOfFunds')
-        ->orderBy('sourceOfFunds')
+        ->whereNotNull('source_of_funds')
+        ->orderBy('source_of_funds')
         ->get();
 
-        $projectYear = Project::select('projectYear')
+        $year = Project::select('year')
         ->distinct()
-        ->whereNotNull('projectYear')
-        ->orderBy('projectYear')
+        ->whereNotNull('year')
+        ->orderBy('year')
         ->get();
-        $projectEA = Project::select('ea')
+        $projectEA = Project::select('engineer_name')
         ->distinct()
-        ->whereNotNull('ea')
-        ->orderBy('ea')
+        ->whereNotNull('engineer_name')
+        ->orderBy('engineer_name')
         ->get();
 
-         return view('staff.index', compact('contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+         return view('staff.index', compact('contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
 }
 
 
 public function projects()
 {
-    $projects = Project::select('id', 'projectTitle', 'projectLoc', 'projectStatus', 'projectContractor', 'othersContractor', 'projectContractDays')
+    $projects = Project::select('id', 'title', 'location', 'physical_status', 'firm_name', 'othersContractor', 'contract_days')
     ->with('fundsUtilization')
     ->where(function ($query) {
         $query->whereNull('is_hidden')->orWhere('is_hidden', 0);
     })
     ->orderBy('created_at', 'desc')
     ->get();
-    $contractors = Contractor::orderBy('name')->get();
+    $contractors = Project::orderBy('firm_name')->get();
     $staticLocations = [
         'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
         'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
         'Villaverde', 'Ambaguio', 'Santa Fe'
     ];
 
-    $dbLocationsRaw = Project::select('projectLoc')
-            ->whereNotNull('projectLoc')
-            ->pluck('projectLoc')
+    $dbLocationsRaw = Project::select('location')
+            ->whereNotNull('location')
+            ->pluck('location')
             ->toArray();
 
      // Extract only the municipality (first part before the comma)
@@ -87,20 +86,20 @@ public function projects()
         ->values();
 
 
-    $sourceOfFunds = Project::select('sourceOfFunds')
+    $source_of_funds = Project::select('source_of_funds')
     ->distinct()
-    ->whereNotNull('sourceOfFunds')
-    ->orderBy('sourceOfFunds')
+    ->whereNotNull('source_of_funds')
+    ->orderBy('source_of_funds')
     ->get();
-    $projectYear = Project::select('projectYear')
+    $year = Project::select('year')
     ->distinct()
-    ->whereNotNull('projectYear')
-    ->orderBy('projectYear')
+    ->whereNotNull('year')
+    ->orderBy('year')
     ->get();
-    $projectEA = Project::select('ea')
+    $projectEA = Project::select('engineer_name')
     ->distinct()
-    ->whereNotNull('ea')
-    ->orderBy('ea')
+    ->whereNotNull('engineer_name')
+    ->orderBy('engineer_name')
     ->get();
 
 
@@ -109,19 +108,19 @@ public function projects()
         $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
 
         return [
-            'title' => $project->projectTitle ?? 'N/A',
-            'location' => $project->projectLoc ?? 'N/A',
-            'status' => $project->projectStatus ?? 'N/A',
+            'title' => $project->title ?? 'N/A',
+            'location' => $project->location ?? 'N/A',
+            'status' => $project->physical_status ?? 'N/A',
             'amount' => $formattedAmount,
-            'contractor' => (strtolower($project->projectContractor) === 'others')
+            'contractor' => (strtolower($project->firm_name) === 'others')
                 ? ($project->othersContractor ?? 'N/A')
-                : ($project->projectContractor ?? 'N/A'),
-            'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
+                : ($project->firm_name ?? 'N/A'),
+            'duration' => $project->contract_days ? $project->contract_days . ' days' : 'N/A',
             'id' => $project->id,
         ];
     });
 
-    return view('staff.projects', compact('mappedProjects', 'contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+    return view('staff.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
 }
 
     public function activityLogs() {
@@ -154,31 +153,5 @@ public function projects()
         return view('staff.userManagement', [
             'users'=> $users
         ]);
-    }
-
-
-    public function addProjects(Request $request){
-
-    }
-    public function viewProjects(Request $request){
-
-    }
-    public function searchProjects(Request $request){
-
-    }
-    public function generateReports(Request $request){
-
-    }
-
-    public function temporaryDeleteProject(Request $request){
-
-    }
-
-    public function restoreProject(Request $request){
-
-    }
-
-    public function viewProjectStatus(Request $request){
-
     }
 }

@@ -21,7 +21,7 @@
       @csrf      
       <!-- Project Title Card -->
       <div class="card-header bg-light py-3">
-        <h5 class="card-title mb-0 text-primary">{{ $project['projectTitle'] ?? 'Project Title' }}</h5>
+        <h5 class="card-title mb-0 text-primary">{{ $project['title'] ?? 'Project Title' }}</h5>
       </div>
 
       <div class="card-body">
@@ -260,30 +260,37 @@
 
                   <tr class="collapse" id="engDetails">
                     <td colspan="5">
-                      <table id="engineeringSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
+                    <table id="engineeringSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
                         <thead>
                           <tr>
-                          <th>Date</th>
-                            <th>Name - (Payment Period)</th>
+                          <th>Date Period</th>
+                            <th>Name - (Month)</th>
                             <th>Amount</th>
                           </tr>
                         </thead>
+                        @php
+                            $validEntries = $engineeringEntries->filter(function($eng) {
+                                return $eng->date_from || $eng->date_to || $eng->name || $eng->month || $eng->amount;
+                            });
+                        @endphp
+
                         <tbody>
-                          @if($engineeringEntries->count() > 0)
-                            @foreach($engineeringEntries as $eng)
-                              <tr>
-                                <td style="width: 20%;">{{ $eng->breakdown_date ? \Carbon\Carbon::parse($eng->breakdown_date)->format('Y-m-d') : 'N/A' }}</td>
-                                <td style="width: 43%;">{{ $eng->name }} - {{ $eng->payment_periods }}</td>
-                                <td class="text-end" data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
-                              </tr>
-                            @endforeach
-                          @else
+                          @forelse($validEntries as $eng)
+                            <tr>
+                              <td style="width: 20%;">
+                                @if($eng->date_from && $eng->date_to)
+                                  {{ \Carbon\Carbon::parse($eng->date_from)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($eng->date_to)->format('Y-m-d') }}
+                                @endif
+                              </td>
+                              <td style="width: 30%;">{{ $eng->name }} - {{ $eng->month }}</td>
+                              <td class="text-end" data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
+                            </tr>
+                          @empty
                             <tr>
                               <td colspan="3" class="text-muted">No entries found.</td>
                             </tr>
-                          @endif
+                          @endforelse
                         </tbody>
-
                       </table>
                     </td>
                   </tr>
@@ -320,18 +327,24 @@
                       <table id="mqcSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
                         <thead>
                           <tr>
-                          <th>Date</th>
-                            <th>Name (Month - Payment Period)</th>
+                             <th>Date Period</th>
+                            <th>Name - (Month)</th>
                             <th>Amount</th>
                           </tr>
                         </thead>
                         <tbody>
                           @forelse($mqcEntries as $mqc)
                           <tr>
-                          <td style="width: 20%;">{{ $mqc->breakdown_date ? \Carbon\Carbon::parse($mqc->breakdown_date)->format('M d, Y') : 'N/A' }}</td>
-                            <td style="width: 43%;">{{ $mqc->name }} ({{ $mqc->month }} - {{ $mqc->payment_periods }})</td>
-                            <td class="text-end" data-amount="{{ $mqc->amount }}">{{ number_format($mqc->amount, 2) }}</td>
-                          </tr>
+                          <td style="width: 20%;">
+                                    @if($eng->date_from && $eng->date_to)
+                                        {{ \Carbon\Carbon::parse($mqc->date_from)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($mqc->date_to)->format('Y-m-d') }}
+                                    @else
+                                        
+                                    @endif
+                                </td>
+                               <td style="width: 30%;">{{ $mqc->name }} - {{ $mqc->month }}</td>
+                                <td class="text-end" data-amount="{{ $mqc->amount }}">{{ number_format($mqc->amount, 2) }}</td>
+                              </tr>
                           @empty
                           <tr>
                             <td></td>

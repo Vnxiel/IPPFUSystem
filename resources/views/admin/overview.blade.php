@@ -23,7 +23,7 @@
             <div class="col-md-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
-                        <span class="font-title-overview mb-0">{{ $project['projectTitle'] ?? '' }}</span>
+                        <span class="font-title-overview mb-0">{{ $project['title'] ?? '' }}</span>
                         <div class="d-flex gap-2">
                             <button type="button" id="editProjectBtn"
                                 class="btn btn-warning btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"
@@ -82,7 +82,7 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <span
-                                                    style="font-weight: normal;color: black;">{{ $project['projectLoc'] ?? '' }}</span>
+                                                    style="font-weight: normal;color: black;">{{ $project['location'] ?? '' }}</span>
                                             </div>
                                         </div>
 
@@ -92,7 +92,7 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <span
-                                                    style="font-weight: normal; color: black;">{{ $project['projectYear'] ?? '' }}</span>
+                                                    style="font-weight: normal; color: black;">{{ $project['year'] ?? '' }}</span>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -101,7 +101,7 @@
                                             </div>
                                             <div class="col-8">
                                                 <span
-                                                    style="font-weight: normal; color: black;">{{ $project['projectFPP'] ?? '' }}</span>
+                                                    style="font-weight: normal; color: black;">{{ $project['fpp'] ?? '' }}</span>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -109,8 +109,8 @@
                                                 <p class="d-block">Project Engineer: </p>
                                             </div>
                                             <div class="col-8">
-                                                <p style="font-weight: normal; color: black;">{{ $project['ea'] ?? '' }}
-                                                    <br> <i>{{ $project['ea_position'] ?? '' }}</i>
+                                                <p style="font-weight: normal; color: black;">{{ $project['engineer_name'] ?? '' }}
+                                                    <br> <i>{{ $project['engineer_position'] ?? '' }}</i>
                                                 </p>
                                             </div>
                                         </div>
@@ -123,7 +123,7 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <span
-                                                    style="font-weight: normal; color: black;">{{ $project['projectContractDays'] ?? '' }}
+                                                    style="font-weight: normal; color: black;">{{ $project['contract_days'] ?? '' }}
                                                     (Calendar days)</span>
                                             </div>
                                         </div>
@@ -133,7 +133,7 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <span style="font-weight: normal; color: black;">
-                                                    {{ ($project['sourceOfFunds'] ?? '') === 'Others' ? ($project['otherFund'] ?? '') : ($project['sourceOfFunds'] ?? '') }}
+                                                    {{ ($project['source_of_funds'] ?? '') === 'Others' ? ($project['otherFund'] ?? '') : ($project['source_of_funds'] ?? '') }}
                                                 </span>
                                             </div>
                                         </div>
@@ -143,14 +143,14 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <span
-                                                    style="font-weight: normal; color: black;">{{ $project['projectRC'] ?? '' }}</span>
+                                                    style="font-weight: normal; color: black;">{{ $project['responsibility_center'] ?? '' }}</span>
                                             </div>
                                         </div>
                                         @php
-                                            $ongoingStatus = $projectStatusData['ongoingStatus'] ?? [];
-                                            $totalPercentage = is_array($ongoingStatus) ? array_sum(array_column($ongoingStatus, 'percentage')) : 0;
-                                            $latestDate = is_array($ongoingStatus) && count($ongoingStatus) > 0
-                                                ? end($ongoingStatus)['date']
+                                            $ongoing_status = $projectStatusData['ongoing_status'] ?? [];
+                                            $totalPercentage = is_array($ongoing_status) ? array_sum(array_column($ongoing_status, 'percentage')) : 0;
+                                            $latestDate = is_array($ongoing_status) && count($ongoing_status) > 0
+                                                ? end($ongoing_status)['date']
                                                 : null;
                                         @endphp
 
@@ -162,7 +162,7 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <span class="badge bg-success me-2 text-white" style="font-weight: normal;">
-                                                    {{ $project['projectStatus'] ?? '' }}
+                                                    {{ $project['physical_status'] ?? '' }}
                                                 </span><br>
                                                 <small style="font-weight: normal;">
                                                     {{ $totalPercentage }}% Completed
@@ -178,7 +178,7 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <span
-                                                    class="badge bg-danger text-white">{{ $project['projectSlippage'] ?? '' }}</span>
+                                                    class="badge bg-danger text-white">{{ $project['project_slippage'] ?? '' }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -209,15 +209,15 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (!empty($ongoingStatus) && is_array($ongoingStatus))
-                                                @foreach ($ongoingStatus as $status)
+                                            @if (!empty($ongoing_status) && is_array($ongoing_status))
+                                                @foreach ($ongoing_status as $status)
                                                     <tr>
                                                         <td>{{ $status['progress'] }}</td>
                                                         <td>{{ $status['percentage'] }}%</td>
                                                         <td>{{ $status['date'] }}</td>
                                                     </tr>
                                                 @endforeach
-                                            @elseif ($projectStatusData['projectStatus'] === 'Completed')
+                                            @elseif ($projectStatusData['physical_status'] === 'Completed')
                                                 <tr>
                                                     <td colspan="3" class="text-center text-muted">This project is completed.
                                                     </td>
@@ -258,7 +258,7 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <p style="font-weight: normal; color: black;">
-                                                    {{ $project['modeOfImplementation'] ?? '' }}
+                                                    {{ $project['mode_of_implementation'] ?? '' }}
                                                 </p>
                                             </div>
                                         </div>
@@ -284,10 +284,10 @@
                                                         <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice of Award:</p>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <span style="font-size: 0.875rem;">{{ $project['noaIssuedDate'] ?? '' }}</span>
+                                                        <span style="font-size: 0.875rem;">{{ $project['noa_issued_date'] ?? '' }}</span>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <span style="font-size: 0.875rem;">{{ $project['noaReceivedDate'] ?? '' }}</span>
+                                                        <span style="font-size: 0.875rem;">{{ $project['noa_received_date'] ?? '' }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -300,10 +300,10 @@
                                                         <p class="font-base" style="margin-bottom: 0; font-size: 0.875rem;">Notice to Proceed:</p>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <span style="font-size: 0.875rem;">{{ $project['ntpIssuedDate'] ?? '' }}</span>
+                                                        <span style="font-size: 0.875rem;">{{ $project['ntp_issued_date'] ?? '' }}</span>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <span style="font-size: 0.875rem;">{{ $project['ntpReceivedDate'] ?? '' }}</span>
+                                                        <span style="font-size: 0.875rem;">{{ $project['ntp_received_date'] ?? '' }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -314,7 +314,7 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <p style="margin-bottom: 0; font-weight: normal; color: black; font-size: 0.875rem;">
-                                                    {{ $project['originalStartDate'] ?? ' ' }}
+                                                    {{ $project['official_starting_date'] ?? ' ' }}
                                                 </p>
                                             </div>
                                         </div>
@@ -324,7 +324,7 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <p style="font-weight: normal; color: black; font-size: 0.875rem;">
-                                                    {{ $project['targetCompletion'] ?? '' }}
+                                                    {{ $project['target_completion_date'] ?? '' }}
                                                 </p>
                                             </div>
                                         </div>
@@ -333,7 +333,7 @@
                                             $hasSuspension = false;
 
                                             // Decode suspension remarks JSON
-                                            $remarksData = json_decode($project['suspensionRemarks'], true) ?? [];
+                                            $remarksData = json_decode($project['reason_for_suspension'], true) ?? [];
 
                                             // Collect available suspension indices
                                             $indices = [];
@@ -420,7 +420,7 @@
                                                 </div>
                                                 <div class="col-md-7">
                                                     <p style="margin-bottom: 0; font-weight: normal; color: black; font-size: 0.875rem;">
-                                                        {{ $project['revisedTargetDate'] ?? '' }}
+                                                        {{ $project['revised_target_date'] ?? '' }}
                                                     </p>
                                                 </div>
                                             </div>
@@ -432,7 +432,7 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <p style="font-weight: normal; color: black;">
-                                                    {{ $project['completionDate'] ?? '' }}
+                                                    {{ $project['actual_completion_date'] ?? '' }}
                                                 </p>
                                             </div>
                                         </div>
@@ -597,7 +597,7 @@
                                                     ];
 
                                                     $funds = $project['funds'] ?? [];
-                                                    $contractAmount = (float) ($funds['actual_contract_amount'] ?? 0);
+                                                    $orig_contract_amount = (float) ($funds['actual_contract_amount'] ?? 0);
                                                     $mobilizationAmt = (float) ($summary['mobilization']['amount'] ?? 0);
                                                     $finalAmt = (float) ($summary['final']['amount'] ?? 0);
                                                     $engAmt = (float) str_replace(',', '', ($summary['engineering']['amount'] ?? 0));
@@ -605,7 +605,7 @@
                                                     $partialTotal = collect($partialBillings)->sum('amount');
                                                     $expenditures = $mobilizationAmt + $partialTotal + $finalAmt + $engAmt + $mqcAmt;
 
-                                                    $contractBalance = $contractAmount - ($mobilizationAmt + $partialTotal + $finalAmt);
+                                                    $contractBalance = $orig_contract_amount - ($mobilizationAmt + $partialTotal + $finalAmt);
                                                     $origEng = (float) str_replace(',', '', ($funds['orig_engineering'] ?? 0));
                                                     $origMqc = (float) str_replace(',', '', ($funds['orig_mqc'] ?? 0));
                                                     $engineeringBreakdownSum = collect($engineeringEntries)->sum('amount');
@@ -629,7 +629,7 @@
                                                         <tr>
                                                             <td>-</td>
                                                             <td><strong>Contract Amount</strong></td>
-                                                            <td class="text-end" colspan="2">{{ number_format($contractAmount, 2) }}</td>
+                                                            <td class="text-end" colspan="2">{{ number_format($orig_contract_amount, 2) }}</td>
                                                         </tr>
 
                                                         <tr>
@@ -827,12 +827,12 @@
     <script>
         function calculateBalances() {
     // --- CONTRACT GROUP SUMMARY ---
-    const contractAmount = parseFloat(document.getElementById('contractAmount').textContent || 0);
+    const orig_contract_amount = parseFloat(document.getElementById('orig_contract_amount').textContent || 0);
     const mobi = parseFloat(document.getElementById('mobiAmount').textContent || 0);
     const partial = parseFloat(document.getElementById('partialAmount').textContent || 0);
     const finalBilling = parseFloat(document.getElementById('finalAmount').textContent || 0);
 
-    const contractBalance = contractAmount - (mobi + partial + finalBilling);
+    const contractBalance = orig_contract_amount - (mobi + partial + finalBilling);
     document.getElementById('contractBalance').textContent = contractBalance.toFixed(2);
 
     // --- ENGINEERING ---

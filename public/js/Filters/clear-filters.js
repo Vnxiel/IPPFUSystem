@@ -3,6 +3,7 @@ function clearFilters() {
     $('#contractor_filter').val('');
     $('#amount_filter').val('');
     $('#status_filter').val('');
+    $('#year_filter_input').val('');
     $('#view_all_checkbox').prop('checked', false); // Set to false instead of true
     $('#locationDropdown').hide();
 

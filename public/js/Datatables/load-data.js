@@ -1,4 +1,4 @@
-// ✅ Global scope
+//  Global scope
 var dataTable = null;
 
 $(document).ready(function () {
@@ -96,11 +96,10 @@ $(document).ready(function () {
         const viewAll = $('#view_all_checkbox').is(':checked');
         if (viewAll) return true;
     
-        // Normalizer removes accents and diacritics like ñ, é, ü, etc.
         function normalize(str) {
             return (str || '')
-                .normalize("NFD")                         // Separate accent marks
-                .replace(/[\u0300-\u036f]/g, "")          // Remove accents
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
                 .toLowerCase()
                 .trim();
         }
@@ -110,33 +109,31 @@ $(document).ready(function () {
         const amountInput = $('#amount_filter').val().replace(/[₱,]/g, '');
         const maxAmount = parseFloat(amountInput) || null;
         const status = normalize($('#status_filter').val());
+        const year = $('#year_filter_input').val().trim();
     
-        // Extract just the town before the comma
         const rowLocation = normalize((data[2] || '').split(',')[0]);
         const rowStatus = normalize(data[3]);
         const rowAmount = parseFloat((data[4] || '').replace(/[₱,]/g, '')) || 0;
         const rowContractor = normalize(data[5]);
+        const rowYear = (data[7] || '').toString().trim();
     
-        
+        const locationMatch = !location || rowLocation === location;
+        const contractorMatch = !contractor || rowContractor.includes(contractor);
+        const amountMatch = !maxAmount || rowAmount <= maxAmount;
+        const statusMatch = !status || rowStatus.includes(status);
+        const yearMatch = !year || rowYear === year;
     
-        return (!location || rowLocation === location) &&
-               (!contractor || rowContractor.includes(contractor)) &&
-               (!maxAmount || rowAmount <= maxAmount) &&
-               (!status || rowStatus.includes(status));
+        return locationMatch && contractorMatch && amountMatch && statusMatch && yearMatch;
     });
     
+    let filterTimer;
+    // Add year_filter to this:
+    $('#location_filter, #contractor_filter, #amount_filter, #status_filter, #year_filter_input, #view_all_checkbox').on('input change', function () {        clearTimeout(filterTimer);
+        filterTimer = setTimeout(() => {
+            dataTable.draw();
+        }, 150);
+    });
     
-
-    // Debounced filter triggers
-    if (dataTable) {
-        let filterTimer;
-        $('#location_filter, #contractor_filter, #amount_filter, #status_filter, #view_all_checkbox').on('input change', function () {
-            clearTimeout(filterTimer);
-            filterTimer = setTimeout(() => {
-                dataTable.draw();
-            }, 150);
-        });
-    }
 
     // Highlight clicked row
     $(document).on('click', '#projects tbody tr', function (event) {
@@ -320,18 +317,18 @@ $(document).ready(function() {
                         }
     
                         let filesData = data.files.map(file => {
-                            let fileType = file.fileName.split('.').pop().toUpperCase();
+                            let fileType = file.file_name.split('.').pop().toUpperCase();
                             let uploadDate = file.created_at ? new Date(file.created_at).toLocaleDateString() : "N/A";
     
                             return [
-                                file.fileName,
+                                file.file_name,
                                 fileType,
-                                file.actionBy || "Unknown",
+                                file.action_by || "Unknown",
                                 uploadDate,
-                                `<button class="btn btn-success btn-sm" onclick="downloadFile('${file.fileName}')">
+                                `<button class="btn btn-success btn-sm" onclick="downloadFile('${file.file_name}')">
                                     <i class="fa fa-search"></i>
                                 </button>
-                                <button class="btn btn-danger btn-sm delete-file-btn" data-file-id="${file.fileName}">
+                                <button class="btn btn-danger btn-sm delete-file-btn" data-file-id="${file.file_name}">
                                     <i class="fa fa-trash"></i>
                                 </button>`
                             ];
@@ -353,8 +350,8 @@ $(document).ready(function() {
     
         // Event delegation for delete buttons
         $('#projectFiles').on('click', '.delete-file-btn', function () {
-            const fileName = $(this).data('file-id');
-            deleteFile(fileName); // Call the deleteFile function from deleteFile.js
+            const file_name = $(this).data('file-id');
+            deleteFile(file_name); // Call the deleteFile function from deleteFile.js
         });
     });
 

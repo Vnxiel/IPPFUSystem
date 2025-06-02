@@ -17,7 +17,7 @@ class ActivityLog extends Model
     protected $fillable = [
         'user_id', // Foreign key to users table
         'ofmis_id',
-        'performedBy',
+        'performed_by',
         'role',
         'action',
         'created_at',
@@ -38,7 +38,7 @@ class ActivityLog extends Model
   
     public function getLogsByUser($ofmis_id)
     {
-        return $this->where('performedBy', $ofmis_id)->get();
+        return $this->where('performed_by', $ofmis_id)->get();
     }
 
     public function getCreatedAtAttribute($value)

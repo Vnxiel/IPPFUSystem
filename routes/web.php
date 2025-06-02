@@ -11,6 +11,8 @@ use App\Http\Controllers\FileManager;
 use App\Http\Controllers\FundsUtilizationController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\GenerateProjectReport;
+use App\Http\Controllers\ReportSignatoryController;
+use App\Http\Controllers\ProjectTimeExtensionController;
 
 // PUBLIC ROUTES
 Route::controller(UserManager::class)->group(function () {
@@ -20,8 +22,6 @@ Route::controller(UserManager::class)->group(function () {
     Route::post('/registerSystemAdmin', 'registerSystemAdmin')->name('registerSystemAdmin');
     Route::get('/', 'index')->name('home');
     Route::post('/logout', 'logout')->name('logout');  // Handle logout logic
-    Route::post('/password/request', 'requestPasswordChange')->name('systemAdmin.requestPass');
-    Route::get('/password/requests/fetch', 'getPasswordRequests');
     Route::post('/password/change-password', 'changePassword');
     Route::post('/password/send-otp', 'sendOtp');
     Route::get('/getUserRole', 'getUserRole');
@@ -118,10 +118,21 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(FileManager::class)->group(function () {
         Route::post('/upload-file/{project_id}', 'uploadFile');
         Route::get('/files/{projectID}', 'getFiles')->name('get.files');
-        Route::delete('/file-delete/{fileName}',  'delete')->name('file.delete');
-        Route::get('/download-file/{filename}', 'downloadFile');
+        Route::delete('/file-delete/{file_name}',  'delete')->name('file.delete');
+        Route::get('/download-file/{file_name}', 'downloadFile');
     });
 
- 
+        // SIGNATORIES ROUTES
+    Route::post('/signatories', [ReportSignatoryController::class, 'store']);
+    Route::get('/signatories', [ReportSignatoryController::class, 'index']);
+    Route::get('/signatories/{project_id}', [ReportSignatoryController::class, 'getByProject']);
+    
+    
+    // TIME EXTENSION ROUTES
+        Route::controller(ProjectTimeExtensionController::class)->prefix('time-extension')->name('time-extension.')->group(function () {
+            Route::post('/store', 'store')->name('store');                    // Store a new time extension
+            Route::get('/all', 'index')->name('index');                       // Fetch all extensions (or show view)
+            Route::get('/project/{projectId}', 'showByProject')->name('byProject'); // Fetch by project ID
+        });
     
 });

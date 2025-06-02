@@ -153,11 +153,11 @@ body {
         <tbody>
           <tr class="fit-text-row">
             <th>Project Title:</th>
-            <td colspan="3" style="font-size: 18px; font-weight: bold">{{ $project->projectTitle }}</td>
+            <td colspan="3" style="font-size: 18px; font-weight: bold">{{ $project->title }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Location:</th>
-            <td colspan="3">{{ $project->projectLoc }}</td>
+            <td colspan="3">{{ $project->location }}</td>
           </tr>
           <tr class="fit-text-row"> 
                 <th style="text-align: right; vertical-align: middle;">Project Description:</th>
@@ -173,7 +173,7 @@ body {
 
             <tr class="fit-text-row">
             <th>Contractor:</th>
-            <td colspan="3">{{ $project->projectContractor }}</td>
+            <td colspan="3">{{ $project->firm_name }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Project ID:</th>
@@ -181,7 +181,7 @@ body {
           </tr>
           <tr class="fit-text-row">
             <th>Source of Fund:</th>
-            <td colspan="3">{{ $project->sourceOfFunds }}</td>
+            <td colspan="3">{{ $project->source_of_funds }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Appropriation:</th>
@@ -190,24 +190,24 @@ body {
           </tr>
           <tr class="fit-text-row">
             <th>Contract Days:</th>
-            <td colspan="3">{{ $project->projectContractDays }} Calendar Days</td>
+            <td colspan="3">{{ $project->contract_days }} Calendar Days</td>
           </tr>
             <tr class="fit-text-row">
                 <th rowspan="2">Notice of Award:</th>
-                <td style="border-right: none;">{{ $project->noaIssuedDate }}</td>
+                <td style="border-right: none;">{{ $project->noa_issued_date }}</td>
                 <td colspan="2" style="border-left: none;"><em>Issued Date</em></td>
             </tr> 
             <tr class="fit-text-row">
-                <td style="border-right: none;">{{ $project->noaReceivedDate }}</td>
+                <td style="border-right: none;">{{ $project->noa_received_date }}</td>
                 <td colspan="2" style="border-left: none;"><em>Received Date</em></td>
             </tr>
             <tr class="fit-text-row">
                 <th rowspan="2">Notice to Proceed:</th>
-                <td style="border-right: none;">{{ $project->ntpIssuedDate }}</td>
+                <td style="border-right: none;">{{ $project->ntp_issued_date }}</td>
                 <td colspan="2" style="border-left: none;"><em>Issued Date</em></td>
             </tr>
             <tr class="fit-text-row">
-                <td style="border-right: none;">{{ $project->ntpReceivedDate }}</td>
+                <td style="border-right: none;">{{ $project->ntp_received_date }}</td>
                 <td colspan="2" style="border-left: none;"><em>Received Date</em></td>
             </tr>
             @php
@@ -235,15 +235,15 @@ body {
 
             <tr class="fit-text-row">
               <th>Original Start Date:</th>
-              <td colspan="3">{{ $project->originalStartDate ?? 'N/A' }}</td>
+              <td colspan="3">{{ $project->official_starting_date ?? 'N/A' }}</td>
             </tr>
             <tr class="fit-text-row">
               <th>Original Target Completion:</th>
-              <td colspan="3">{{ $project->targetCompletion ?? 'N/A' }}</td>
+              <td colspan="3">{{ $project->target_completion_date ?? 'N/A' }}</td>
             </tr>
             <tr class="fit-text-row">
               <th>Actual Completion Date:</th>
-              <td colspan="3">{{ $project->completionDate ?? 'N/A' }}</td>
+              <td colspan="3">{{ $project->actual_completion_date ?? 'N/A' }}</td>
             </tr>
 
             @if ($hasSuspension)
@@ -264,7 +264,7 @@ body {
         </tr>
         <tr class="fit-text-row">
           <th>Revised Target Completion:</th>
-          <td colspan="3">{{ $project->revisedTargetDate ?? 'N/A' }}</td>
+          <td colspan="3">{{ $project->revised_target_date ?? 'N/A' }}</td>
         </tr>
         <tr class="fit-text-row">
           <th>Revised Completion Date:</th>
@@ -407,9 +407,9 @@ body {
 <tr class="fit-text-row">
   <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL EXPENDITURES</td>
   <td style="text-align: right;">
-    {{ isset($summary['totalExpenditures']['amount']) ? number_format($summary['totalExpenditures']['amount'], 2) : '' }}
+    {{ isset($summary['total_expenditure']['amount']) ? number_format($summary['total_expenditure']['amount'], 2) : '' }}
   </td>
-  <td style="text-align: right;">{{ $summary['totalExpenditures']['remarks'] ?? '' }}</td>
+  <td style="text-align: right;">{{ $summary['total_expenditure']['remarks'] ?? '' }}</td>
 </tr>
 
 <tr class="fit-text-row">

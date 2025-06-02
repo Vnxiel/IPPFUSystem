@@ -1,6 +1,6 @@
  // Handle "Ongoing Status" Selection Toggle
  function toggleOngoingStatus() {
-    let statusSelect = document.getElementById("projectStatus");
+    let statusSelect = document.getElementById("physical_status");
     let ongoingContainer = document.getElementById("ongoingStatusContainer");
     let ongoingDate = document.getElementById("ongoingDate");
 

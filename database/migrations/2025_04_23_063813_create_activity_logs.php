@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('ofmis_id')->nullable(); // Optional OFMIS id reference
-            $table->string('performedBy');
+            $table->string('performed_by');
             $table->string('role');
-            $table->string('action');
+            $table->longText('action');
             $table->timestamps();
         });
          

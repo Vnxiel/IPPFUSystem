@@ -17,11 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('month');
-            $table->date('breakdown_date');
-            $table->string('payment_periods');
+            $table->date('date_from');
+            $table->date('date_to');
             $table->decimal('amount', 15, 2);
-            $table->date('date');
-            $table->text('remarks')->nullable();
             $table->timestamps();
         });
         
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('FundsBreakdowns');
+        Schema::dropIfExists('funds_breakdowns');
     }
 };

@@ -1,4 +1,4 @@
-const fundInput = document.getElementById('sourceOfFunds');
+const fundInput = document.getElementById('source_of_funds');
 const fundDropdown = document.getElementById('sourceOfFundsDropdown');
 const fundItems = fundDropdown.getElementsByTagName('button');
 let fundSelectedIndex = -1;
@@ -38,10 +38,10 @@ function selectFund(name) {
     hideFundsDropdown();
 
     // Move focus to next input after a slight delay to avoid conflicts
-    setTimeout(() => {
-        const nextInput = getNextFocusableElement(fundInput);
-        if (nextInput) nextInput.focus();
-    }, 100);
+    // setTimeout(() => {
+    //     const nextInput = getNextFocusableElement(fundInput);
+    //     if (nextInput) nextInput.focus();
+    // }, 100);
 }
 
 // Show dropdown and reset index

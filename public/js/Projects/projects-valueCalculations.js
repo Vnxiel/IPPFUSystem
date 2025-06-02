@@ -1,7 +1,7 @@
 // ========= Bid Difference ========= //
 function updateBidDifference() {
     const abc = parseCurrency(document.getElementById('abc')?.value);
-    const contract = parseCurrency(document.getElementById('contractAmount')?.value);
+    const contract = parseCurrency(document.getElementById('orig_contract_amount')?.value);
     const bidInput = document.getElementById('bid');
 
     if (!isNaN(abc) && !isNaN(contract) && bidInput) {

@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "#engineeringBalance",
       "#mqcBalance"
     ];
-    const expenditureOutputs = ["#amountTotal", "#totalExpenditures"];
+    const expenditureOutputs = ["#amountTotal", "#total_expenditure"];
     const savingsOutputs = ["#totalSavings", "#amountSavings"];
   
     // --- Better parsing of any text that contains a number ---

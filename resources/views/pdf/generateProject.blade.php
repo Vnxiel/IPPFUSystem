@@ -47,7 +47,7 @@
   }
 
   .header-text h5, .header-text h3, .header-text h6, .header-text h4 {
-  font-family: "Old English MT", serif;
+  font-family: "Times New Roman", Times, serif;
   margin: 2px 0;
 }
 
@@ -67,7 +67,6 @@
   .header-text h6 {
     font-size: 12px;
     font-weight: normal;
-    font-family: 'Old English MT', serif;
   }
 
   .header-text p {
@@ -131,7 +130,7 @@
  
 
   .fit-text-row {
-    line-height: 1.5;
+    line-height: 1;
   }
 
   .fit-text-row th {
@@ -139,14 +138,12 @@
     font-weight: normal;
     vertical-align: top;
     margin-left: 15px;
-    font-size: 14px;
+    font-size: 13px;
   }
     .fit-text-row td {
     padding: 2 4px;
     vertical-align: top;
-    font-size: 14px;
-
-    
+    font-size: 13px;
   }
 
     .fit-text-table {
@@ -159,7 +156,7 @@
   .fit-text-table td {
     border: 1px solid #000; /* Add borders to table cells */
     padding: 0px;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .fit-text-title {
@@ -172,7 +169,7 @@
     margin-top: 10px;
     font-weight: bold;
     vertical-align: top;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .sub-header {
@@ -183,14 +180,12 @@
 
   .contact-table {
   width: 100%;
-  font-size: 8px;
+  font-size: 12px;
   border-collapse: collapse;
   margin-top: 0px;
   margin-bottom: 0px;
-  
-  /* text-align: center; */
+  text-align: center;
   vertical-align: middle;
-  font-weight: bold;
 }
 
 .contact-table td {
@@ -266,67 +261,65 @@
   <div class="footer-line">
 
   </div>
-
-
       <!-- Project Information -->
       <table class="project-info-table">
         <tbody>
            <tr class="fit-text-title" >
             <th>PROJECT PROFILE</th>
           </tr>
-          <tr class="fit-text-row ">
+          <tr class="fit-text-row">
             <th style="width: 30%;">Project Title:</th>
-            <td colspan="4" style="font-size: 14px; font-weight: bold; text-transform: uppercase;">{{ $project->projectTitle }}</td>
+            <td colspan="4" style="font-size: 14px; font-weight: bold">{{ $project->title }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Location:</th>
-            <td colspan="3">{{ $project->projectLoc }}</td>
+            <td colspan="3">{{ $project->location }}</td>
           </tr>
           <tr class="fit-text-row"> 
                 <th style="text-align: left; vertical-align: top;">Project Description:</th>
-                <td colspan="6">
-                    <ul style="margin: 0; padding-left: 0; list-style: none; text-align: justify">
-                        @foreach ($projectDescriptions as $desc)
-                            <li>{{ $desc }}</li>
-                        @endforeach
-                    </ul>
+                <td colspan="5">
+                    <p style="margin: 0;">
+                        {{ implode(' ', $description) }}
+                    </p>
                 </td>
+
             </tr>
             <tr class="fit-text-row">
-            <th>Contractor:</th>
-            <td colspan="4">{{ $project->projectContractor }}</td>
+            <th>Name of Firm:</th>
+            <td colspan="3">{{ $project->firm_name }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Project ID:</th>
-            <td colspan="4">{{ $project->projectID }}</td>
+            <td colspan="3">{{ $project->projectID }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Source of Fund:</th>
-            <td colspan="4">{{ $project->sourceOfFunds }}</td>
+            <td colspan="3">{{ $project->source_of_funds }}</td>
           </tr>
           <tr class="fit-text-row">
             <th>Appropriation:</th>
-            <td colspan="4">{{ number_format((float) $projectFundsUtilization['orig_appropriation'], 2) }}</td>
+            <td colspan="3">{{ number_format((float) $projectFundsUtilization['orig_appropriation'], 2) }}</td>
 
           </tr>
           <tr class="fit-text-row">
             <th>Contract Days:</th>
-            <td colspan="4">{{ $project->projectContractDays }} &nbsp;Calendar Days</td>
+            <td colspan="3" style="text-align: left;">{{ $project->contract_days }} Calendar Days</td>
+          
           </tr>
           <tr class="fit-text-row">
               <th>Notice of Award:</th>
-              <td colspan="2"><i>Issued Date</i></td>
-              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->noaIssuedDate)->format('F d, Y') }}</td>
-              <td colspan="2"><i>Received Date</i></td>
-              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->noaReceivedDate)->format('F d, Y') }}</td>
+              <td style="white-space: nowrap;"><i>Issued Date</i></td>
+              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->noa_issued_date)->format('F d, Y') }}</td>
+              <td style="white-space: nowrap;"><i>Received Date</i></td>
+              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->noa_received_date)->format('F d, Y') }}</td>
           </tr>
 
           <tr class="fit-text-row">
               <th>Notice to Proceed:</th>
-              <td colspan="2"><i>Issued Date</i></td>
-              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntpIssuedDate)->format('F d, Y') }}</td>
-              <td colspan="2"><i>Received Date</i></td>
-              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntpReceivedDate)->format('F d, Y') }}</td>
+              <td style="white-space: nowrap;"><i>Issued Date</i></td>
+              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntp_issued_date)->format('F d, Y') }}</td>
+              <td style="white-space: nowrap;"><i>Received Date</i></td>
+              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntp_received_date)->format('F d, Y') }}</td>
           </tr>
 
 
@@ -361,23 +354,22 @@
         @endphp
 
             <tr class="fit-text-row">
-                <th>Starting Date:</th>
-                <td colspan="2">
-                    {{ $project->originalStartDate ? \Carbon\Carbon::parse($project->originalStartDate)->format('F d, Y') : 'N/A' }}
-                </td>
-                <th colspan="2">Target Completion Date:</th>
-                <td colspan="2">
-                    {{ $project->targetCompletion ? \Carbon\Carbon::parse($project->targetCompletion)->format('F d, Y') : 'N/A' }}
+                <th>Start Date:</th>
+                <td colspan="3">
+                    {{ $project->official_starting_date ? \Carbon\Carbon::parse($project->official_starting_date)->format('F d, Y') : 'N/A' }}
                 </td>
             </tr>
             <tr class="fit-text-row">
-                
+                <th>Target Completion Date:</th>
+                <td colspan="3">
+                    {{ $project->target_completion_date ? \Carbon\Carbon::parse($project->target_completion_date)->format('F d, Y') : 'N/A' }}
+                </td>
             </tr>
-            <!-- Blank row for spacing -->
-            <!--<tr><td colspan="4"></td></tr>-->
+              <!-- Blank row for spacing -->
+            <tr><td colspan="3"></td></tr>
 
 
-            @if ($hasSuspension || $project->timeExtension)
+          @if ($hasSuspension)
             {{-- Show suspension and extension details --}}
             @foreach ($orderPairs as $pair)
                 <tr class="fit-text-row">
@@ -385,58 +377,48 @@
                     <td style="white-space: nowrap;">
                         {{ $pair['suspension'] ? \Carbon\Carbon::parse($pair['suspension'])->format('F d, Y') : ' ' }}
                     </td>
-                    <td colspan="3">Reason for suspension: {{ $pair['remarks'] ?: '' }}</td>
+                    <td colspan="2">Reason for suspension: {{ $pair['remarks'] ?: '' }}</td>
                 </tr>
                 <tr class="fit-text-row">
                     <th>Resume Order No. {{ $pair['index'] }}</th>
-                    <td colspan="4" style="white-space: nowrap;">
+                    <td colspan="3" style="white-space: nowrap;">
                         {{ $pair['resume'] ? \Carbon\Carbon::parse($pair['resume'])->format('F d, Y') : ' ' }}
                     </td>
                 </tr>
             @endforeach
+        @endif
+      <!-- Display Total Extension Days -->
+      @php
+    $totalExtensionDays = 0;
+    foreach ($time_extensions as $extension) {
+        $totalExtensionDays += $extension->time_extension;
+    }
+@endphp
+
+
+    <tr class="fit-text-row">
+        <th>No. of Days of Extension:</th>
+        <td colspan="3">{{ $totalExtensionDays }}</td>
+    </tr>
+
+
 
             <tr class="fit-text-row">
-                <th>No. of Days of Extension:</th>
-                <td colspan="4">{{ $project->timeExtension ?? 'N/A' }}</td>
-            </tr>
-            <tr class="fit-text-row">
                 <th>Revised Target Completion:</th>
-                <td colspan="4">
-                    {{ $project->revisedTargetDate ? \Carbon\Carbon::parse($project->revisedTargetDate)->format('F d, Y') : 'N/A' }}
-                </td>
-            </tr>
-            <tr class="fit-text-row">
-                <th>Actual Completion Date:</th>
-                <td colspan="4">
-                    {{ $project->revisedCompletionDate ? \Carbon\Carbon::parse($project->revisedCompletionDate)->format('F d, Y') : 'N/A' }}
-                </td>
-            </tr>
-        @else
-            {{-- Show only actual completion date --}}
-            <tr class="fit-text-row">
-                <th>Actual Completion Date:</th>
-                <td colspan="4">
-                    {{ $project->revisedCompletionDate ? \Carbon\Carbon::parse($project->revisedCompletionDate)->format('F d, Y') : 'N/A' }}
-                </td>
-            </tr>
-        @endif
-        {{-- Actual Length --}}
-            <tr class="fit-text-row">
-                <th>Actual Length:</th>
-                <td colspan="4">
-                  {{ $project->actual_length }}
+                <td colspan="3">
+                    {{ $project->revised_target_date ? \Carbon\Carbon::parse($project->revised_target_date)->format('F d, Y') : 'N/A' }}
                 </td>
             </tr>
 
     <!-- Blank row for spacing -->
-    <!--<tr><td colspan="4"></td></tr>-->
+    <tr><td colspan="3"></td></tr>
 
         <!-- ABC Section -->
     <tr class="fit-text-title" >
         <th>SUMMARY (FUND SOURCE)</th>
       </tr>
     <tr>
-      <td colspan="7"  style="margin: 0px; padding: 0px;">
+      <td colspan="6"  style="margin: 0px; padding: 0px;">
             <table class="fit-text-table" style="width: 100%; border-collapse: collapse;">
               <tr class="sub-header">
                 <td>DESCRIPTION</td>
@@ -567,14 +549,15 @@
                       (isset($projectFundsUtilization['actual_contract_amount']) ? $projectFundsUtilization['actual_contract_amount'] : 0) +
                       (isset($projectFundsUtilization['actual_engineering']) ? $projectFundsUtilization['actual_engineering'] : 0) +
                       (isset($projectFundsUtilization['actual_mqc']) ? $projectFundsUtilization['actual_mqc'] : 0) +
-                      (isset($projectFundsUtilization['actual_contingency']) ? $projectFundsUtilization['actual_contingency'] : 0) +
-                      (isset($projectFundsUtilization['orig_bid']) ? $projectFundsUtilization['orig_bid'] : 0),
+                      (isset($projectFundsUtilization['actual_contingency']) ? $projectFundsUtilization['actual_contingency'] : 0),
                       2
                     )
                   }}
                 </td>
               </tr>
 
+           
+         
             </table>
         </td>
     </tr>
@@ -583,124 +566,173 @@
       <tr><td colspan="3"></td></tr>
 
          <!-- ABC Section -->
-    <tr class="fit-text-title" >
-        <th>BREAKDOWN OF UTILIZATION</th>
+    <tr class="fit-text-title mt-5" >
+        <th colspan="3">BREAKDOWN OF UTILIZATION</th>
     </tr>
     
     
     <tr>
-      <td colspan="7"  style="margin: 0px; padding: 0px;">
-            <table class="fit-text-table" style="width: 100%; border-collapse: collapse;">
-              <tr class="sub-header">
-                <td>DATE COVERED</td>
-                <td>PARTICULARS</td>
-                <td>AMOUNT</td>
-                <td>REMARKS</td>
-              </tr>
-              @php
-                  $summary = $projectFundsUtilization['summary'] ?? [];
-                @endphp
-                @php
-                  $partialBillings = $projectFundsUtilization['partial_billings'] ?? [];
-                @endphp
+  <td colspan="6" style="margin: 0px; padding: 0px;">
+    <table class="fit-text-table" style="width: 100%; border-collapse: collapse;">
+      <tr class="sub-header">
+        <td style="width: 25%; padding: 4px;">PARTICULARS</td>
+        <td style="width: 20%; padding: 4px;">AMOUNT</td>
+        <td style="width: 15%;  padding: 4px;">RETENTION %</td>
+        <td style="width: 20%; padding: 2px;">RETENTION AMOUNT</td>
+        <td style="width: 20%; padding: 4px;">REMARKS</td>
+      </tr>
 
-              <tr class="fit-text-table">
-                <td style="text-align: right;">{{ $summary['mobilization']['date'] ?? '' }}</td>
-                <td>15% Mobilization</td>
-                <td style="text-align: right;">
-                  {{ isset($summary['mobilization']['amount']) ? number_format($summary['mobilization']['amount'], 2) : '' }}
-                </td>
-                <td style="text-align: right;">{{ $summary['mobilization']['remarks'] ?? '' }}</td>
-              </tr>
-              @php
-                  function ordinal($number) {
-                      $ends = ['th','st','nd','rd','th','th','th','th','th','th'];
-                      if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
-                          return $number . 'th';
-                      } else {
-                          return $number . $ends[$number % 10];
-                      }
-                  }
-              @endphp
+      @php
+        $summary = $projectFundsUtilization['summary'] ?? [];
+        $partialBillings = $projectFundsUtilization['partial_billings'] ?? [];
 
-              @foreach ($partialBillings as $index => $billing)
-                  @if ($index < 4 || ($index === 4 && isset($billing['amount']) && floatval($billing['amount']) > 0))
-                      <tr class="fit-text-table">
-                          <td style="text-align: right;">{{ $billing['date'] ?? '' }}</td>
-                          <td>{{ ordinal($index + 1) }} Partial Billing</td>
-                          <td style="text-align: right;">
-                              {{ isset($billing['amount']) ? number_format($billing['amount'], 2) : '' }}
-                          </td>
-                          <td style="text-align: right;">{{ $billing['remarks'] ?? '' }}</td>
-                      </tr>
-                  @endif
-              @endforeach
+        function ordinal($number) {
+          $ends = ['th','st','nd','rd','th','th','th','th','th','th'];
+          if (($number % 100) >= 11 && ($number % 100) <= 13) return $number . 'th';
+          return $number . $ends[$number % 10];
+        }
+      @endphp
 
-              <tr class="fit-text-table">
-                <td style="text-align: right;">{{ $summary['final']['date'] ?? '' }}</td>
-                <td>Final Billing</td>
-                <td style="text-align: right;">
-                  {{ isset($summary['final']['amount']) ? number_format($summary['final']['amount'], 2) : '' }}
-                </td>
-                <td style="text-align: right;">{{ $summary['final']['remarks'] ?? '' }}</td>
-              </tr>
+      <!-- Total Appropriation -->
+      <tr>
+        <td style="text-align: right;">TOTAL APPROPRIATION</td>
+        <td style="text-align: right;">{{ isset($projectFundsUtilization['orig_appropriation']) ? number_format($projectFundsUtilization['orig_appropriation'], 2) : '' }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
 
-              <tr class="fit-text-table">
-                <td style="text-align: right;">{{ $summary['engineering']['date'] ?? '' }}</td>
-                <td>Engineering</td>
-                <td style="text-align: right;">
-                  {{ isset($summary['engineering']['amount']) ? number_format($summary['engineering']['amount'], 2) : '' }}
-                </td>
-                <td style="text-align: right;">{{ $summary['engineering']['remarks'] ?? '' }}</td>
-              </tr>
+      <!-- Contract Amount -->
+      <tr>
+        <td style="text-align: right;">CONTRACT AMOUNT</td>
+        <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_contract_amount']) ? number_format($projectFundsUtilization['actual_contract_amount'], 2) : '' }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
 
-              <tr class="fit-text-table">
-                <td style="text-align: right;">{{ $summary['mqc']['date'] ?? '' }}</td>
-                <td>MQC</td>
-                <td style="text-align: right;">
-                  {{ isset($summary['mqc']['amount']) ? number_format($summary['mqc']['amount'], 2) : '' }}
-                </td>
-                <td style="text-align: right;">{{ $summary['mqc']['remarks'] ?? '' }}</td>
-              </tr>
+      <!-- Mobilization -->
+@php
+  $mobiAmount = isset($summary['mobilization']['amount']) ? floatval($summary['mobilization']['amount']) : 0;
+  $mobiRetention = $mobiAmount > 0 ? $mobiAmount * 0.10 : 0;
+@endphp
+<tr>
+  <td style="text-align: right;">15% Mobilization</td>
+  <td style="text-align: right;">{{ $mobiAmount > 0 ? number_format($mobiAmount, 2) : '' }}</td>
+  <td style="text-align: right;">{{ $mobiAmount > 0 ? '10%' : '' }}</td>
+  <td style="text-align: right;">{{ $mobiAmount > 0 ? number_format($mobiRetention, 2) : '' }}</td>
+  <td>{{ $summary['mobilization']['remarks'] ?? '' }}</td>
+</tr>
 
-              <tr class="fit-text-table">
-                <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL EXPENDITURES</td>
-                <td style="text-align: right;">
-                  {{ isset($summary['totalExpenditures']['amount']) ? number_format($summary['totalExpenditures']['amount'], 2) : '' }}
-                </td>
-                <td style="text-align: right;">{{ $summary['totalExpenditures']['remarks'] ?? '' }}</td>
-              </tr>
-
-              <tr class="fit-text-table">
-                <td colspan="2" style="text-align: right; font-size: 14px;">TOTAL SAVINGS</td>
-                <td style="text-align: right;">
-                  {{ isset($summary['totalSavings']['amount']) ? number_format($summary['totalSavings']['amount'], 2) : '' }}
-                </td>
-                <td style="text-align: right;">{{ $summary['totalSavings']['remarks'] ?? '' }}</td>
-              </tr>
-            </table>
-        </td>
+<!-- Partial Billings -->
+@foreach ($partialBillings as $index => $billing)
+  @if ($index < 4 || ($index === 4 && isset($billing['amount']) && floatval($billing['amount']) > 0))
+    @php
+      $amount = isset($billing['amount']) ? floatval($billing['amount']) : 0;
+      $hasAmount = $amount > 0;
+      $retention = $hasAmount ? $amount * 0.10 : 0;
+    @endphp
+    <tr>
+      <td style="text-align: right;">{{ ordinal($index + 1) }} Partial Billing</td>
+      <td style="text-align: right;">{{ $hasAmount ? number_format($amount, 2) : '' }}</td>
+      <td style="text-align: right;">{{ $hasAmount ? '10%' : '' }}</td>
+      <td style="text-align: right;">{{ $hasAmount ? number_format($retention, 2) : '' }}</td>
+      <td>{{ $billing['remarks'] ?? '' }}</td>
     </tr>
-    </tbody>
+  @endif
+@endforeach
+
+<!-- Final Billing -->
+@php
+  $finalAmount = isset($summary['final']['amount']) ? floatval($summary['final']['amount']) : 0;
+  $finalRetention = $finalAmount > 0 ? $finalAmount * 0.10 : 0;
+@endphp
+<tr>
+  <td style="text-align: right;">Final Billing</td>
+  <td style="text-align: right;">{{ $finalAmount > 0 ? number_format($finalAmount, 2) : '' }}</td>
+  <td style="text-align: right;">{{ $finalAmount > 0 ? '10%' : '' }}</td>
+  <td style="text-align: right;">{{ $finalAmount > 0 ?  number_format($finalRetention, 2) : '' }}</td>
+  <td>{{ $summary['final']['remarks'] ?? '' }}</td>
+</tr>
+
+      <!-- Engineering -->
+      <tr>
+        <td style="text-align: right;">Engineering</td>
+        <td style="text-align: right;">{{ isset($summary['engineering']['amount']) ? number_format($summary['engineering']['amount'], 2) : '' }}</td>
+        <td></td>
+        <td></td>
+        <td>{{ $summary['engineering']['remarks'] ?? '' }}</td>
+      </tr>
+
+      <!-- MQC -->
+      <tr>
+        <td style="text-align: right;">MQC</td>
+        <td style="text-align: right;">{{ isset($summary['mqc']['amount']) ? number_format($summary['mqc']['amount'], 2) : '' }}</td>
+        <td></td>
+        <td></td>
+        <td>{{ $summary['mqc']['remarks'] ?? '' }}</td>
+      </tr>
+
+      <!-- Total Expenditures -->
+      <tr>
+        <td style="text-align: right;"><strong>TOTAL EXPENDITURES</strong></td>
+        <td style="text-align: right;"><strong>{{ isset($summary['total_expenditure']['amount']) ? number_format($summary['total_expenditure']['amount'], 2) : '' }}</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>{{ $summary['total_expenditure']['remarks'] ?? '' }}</strong></td>
+      </tr>
+
+      <!-- Total Savings -->
+      <tr>
+        <td style="text-align: right;"><strong>TOTAL SAVINGS</strong></td>
+        <td style="text-align: right;"><strong>{{ isset($summary['totalSavings']['amount']) ? number_format($summary['totalSavings']['amount'], 2) : '' }}</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>{{ $summary['totalSavings']['remarks'] ?? '' }}</strong></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+
+            <tr class="fit-text-row" >
+                <th style="margin-top: 5px;">Actual Completion Date (Physical)</th>
+                <td colspan="2">
+                    {{ $project->actual_completion_date ? \Carbon\Carbon::parse($project->actual_completion_date)->format('F d, Y') : ' ' }}
+                </td>
+                <td>Actual Length:</td>
+                <td colspan="1">
+                  {{ $project->actual_length }}
+                </td>
+            </tr>
+            <tr class="fit-text-row">
+                <th>Actual Completion Date (Financial)</th>
+                <td colspan="2">
+                    {{ $project->actual_completion_date ? \Carbon\Carbon::parse($project->actual_completion_date)->format('F d, Y') : ' ' }}
+                </td>
+            </tr>
+
+
+</tbody>
   </table>
 </div>
 
 <div style="margin-top: 50px;">
   <table style="width: 100%; border-collapse: collapse;">
-    <tr>
-      <td style="width: 33%; vertical-align: top; font-size: 12px;">
-        <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $userName }}</p>
-        <span>Prepared by</span>
-      </td>
-      <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
-        <p style="text-decoration: underline; margin: 0 0 3px 0;"></p>
-        <span>Reviewed by</span>
-      </td>
-      <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
-        <p style="text-decoration: underline; margin: 0 0 3px 0;"></p>
-        <span>NOTE:</span>
-      </td>
-    </tr>
+  <tr>
+    <td style="width: 33%; vertical-align: top; font-size: 12px;">
+      <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $userName }}</p>
+      <span>Prepared by</span>
+    </td>
+    <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
+      <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $reviewedBy }}</p>
+      <span>Reviewed by</span>
+    </td>
+    <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
+      <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $notedBy }}</p>
+      <span>Noted by</span>
+    </td>
+  </tr>
+
   </table>
 </div>
 

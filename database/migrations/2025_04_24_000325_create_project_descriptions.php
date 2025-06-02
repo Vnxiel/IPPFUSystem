@@ -17,7 +17,7 @@ return new class extends Migration
                   ->onDelete('cascade');
             
             $table->string('projectID'); // for external/public reference
-            $table->text('ProjectDescription');
+            $table->text('description');
 
             $table->timestamps();
         });

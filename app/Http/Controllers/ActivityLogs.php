@@ -13,7 +13,7 @@ class ActivityLogs extends Controller
         // Collecting the necessary data to store in activity logs
         $activityLogData = [
             'ofmis_id' => $request->input('ofmis_id'), // Retrieve 'ofmis_id' from the request
-            'performedBy' => auth()->user()->username,  // Assuming the logged-in user is the one performing the action
+            'performed_by' => auth()->user()->username,  // Assuming the logged-in user is the one performing the action
             'role' => auth()->user()->role,             // Get the role of the logged-in user
             'action' => "Changed role to " . auth()->user()->role, // Action description (could be dynamic based on changes)
         ];
@@ -23,13 +23,13 @@ class ActivityLogs extends Controller
     }
 
 
-    public function userAction($user_id, $ofmis_id, $performedBy, $role, $action)
+    public function userAction($user_id, $ofmis_id, $performed_by, $role, $action)
     {
         // Store activity log with the data passed into the method
         $logData = [
             'user_id' => $user_id,
             'ofmis_id' => $ofmis_id,
-            'performedBy' => $performedBy,
+            'performed_by' => $performed_by,
             'role' => $role,
             'action' => $action,
         ];

@@ -11,7 +11,7 @@
         <!-- Project Title -->
         <div class="mb-4">
           <label class="form-label fw-bold">Project Title:</label>
-          <div class="form-control bg-white text-dark fw-semibold" readonly>{{ $project['projectTitle'] ?? '' }}</div>
+          <div class="form-control bg-white text-dark fw-semibold" readonly>{{ $project['title'] ?? '' }}</div>
         </div>
 
        <!-- Cost Breakdown -->

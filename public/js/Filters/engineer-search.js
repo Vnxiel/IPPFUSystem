@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('ea');
+  const input = document.getElementById('engineer_name');
   const dropdown = document.getElementById('projectEngineerDropdown');
   const engineerDataScript = document.getElementById('engineer-data');
 
@@ -44,11 +44,11 @@ input.addEventListener('keydown', e => {
       finalizeEngineer();
     }
 
-    // Move to next field (ea_position)
-    const nextInput = document.getElementById('ea_position');
-    if (nextInput) {
-      nextInput.focus();
-    }
+    // Move to next field (engineer_position)
+    // const nextInput = document.getElementById('engineer_position');
+    // if (nextInput) {
+    //   nextInput.focus();
+    // }
   } else if (e.key === 'Escape') {
     dropdown.style.display = 'none';
   }

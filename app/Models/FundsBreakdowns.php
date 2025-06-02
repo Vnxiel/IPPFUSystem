@@ -14,10 +14,8 @@ class FundsBreakdowns extends Model
         'type',
         'name',
         'month',
-        'breakdown_date',
-        'payment_periods',
+        'date_from',
+        'date_to',
         'amount',
-        'date',
-        'remarks',
     ];
 }

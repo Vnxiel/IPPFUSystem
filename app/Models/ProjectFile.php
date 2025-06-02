@@ -13,9 +13,9 @@ class ProjectFile extends Model
 
     protected $fillable = [
         'project_id',    // foreign key referencing projects
-        'fileName',
-        'fileID',
-        'actionBy',
+        'file_name',
+        'file_id',
+        'action_by',
     ];
 
     public function project()

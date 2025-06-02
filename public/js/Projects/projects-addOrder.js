@@ -1,4 +1,30 @@
-let orderCount = document.querySelectorAll('#orderContainer .order-set').length || 1;
+
+orderCount = document.querySelectorAll('#orderContainer fieldset').length || 1;
+
+function orderSuspensionChangeHandler(i) {
+    return function() {
+        validateSuspensionDate(i);
+        calculateRevisedCompletionDate();
+    };
+}
+
+function attachOrderListeners() {
+    
+    orderCount = document.querySelectorAll('#orderContainer fieldset').length || 1;
+
+    for (let i = 1; i <= orderCount; i++) {
+        const susp = document.getElementById(`suspensionOrderNo${i}`);
+        const resume = document.getElementById(`resumeOrderNo${i}`);
+
+        if (susp) {
+            // Remove previous listener if attached - needs the same function ref so we'll skip removal here
+            susp.onchange = orderSuspensionChangeHandler(i); // replace listener directly
+        }
+        if (resume) {
+            resume.onchange = calculateRevisedCompletionDate; // replace listener directly
+        }
+    }
+}
 
 function addOrderFields() {
     if (orderCount >= 5) {
@@ -16,42 +42,46 @@ function addOrderFields() {
     const suspensionKey = `suspensionOrderNo${orderCount}`;
     const resumeKey = `resumeOrderNo${orderCount}`;
 
-    const newSet = document.createElement('div');
-    newSet.classList.add('row', 'mb-2', 'order-set');
-    newSet.id = `orderSet${orderCount}`;
-    newSet.innerHTML = `
-        <div class="row">
-            <div class="col-3 text-end">
-                <label for="${suspensionKey}" class="form-label">Suspension Order No. ${orderCount}
-                <span class="text-danger">*</span></label>
-            </div>   
-            <div class="col-md-3 mb-2">
-               <input type="date" class="form-control" id="${suspensionKey}" name="${suspensionKey}">
+    const fieldset = document.createElement('fieldset');
+    fieldset.className = 'border p-2 mb-3 order-set';
+    fieldset.id = `orderFieldset${orderCount}`;
+
+    fieldset.innerHTML = `
+        <div class="row mb-2">
+            <div class="col-3">
+                <label for="${suspensionKey}" class="form-label">Suspension Order No.${orderCount}</label>
             </div>
-            <div class="col-3 text-end">
-                <label for="${resumeKey}" class="form-label">Resume Order No. ${orderCount}
-                <span class="text-danger">*</span></label>
-            </div>   
-            <div class="col-md-3 mb-2">
+            <div class="col-3">
+                <input type="date" class="form-control" id="${suspensionKey}" name="${suspensionKey}">
+            </div>
+            <div class="col-3">
+                <label for="${resumeKey}" class="form-label">Resumption Order No.${orderCount}</label>
+            </div>
+            <div class="col-3">
                 <input type="date" class="form-control" id="${resumeKey}" name="${resumeKey}">
             </div>
         </div>
-        <div class="row mt-1 mb-2">
-            <div class="col-md-3 mb-3 text-end">
-                <label for="${suspensionKey}Remarks" class="form-label">Suspension Remarks</label>
+
+        <div class="row mb-2">
+            <div class="col-3">
+                <label for="${suspensionKey}Remarks" class="form-label">Reason for Suspension</label>
             </div>
             <div class="col-9">
                 <textarea class="form-control" id="${suspensionKey}Remarks" name="${suspensionKey}Remarks" rows="2"></textarea>
             </div>
         </div>
     `;
-    container.appendChild(newSet); 
+
+    container.appendChild(fieldset);
+
+    // Attach listeners to the new inputs immediately
+    attachOrderListeners();
 }
 
 function removeLastOrderFields() {
     if (orderCount > 1) {
-        const lastSet = document.getElementById(`orderSet${orderCount}`);
-        if (lastSet) lastSet.remove();
+        const lastFieldset = document.getElementById(`orderFieldset${orderCount}`);
+        if (lastFieldset) lastFieldset.remove();
         orderCount--;
     } else {
         Swal.fire({
@@ -60,4 +90,9 @@ function removeLastOrderFields() {
             text: "You must keep at least one order pair. If none, leave it blank.",
         });
     }
+    // Reattach listeners just in case
+    attachOrderListeners();
 }
+
+// Attach listeners on initial page load
+document.addEventListener('DOMContentLoaded', attachOrderListeners);

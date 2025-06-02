@@ -4,7 +4,7 @@
     // ================================
 document.addEventListener("DOMContentLoaded", function () {
 
-    const input = document.getElementById("projectLoc");
+    const input = document.getElementById("location");
     const suggestionsBox = document.getElementById("suggestionsBoxs");
     
     if (suggestionsBox) {

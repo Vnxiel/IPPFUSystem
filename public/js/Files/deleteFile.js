@@ -1,4 +1,4 @@
-function deleteFile(fileName) {
+function deleteFile(file_name) {
     Swal.fire({
         title: "Are you sure?",
         text: "This file will be permanently deleted!",
@@ -10,7 +10,7 @@ function deleteFile(fileName) {
         cancelButtonText: "Cancel"
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`/file-delete/${fileName}`, {
+            fetch(`/file-delete/${file_name}`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

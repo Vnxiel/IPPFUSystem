@@ -34,16 +34,16 @@ $(document).ready(function () {
                 rightCol.className = "col-lg-6";
 
                 const showAddButton =
-                    !(data.projectStatus === "Completed" ||
-                      data.projectStatus === "Cancelled" ||
-                      (data.ongoingStatus && data.ongoingStatus[0]?.percentage === 100));
+                    !(data.physical_status === "Completed" ||
+                      data.physical_status === "Cancelled" ||
+                      (data.ongoing_status && data.ongoing_status[0]?.percentage === 100));
 
                 const mainCard = `
                     <div class="card border-primary mb-3 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title text-primary">Project Status</h5>
                             <p class="card-text">
-                                <span class="badge bg-primary">${data.projectStatus}</span>
+                                <span class="badge bg-primary">${data.physical_status}</span>
                             </p>
                             <p class="text-muted mb-3"><i class="bi bi-calendar-event"></i> Updated on: ${data.updatedAt || 'N/A'}</p>
                             ${showAddButton ? 
@@ -66,7 +66,7 @@ $(document).ready(function () {
                     }, 0);
                 }
 
-                if (data.projectStatus === "Cancelled") {
+                if (data.physical_status === "Cancelled") {
                     leftCol.innerHTML += `
                         <div class="card border-danger mb-3 shadow-sm">
                             <div class="card-body">
@@ -78,8 +78,8 @@ $(document).ready(function () {
                 }
 
                 let progressRows = "";
-                if (Array.isArray(data.ongoingStatus) && data.ongoingStatus.length > 0) {
-                    data.ongoingStatus.forEach(item => {
+                if (Array.isArray(data.ongoing_status) && data.ongoing_status.length > 0) {
+                    data.ongoing_status.forEach(item => {
                         progressRows += `
                             <tr>
                                 <td>${item.progress}</td>
@@ -88,7 +88,7 @@ $(document).ready(function () {
                             </tr>
                         `;
                     });
-                } else if (data.projectStatus === "Completed") {
+                } else if (data.physical_status === "Completed") {
                     progressRows = `<tr><td colspan="3" class="text-center">This project is completed. No further updates available.</td></tr>`;
                 } else {
                     progressRows = `<tr><td colspan="3" class="text-center">No progress data available.</td></tr>`;

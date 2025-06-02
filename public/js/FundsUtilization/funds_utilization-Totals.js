@@ -106,12 +106,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-  // ─── Total actual ──────────────────────────────
+ // ─── Utility: Safe Parse Float ──────────────────────────────
 function parseFloatSafe(val) {
-  let num = parseFloat(val.replace(/,/g, ''));
+  let num = parseFloat(val.replace(/[₱,]/g, '').trim());
   return isNaN(num) ? 0 : num;
 }
 
+// ─── Actual Total Calculation ───────────────────────────────
 function calculateActualTotal() {
   const fields = ['contract_amount', 'engineering', 'mqc', 'contingency'];
   let total = 0;
@@ -123,23 +124,72 @@ function calculateActualTotal() {
     }
   });
 
-  // Format as currency
   document.getElementById('actual_total').value = total.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
 }
 
-// Recalculate total whenever any actual field is changed
-document.addEventListener('DOMContentLoaded', () => {
-  const fields = ['contract_amount', 'engineering', 'mqc', 'contingency'];
+// ─── Original Total Calculation ─────────────────────────────
+function calculateOrigTotal() {
+  const fields = ['contract_amount', 'engineering', 'mqc', 'contingency', 'bid'];
+  let total = 0;
+
   fields.forEach(key => {
+    const input = document.getElementById('orig_' + key);
+    if (input) {
+      total += parseFloatSafe(input.value);
+    }
+  });
+
+  document.getElementById('orig_total').value = total.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+// ─── Attach VO Input Listeners ──────────────────────────────
+function attachVOListeners() {
+  const allFields = ['contract_amount', 'engineering', 'mqc', 'contingency'];
+  const voCountInput = document.getElementById('vo_count');
+  const voCount = parseInt(voCountInput?.value) || 1;
+
+  allFields.forEach(function (field) {
+    for (let i = 1; i <= voCount; i++) {
+      const voInput = document.getElementById(`vo_${field}_${i}`);
+      if (voInput && !voInput.dataset.listenerAttached) {
+        voInput.addEventListener('input', calculateActualTotal);
+        voInput.dataset.listenerAttached = 'true';
+      }
+    }
+  });
+}
+
+// ─── Event Binding on DOM Load ──────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const actualFields = ['contract_amount', 'engineering', 'mqc', 'contingency'];
+  const origFields = ['contract_amount', 'engineering', 'mqc', 'contingency', 'bid'];
+
+  // Attach listeners for actual fields
+  actualFields.forEach(key => {
     const input = document.getElementById('actual_' + key);
     if (input) {
       input.addEventListener('input', calculateActualTotal);
     }
   });
 
-  // Initial calculation on page load
+  // Attach listeners for orig fields
+  origFields.forEach(key => {
+    const input = document.getElementById('orig_' + key);
+    if (input) {
+      input.addEventListener('input', calculateOrigTotal);
+    }
+  });
+
+  // Attach VO listeners
+  attachVOListeners();
+
+  // Initial calculation
   calculateActualTotal();
+  calculateOrigTotal();
 });

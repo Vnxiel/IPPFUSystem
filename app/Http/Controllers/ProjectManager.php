@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\ActivityLog;
 use App\Http\Controllers\ActivityLogs;
-use App\Models\Contractor;
 use App\Models\FundsUtilization;
 use App\Models\ProjectDescription;
 use App\Models\ProjectFile;
-use App\Models\ProjectStatus;
+use App\Models\PhysicalStatus;
 use App\Models\VariationOrder;
+use App\Models\ProjectTimeExtension;
 use App\Models\FundsBreakdowns;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -27,8 +27,8 @@ class ProjectManager extends Controller
     public function addProject(Request $request)
     {
         // Validate duplicates
-        if (Project::where('projectFPP', $request->input('projectFPP'))
-            ->where('projectRC', $request->input('projectRC'))
+        if (Project::where('fpp', $request->input('fpp'))
+            ->where('responsibility_center', $request->input('responsibility_center'))
             ->exists()) {
             return response()->json([
                 'status' => 'error',
@@ -68,15 +68,14 @@ class ProjectManager extends Controller
     
             // Prepare standard project fields
             $excludedFields = [
-                '_token', 'abc', 'contractAmount', 'engineering', 'mqc',
-                'contingency', 'bid', 'appropriation', 'projectDescription', 'ongoingDate',
+                '_token', 'abc', 'orig_contract_amount', 'engineering', 'mqc',
+                'contingency', 'bid', 'appropriation', 'description', 'ongoingDate',
             ];
             $projectData = $request->except($excludedFields);
-            $projectData['suspensionRemarks'] = json_encode($remarksData);
-            $projectData['projectStatus'] = $request->input('projectStatus');
-            $projectData['ongoingStatus'] = $request->input('ongoingStatus');
-            $projectData['othersContractor'] = $request->input('othersContractor');
-    
+            $projectData['reason_for_suspension'] = json_encode($remarksData);
+            $projectData['physical_status'] = $request->input('physical_status');
+            $projectData['ongoing_status'] = $request->input('ongoing_status');
+          
             // Create project
             $project = new Project($projectData);
     
@@ -85,45 +84,63 @@ class ProjectManager extends Controller
             }
     
             $project->save();
+
+            // Save time extensions if present
+            $extensionEntries = [];
+            foreach ($request->all() as $key => $value) {
+                if (preg_match('/^timeExtension(\d+)$/', $key, $matches)) {
+                    $index = $matches[1];
+            
+                    $extensionEntries[$index] = [
+                        'project_id' => $project->id,
+                        'time_extension_no' => $index,
+                        'time_extension_reason' => $request->input("extensionReason$index"),
+                        'revised_expiry' => $request->input("revisedExpiry$index"),
+                        'revised_expiry_reason' => $request->input("revisedReason$index"),
+                        'time_extension' => $value,
+                        'new_target_completion_date' => $request->input("revisedTargetDate$index"),
+                    ];
+                }
+            }
+            
+            // Only insert once per time_extension_no
+            foreach ($extensionEntries as $entry) {
+                \App\Models\ProjectTimeExtension::create($entry);
+            }
+            
     
             if (!$project->exists) {
                 throw new \Exception("Failed to save project data into the projects table.");
             }
     
-            // Add contractor if not existing
-            $contractorName = $request->input('projectContractor');
-            if ($contractorName && !Contractor::where('name', $contractorName)->exists()) {
-                Contractor::create(['name' => $contractorName]);
-            }
-    
             // Insert description lines
-            $this->storeProjectDescriptions($project, $request->input('projectDescription'));
+            $this->storeProjectDescriptions($project, $request->input('description'));
     
             // Fund utilization
             FundsUtilization::create([
                 'project_id' => $project->id,
                 'orig_abc' => $this->cleanMoney($request->input('abc')),
-                'orig_contract_amount' => $this->cleanMoney($request->input('contractAmount')),
+                'orig_contract_amount' => $this->cleanMoney($request->input('orig_contract_amount')),
                 'orig_engineering' => $this->cleanMoney($request->input('engineering')),
                 'orig_mqc' => $this->cleanMoney($request->input('mqc')),
                 'orig_contingency' => $this->cleanMoney($request->input('contingency')),
                 'orig_bid' => $this->cleanMoney($request->input('bid')),
                 'orig_appropriation' => $this->cleanMoney($request->input('appropriation')),
-                'orig_completion_date' => $request->input('completionDate'),
+                'orig_completion_date' => $request->input('actual_completion_date'),
             ]);
     
             // Project status (if ongoing)
-            if (strtolower($request->input('projectStatus')) === 'ongoing') {
-                ProjectStatus::create([
+            if (strtolower($request->input('physical_status')) === 'ongoing') {
+                PhysicalStatus::create([
                     'project_id' => $project->id,
-                    'progress' => $request->input('projectStatus'),
-                    'percentage' => (explode(' - ', $request->input('ongoingStatus'))[0] ?? '0'),
+                    'progress' => $request->input('physical_status'),
+                    'percentage' => (explode(' - ', $request->input('ongoing_status'))[0] ?? '0'),
                     'date' => $request->input('ongoingDate') ?? now(),
                 ]);
             }
     
             // Session & activity logging
-            $this->logUserAction($request, $project->projectTitle, 'Added a new project');
+            $this->logUserAction($request, $project->title, 'Added a new project');
     
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Project added successfully!']);
@@ -134,6 +151,8 @@ class ProjectManager extends Controller
             return response()->json(['status' => 'error', 'message' => 'Error adding project. ' . $e->getMessage()]);
         }
     }
+
+
     protected function storeProjectDescriptions(Project $project, $description)
 {
     if (empty($description)) return;
@@ -143,24 +162,24 @@ class ProjectManager extends Controller
         ProjectDescription::create([
             'project_id' => $project->id,
             'projectID' => $project->projectID,
-            'ProjectDescription' => $line,
+            'description' => $line,
         ]);
     }
 }
 
-protected function logUserAction(Request $request, $projectTitle, $actionPrefix)
+protected function logUserAction(Request $request, $title, $actionPrefix)
 {
     if (!session()->has('loggedIn')) {
         throw new \Exception('Session not found');
     }
 
     $sessionData = session()->get('loggedIn');
-    $action = "{$actionPrefix}: {$projectTitle}";
+    $action = "{$actionPrefix}: {$title}";
 
     $request->session()->put('AddedNewProject', [
         'user_id' => $sessionData['user_id'],
         'ofmis_id' => $sessionData['ofmis_id'],
-        'performedBy' => $sessionData['performedBy'],
+        'performed_by' => $sessionData['performed_by'],
         'role' => $sessionData['role'],
         'action' => $action,
     ]);
@@ -170,7 +189,7 @@ protected function logUserAction(Request $request, $projectTitle, $actionPrefix)
     (new ActivityLogs)->userAction(
         $sessionData['user_id'],
         $sessionData['ofmis_id'],
-        $sessionData['performedBy'],
+        $sessionData['performed_by'],
         $sessionData['role'],
         $action
     );
@@ -189,14 +208,16 @@ protected function logUserAction(Request $request, $projectTitle, $actionPrefix)
 
     public function viewProjects()
 {
-    $projects = Project::select('id', 'projectTitle', 'projectLoc', 'projectStatus', 'projectContractor', 'othersContractor', 'projectContractDays')
+    $projects = Project::select('id', 'title', 'location', 'physical_status', 'firm_name', 'year', 'contract_days')
         ->with('fundsUtilization')
         ->where(function ($query) {
             $query->whereNull('is_hidden')->orWhere('is_hidden', 0);
         })
         ->orderBy('created_at', 'desc')
         ->get();
-        $contractors = Contractor::orderBy('name', 'asc')->get();
+
+  
+        $contractors = Project::orderBy('firm_name', 'asc')->get();
         
         $staticLocations = [ 
             'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
@@ -204,9 +225,9 @@ protected function logUserAction(Request $request, $projectTitle, $actionPrefix)
             'Villaverde', 'Ambaguio', 'Santa Fe'
         ];
         
-        $dbLocationsRaw = Project::select('projectLoc')
-            ->whereNotNull('projectLoc')
-            ->pluck('projectLoc')
+        $dbLocationsRaw = Project::select('location')
+            ->whereNotNull('location')
+            ->pluck('location')
             ->toArray();
         
         // Extract only the municipality (first part before the comma)
@@ -220,21 +241,16 @@ protected function logUserAction(Request $request, $projectTitle, $actionPrefix)
             ->sort()
             ->values();
         
-        $sourceOfFunds = Project::select('sourceOfFunds')
+        $source_of_funds = Project::select('source_of_funds')
         ->distinct()
-        ->whereNotNull('sourceOfFunds')
-        ->orderBy('sourceOfFunds')
+        ->whereNotNull('source_of_funds')
+        ->orderBy('source_of_funds')
         ->get();
 
-        $projectYear = Project::select('projectYear')
+        $projectEA = Project::select('engineer_name')
         ->distinct()
-        ->whereNotNull('projectYear')
-        ->orderBy('projectYear')
-        ->get();
-        $projectEA = Project::select('ea')
-        ->distinct()
-        ->whereNotNull('ea')
-        ->orderBy('ea')
+        ->whereNotNull('engineer_name')
+        ->orderBy('engineer_name')
         ->get();
 
 
@@ -243,19 +259,20 @@ protected function logUserAction(Request $request, $projectTitle, $actionPrefix)
         $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
 
         return [
-            'title' => $project->projectTitle ?? 'N/A',
-            'location' => $project->projectLoc ?? 'N/A',
-            'status' => $project->projectStatus ?? 'N/A',
+            'title' => $project->title ?? 'N/A',
+            'location' => $project->location ?? 'N/A',
+            'status' => $project->physical_status ?? 'N/A',
             'amount' => $formattedAmount,
-            'contractor' => (strtolower($project->projectContractor) === 'others')
+            'year' => $project->year ?? 'N/A',
+            'contractor' => (strtolower($project->firm_name) === 'others')
                 ? ($project->othersContractor ?? 'N/A')
-                : ($project->projectContractor ?? 'N/A'),
-            'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
+                : ($project->firm_name ?? 'N/A'),
+            'duration' => $project->contract_days ? $project->contract_days . ' days' : 'N/A',
             'id' => $project->id,
         ];
     });
 
-    return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'sourceOfFunds', 'projectEA', 'projectYear'));
+    return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'projectEA'));
 }
 
 public function fetchTrashedProjects()
@@ -269,14 +286,14 @@ public function fetchTrashedProjects()
                 $formattedAmount = is_numeric($amount) ? number_format((float) $amount, 2) : '0.00';
 
                 return [
-                    'title' => $project->projectTitle ?? 'N/A',
-                    'location' => $project->projectLoc ?? 'N/A',
-                    'status' => $project->projectStatus ?? 'N/A',
+                    'title' => $project->title ?? 'N/A',
+                    'location' => $project->location ?? 'N/A',
+                    'status' => $project->physical_status ?? 'N/A',
                     'amount' => $formattedAmount,
-                    'contractor' => (strtolower($project->projectContractor) === 'others')
+                    'contractor' => (strtolower($project->firm_name) === 'others')
                         ? ($project->othersContractor ?? 'N/A')
-                        : ($project->projectContractor ?? 'N/A'),
-                    'duration' => $project->projectContractDays ? $project->projectContractDays . ' days' : 'N/A',
+                        : ($project->firm_name ?? 'N/A'),
+                    'duration' => $project->contract_days ? $project->contract_days . ' days' : 'N/A',
                     'action' => '<button class="btn btn-primary btn-sm restore-btn" data-id="' . $project->id . '">Restore</button>',
                 ];
             });
@@ -322,11 +339,11 @@ public function fetchTrashedProjects()
 
               // Log activity
         $sessionData = session('loggedIn', []);
-        $action = "Restored project: " . $project->projectTitle;
+        $action = "Restored project: " . $project->title;
         (new ActivityLogs)->userAction(
             $sessionData['user_id'] ?? null,
             $sessionData['ofmis_id'] ?? null,
-            $sessionData['performedBy'] ?? null,
+            $sessionData['performed_by'] ?? null,
             $sessionData['role'] ?? null,
             $action
         );
@@ -345,32 +362,29 @@ public function fetchTrashedProjects()
     public function getProject(Request $request, $id)
     {
         try {
-            $contractors = Contractor::orderBy('name')->get();
+            $contractors = Project::orderBy('firm_name')->get();
             $staticLocations = [ 
                 'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
                 'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
                 'Villaverde', 'Ambaguio', 'Santa Fe'
             ];
             
-            $dbLocationsRaw = Project::select('projectLoc')
-                ->whereNotNull('projectLoc')
-                ->pluck('projectLoc')
+            $dbLocationsRaw = Project::select('location')
+                ->whereNotNull('location')
+                ->pluck('location')
                 ->toArray();
             
-            // Extract only the municipality (first part before the comma)
-            $dbLocations = array_map(function ($loc) {
-                return trim(explode(',', $loc)[0]);
-            }, $dbLocationsRaw);
-            
+                $dbLocations = array_map('trim', $dbLocationsRaw);
+
             // Merge, de-duplicate, and sort
             $locations = collect(array_merge($staticLocations, $dbLocations))
                 ->unique()
                 ->sort()
                 ->values();
         
-            $sourceOfFunds = Project::select('sourceOfFunds')->distinct()->whereNotNull('sourceOfFunds')->orderBy('sourceOfFunds')->get();
-            $projectYear = Project::select('projectYear')->distinct()->whereNotNull('projectYear')->orderBy('projectYear')->get();
-            $projectEA = Project::select('ea')->distinct()->whereNotNull('ea')->orderBy('ea')->get();
+            $source_of_funds = Project::select('source_of_funds')->distinct()->whereNotNull('source_of_funds')->orderBy('source_of_funds')->get();
+            $year = Project::select('year')->distinct()->whereNotNull('year')->orderBy('year')->get();
+            $projectEA = Project::select('engineer_name')->distinct()->whereNotNull('engineer_name')->orderBy('engineer_name')->get();
     
             $projectData = Project::find($id);
     
@@ -380,30 +394,31 @@ public function fetchTrashedProjects()
             
     
             $project = $projectData->toArray();
-            // Decode suspensionRemarks JSON
+            // Decode reason_for_suspension JSON
                 $project['remarksData'] = [];
-                if (!empty($projectData->suspensionRemarks)) {
-                    $decodedRemarks = json_decode($projectData->suspensionRemarks, true);
+                if (!empty($projectData->reason_for_suspension)) {
+                    $decodedRemarks = json_decode($projectData->reason_for_suspension, true);
                     if (json_last_error() === JSON_ERROR_NONE) {
                         $project['remarksData'] = $decodedRemarks;
                     } else {
-                        Log::warning('Invalid JSON in suspensionRemarks', ['project_id' => $id]);
+                        Log::warning('Invalid JSON in reason_for_suspension', ['project_id' => $id]);
                     }
                 }
 
-            $project['projectStatus'] = $projectData->projectStatus ?? 'Not Available';
+            $project['physical_status'] = $projectData->physical_status ?? 'Not Available';
     
-            $statuses = ProjectStatus::where('project_id', $id)
+            $statuses = PhysicalStatus::where('project_id', $id)
                 ->orderByDesc('date')
                 ->orderByDesc('percentage')
                 ->get();
     
             $projectStatusData = [
                 'project_id' => $projectData->id,
-                'projectStatus' => $statuses->isEmpty() ? ($projectData->projectStatus ?? 'No status available') : $statuses->first()->progress,
+                'physical_status' => $statuses->isEmpty() ? ($projectData->physical_status ?? 'No status available') : $statuses->first()->progress,
                 'updatedAt' => $statuses->isEmpty() ? optional($projectData->updated_at)->format('Y-m-d') : $statuses->first()->date,
                 'latestPercentage' => $statuses->isEmpty() ? $projectData->percentage : $statuses->first()->percentage,
-                'ongoingStatus' => $statuses->map(function ($status) {
+                'latestDate' => $statuses->isEmpty() ? $projectData->date : $statuses->first()->date,
+                'ongoing_status' => $statuses->map(function ($status) {
                     return [
                         'progress' => $status->progress,
                         'percentage' => $status->percentage,
@@ -412,21 +427,21 @@ public function fetchTrashedProjects()
                 })->toArray()
             ];
     
-            if (strtolower($project['projectStatus']) === 'ongoing') {
-                $projectStatus = $statuses->first();
-                if ($projectStatus) {
-                    $percentage = rtrim($projectStatus->percentage, '%');
-                    $formattedDate = $projectStatus->date ? \Carbon\Carbon::parse($projectStatus->date)->format('F d, Y') : 'Unknown date';
-                    $project['ongoingStatus'] = $percentage . '% - ' . $formattedDate;
+            if (strtolower($project['physical_status']) === 'ongoing') {
+                $physical_status = $statuses->first();
+                if ($physical_status) {
+                    $percentage = rtrim($physical_status->percentage, '%');
+                    $formattedDate = $physical_status->date ? \Carbon\Carbon::parse($physical_status->date)->format('F d, Y') : 'Unknown date';
+                    $project['ongoing_status'] = $percentage . '% - ' . $formattedDate;
                 } else {
-                    $project['ongoingStatus'] = 'Not Available';
+                    $project['ongoing_status'] = 'Not Available';
                 }
             } else {
-                $project['ongoingStatus'] = null;
+                $project['ongoing_status'] = null;
             }
     
-            $project['projectDescriptions'] = ProjectDescription::where('project_id', $id)
-                ->pluck('ProjectDescription')->toArray();
+            $project['description'] = ProjectDescription::where('project_id', $id)
+                ->pluck('description')->toArray();
     
             $columns = DB::getSchemaBuilder()->getColumnListing('projects');
             $matchingColumns = collect($columns)->filter(function ($column) {
@@ -531,10 +546,16 @@ public function fetchTrashedProjects()
                     
                 
 
-                    $mqcEntries = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
-                        ->where('type', 'mqc')
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+            $mqcEntries = FundsBreakdowns::where('funds_utilization_id', $fundUtilization->id)
+                ->where('type', 'mqc')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+
+            $timeExtensions = ProjectTimeExtension::where('project_id', $id)
+                ->get();
+    
+            
                 
                 
             $role = auth()->user()->role;
@@ -552,7 +573,7 @@ public function fetchTrashedProjects()
                     return redirect()->back()->withErrors(['Unauthorized role.']);
             }
     
-            return view($view, compact('contractors', 'project', 'locations', 'sourceOfFunds', 'projectYear', 'projectEA', 'projectStatusData', 'engineeringEntries', 'mqcEntries'));
+            return view($view, compact('contractors', 'project', 'locations', 'source_of_funds', 'year', 'timeExtensions', 'projectEA', 'projectStatusData', 'engineeringEntries', 'mqcEntries'));
     
         } catch (\Exception $e) {
             Log::error('Error fetching project details: ' . $e->getMessage());
@@ -575,11 +596,11 @@ public function fetchTrashedProjects()
             $visibleProjects = Project::where('is_hidden', '!=', 1);
 
             $totalProjects = $visibleProjects->count();
-            $ongoingProjects = $visibleProjects->clone()->where('projectStatus', 'Ongoing')->count();
-            $completedProjects = $visibleProjects->clone()->where('projectStatus', 'Completed')->count();
-            $discontinuedProjects = $visibleProjects->clone()->where('projectStatus', 'Cancelled')->count();
-            $toBeStartedProjects = $visibleProjects->clone()->where('projectStatus', 'Not Started')->count();
-            $suspendedProjects = $visibleProjects->clone()->where('projectStatus', 'Suspended')->count();
+            $ongoingProjects = $visibleProjects->clone()->where('physical_status', 'Ongoing')->count();
+            $completedProjects = $visibleProjects->clone()->where('physical_status', 'Completed')->count();
+            $discontinuedProjects = $visibleProjects->clone()->where('physical_status', 'Cancelled')->count();
+            $toBeStartedProjects = $visibleProjects->clone()->where('physical_status', 'Not Started')->count();
+            $suspendedProjects = $visibleProjects->clone()->where('physical_status', 'Suspended')->count();
 
             $projects = $visibleProjects->get();
             
@@ -592,10 +613,10 @@ public function fetchTrashedProjects()
             
                 // Use FundsUtilization values if available, otherwise fallback to Project values
                 $abc = $funds ? $funds->orig_abc : $project->abc;
-                $contractAmount = $funds ? $funds->orig_contract_amount : $project->contractAmount;
+                $orig_contract_amount = $funds ? $funds->orig_contract_amount : $project->orig_contract_amount;
             
                 $totalBudget += (float) preg_replace('/[^0-9.]/', '', $abc ?? '0');
-                $totalUsed += (float) preg_replace('/[^0-9.]/', '', $contractAmount ?? '0');
+                $totalUsed += (float) preg_replace('/[^0-9.]/', '', $orig_contract_amount ?? '0');
             }
             
             $remainingBalance = max($totalBudget - $totalUsed, 0);
@@ -665,20 +686,20 @@ public function fetchTrashedProjects()
                 }
     
                 $oldValues = $project->only([
-                    'projectTitle', 'projectLoc', 'projectID', 'projectContractor',
-                    'sourceOfFunds', 'otherFund', 'modeOfImplementation',
-                    'projectStatus', 'ongoingStatus', 'projectContractDays',
-                    'noaIssuedDate', 'noaReceivedDate', 'ntpIssuedDate', 'ntpReceivedDate',
-                    'originalStartDate', 'targetCompletion', 'timeExtension', 'revisedTargetDate', 
-                    'revisedCompletionDate', 'completionDate', 'projectSlippage',
-                    'othersContractor', 'ea', 'ea_position', 'projectYear', 'projectFPP', 'projectRC',
-                    'suspensionRemarks'
+                    'title', 'location', 'projectID', 'firm_name',
+                    'source_of_funds', 'mode_of_implementation', 'actual_length',
+                    'physical_status', 'ongoing_status', 'contract_days',
+                    'noa_issued_date', 'noa_received_date', 'ntp_issued_date', 'ntp_received_date',
+                    'official_starting_date', 'target_completion_date', 'timeExtension', 'revised_target_date', 
+                    'revisedCompletionDate', 'actual_completion_date', 'project_slippage',
+                    'engineer_name', 'engineer_position', 'year', 'fpp', 'responsibility_center',
+                    'reason_for_suspension'
                 ]);
     
                 $project->fill($request->only(array_keys($oldValues)));
-                $project->revisedTargetDate = $request->input('revisedTargetDate');
+                $project->revised_target_date = $request->input('revised_target_date');
                 $project->revisedCompletionDate = $request->input('revisedCompletionDate');
-                Log::debug('revisedTargetDate:', [$request->input('revisedTargetDate')]);
+                Log::debug('revised_target_date:', [$request->input('revised_target_date')]);
                 Log::debug('revisedCompletionDate:', [$request->input('revisedCompletionDate')]);
                 
     
@@ -688,15 +709,44 @@ public function fetchTrashedProjects()
                     }
                 }
     
-                $project->suspensionRemarks = json_encode($remarksData);
+                $project->reason_for_suspension = json_encode($remarksData);
                 $project->save();
+
+               
+                $extensionEntries = [];
+                // ---Time Extension ---
+                    // No deletion here — only update existing or create new
+
+                    // ---Time Extension Update / Create---
+                            if ($request->has('time_extensions')) {
+                                foreach ($request->input('time_extensions') as $index => $ext) {
+                                    if (empty($ext['days']) && empty($ext['reason']) && empty($ext['revised']) && empty($ext['revised_reason'])) {
+                                        continue; // Skip empty rows
+                                    }
+
+                                    ProjectTimeExtension::updateOrCreate(
+                                        [
+                                            'project_id' => $project->id,
+                                            'time_extension_no' => $index + 1, // assumes 0-based index from JS
+                                        ],
+                                        [
+                                            'time_extension' => $ext['days'],
+                                            'time_extension_reason' => $ext['reason'],
+                                            'revised_expiry' => $ext['revised'],
+                                            'revised_expiry_reason' => $ext['revised_reason'],
+                                            'new_target_completion_date' => $request->input('revised_target_date'),
+                                        ]
+                                    );
+                                }
+                            }
+
     
-                $projectDescription = $request->input('projectDescription');
-                if (!empty($projectDescription)) {
-                    $newLines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $projectDescription)));
+                $description = $request->input('description');
+                if (!empty($description)) {
+                    $newLines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $description)));
                     $newCombined = implode(' ', $newLines);
                     $existingDescriptions = ProjectDescription::where('project_id', $project->id)
-                        ->pluck('ProjectDescription')
+                        ->pluck('description')
                         ->toArray();
                     $existingCombined = implode(' ', array_map('trim', $existingDescriptions));
     
@@ -707,7 +757,7 @@ public function fetchTrashedProjects()
                             ProjectDescription::create([
                                 'project_id' => $project->id,
                                 'projectID' => $project->projectID,
-                                'ProjectDescription' => $line
+                                'description' => $line
                             ]);
                         }
                     }
@@ -716,7 +766,7 @@ public function fetchTrashedProjects()
                 $fundsOld = FundsUtilization::where('project_id', $id)->first();
                 $oldFundValues = [
                     'abc' => $fundsOld->orig_abc ?? null,
-                    'contractAmount' => $fundsOld->orig_contract_amount ?? null,
+                    'orig_contract_amount' => $fundsOld->orig_contract_amount ?? null,
                     'engineering' => $fundsOld->orig_engineering ?? null,
                     'mqc' => $fundsOld->orig_mqc ?? null,
                     'contingency' => $fundsOld->orig_contingency ?? null,
@@ -726,7 +776,7 @@ public function fetchTrashedProjects()
     
                 $funds = FundsUtilization::firstOrNew(['project_id' => $project->id]);
                 $funds->orig_abc = $this->cleanMoney($request->input('abc'));
-                $funds->orig_contract_amount = $this->cleanMoney($request->input('contractAmount'));
+                $funds->orig_contract_amount = $this->cleanMoney($request->input('orig_contract_amount'));
                 $funds->orig_engineering = $this->cleanMoney($request->input('engineering'));
                 $funds->orig_mqc = $this->cleanMoney($request->input('mqc'));
                 $funds->orig_contingency = $this->cleanMoney($request->input('contingency'));
@@ -748,16 +798,16 @@ public function fetchTrashedProjects()
             }
     
             $sessionData = session('loggedIn', []);
-            $projectTitle = $request->input('projectTitle');
+            $title = $request->input('title');
     
             foreach ($oldValues as $key => $oldValue) {
                 $newValue = $newValues[$key];
                 if ($oldValue != $newValue) {
-                    $action = "Updated $key in project: $projectTitle — from '$oldValue' to '$newValue'";
+                    $action = "Updated $key in project: $title — from '$oldValue' to '$newValue'";
                     (new ActivityLogs)->userAction(
                         $sessionData['user_id'] ?? null,
                         $sessionData['ofmis_id'] ?? null,
-                        $sessionData['performedBy'] ?? null,
+                        $sessionData['performed_by'] ?? null,
                         $sessionData['role'] ?? null,
                         $action
                     );
@@ -767,7 +817,7 @@ public function fetchTrashedProjects()
             // Log fund changes
             $newFundValues = [
                 'abc' => $request->input('abc'),
-                'contractAmount' => $request->input('contractAmount'),
+                'orig_contract_amount' => $request->input('orig_contract_amount'),
                 'engineering' => $request->input('engineering'),
                 'mqc' => $request->input('mqc'),
                 'contingency' => $request->input('contingency'),
@@ -778,11 +828,11 @@ public function fetchTrashedProjects()
             foreach ($oldFundValues as $key => $oldValue) {
                 $newValue = $this->cleanMoney($newFundValues[$key] ?? null);
                 if ($oldValue != $newValue) {
-                    $action = "Updated $key in project: $projectTitle — from '$oldValue' to '$newValue'";
+                    $action = "Updated $key in project: $title — from '$oldValue' to '$newValue'";
                     (new ActivityLogs)->userAction(
                         $sessionData['user_id'] ?? null,
                         $sessionData['ofmis_id'] ?? null,
-                        $sessionData['performedBy'] ?? null,
+                        $sessionData['performed_by'] ?? null,
                         $sessionData['role'] ?? null,
                         $action
                     );
@@ -819,11 +869,11 @@ public function fetchTrashedProjects()
 
          // Log activity
             $sessionData = session('loggedIn', []);
-            $action = "Archived project: " . $project->projectTitle;
+            $action = "Archived project: " . $project->title;
             (new ActivityLogs)->userAction(
                 $sessionData['user_id'] ?? null,
                 $sessionData['ofmis_id'] ?? null,
-                $sessionData['performedBy'] ?? null,
+                $sessionData['performed_by'] ?? null,
                 $sessionData['role'] ?? null,
                 $action
             );
@@ -833,8 +883,6 @@ public function fetchTrashedProjects()
 
     
      
-    
-
 public function addStatus(Request $request)
 {
     $request->validate([
@@ -851,21 +899,21 @@ public function addStatus(Request $request)
             return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
         }
 
-        if (in_array($project->projectStatus, ['Completed', 'Discontinued'])) {
+        if (in_array($project->physical_status, ['Completed', 'Discontinued'])) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Cannot add status to a completed or discontinued project.'
             ], 403);
         }
 
-        $latestStatus = ProjectStatus::where('project_id', $request->project_id)
+        $latestStatus = PhysicalStatus::where('project_id', $request->project_id)
             ->orderByDesc('date')
             ->orderByDesc('percentage')
             ->first(); 
 
         DB::beginTransaction();
 
-        ProjectStatus::insert([
+        PhysicalStatus::insert([
             'project_id' => $request->project_id,
             'progress' => $request->progress,
             'percentage' => $request->percentage,
@@ -874,12 +922,12 @@ public function addStatus(Request $request)
             'updated_at' => now()
         ]);
 
-        $ongoingStatus = $request->percentage . ' - ' . $request->date;
+        $ongoing_status = $request->percentage . ' - ' . $request->date;
 
         Project::where('id', $request->project_id)
             ->update([
-                'projectStatus' => $request->progress,
-                'ongoingStatus' =>$request->percentage,
+                'physical_status' => $request->progress,
+                'ongoing_status' =>$request->percentage,
                 'updated_at' => now()
             ]);
 
@@ -899,39 +947,5 @@ public function addStatus(Request $request)
         ], 500);
     }
 }
-
-
-// public function getDropdownOptions(Request $request) {
-//     // Fetch contractors and municipalities
-//     $contractors = Contractor::orderBy('name', 'asc')->get();
-//     $municipalities = Municipalities::orderBy('municipalityOf', 'asc')->get();
-
-//     // Check if the request is for the overview page
-//     if ($request->has('overview') && $request->overview == true) {
-//         return response()->json([
-//             'contractors' => $contractors,
-//             'municipalities' => $municipalities
-//         ]);
-//     }
-
-//     // Check if the request is for the dashboard (index page)
-//     if ($request->has('dashboard') && $request->dashboard == true) {
-//         return response()->json([
-//             'contractors' => $contractors,
-//             'municipalities' => $municipalities
-//         ]);
-//     }
-
-//     // Pass both to the view for the system admin projects page
-//     return view('systemAdmin.projects', [
-//         'contractors' => $contractors,
-//         'municipalities' => $municipalities
-//     ]);
-// }
-
-
-
-
-
 
 }

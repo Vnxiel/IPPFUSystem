@@ -4,7 +4,7 @@
         let voCount = parseInt(document.getElementById('voCount').value) || 1;
       
         function addVOFields() {
-            if (voCount >= 3) return; // Max limit
+            if (voCount >= 5) return; // Max limit
           
             voCount++;
             document.getElementById('voCount').value = voCount;
@@ -62,7 +62,7 @@
               
         function updateVOButtonsState() {
           const addButton = document.querySelector('.btn-outline-primary[onclick="addVOFields()"]');
-          if (addButton) addButton.disabled = voCount >= 3;
+          if (addButton) addButton.disabled = voCount >= 5;
         }
       
         document.addEventListener('DOMContentLoaded', () => {
@@ -87,48 +87,105 @@
         }
     }
 
-    let currentBilling = 1;
 
-    // Show next billing row
-    function addNextBilling() {
-      if (currentBilling < 5) {
-        currentBilling++;
-        const nextRow = document.querySelector(`.billing-${currentBilling}`);
-        if (nextRow) {
-          nextRow.style.display = 'table-row';
-        }
+let currentBilling = 1;
+
+// Utility: Parse amount string with ₱ and commas
+function parseAmount(value) {
+  return parseFloat(value.replace(/[₱,]/g, '')) || 0;
+}
+
+// Utility: Format as currency
+function formatAmount(value) {
+  return '₱' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+
+// Utility: Calculate 10% of the given value
+function calculateRetention(value) {
+  return parseAmount(value) * 0.10;
+}
+
+// Automatically attach retention logic to amount fields
+function attachRetentionListeners() {
+  // Mobilization
+  const mobiAmountInput = document.getElementById('amountMobilization');
+  const mobiRetentionField = document.getElementById('retentionMobiAmount');
+  if (mobiAmountInput && mobiRetentionField) {
+    const updateMobiRetention = () => {
+      mobiRetentionField.value = formatAmount(calculateRetention(mobiAmountInput.value));
+    };
+    mobiAmountInput.addEventListener('input', updateMobiRetention);
+    updateMobiRetention();
+  }
+
+  // Partial Billings (1 to 5)
+  for (let i = 1; i <= 5; i++) {
+    const amountInput = document.getElementById(`amountPartial${i}`);
+    const retentionField = document.getElementById(`retentionPartialAmount${i}`);
+
+    if (amountInput && retentionField) {
+      const updateRetention = () => {
+        retentionField.value = formatAmount(calculateRetention(amountInput.value));
+      };
+      amountInput.addEventListener('input', updateRetention);
+      if (amountInput.value.trim() !== '') {
+        updateRetention();
       }
     }
-  
-    // Hide last billing row if needed
-    function removeLastBilling() {
-      if (currentBilling > 1) {
-        const rowToHide = document.querySelector(`.billing-${currentBilling}`);
-        if (rowToHide) {
-          rowToHide.style.display = 'none';
-          // Optional: clear the inputs
-          rowToHide.querySelectorAll('input').forEach(input => input.value = '');
-        }
-        currentBilling--;
-      }
-    }
-  
-    // On page load, auto-show rows that have any value
-    document.addEventListener('DOMContentLoaded', () => {
+  }
 
-        document.getElementById('btnAddBilling').addEventListener('click', addNextBilling);
-        document.getElementById('btnRemoveBilling').addEventListener('click', removeLastBilling);
-      for (let i = 2; i <= 5; i++) {
-        const row = document.querySelector(`.billing-${i}`);
-        const hasValue = Array.from(row.querySelectorAll('input')).some(input => input.value.trim() !== '');
-  
-        if (hasValue) {
-          row.style.display = 'table-row';
-          currentBilling = i; // Update currentBilling to the highest visible row
-        } else {
-          row.style.display = 'none'; // Ensure it's hidden if empty
-        }
-      }
-    });
-  
-   
+  // Final Billing
+  const finalAmountInput = document.getElementById('amountFinal');
+  const finalRetentionField = document.getElementById('retentionFinalAmount');
+  if (finalAmountInput && finalRetentionField) {
+    const updateFinalRetention = () => {
+      finalRetentionField.value = formatAmount(calculateRetention(finalAmountInput.value));
+    };
+    finalAmountInput.addEventListener('input', updateFinalRetention);
+    updateFinalRetention();
+  }
+}
+
+// Show next billing row
+function addNextBilling() {
+  if (currentBilling < 5) {
+    currentBilling++;
+    const nextRow = document.querySelector(`.billing-${currentBilling}`);
+    if (nextRow) {
+      nextRow.style.display = 'table-row';
+    }
+  }
+}
+
+// Hide last billing row
+function removeLastBilling() {
+  if (currentBilling > 1) {
+    const rowToHide = document.querySelector(`.billing-${currentBilling}`);
+    if (rowToHide) {
+      rowToHide.style.display = 'none';
+      rowToHide.querySelectorAll('input').forEach(input => input.value = '');
+    }
+    currentBilling--;
+  }
+}
+
+// On DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btnAddBilling').addEventListener('click', addNextBilling);
+  document.getElementById('btnRemoveBilling').addEventListener('click', removeLastBilling);
+
+  // Show only rows with amount
+  for (let i = 2; i <= 5; i++) {
+    const amountInput = document.getElementById(`amountPartial${i}`);
+    const row = document.querySelector(`.billing-${i}`);
+    if (amountInput && amountInput.value.trim() !== '') {
+      row.style.display = 'table-row';
+      currentBilling = i;
+    } else {
+      row.style.display = 'none';
+    }
+  }
+
+  attachRetentionListeners();
+});

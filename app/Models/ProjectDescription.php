@@ -13,7 +13,7 @@ class ProjectDescription extends Model
     protected $table = 'project_descriptions';
 
     // Allow mass assignment for these fields
-    protected $fillable = ['project_id', 'projectID', 'ProjectDescription'];
+    protected $fillable = ['project_id', 'projectID', 'description'];
 
     /**
      * Relationship to the project.

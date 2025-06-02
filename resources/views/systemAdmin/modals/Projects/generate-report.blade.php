@@ -13,8 +13,8 @@
 
         <!-- Reviewer and Noted By inputs -->
         <div class="mb-3 text-start">
-          <label for="reviewerInput" class="form-label fw-semibold">Reviewer:</label>
-          <input type="text" class="form-control" id="reviewerInput" placeholder="Enter reviewer name" />
+          <label for="reviewerInput" class="form-label fw-semibold">Reviewed by:</label>
+          <input type="text" class="form-control" id="reviewedByInput" placeholder="Enter reviewer name" />
         </div>
 
         <div class="mb-3 text-start">
