@@ -1,21 +1,24 @@
-
 let extensionCounter = 1;
-const existingFieldsets = document.querySelectorAll('#timeExtensionContainer fieldset');
-extensionCounter = existingFieldsets.length || 1;
 let orderCounter = 1;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize counters based on existing fieldsets
     extensionCounter = document.querySelectorAll('#timeExtensionContainer fieldset').length || 1;
     orderCounter = document.querySelectorAll('#orderContainer fieldset').length || 1;
 
-    document.getElementById('target_completion_date').addEventListener('change', calculateRevisedCompletionDate);
-    document.getElementById('official_starting_date').addEventListener('change', calculateRevisedCompletionDate);
+    // Add change listeners to core date inputs
+    const targetDate = document.getElementById('target_completion_date');
+    const startDate = document.getElementById('official_starting_date');
+    if (targetDate) targetDate.addEventListener('change', calculateRevisedCompletionDate);
+    if (startDate) startDate.addEventListener('change', calculateRevisedCompletionDate);
 
+    // Attach listeners to existing time extension inputs
     for (let i = 1; i <= extensionCounter; i++) {
         const input = document.getElementById(`timeExtension${i}`);
         if (input) input.addEventListener('input', calculateRevisedCompletionDate);
     }
 
+    // Attach listeners to suspension/resume inputs
     for (let i = 1; i <= orderCounter; i++) {
         const susp = document.getElementById(`suspensionOrderNo${i}`);
         const resume = document.getElementById(`resumeOrderNo${i}`);
@@ -46,23 +49,17 @@ function addTimeExtension() {
             <div class="col-3">
                 <input type="number" class="form-control" id="timeExtension${extensionCounter}" name="timeExtension${extensionCounter}" onchange="calculateRevisedCompletionDate()">
             </div>
-            <div class="col-3">
-                <label for="extensionReason${extensionCounter}" class="form-label">Reason for Extension</label>
-            </div>
-            <div class="col-3">
-                <input type="text" class="form-control" id="extensionReason${extensionCounter}" name="extensionReason${extensionCounter}">
-            </div>
             <div class="col-3 mt-2">
                 <label for="revisedExpiry${extensionCounter}" class="form-label">Revised Expiry Date</label>
             </div>
-            <div class="col-3 mt-2">
+            <div class="col-3">
                 <input type="date" class="form-control" id="revisedExpiry${extensionCounter}" name="revisedExpiry${extensionCounter}" readonly>
             </div>
-            <div class="col-3 mt-2">
-                <label for="revisedReason${extensionCounter}" class="form-label">Reason for Revised Expiry</label>
+            <div class="col-3">
+                <label for="extensionReason${extensionCounter}" class="form-label">Reason for Extension</label>
             </div>
-            <div class="col-3 mt-2">
-                <input type="text" class="form-control" id="revisedReason${extensionCounter}" name="revisedReason${extensionCounter}">
+            <div class="col-9">
+                <textarea class="form-control" id="extensionReason${extensionCounter}" name="extensionReason${extensionCounter}" rows="2"></textarea>
             </div>
         </div>
     `;
@@ -70,6 +67,18 @@ function addTimeExtension() {
     container.appendChild(fieldset);
     calculateRevisedCompletionDate();
 }
+
+function removeLastTimeExtension() {
+    if (extensionCounter > 1) {
+        const lastFieldset = document.getElementById(`extensionFieldset${extensionCounter}`);
+        if (lastFieldset) {
+            lastFieldset.remove();
+            extensionCounter--;
+            calculateRevisedCompletionDate();
+        }
+    }
+}
+
 
 function removeLastTimeExtension() {
     if (extensionCounter <= 1) return;

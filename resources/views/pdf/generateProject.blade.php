@@ -718,21 +718,31 @@
 
 <div style="margin-top: 50px;">
   <table style="width: 100%; border-collapse: collapse;">
-  <tr>
-    <td style="width: 33%; vertical-align: top; font-size: 12px;">
-      <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $userName }}</p>
-      <span>Prepared by</span>
-    </td>
-    <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
-      <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $reviewedBy }}</p>
-      <span>Reviewed by</span>
-    </td>
-    <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
-      <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $notedBy }}</p>
-      <span>Noted by</span>
-    </td>
-  </tr>
-
+    <tr>
+      <td style="width: 33%; vertical-align: top; font-size: 12px;">
+        <span>Prepared by</span>
+      </td>
+      <td style="width: 33%; vertical-align: top; font-size: 12px;">
+        <span>Reviewed by</span>
+      </td>
+      <td style="width: 33%; vertical-align: top; font-size: 12px;">
+        <span>Noted by</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 33%; vertical-align: top; font-size: 12px;">
+        <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $userName }}</p>
+        <span>Position</span>
+      </td>
+      <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
+        <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $reviewedBy }}</p>
+        <span>Position</span>
+      </td>
+      <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
+        <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $notedBy }}</p>
+        <span>Position</span>
+      </td>
+    </tr>
   </table>
 </div>
 

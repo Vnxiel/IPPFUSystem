@@ -420,6 +420,20 @@
                                             name="target_completion_date" value="{{ old('target_completion_date', $project['target_completion_date'] ?? '') }}">
                                     </div>
                                 </div>
+
+                                 <!-- Buttons for adding/removing Suspension and Resumption Orders -->
+                                <div class="row mb-3">
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addOrderFields()" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Suspension and Resumption Order">
+                                        <span class="fa-solid fa-square-plus"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeLastOrderFields()" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Suspension and Resumption Order">
+                                        <span class="fa-solid fa-circle-minus"></span>
+                                        </button>
+                                    </div>
+                                </div>
                           
                                 <!-- Suspension and Resumption Orders Section -->
                             <div id="orderContainer" class="col-12">
@@ -492,19 +506,20 @@
                                 @endforeach
                             </div>
 
-                                <!-- Buttons for adding/removing Suspension and Resumption Orders -->
-                                <div class="row mb-3">
-                                <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addOrderFields()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Suspension and Resumption Order">
-                                    <span class="fa-solid fa-square-plus"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeLastOrderFields()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Suspension and Resumption Order">
-                                    <span class="fa-solid fa-circle-minus"></span>
-                                    </button>
+                                <!-- Add & Remove Time Extension Buttons -->
+                                <div class="row mb-2">
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-outline-primary btn-sm mr-1" onclick="addTimeExtension()" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Time Extension">
+                                        <span class="fa-solid fa-square-plus"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastTimeExtension()" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Last Time Extension">
+                                        <span class="fa-solid fa-circle-minus"></span>
+                                        </button>
+                                    </div>
                                 </div>
-                                </div>
+
 
                                 <!-- Time Extension Section -->
                                 <div id="timeExtensionContainer">
@@ -555,15 +570,6 @@
                                                             value="{{ $extension->time_extension }}"
                                                             onchange="calculateRevisedExpiry()">
                                                     </div>
-                                                    <div class="col-3">
-                                                        <label for="extensionReason{{ $index + 1 }}" class="form-label">Reason for Extension</label>
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <input type="text" class="form-control"
-                                                            id="extensionReason{{ $index + 1 }}"
-                                                            name="extensionReason{{ $index + 1 }}"
-                                                            value="{{ $extension->time_extension_reason }}">
-                                                    </div>
                                                     <div class="col-3 mt-2">
                                                         <label for="revisedExpiry{{ $index + 1 }}" class="form-label">Revised Expiry Date</label>
                                                     </div>
@@ -574,38 +580,21 @@
                                                             value="{{ $extension->revised_expiry }}"
                                                             readonly>
                                                     </div>
-                                                    <div class="col-3 mt-2">
-                                                        <label for="revisedReason{{ $index + 1 }}" class="form-label">Reason for Revised Expiry</label>
+                                                    <div class="col-3">
+                                                        <label for="extensionReason{{ $index + 1 }}" class="form-label">Reason for Extension</label>
                                                     </div>
-                                                    <div class="col-3 mt-2">
-                                                        <input type="text" class="form-control"
-                                                            id="revisedReason{{ $index + 1 }}"
-                                                            name="revisedReason{{ $index + 1 }}"
-                                                            value="{{ $extension->revised_expiry_reason }}">
-                                                    </div>
+                                                    <div class="col-9">
+                                                        <textarea class="form-control"
+                                                            id="extensionReason{{ $index + 1 }}"
+                                                            name="extensionReason{{ $index + 1 }}"
+                                                            rows="2">{{ $extension->time_extension_reason }}
+                                                        </textarea>
+                                                    </div>                                                   
                                                 </div>
                                             </fieldset>
                                         @endforeach
                                     @endif
                                 </div>
-
-
-
-                                <!-- Add & Remove Time Extension Buttons -->
-                                <div class="row mb-2">
-                                <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-outline-primary btn-sm mr-1" onclick="addTimeExtension()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Time Extension">
-                                    <span class="fa-solid fa-square-plus"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastTimeExtension()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Last Time Extension">
-                                    <span class="fa-solid fa-circle-minus"></span>
-                                    </button>
-                                </div>
-                                </div>
-
-
 
                                <!-- New Target and Completion Dates -->
                                <div id="newDatesSection" class="row mb-2" style="display: none;">

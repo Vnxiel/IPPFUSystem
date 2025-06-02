@@ -449,6 +449,20 @@
                                             name="target_completion_date">
                                     </div>
                                 </div>
+                                
+                                <!-- Buttons for adding/removing Suspension and Resumption Orders -->
+                                <div class="row mb-3">
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addOrderFields()" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Suspension and Resumption Order">
+                                        <span class="fa-solid fa-square-plus"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeLastOrderFields()" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Suspension and Resumption Order">
+                                        <span class="fa-solid fa-circle-minus"></span>
+                                        </button>
+                                    </div>
+                                </div>
                           
                                 <!-- Suspension and Resumption Orders Section -->
                                 <div id="orderContainer" class="col-12">
@@ -480,67 +494,47 @@
                                     </fieldset>
                                 </div>
 
-                                <!-- Buttons for adding/removing Suspension and Resumption Orders -->
-                                <div class="row mb-3">
-                                <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addOrderFields()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Suspension and Resumption Order">
-                                    <span class="fa-solid fa-square-plus"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeLastOrderFields()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Suspension and Resumption Order">
-                                    <span class="fa-solid fa-circle-minus"></span>
-                                    </button>
-                                </div>
-                                </div>
-
-                                <!-- Time Extension Section -->
-                                <div id="timeExtensionContainer">
-                                <fieldset class="border p-2 mb-2" id="extensionFieldset1">
-                                    <legend class="float-none w-auto px-2 small">Time Extension 1</legend>
-                                    <div class="row" id="extensionRow1">
-                                    <div class="col-3">
-                                        <label for="timeExtension1" class="form-label">No. of Days of Extension</label>
-                                    </div>
-                                    <div class="col-3">
-                                    <input type="number" class="form-control" id="timeExtension1" name="timeExtension1" onchange="calculateRevisedCompletionDate()"
->
-                                    </div>
-                                    <div class="col-3">
-                                        <label for="extensionReason1" class="form-label">Reason for Extension</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="text" class="form-control" id="extensionReason1" name="extensionReason1">
-                                    </div>
-                                    <div class="col-3 mt-2">
-                                        <label for="revisedExpiry1" class="form-label">Revised Expiry Date</label>
-                                    </div>
-                                    <div class="col-3 mt-2">
-                                        <input type="date" class="form-control" id="revisedExpiry1" name="revisedExpiry1" readonly>
-                                    </div>
-                                    <div class="col-3 mt-2">
-                                        <label for="revisedReason1" class="form-label">Reason for Revised Expiry</label>
-                                    </div>
-                                    <div class="col-3 mt-2">
-                                        <input type="text" class="form-control" id="revisedReason1" name="revisedReason1">
-                                    </div>
-                                    </div>
-                                </fieldset>
-                                </div>
-
                                 <!-- Add & Remove Time Extension Buttons -->
                                 <div class="row mb-2">
-                                <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-outline-primary btn-sm mr-1" onclick="addTimeExtension()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Time Extension">
-                                    <span class="fa-solid fa-square-plus"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastTimeExtension()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Last Time Extension">
-                                    <span class="fa-solid fa-circle-minus"></span>
-                                    </button>
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-outline-primary btn-sm mr-1" onclick="addTimeExtension()" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Time Extension">
+                                        <span class="fa-solid fa-square-plus"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastTimeExtension()" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Last Time Extension">
+                                        <span class="fa-solid fa-circle-minus"></span>
+                                        </button>
+                                    </div>
+                                </div>          
+                                <!-- Time Extension Section -->
+                                <div id="timeExtensionContainer">
+                                    <fieldset class="border p-2 mb-2" id="extensionFieldset1">
+                                        <legend class="float-none w-auto px-2 small">Time Extension 1</legend>
+                                        <div class="row" id="extensionRow1">
+                                            <div class="col-3">
+                                                <label for="timeExtension1" class="form-label">No. of Days of Extension</label>
+                                            </div>
+                                            <div class="col-3">
+                                                <input type="number" class="form-control" id="timeExtension1" name="timeExtension1" onchange="calculateRevisedCompletionDate()">
+                                            </div>
+                                            <div class="col-3 mt-2">
+                                                <label for="revisedExpiry1" class="form-label">Revised Expiry Date</label>
+                                            </div>
+                                            <div class="col-3">
+                                                <input type="date" class="form-control" id="revisedExpiry1" name="revisedExpiry1" readonly>
+                                            </div>
+                                            <div class="col-3">
+                                                <label for="extensionReason1" class="form-label">Reason for Extension</label>
+                                            </div>
+                                            <div class="col-9">
+                                                <textarea class="form-control" id="extensionReason1" name="extensionReason1" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                    </fieldset>
                                 </div>
-                                </div>
+
+                                
 
                                 <!-- New Target and Completion Dates -->
                                 <div id="newDatesSection" class="row mb-2" style="display: none;">
@@ -586,8 +580,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                              
                             </div>
                         </div>
                     </fieldset>
@@ -598,7 +590,6 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-2"></i>Save Project
                         </button>
-                    </div>
                     </div>
                 </form>
             </div>
@@ -615,7 +606,7 @@
         <script src="{{ asset('js/Projects/projects-actual_date-condition.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-currencyFormatting.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-dateValidation.js') }}"></script>
-       <script src="{{ asset('js/Projects/projects-restrictionsValue.js') }}"></script>
+        <script src="{{ asset('js/Projects/projects-restrictionsValue.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-suggestionBox.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-toggle.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-valueCalculations.js') }}"></script>

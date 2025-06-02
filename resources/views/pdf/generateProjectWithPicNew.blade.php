@@ -447,21 +447,32 @@ body {
 @endif
 
 
-<table style="width: 100%; margin-top: 30px; border-collapse: separate; border-spacing: 0 10px;">
-  <tr>
-    <td style="text-align: center; vertical-align: bottom; padding-bottom: 5px;">
-      <p style="margin: 0; font-weight: bold;">{{ $userName }}</p>
-      <span>Printed by</span>
-    </td>
-    <td style="text-align: center; vertical-align: bottom; padding-bottom: 5px;">
-      <p style="margin: 0; font-weight: bold;">{{ $userName }}</p>
-      <span>Reviewed by</span>
-    </td>
-    <td style="text-align: center; vertical-align: bottom; padding-bottom: 5px;">
-      <p style="margin: 0; font-weight: bold;">{{ $userName }}</p>
-      <span>Noted by</span>
-    </td>
-  </tr>
-</table>
+  <table style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 33%; vertical-align: top; font-size: 12px;">
+        <span>Prepared by</span>
+      </td>
+      <td style="width: 33%; vertical-align: top; font-size: 12px;">
+        <span>Reviewed by</span>
+      </td>
+      <td style="width: 33%; vertical-align: top; font-size: 12px;">
+        <span>Noted by</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 33%; vertical-align: top; font-size: 12px;">
+        <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $userName }}</p>
+        <span>Position</span>
+      </td>
+      <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
+        <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $reviewedBy }}</p>
+        <span>Position</span>
+      </td>
+      <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
+        <p style="text-decoration: underline; margin: 0 0 3px 0;">{{ $notedBy }}</p>
+        <span>Position</span>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
