@@ -109,14 +109,30 @@
 
                     {{-- Actual --}}
                     <td>
-                        <input type="text" class="form-control amount-input text-end" id="actual_{{ $key }}" name="actual_{{ $key }}"
-                              value="{{ $funds['actual_' . $key] ?? '' }}" >
+                      <input type="text" class="form-control amount-input text-end actual-input" id="actual_{{ $key }}" name="actual_{{ $key }}"
+                       value="{{ $funds['actual_' . $key] ?? '' }}">
+
                       </td>
                   @endforeach
 
-                  <tr class="fw-bold">
-                    <td>Total</td>
-                    <td><input type="text" class="form-control text-end" id="orig_total" name="orig_total" readonly></td>
+                  <tr class="fw-bold table-warning">
+                      <td>Total</td>
+                      <td>
+                          <input type="text" class="form-control text-end" id="orig_total" name="orig_total" readonly>
+                      </td>
+
+                      {{-- Dynamically render empty <td>s for each VO column --}}
+                      @php
+                          $voCount = count($variationOrders);
+                      @endphp
+                      @for ($i = 0; $i < $voCount; $i++)
+                          <td></td>
+                      @endfor
+
+                      {{-- Actual Total Cell --}}
+                      <td>   
+                        <input type="text" class="form-control text-end" id="actual_total" name="actual_total" readonly>
+                      </td>
                   </tr>
                 </tbody>
               </table>
@@ -157,32 +173,34 @@
                 <table class="table table-sm table-bordered text-center align-middle">
                   <thead>
                     <tr>
-                      <th style="width: 20%;">Date</th>
-                      <th style="width: 30%;">Particulars</th>
+                      <th style="width: 20%;">Particulars</th>
                       <th style="width: 20%;">Amount</th>
+                      <th style="width: 20%;">Retention Percentage</th>
+                      <th style="width: 20%;">Retention Amount</th>
                       <th style="width: 30%;">Remarks</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
+                      <td>Total Appropriation</td>
+                      <td><input type="text" class="form-control text-end" id="totalAppro" name="totalAppro"  value="{{ $funds['orig_appropriation'] ?? '' }}" readonly></td>
                       <td></td>
-                      <td>Contract Amount</td>
-                      <td><input type="text" class="form-control text-end" id="contract_amount" name="contract_amount" readonly></td>
                       <td></td>
                     </tr>
                     <tr>
-                      <td>
-                        <input type="date" class="form-control form-control-sm" name="dateMobilization"
-                              value="{{ $summary['mobilization']['date'] ?? '' }}">
-                      </td>
+                      <td>Contract Amount</td>
+                      <td><input type="text" class="form-control text-end" id="contract_amount" name="contract_amount" readonly></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
                       <td>
                         <div class="d-flex align-items-center">
                           <span class="fw-normal me-3">Mobilization</span>
                           <input type="number" max="15" min="0" step="0.01"
                                 class="form-control form-control-sm w-50"
                                 id="percentMobi" name="percentMobi"
-                                placeholder="0–15"  value="{{ $summary['mobilization']['percentMobi'] ?? '' }}"
-                               >
+                                placeholder="0–15"  value="{{ $summary['mobilization']['percentMobi'] ?? '' }}">
                           <span class="ms-1 text-muted small"><i class="fas fa-percentage"></i></span>
                         </div>
                       </td>
@@ -192,6 +210,16 @@
                               name="amountMobilization" id="amountMobilization"
                               value="{{ $summary['mobilization']['amount'] ?? '' }}">
                       </td>
+                      
+                      <td>
+                        <input type="text" class="form-control form-control-sm text-end"
+                              name="retentionMobiPercent" id="retentionMobiPercent"
+                              value="10%">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                              name="retentionMobiAmount" id="retentionMobiAmount">
+                      </td>
                       <td colspan="2">
                         <input type="text" class="form-control form-control-sm" name="remMobilization"
                               value="{{ $summary['mobilization']['remarks'] ?? '' }}">
@@ -199,41 +227,58 @@
                     </tr>
 
 
-                    <!-- Partial Billing Rows -->
                     @for ($i = 1; $i <= 5; $i++)
-                    <tr class="partial-billing billing-{{ $i }}" style="{{ $i > 1 ? 'display: none;' : '' }}">
-                      <td>
-                        <input type="date" class="form-control form-control-sm" name="partialBillings[{{ $i }}][date]"
-                              value="{{ $partial_billings[$i - 1]['date'] ?? '' }}">
-                      </td>
+                      @php
+                        $amount = $partial_billings[$i - 1]['amount'] ?? '';
+                        $remarks = $partial_billings[$i - 1]['remarks'] ?? '';
+                        $showRow = $i == 1 || !empty($amount);
+                      @endphp
+                      <tr class="partial-billing billing-{{ $i }}" style="{{ $showRow ? '' : 'display: none;' }}">
                       <td>{{ $i }}{{ $i == 1 ? 'st' : ($i == 2 ? 'nd' : ($i == 3 ? 'rd' : 'th')) }} Partial Billing</td>
                       <td>
                         <input type="text" class="form-control form-control-sm text-end expenditure-amount"
                               name="partialBillings[{{ $i }}][amount]" id="amountPartial{{ $i }}"
-                              value="{{ $partial_billings[$i - 1]['amount'] ?? '' }}">
+                              value="{{ $amount }}">
                       </td>
-                      <td colspan="2">
-                        <input type="text" class="form-control form-control-sm" name="partialBillings[{{ $i }}][remarks]"
-                              value="{{ $partial_billings[$i - 1]['remarks'] ?? '' }}">
-                      </td>
-                    </tr>
-                    @endfor
-
-                    <tr>
                       <td>
-                        <input type="date" class="form-control form-control-sm" name="dateFinal" value="{{ $summary['final']['date'] ?? '' }}">
+                        <input type="text" class="form-control form-control-sm text-end"
+                              name="partialBillings[{{ $i }}][retentionPercent]" id="retentionPartialPercent{{ $i }}"
+                              value="10%" readonly>
                       </td>
-                      <td>Final Billing</td>
                       <td>
                         <input type="text" class="form-control form-control-sm text-end expenditure-amount"
-                              name="amountFinal" id="amountFinal" value="{{ $summary['final']['amount'] ?? '' }}">
+                              name="partialBillings[{{ $i }}][retentionAmount]" id="retentionPartialAmount{{ $i }}">
                       </td>
                       <td colspan="2">
-                        <input type="text" class="form-control form-control-sm" name="remFinal" value="{{ $summary['final']['remarks'] ?? '' }}">
+                        <input type="text" class="form-control form-control-sm"
+                              name="partialBillings[{{ $i }}][remarks]"
+                              value="{{ $remarks }}">
                       </td>
                     </tr>
+                  @endfor
+
+                  <tr>
+                    <td>Final Billing</td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                            name="amountFinal" id="amountFinal" value="{{ $summary['final']['amount'] ?? '' }}">
+                    </td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end"
+                            name="retentionFinalPercent" id="retentionFinalPercent"
+                            value="10%" readonly>
+                    </td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                            name="retentionFinalAmount" id="retentionFinalAmount">
+                    </td>
+                    <td colspan="2">
+                      <input type="text" class="form-control form-control-sm"
+                            name="remFinal" value="{{ $summary['final']['remarks'] ?? '' }}">
+                    </td>
+                  </tr>
+
                     <tr>
-                      <td></td>
                       <td class="fw-bold">Balance</td>
                       <td id="contractBalance" class="fw-bold text-end">0.00</td>
                       <td></td>
@@ -241,7 +286,6 @@
 
                     <!-- ENGINEERING Table -->
                     <tr>
-                      <td></td>
                       <td>Engineering</td>
                       <td>
                         <input type="text" class="form-control form-control-sm text-end expenditure-amount"
@@ -260,7 +304,7 @@
 
                   <tr class="collapse" id="engDetails">
                     <td colspan="5">
-                    <table id="engineeringSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
+                      <table id="engineeringSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
                         <thead>
                           <tr>
                           <th>Date Period</th>
@@ -291,13 +335,14 @@
                             </tr>
                           @endforelse
                         </tbody>
+
+
                       </table>
                     </td>
                   </tr>
 
 
                   <tr>
-                    <td></td>
                     <td class="fw-bold">Engineering Balance</td>
                     <td class="fw-bold text-end" id="formEngineeringBalance" data-balance="0.00">₱0.00</td>
                    <td colspan="2"></td>
@@ -305,7 +350,6 @@
 
                   <!-- MQC TABLE -->
                   <tr>
-                    <td></td>
                     <td>MQC</td>
                     <td>
                       <input type="text" class="form-control form-control-sm text-end expenditure-amount"
@@ -356,18 +400,15 @@
                     </td>
                     </tr>
                     <tr>
-                    <td></td>
                     <td class="fw-bold">MQC Balance</td>
                     <td class="fw-bold text-end" id="formMqcBalance">0.00</td>
                     <td colspan="2"></td>
                   </tr>
                   <tr>
-                    <td></td>
                     <td>Total Expenditures</td>
                     <td><input type="text" class="form-control form-control-sm text-end" id="amountTotal" name="amountTotal"></td>
                   </tr>
                   <tr>
-                    <td></td>
                     <td>Total Savings</td>
                     <td><input type="text" class="form-control form-control-sm text-end" id="amountSavings" name="amountSavings"></td>
                   </tr>
@@ -441,73 +482,17 @@
 @include('admin.modals.Funds_Utilization.add-eng_mqc')
 
 @section('page-scripts')
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-  const percentInput = document.getElementById('percentMobi');
-  const amountInput = document.getElementById('amountMobilization');
-
-  if (!percentInput || !amountInput) return;
-
-  // When percent is cleared, clear amount
-  percentInput.addEventListener('input', () => {
-    const val = percentInput.value.trim();
-    if (val === '' || isNaN(parseFloat(val))) {
-      amountInput.value = '';
-    }
-  });
-
-  // When amount is cleared, clear percent
-  amountInput.addEventListener('input', () => {
-    const val = amountInput.value.replace(/₱|,/g, '').trim();
-    if (val === '' || isNaN(parseFloat(val))) {
-      percentInput.value = '';
-    }
-  });
-
-  const formatPeso = (value) => {
-    if (!value) return '';
-
-    // Strip all non-numeric and extra dots
-    value = value.replace(/[^0-9.]/g, '');
-
-    // Limit to one decimal point and two decimal places
-    const match = value.match(/^(\d{0,})(\.\d{0,2})?/);
-    const integer = match[1];
-    const decimal = match[2] || '';
-
-    // Add comma separators
-    const withCommas = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return '₱' + withCommas + decimal;
-  };
-
-  const unformatPeso = (value) => value.replace(/[^0-9.]/g, '');
-
-  const expenditureInputs = document.querySelectorAll('.expenditure-amount');
-
-  expenditureInputs.forEach(input => {
-    // Format on page load
-    if (input.value.trim() !== '') {
-      input.value = formatPeso(input.value);
-    }
-
-    input.addEventListener('input', function () {
-      const unformatted = unformatPeso(input.value);
-      input.value = formatPeso(unformatted);
-      // Always move caret to the end
-      input.setSelectionRange(input.value.length, input.value.length);
-    });
-  });
-
-});
-
-  </script>
 
 
+
+<script src="{{ asset('js/FundsUtilization/funds_utilization-percentMobi.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-addBreakdown.js') }}"></script>
+
+<script src="{{ asset('js/FundsUtilization/funds_utilization-format-amounts.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setCurrencyFormatting.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setvalue.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-valueLimit.js') }}"></script>
-<script src="{{ asset('js/FundsUtilization/add-set.js') }}"></script>
+<script src="{{ asset('js/FundsUtilization/funds_utilization-add-set.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-Totals.js') }}"></script>
 @endsection

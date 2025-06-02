@@ -12,7 +12,6 @@
                     <button class="btn btn-sm btn-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#addNewUserModal"
-                            onclick="restrictedActionAlert()"
                             style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
                         <i class="fas fa-plus-circle me-2"></i>Add New User
                     </button>
@@ -22,18 +21,18 @@
     </div>
 
 
-    <!-- <div class="row row-cols-1 row-cols-md-12 g-3"> -->
-    <!-- Password Request Sidebar -->
-    <!-- <div class="col-md-2 d-flex">
-    <div class="card w-100 d-flex flex-column">
-        <div class="card-header text-center fw-bold" style="font-size: 0.85rem;">
-            Password Requests
+    <div class="row row-cols-1 row-cols-md-12 g-3">
+    <!-- Password Request Sidebar
+    <div class="col-md-2 d-flex">
+        <div class="card w-100 d-flex flex-column">
+            <div class="card-header text-center fw-bold" style="font-size: 0.85rem;">
+                Password Requests
+            </div>
+            <div class="card-body p-2 flex-grow-1" style="overflow-y: auto;" id="passwordRequestsContainer">
+                <div class="text-muted text-center">Loading requests...</div>
+            </div>
         </div>
-        <div class="card-body p-2 flex-grow-1" style="overflow-y: auto;" id="passwordRequestsContainer">
-            <div class="text-muted text-center">Loading requests...</div>
-        </div>
-    </div>
-</div> -->
+    </div> -->
 
 
     <!-- Users Table Card -->
@@ -68,21 +67,27 @@
                                         <span class="badge bg-primary">{{ $user->role }}</span>
                                     </td>
                                     <td class="text-center">
-                                            <button type="button"
-                                                class="btn btn-outline-warning btn-sm"
-                                                onclick="restrictedActionAlert()"
-                                                data-id="{{ $user->id }}"
-                                                title="Change Role">
-                                                <i class="fas fa-user-tag"></i>
-                                            </button>
+                                    <button type="button"
+                                        class="btn btn-outline-warning btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#roleModal"
+                                        data-id="{{ $user->id }}"
+                                        title="Change Role"
+                                        id="changeRoleBtn-{{ $user->id }}"
+                                        name="changeRoleBtn">
+                                    <i class="fas fa-user-tag"></i>
+                                </button>
 
-                                            <button type="button"
-                                                class="btn btn-outline-info btn-sm"
-                                                onclick="restrictedActionAlert()"
-                                                data-id="{{ $user->id }}"
-                                                title="Change Password">
-                                                <i class="fas fa-key"></i>
-                                            </button>
+                                <button type="button"
+                                    class="btn btn-outline-info btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#changePassModal"
+                                    data-id="{{ $user->id }}"
+                                    title="Change Password"
+                                    id="changePassBtn-{{ $user->id }}">
+                                <i class="fas fa-key"></i>
+                            </button>
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -98,18 +103,9 @@
 </div>
 
 
+@include('admin.modals.Account.add-newUser')
+@include('admin.modals.Account.change-userRole')
 @include('admin.modals.Account.change-password')
 
 
 @endsection
-<script>
-    function restrictedActionAlert() {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Access Denied',
-            text: 'Only System Admins are allowed to perform this action.',
-            confirmButtonColor: '#3085d6',
-        });
-    }
-</script>
-

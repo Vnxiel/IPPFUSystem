@@ -1,174 +1,286 @@
 @extends('admin.layout')
 
-@section('title', 'Projects Page')
+@section('title', 'Dashboard Page')
 
-@section('content')
-<div class="container-fluid py-4" style="background-color: transparent;">
-    <!-- Header Section -->
-    <div class="card mb-1 border-0 shadow-lg" style="margin-top:75px;">
-        <div class="card-body p-2">
-            <div class="row g-3 ">
-                <!-- Filters Section - Left Sidebar -->
-                <div class="card border-0 shadow-sm mb-1">
-                    <div class="card-body p-1">
-                        <div class="d-flex align-items-center justify-content-between mb-1" style="color: #2c3e50; font-weight: 600;">
-                            <h6 class="mb-0">
-                                <i class="fas fa-filter me-2"></i>Filter Projects
-                            </h6>
-                        </div>
-
-                        <div class="row g-3">
-                        <!-- Location Dropdown -->
-                        <div class="col-md-2 position-relative">
-                        <input type="text" class="form-control" id="location_filter" name="location_filter" placeholder="Select or type location" autocomplete="off"/>
-  
-                            <div id="location_filter_dropdown"
-                                class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                @foreach($locations as $location)
-                                    <button type="button" class="list-group-item list-group-item-action"
-                                        onclick="selectLocation('{{ $location }}')">
-                                        {{ $location }}
-                                    </button>
+@section('content') 
+    <hr class="mx-2">
+    <div class="container-fluid px-3">
+        <div class="row">
+            <!-- Custom Filters -->
+            <div class="col-md-12">
+                <div class="filter-container">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                                <label for="location_filter">Location:</label>
+                                <select id="location_filter" class="form-select">
+                                    <option value="">All Location</option>
+                                    @foreach($municipalities as $municipalityOf)
+                                    <option value="{{ $municipalityOf->municipalityOf }}">{{ $municipalityOf->municipalityOf }}</option>
                                 @endforeach
-                            </div>
-                        </div>
-
-                       <!-- CONTRACTOR INPUT + DROPDOWN -->
-                        <div class="col-md-3 position-relative">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="contractor_filter" name="contractor"
-                                    placeholder="Select or enter contractor" autocomplete="off" />
-                            </div>
-                            <div id="contractorDropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                
-                                @foreach($contractors as $contractor)
-                                    <button type="button" class="list-group-item list-group-item-action"
-                                        onclick="selectContractor('{{ $contractor->name }}')">{{ $contractor->name }}</button>
-                                @endforeach
-                            </div>
-                        </div>
-
-
-                        <!-- Amount Filter -->
-                        <div class="col-md-2">
-                            <div class="">
-                                <input type="text" class="form-control" id="amount_filter" name="amount_filter"
-                                    placeholder="Enter amount"> <!-- Keep this non-empty -->
-                            </div>
-                        </div>
-
-                        <!-- Status Filter -->
-                        <div class="col-md-2">
-                            <div class="">
-                                <select id="status_filter" class="form-select">
-                                    <option value="">Select Status</option>
-                                    <option value="Not Started">Not Started</option>
-                                    <option value="Ongoing">Ongoing</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Discontinued">Discontinued</option>
-                                    <option value="Suspended">Suspended</option>
                                 </select>
-                            </div>
                         </div>
-                            
-                        <!-- Add Project -->
-                        <div class="col-md-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="ms-auto">
-                                    <button class="btn btn-sm btn-primary"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#addNewProjectModal"
-                                            style="background: linear-gradient(45deg, #2196F3, #1976D2); border: none; box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3); padding: 10px 20px; font-weight: 500;">
-                                        <i class="fas fa-plus-circle me-2"></i>Add New Project
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="col-md-3 mb-2">
+                            <label for="contractor_filter">Contractor:</label>
+                            <select id="contractor_filter" class="form-select" required>
+                                <option value="">All Contractors</option>
+                                @foreach($contractors as $contractor)
+                                    <option value="{{ $contractor->fullname }}">{{ $contractor->fullname }}</option>
+                                @endforeach
+                            </select>
                         </div>
-
-                        <div class="d-flex">
-                            <!-- View All Projects Checkbox -->
-                            <div class="form-check mx-2">
-                                <input class="form-check-input" type="checkbox" id="view_all_checkbox" onchange="filterProjects()">
-                                <label class="form-check-label fw-semibold mr-1" for="view_all_checkbox">
-                                    View All Projects
-                                </label>
-                            </div>
-                            <button type="button" id="clear_filters_btn" class="btn btn-sm btn-secondary">Clear</button>
+                        <div class="col-md-3 mb-2">
+                            <label for="amount_filter">Amount:</label>
+                            <input type="text" class="form-control" id="amount_filter" name="amount_filter" required>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label for="status_filter">Status:</label>
+                            <select id="status_filter" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="Active">Ongoing</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Pending">Discontinued</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-    <!-- Table Section - Main Content -->
-<div class="col-md-12">
-    <div class="card border-0 shadow-sm h-100">
-        <div class="card-body p-2">
-            <!-- Responsive Table Wrapper-->
-            <div class="table-responsive">
-                <table id="projects" 
-                       class="table table-hover table-bordered table-sm mb-0"
-                       style="width: 100%; font-size: 1rem;">
+    <div class="col-md-12 m-2">
+        <div class="row align-items-center">
+            <div class="col">
+                <h5 class="m-0">Projects</h5>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNewProjectModal">
+                    <span class="fa fa-plus"></span>&nbsp;Add New Project
+                </button>
+            </div>
+            <hr class="mt-2">
+        </div>
+        <div class="row">
+            <div class="table-container table-responsive">
+                <table id="projects" class="table table-striped table-hover table-bordered display nowrap"
+                    style="width:100%;">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 4%; white-space: nowrap;"><small>ID</small></th>
-                            <th style="width: 23%; white-space: nowrap;"><small>Project Title</small></th>
-                            <th style="width: 18%; white-space: nowrap;"><small>Location</small></th>
-                            <th style="width: 8%; white-space: nowrap;"><small>Status</small></th>
-                            <th style="width: 10%; white-space: nowrap;"><small>Contract Amount</small></th>
-                            <th style="width: 12%; white-space: nowrap;"><small>Contractor</small></th>
-                            <th style="width: 6%; white-space: nowrap;"><small>Contract Days</small></th>
-                            <th style="width: 15%; white-space: nowrap;"><small>Action</small></th>
+                            <th>Project Title</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Contract Amount</th>
+                            <th>Contractor</th>
+                            <th>Duration</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody class="small">
-                        @forelse($mappedProjects as $project)
-                            <tr data-id="{{ $project['id'] }}">
-                                <td class="text-muted">{{ $project['id'] }}</td>
-                                <td>{{ $project['title'] }}</td>
-                                <td>{{ $project['location'] }}</td>
-                                <td>{{ $project['status'] }}</td>
-                                <td>₱{{ $project['amount'] }}</td>
-                                <td>{{ $project['contractor'] }}</td>
-                                <td>{{ $project['duration'] }}</td>
-                                <td>
-                                    <div class="d-flex gap-1 flex-wrap">
-                                        <!-- View Button -->
-                                        <button class="btn btn-primary btn-sm overview-btn d-flex align-items-center gap-1"
-                                                data-id="{{ $project['id'] }}">
-                                            <i class="fas fa-eye fa-sm"></i>
-                                            <span class=" d-md-inline">View</span>
-                                        </button>
-                                        <!-- Report Button -->
-                                        <button type="button"
-                                                id="generateProjectBtn"
-                                                class="btn btn-info btn-sm d-flex align-items-center gap-1"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#generateProjectModal"
-                                                title="Generate/Download Report">
-                                            <i class="fa fa-download"></i>
-                                            <span class=" d-md-inline">Report</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="8" class="text-center text-muted">There are no currently added projects.</td>
-                            </tr>
-                        @endforelse
+                    <tbody>
+                        <tr>
+                            <td colspan="7" class="text-center">Loading projects...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-</div>
+    </div>
 
-   
-    @include('admin.modals.Projects.add-project')
-    @include('admin.modals.Projects.generate-report')
+    @include('admin.modals.add-project')
+ 
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadProjects(); // Load projects on page load
+            // Select all input fields with the "currency-input" class
+            let currencyInputs = document.querySelectorAll(".currency-input");
+
+            currencyInputs.forEach(input => {
+                input.addEventListener("input", function () {
+                    formatCurrencyInput(this);
+                });
+
+                input.addEventListener("blur", function () {
+                    formatCurrencyOnBlur(this);
+                });
+
+                //  Format existing values on page load
+                if (input.value.trim() !== "") {
+                    formatCurrencyOnBlur(input);
+                }
+            });
+
+            function formatCurrencyInput(input) {
+                // Remove non-numeric characters except decimal
+                let value = input.value.replace(/[^0-9.]/g, "");
+
+                // Ensure there's only one decimal point
+                let parts = value.split(".");
+                if (parts.length > 2) {
+                    value = parts[0] + "." + parts.slice(1).join("");
+                }
+
+                input.value = value;
+            }
+
+            function formatCurrencyOnBlur(input) {
+                let value = input.value.trim();
+
+                if (value === "" || isNaN(value)) {
+                    input.value = "";
+                    return;
+                }
+
+                let formattedValue = parseFloat(value).toLocaleString("en-PH", {
+                    style: "currency",
+                    currency: "PHP",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                input.value = formattedValue;
+            }
+        });
+
+        // Handle "Other Fund" Selection Toggle
+        function toggleOtherFund() {
+            var sourceOfFunds = document.getElementById("sourceOfFunds").value;
+            var otherFundContainer = document.getElementById("otherFundContainer");
+
+            if (sourceOfFunds === "Others") {
+                otherFundContainer.style.display = "block";
+            } else {
+                otherFundContainer.style.display = "none";
+            }
+        }
+
+        // Handle "Ongoing Status" Selection Toggle
+        function toggleOngoingStatus() {
+            let statusSelect = document.getElementById("projectStatus");
+            let ongoingContainer = document.getElementById("ongoingStatusContainer");
+            let ongoingDate = document.getElementById("ongoingDate");
+
+            if (statusSelect.value === "Ongoing") {
+                ongoingContainer.style.display = "block";
+
+                // Set the ongoingDate to today's date
+                let today = new Date().toISOString().split('T')[0];
+                ongoingDate.value = today;
+            } else {
+                ongoingContainer.style.display = "none";
+                ongoingDate.value = ""; // Clear the date when status is not "Ongoing"
+            }
+        }
+
+
+        // Add Event Listener for Project Status Dropdown
+        document.getElementById("projectStatus").addEventListener("change", function () {
+            toggleOngoingStatus();
+        });
+
+
+        // Handle "Other Fund" Dropdown Change
+        $('#sourceOfFunds').on('change', function () {
+            if ($(this).val() === 'Others') {
+                $('#otherFundContainer').slideDown(); // Show input with animation
+            } else {
+                $('#otherFundContainer').slideUp(); // Hide input with animation
+            }
+        });
+    </script>
+
+
+    <script>
+
+    </script>
+
+
+
+
+
+    <script>
+        //load the contractors name this is example only
+        const contractors = ['Kristine Joy Briones', 'Janessa Guillermo', 'CJenalyn Jumawan', 'Arjay Ordinario'];
+
+        function showSuggestions(query) {
+            const suggestionsBox = document.getElementById('suggestionsBox');
+            suggestionsBox.innerHTML = ''; // Clear previous suggestions
+
+            if (query.length > 0) {
+                const filteredContractors = contractors.filter(contractor => contractor.toLowerCase().includes(query
+                    .toLowerCase()));
+
+                if (filteredContractors.length > 0) {
+                    suggestionsBox.style.display = 'block';
+                    filteredContractors.forEach(contractor => {
+                        const item = document.createElement('a');
+                        item.href = '#';
+                        item.className = 'list-group-item list-group-item-action';
+                        item.textContent = contractor;
+                        suggestionsBox.appendChild(item);
+                    });
+                } else {
+                    suggestionsBox.style.display = 'none';
+                }
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        }
+
+
+        // Predefined list of municipalities in Nueva Vizcaya
+        const municipalities = [
+            'Alfonso Castañeda', 'Aritao', 'Bagabag', 'Bambang', 'Bayombong', 'Diadi',
+            'Dupax del Norte', 'Dupax del Sur', 'Kasibu', 'Kayapa', 'Quezon', 'Solano',
+            'Villaverde', 'Ambaguio', 'Santa Fe', 'Lamut'
+        ];
+
+        function showMunicipalitySuggestions(query) {
+            const suggestionsBox = document.getElementById('suggestionsBox');
+            suggestionsBox.innerHTML = ''; // Clear previous suggestions
+
+            if (query.length > 0) {
+                // Filter the municipalities based on the user input
+                const filteredMunicipalities = municipalities.filter(municipality => municipality.toLowerCase().includes(query
+                    .toLowerCase()));
+
+                if (filteredMunicipalities.length > 0) {
+                    suggestionsBox.style.display = 'block';
+                    filteredMunicipalities.forEach(municipality => {
+                        const item = document.createElement('a');
+                        item.href = '#';
+                        item.className = 'list-group-item list-group-item-action';
+                        item.textContent = municipality;
+                        item.onclick = function () {
+                            document.getElementById('projectLoc').value = municipality +
+                                ', Nueva Vizcaya'; // Auto-format the location
+                            suggestionsBox.style.display = 'none'; // Hide suggestions after selection
+                        };
+                        suggestionsBox.appendChild(item);
+                    });
+                } else {
+                    suggestionsBox.style.display = 'none';
+                }
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const contractorSelect = document.getElementById("projectContractor");
+            const othersContractorDiv = document.getElementById("othersContractorDiv");
+            const othersContractorInput = document.getElementById("othersContractor");
+
+            contractorSelect.addEventListener("change", function () {
+                if (this.value === "Others") {
+                    // Show the "Specify New Contractor" text box
+                    othersContractorDiv.style.display = "block";
+                } else {
+                    // Hide the "Specify New Contractor" text box if anything else is selected
+                    othersContractorDiv.style.display = "none";
+                    othersContractorInput.value = ""; // Clear input if not "Others"
+                }
+            });
+        });
+    </script>
+
 @endsection
