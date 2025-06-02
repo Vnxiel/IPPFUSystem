@@ -3,7 +3,7 @@
 @section('title', 'Funds Utilization')
 
 @section('content')
-<section class="container-fluid py-4">
+<div class="container-fluid py-4">
   <!-- Header -->
   <div class="row">
     <div class="col-12 d-flex align-items-center gap-2 mb-2" style="margin-top: 75px;">
@@ -21,8 +21,8 @@
       @csrf      
       <!-- Project Title Card -->
       <div class="card-header bg-light py-3">
-        <h5 class="card-title mb-0 text-primary">{{ $project['title'] ?? 'Project Title' }}</h5>
-      </div>
+        <h5 class="font-title-overview mb-0 text-uppercase card-title">{{ $project['title'] ?? 'Project Title' }}</h5>
+      </div> 
 
       <div class="card-body">
         <fieldset class="border rounded shadow-sm p-2 w-100 h-100 mb-2">
@@ -33,10 +33,15 @@
 
           <!-- Fund Source Section -->
           <div class="section mb-2">
-            <h5 class="section-title d-flex align-items-center gap-2 mb-2">
-              <i class="fas fa-money-bill-wave"></i>
-              Fund Source
-            </h5>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="section-title d-flex align-items-center gap-2 mb-0">
+                <i class="fas fa-money-bill-wave"></i>
+                Fund Source
+              </h5>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="addVOFields()">
+                <i class="fa-solid fa-plus"></i> Add Variation Order
+              </button>
+            </div>
             
             <div class="table-responsive">
               <table id="editableFundTable" class="table table-bordered table-hover align-middle">
@@ -138,37 +143,32 @@
               </table>
             </div>
 
-            <div class="text-end mt-3">
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="addVOFields()">
-                <i class="fa-solid fa-plus"></i> Add Variation Order
-              </button>
-            </div>
+            
         </div>
         <hr>
         <!-- Fund Utilization Summary Section -->
         <div class="section mb-1">
-          <h5 class="section-title d-flex align-items-center gap-2 mb-3">
-            <i class="fas fa-chart-pie"></i>
-            Fund Utilization Summary
-          </h5>
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+            <h5 class="section-title d-flex align-items-center gap-2 mb-0">
+              <i class="fas fa-chart-pie"></i>
+              Fund Utilization Summary
+            </h5>
 
-          <!-- Action Buttons -->
-          <div class="d-flex flex-wrap gap-2 mb-4">
-            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#entryModal">
-              <i class="fas fa-plus-circle"></i> Add Engineering/MQC Entry
-            </button>
-            <button id="btnAddBilling" type="button" class="btn btn-outline-success btn-sm">
-              <i class="fas fa-file-invoice-dollar"></i> Add Billing
-            </button>
-            <button id="btnRemoveBilling" type="button" class="btn btn-outline-danger btn-sm">
-              <i class="fas fa-minus-circle"></i> Remove Billing
-            </button>
+            <div class="d-flex flex-wrap gap-2 text-end">
+              <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#entryModal">
+                <i class="fas fa-plus-circle"></i> Add Engineering/MQC Entry
+              </button>
+              <button id="btnAddBilling" type="button" class="btn btn-outline-success btn-sm">
+                <i class="fas fa-file-invoice-dollar"></i> Add Billing
+              </button>
+              <button id="btnRemoveBilling" type="button" class="btn btn-outline-danger btn-sm">
+                <i class="fas fa-minus-circle"></i> Remove Billing
+              </button>
+            </div>
           </div>
 
-        
-
           <!-- Revised Contract Summary Card -->
-            <div class="card border shadow-sm mb-4">
+            <div class="card border shadow-sm mb-1">
               <div class="card-body">
                 <table class="table table-sm table-bordered text-center align-middle">
                   <thead>
@@ -335,12 +335,9 @@
                             </tr>
                           @endforelse
                         </tbody>
-
-
                       </table>
                     </td>
                   </tr>
-
 
                   <tr>
                     <td class="fw-bold">Engineering Balance</td>
@@ -366,8 +363,8 @@
                     </td>
                   </tr>
 
-                    <tr class="collapse" id="mqcDetails">
-                      <td colspan="5">
+                  <tr class="collapse" id="mqcDetails">
+                    <td colspan="5">
                       <table id="mqcSubTable" class="table table-sm table-bordered text-center mb-0 w-100">
                         <thead>
                           <tr>
@@ -398,8 +395,8 @@
                         </tbody>
                       </table>
                     </td>
-                    </tr>
-                    <tr>
+                  </tr>
+                  <tr>
                     <td class="fw-bold">MQC Balance</td>
                     <td class="fw-bold text-end" id="formMqcBalance">0.00</td>
                     <td colspan="2"></td>
@@ -419,23 +416,27 @@
           <!-- Add this somewhere in your Blade HTML template -->
           <div id="projectMeta" data-project-id="{{ $project['id'] ?? 0 }}"></div>
           </div>
-        </div>
+      
+          <div class="row mt-3">
+            <div class="col d-flex justify-content-between align-items-center">
+              <!-- Back Button -->
+              <a href="{{ url('/systemAdmin/overview/' . $project['id']) }}" 
+                class="btn btn-outline-secondary btn-sm">
+                <i class="fa fa-arrow-left me-1"></i> Back
+              </a>
 
-            <div class="row text-end mt-2">
-              <div class="text-end mt-4">
-                <button type="button" id="submitFundsUtilization" 
-                        class="btn btn-primary px-4">
-                  <i class="fas fa-save me-2"></i>
-                  Save Changes
-                </button>
-              </div>
+              <!-- Save Button -->
+              <button type="button" id="submitFundsUtilization" 
+                      class="btn btn-primary px-4">
+                <i class="fas fa-save me-2"></i> Save Changes
+              </button>
             </div>
-            </div>
-            </fieldset>
-            </div>
-            </form>
-            </div>
-      </section>
+          </div>
+        </fieldset>
+      </div>
+    </form>
+  </div>
+</div>
           
 
 

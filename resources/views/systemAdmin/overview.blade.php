@@ -922,7 +922,6 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-
                                             </div>
                                         </fieldset>
                                     </div>
