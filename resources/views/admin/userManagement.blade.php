@@ -107,7 +107,7 @@
         Swal.fire({
             icon: 'warning',
             title: 'Access Denied',
-            text: 'Only System Admins are allowed to perform this action.',
+            text: 'Only System Admin is allowed to perform this action.',
             confirmButtonColor: '#3085d6',
         });
     }

@@ -247,7 +247,7 @@ protected function logUserAction(Request $request, $title, $actionPrefix)
         ->orderBy('source_of_funds')
         ->get();
 
-        $projectEA = Project::select('engineer_name')
+        $engineer_name = Project::select('engineer_name')
         ->distinct()
         ->whereNotNull('engineer_name')
         ->orderBy('engineer_name')
@@ -272,7 +272,7 @@ protected function logUserAction(Request $request, $title, $actionPrefix)
         ];
     });
 
-    return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'projectEA'));
+    return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'engineer_name'));
 }
 
 public function fetchTrashedProjects()
@@ -720,7 +720,7 @@ public function fetchTrashedProjects()
                     // ---Time Extension Update / Create---
                             if ($request->has('time_extensions')) {
                                 foreach ($request->input('time_extensions') as $index => $ext) {
-                                    if (empty($ext['days']) && empty($ext['reason']) && empty($ext['revised']) && empty($ext['revised_reason'])) {
+                                    if (empty($ext['days']) && empty($ext['reason']) && empty($ext['revised'])) {
                                         continue; // Skip empty rows
                                     }
 
@@ -733,7 +733,6 @@ public function fetchTrashedProjects()
                                             'time_extension' => $ext['days'],
                                             'time_extension_reason' => $ext['reason'],
                                             'revised_expiry' => $ext['revised'],
-                                            'revised_expiry_reason' => $ext['revised_reason'],
                                             'new_target_completion_date' => $request->input('revised_target_date'),
                                         ]
                                     );

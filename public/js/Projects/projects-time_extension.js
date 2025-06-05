@@ -58,12 +58,7 @@ function addTimeExtension() {
             <div class="col-3 mt-2">
                 <input type="date" class="form-control" id="revisedExpiry${extensionCounter}" name="revisedExpiry${extensionCounter}" readonly>
             </div>
-            <div class="col-3 mt-2">
-                <label for="revisedReason${extensionCounter}" class="form-label">Reason for Revised Expiry</label>
-            </div>
-            <div class="col-3 mt-2">
-                <input type="text" class="form-control" id="revisedReason${extensionCounter}" name="revisedReason${extensionCounter}">
-            </div>
+           
         </div>
     `;
 

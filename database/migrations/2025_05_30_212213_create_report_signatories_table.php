@@ -22,6 +22,8 @@ return new class extends Migration
 
             $table->string('reviewed_by')->nullable();
             $table->string('noted_by')->nullable();
+            $table->string('reviewed_by_position')->nullable();
+            $table->string('noted_by_position')->nullable();
             $table->timestamps();
         });
     }

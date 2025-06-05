@@ -44,7 +44,6 @@ $(document).ready(function () {
                 days: $(`#timeExtension${i}`).val(),
                 reason: $(`#extensionReason${i}`).val(),
                 revised: $(`#revisedExpiry${i}`).val(),
-                revised_reason: $(`#revisedReason${i}`).val()
             };
         
             timeExtensions.push(extension);

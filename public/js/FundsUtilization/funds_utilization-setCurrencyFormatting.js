@@ -122,6 +122,17 @@ function formatInputLive(input) {
       });
     });
   });
-  
+
+
+  function formatWithCommas(value) {
+    const number = parseFloat(value.toString().replace(/[₱,]/g, ''));
+    return isNaN(number) ? '' : number.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+  document.querySelector('input[name="TotalMqc"]').value = formatWithCommas(document.querySelector('input[name="TotalMqc"]').value);
+  document.querySelector('input[name="TotalEng"]').value = formatWithCommas(document.querySelector('input[name="TotalEng"]').value);
+
   
   

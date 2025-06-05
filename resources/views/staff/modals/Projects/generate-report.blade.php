@@ -42,3 +42,11 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+@section('page-scripts')
+        
+@endsection

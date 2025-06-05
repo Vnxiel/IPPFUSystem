@@ -31,10 +31,14 @@ return new class extends Migration
             $table->decimal('actual_bid', 15, 2)->nullable();
             $table->decimal('actual_contingency', 15, 2)->nullable();
             $table->decimal('actual_appropriation', 15, 2)->nullable();
+
          
             // Summary and Partial Billings stored as JSON-like text
             $table->longText('summary')->nullable();
             $table->longText('partial_billings')->nullable();
+            
+            $table->date('financial_completion_date')->nullable();
+          
 
             $table->timestamps();
         });

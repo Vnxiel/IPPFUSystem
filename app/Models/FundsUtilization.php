@@ -31,6 +31,7 @@ class FundsUtilization extends Model
         'partial_billings',
         'total_expenditure',
         'total_savings',
+        'financial_completion_date',
     ];
 
     protected $casts = [

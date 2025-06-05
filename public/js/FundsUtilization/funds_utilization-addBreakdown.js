@@ -1,3 +1,31 @@
+function updateEngineeringTotalFromTable() {
+  let total = 0;
+  document.querySelectorAll('#engineeringSubTable tbody td[data-amount]').forEach(td => {
+    const rawAmount = td.getAttribute('data-amount')?.replace(/,/g, '');
+    const parsed = parseFloat(rawAmount);
+    total += isNaN(parsed) ? 0 : parsed;
+  });
+
+  const totalEngInput = document.querySelector('input[name="TotalEng"]');
+  if (totalEngInput) {
+    totalEngInput.value = total.toLocaleString('en-US', { style: 'currency', currency: 'PHP' });
+  }
+}
+
+function updateMqcTotalFromTable() {
+  let total = 0;
+  document.querySelectorAll('#mqcSubTable tbody td[data-amount]').forEach(td => {
+    const rawAmount = td.getAttribute('data-amount')?.replace(/,/g, '');
+    const parsed = parseFloat(rawAmount);
+    total += isNaN(parsed) ? 0 : parsed;
+  });
+
+  const totalMqcInput = document.querySelector('input[name="TotalMqc"]');
+  if (totalMqcInput) {
+    totalMqcInput.value = total.toLocaleString('en-US', { style: 'currency', currency: 'PHP' });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const entryAmountInput = document.getElementById("entryAmount");
   const entries = [];
@@ -136,13 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const pending = getPendingTotal(type);
     const available = orig - actual - pending;
 
-    if (amount > available) {
-      return Swal.fire({
-        icon: "error",
-        title: `Insufficient ${type.toUpperCase()} funds.`,
-        text: `You only have ₱${available.toLocaleString(undefined, { minimumFractionDigits: 2 })} remaining.`
-      });
-    }
 
     const newEntry = { type, name, month, date_from, date_to, period, amount };
 
@@ -169,18 +190,18 @@ document.addEventListener("DOMContentLoaded", function () {
       mqc: getPendingTotal('mqc')
     };
 
-    for (const type of ['engineering', 'mqc']) {
-      const orig = getOrigFunds(type);
-      const actual = getActualFunds(type);
-      const pending = totalByType[type];
-      if ((actual + pending) > orig) {
-        return Swal.fire({
-          icon: "error",
-          title: `${type.toUpperCase()} limit exceeded.`,
-          text: `You only have ₱${(orig - actual).toLocaleString(undefined, { minimumFractionDigits: 2 })} remaining.`
-        });
-      }
-    }
+    // for (const type of ['engineering', 'mqc']) {
+    //   const orig = getOrigFunds(type);
+    //   const actual = getActualFunds(type);
+    //   const pending = totalByType[type];
+    //   if ((actual + pending) > orig) {
+    //     return Swal.fire({
+    //       icon: "error",
+    //       title: `${type.toUpperCase()} limit exceeded.`,
+    //       text: `You only have ₱${(orig - actual).toLocaleString(undefined, { minimumFractionDigits: 2 })} remaining.`
+    //     });
+    //   }
+    // }
 
     $.ajax({
       headers: {
@@ -211,6 +232,9 @@ document.addEventListener("DOMContentLoaded", function () {
               actualInput.value = newActual.toLocaleString(undefined, { minimumFractionDigits: 2 });
             });
 
+              updateEngineeringTotalFromTable();
+              updateMqcTotalFromTable();
+
             entries.length = 0;
             renderTable();
             updateBalances();
@@ -226,21 +250,28 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function updateAmountFields() {
-    const engineeringValue = document.getElementById('actual_engineering')?.value || '';
-    const mqcValue = document.getElementById('actual_mqc')?.value || '';
-    const contingencyValue = document.getElementById('actual_contingency')?.value || '';
-
+    const engineeringValue = parseAmount(document.getElementById('actual_engineering')?.value || '0');
+    const mqcValue = parseAmount(document.getElementById('actual_mqc')?.value || '0');
+    const contingencyValue = parseAmount(document.getElementById('actual_contingency')?.value || '0');
+  
     const amountEngInput = document.querySelector('input[name="amountEng"]');
-    if (amountEngInput) amountEngInput.value = engineeringValue;
-
+    if (amountEngInput) {
+      amountEngInput.value = engineeringValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+  
     const amountMqcInput = document.querySelector('input[name="amountMqc"]');
-    if (amountMqcInput) amountMqcInput.value = mqcValue;
-
+    if (amountMqcInput) {
+      amountMqcInput.value = mqcValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+  
     const amountContingencyInput = document.querySelector('input[name="amountContingency"]');
-    if (amountContingencyInput) amountContingencyInput.value = contingencyValue;
-
+    if (amountContingencyInput) {
+      amountContingencyInput.value = contingencyValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+  
     updateBalances();
   }
+  
 
   function updateEngineeringBalance() {
     const orig = parseAmount(document.getElementById('orig_engineering')?.value);
@@ -261,9 +292,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateMqcBalance() {
-    const origRaw = document.getElementById('orig_mqc')?.value || '0';
+    const origRaw = document.getElementById('orig_mqc')?.value || '0.00';
     const orig = parseAmount(origRaw);
-    const actualRaw = document.getElementById('actual_mqc')?.value || '0';
+    const actualRaw = document.getElementById('actual_mqc')?.value || '0.00';
     const actual = parseAmount(actualRaw);
     const balance = orig - actual;
 

@@ -6,15 +6,40 @@ function getSanitizedValue(input) {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  //total appropriation display
   const origApproInput = document.getElementById('orig_appropriation');
   const totalApproOutput = document.getElementById('totalAppro');
-
-  if (origApproInput && totalApproOutput) {
-    origApproInput.addEventListener('input', function () {
-      totalApproOutput.value = origApproInput.value;
+  
+  function formatWithCommasAndDecimals(number) {
+    return number.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
   }
+  
+  // Format on page load if value exists
+  window.addEventListener('DOMContentLoaded', function () {
+    if (totalApproOutput && totalApproOutput.value) {
+      const rawValue = totalApproOutput.value.replace(/,/g, '');
+      const numberValue = parseFloat(rawValue);
+      if (!isNaN(numberValue)) {
+        totalApproOutput.value = formatWithCommasAndDecimals(numberValue);
+      }
+    }
+  });
+  
+  if (origApproInput && totalApproOutput) {
+    origApproInput.addEventListener('input', function () {
+      const rawValue = origApproInput.value.replace(/,/g, '');
+      const numberValue = parseFloat(rawValue);
+      if (!isNaN(numberValue)) {
+        totalApproOutput.value = formatWithCommasAndDecimals(numberValue);
+      } else {
+        totalApproOutput.value = '';
+      }
+    });
+  }
+  
+
 
 
 
@@ -179,26 +204,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   
     const finalInput = document.getElementById('amountFinal');
-    const finalAmount = Math.max(0, contractAmount - sum);
+    let finalAmount = Math.max(0, contractAmount - sum);
+  
+    // Round to 2 decimal places
+    finalAmount = Math.round(finalAmount * 100) / 100;
+  
     if (finalInput) finalInput.value = formatNumber(finalAmount);
   
-    const balance = contractAmount - (sum + finalAmount);
-  
-    if (balance < 0 && triggerInput) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Contract Balance',
-        text: 'The total amount exceeds the contract amount. Please adjust your inputs.',
-      }).then(() => {
-        triggerInput.value = '';
-        triggerInput.focus();
-      });
-      return;
-    }
+    let balance = contractAmount - (sum + finalAmount);
+    
+    // Round to 2 decimal places
+    balance = Math.round(balance * 100) / 100;
   
     if (balanceDisplay) balanceDisplay.textContent = formatNumber(Math.max(0, balance));
     if (contractAmountInput) contractAmountInput.value = formatNumber(contractAmount);
   }
+  
   
   inputIds.forEach(id => {
     const input = document.getElementById(id);
@@ -343,4 +364,34 @@ function updateBalances() {
 }
 
 updateBalances(); 
+
+document.addEventListener('DOMContentLoaded', function () {
+  function updateEngineeringTotal() {
+    const amountEngInput = document.getElementById('amountEng');
+    const totalEngInput = document.querySelector('input[name="TotalEng"]');
+    
+    const amount = parseAmount(amountEngInput.value);
+    totalEngInput.value = formatAmount(amount);
+  }
+  
+  function updateMqcTotal() {
+    const amountMqcInput = document.getElementById('amountMqc');
+    const totalMqcInput = document.querySelector('input[name="TotalMqc"]');
+    
+    const amount = parseAmount(amountMqcInput.value);
+    totalMqcInput.value = formatAmount(amount);
+  }
+  
+  // Call these when page loads to initialize totals
+  updateEngineeringTotal();
+  updateMqcTotal();
+  
+  // If amountEng or amountMqc are dynamically updated via JS,
+  // call updateEngineeringTotal() and updateMqcTotal() after those updates.
+  
+  // Example if they become editable or change, add event listeners:
+  document.getElementById('amountEng')?.addEventListener('input', updateEngineeringTotal);
+  document.getElementById('amountMqc')?.addEventListener('input', updateMqcTotal);
+  
+});
 

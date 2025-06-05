@@ -492,7 +492,6 @@ function checkOrderInputs() {
 
 // Trigger check on load and on input
 window.addEventListener('DOMContentLoaded', checkOrderInputs);
-document.getElementById('timeExtension').addEventListener('input', checkOrderInputs);
 document.querySelector('input[name^="suspensionOrderNo"]').addEventListener('input', checkOrderInputs);
 
 
@@ -554,12 +553,12 @@ official_starting_date.addEventListener("change", () => {
     enforceSuspensionDateConstraints();
 });
 
-suspensionDate.addEventListener("change", () => {
-    validateSuspensionAndResumption();
-    enforceSuspensionDateConstraints();
-});
+// suspensionDate.addEventListener("change", () => {
+//     validateSuspensionAndResumption();
+//     enforceSuspensionDateConstraints();
+// });
 
-resumeDate.addEventListener("change", () => {
-    validateSuspensionAndResumption();
-    enforceSuspensionDateConstraints();
-});
+// resumeDate.addEventListener("change", () => {
+//     validateSuspensionAndResumption();
+//     enforceSuspensionDateConstraints();
+// });

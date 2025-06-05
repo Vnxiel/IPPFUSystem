@@ -95,7 +95,12 @@ class FundsUtilizationController extends Controller
     
             // Check if fund utilization already exists
             $fundUtilization = FundsUtilization::where('project_id', $request->project_id)->first();
-    
+            // Extract financial_completion_date from the request (make sure your front-end sends this)
+            $financialCompletionDate = $request->input('financial_completion_date');
+            $financialCompletionDate = \Carbon\Carbon::parse($financialCompletionDate)->format('Y-m-d');
+
+            \Log::info('Financial Completion Date:', ['financial_completion_date' => $financialCompletionDate]);
+
             if ($fundUtilization) {
                 // Update existing record
                 $fundUtilization->update([
@@ -117,6 +122,8 @@ class FundsUtilizationController extends Controller
                     'totalSavings' => $this->cleanMoney($fundData['total_savings'] ?? null),
                     'summary' => $formattedSummary,
                     'partial_billings' => $formattedBillings,
+                    'financial_completion_date' => $financialCompletionDate,
+
                     'updated_at' => now(),
                 ]);
             } else {
@@ -141,6 +148,8 @@ class FundsUtilizationController extends Controller
                     'totalSavings' => $this->cleanMoney($fundData['total_savings'] ?? null),
                     'summary' => $formattedSummary,
                     'partial_billings' => $formattedBillings,
+                    'financial_completion_date' => $financialCompletionDate,
+
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -326,7 +335,7 @@ public function getFundsUtilization(Request $request, $project_id)
                 'orig_abc', 'orig_contract_amount', 'orig_engineering', 'orig_mqc',
                 'orig_contingency', 'orig_bid', 'orig_appropriation',
                 'actual_abc', 'actual_contract_amount', 'actual_engineering',
-                'actual_mqc', 'actual_contingency', 'actual_bid', 'actual_appropriation',
+                'actual_mqc', 'actual_contingency', 'actual_bid', 'actual_appropriation',  'financial_completion_date', 
             ]);
 
             // JSON decode with fallback

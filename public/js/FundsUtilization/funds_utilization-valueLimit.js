@@ -3,14 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return parseFloat((value || '0').replace(/[₱,]/g, '')) || 0;
   }
 
-  function parseBalance(id) {
-    const el = document.getElementById(id);
-    if (!el) return 0;
-    const raw = el.getAttribute('data-balance');
-    return parseFloat(raw) || 0;
-  }
-  
-
   function showAlert(message, icon = 'warning') {
     Swal.fire({
       toast: true,
@@ -46,20 +38,40 @@ document.addEventListener('DOMContentLoaded', function () {
     { label: 'Appropriation', ids: ['vo_appropriation_1', 'actual_appropriation'] }
   ];
 
+  const origAppropriationInput = document.getElementById('orig_appropriation');
+
   fieldGroups.forEach(group => {
     group.ids.forEach(id => {
       const input = document.getElementById(id);
       if (input) {
         input.addEventListener('blur', function () {
-          const appropriationValue = parseCurrency(document.getElementById('orig_appropriation').value);
-          const inputValue = parseCurrency(input.value);
+          const appropriationValue = parseCurrency(origAppropriationInput.value);
 
-          if (inputValue > appropriationValue) {
-            console.warn(`✖ ${group.label} [${id}] exceeds appropriation`);
+          // Check if any field in this group exceeds appropriation value
+          let exceeded = false;
+          group.ids.forEach(fieldId => {
+            const fieldEl = document.getElementById(fieldId);
+            if (!fieldEl) return;
+
+            const fieldValue = parseCurrency(fieldEl.value);
+            if (fieldValue > appropriationValue) {
+              exceeded = true;
+            }
+          });
+
+          if (exceeded) {
             showError(group.label);
-            input.value = '';
-          } else {
-            console.log(`✔ ${group.label} [${id}] is within limit`);
+
+            // Clear all fields in this group that exceed appropriation value
+            group.ids.forEach(fieldId => {
+              const fieldEl = document.getElementById(fieldId);
+              if (!fieldEl) return;
+
+              const fieldValue = parseCurrency(fieldEl.value);
+              if (fieldValue > appropriationValue) {
+                fieldEl.value = '';
+              }
+            });
           }
         });
       }
@@ -127,8 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showAlert('Please select entry type.', 'info');
         return;
       }
-    
-    
+
       // Allow adding entry logic here
     });
   }

@@ -205,8 +205,6 @@ class SystemAdminManager extends Controller
 
         $user = User::find($request->user_id);
         $user->password = Hash::make($request->new_password);
-        $user->request_pass = 0;
-        $user->reason = null;
         $user->save();
 
         \Log::info('Starting password change for user: ' . $request->user_id);

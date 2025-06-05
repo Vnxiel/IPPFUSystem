@@ -11,6 +11,7 @@ use App\Models\FundsUtilization;
 use App\Models\VariationOrder;
 use App\Models\ReportSignatory;
 use App\Models\ProjectTimeExtension;
+use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Log;
 
 class GenerateProjectReport extends Controller
@@ -28,6 +29,31 @@ class GenerateProjectReport extends Controller
             }
             if ($project->firm_name === 'Others') {
                 $project->firm_name = $project->othersContractor;
+            }
+
+            // ✅ Activity logging
+            if (session()->has('loggedIn')) {
+                $sessionData = session()->get('loggedIn');
+                $reportType = $type === 'timeline' ? 'Timeline Report' : 'Project Report';
+                $action = "Generated {$reportType} for '{$project->title}'";
+
+                $request->session()->put('GeneratedReport', [
+                    'user_id' => $sessionData['user_id'],
+                    'ofmis_id' => $sessionData['ofmis_id'],
+                    'performed_by' => $sessionData['performed_by'],
+                    'role' => $sessionData['role'],
+                    'action' => $action,
+                ]);
+
+                Log::info("User action logged: " . json_encode($request->session()->get('GeneratedReport')));
+
+                (new ActivityLogs)->userAction(
+                    $sessionData['user_id'],
+                    $sessionData['ofmis_id'],
+                    $sessionData['performed_by'],
+                    $sessionData['role'],
+                    $action
+                );
             }
 
             $description = ProjectDescription::where('project_id', $project_id)
@@ -65,10 +91,9 @@ class GenerateProjectReport extends Controller
                 ->pluck('file_name')
                 ->toArray();
 
-
             $user = auth()->user();
+            $userPosition = $user->position ?? 'Unknown Position';
 
-            // Convert images to base64 for reliable DomPDF embedding
             $projectFiles = array_map(function ($file_name) {
                 $path = storage_path('app/public/project_files/' . $file_name);
                 if (file_exists($path)) {
@@ -86,23 +111,23 @@ class GenerateProjectReport extends Controller
 
             Log::info('Base64-encoded image count: ' . count($projectFiles));
 
-        // Determine which view to use based on the report type
-        $view = match ($type) {
-            'timeline' => 'pdf.timelineReport',
-            'data' => $request->boolean('with_pictures') ? 'pdf.generateProjectWithPicNew' : 'pdf.generateProject',
-            default => 'pdf.generateProject'
-        };
+            $type = $request->input('type', 'data'); // fallback if missing
+            $withPictures = $request->boolean('with_pictures');
 
-            // Fetch signatories (Reviewed by, Noted by)
+            $view = match ($type) {
+                'timeline' => $withPictures ? 'pdf.timelineReportWithPicNew' : 'pdf.timelineReport',
+                'data' => $withPictures ? 'pdf.generateProjectWithPicNew' : 'pdf.generateProject',
+                default => 'pdf.generateProject',
+            };
+
             $signatory = ReportSignatory::where('project_id', $project_id)->first();
             $reviewedBy = $signatory->reviewed_by ?? '';
+            $reviewedByPosition = $signatory->reviewed_by_position ?? '';
             $notedBy = $signatory->noted_by ?? '';
+            $notedByPosition = $signatory->noted_by_position ?? '';
 
-            //time extension
-            $timeExtensions = ProjectTimeExtension::where('project_id', $project_id)
-            ->get();
+            $timeExtensions = ProjectTimeExtension::where('project_id', $project_id)->get();
 
-            // Generate PDF
             $pdf = Pdf::loadView($view, [
                 'project' => $project,
                 'description' => $description,
@@ -111,10 +136,14 @@ class GenerateProjectReport extends Controller
                 'projectVariationOrder' => $projectVariationOrder,
                 'projectFiles' => $projectFiles,
                 'userName' => $user ? $user->fullname : 'Unknown User',
+                'userPosition' => $userPosition,
                 'reviewedBy' => $reviewedBy,
+                'reviewed_by_position' => $reviewedByPosition,
                 'notedBy' => $notedBy,
+                'noted_by_position' => $notedByPosition,
                 'printedAt' => now()->format('F j, Y g:i A'),
-            ])->setPaper([0, 0, 612, 936], 'portrait');
+            ])
+            ->setPaper([0, 0, 612, 936], 'portrait');
 
             $sanitizedTitle = preg_replace('/[\/\\\\]/', '_', $project->title);
             return $pdf->stream("Project_{$sanitizedTitle}.pdf");

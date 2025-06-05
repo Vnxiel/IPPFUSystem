@@ -237,30 +237,63 @@
                                         <table class="table table-sm table-hover mb-0">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th>Progress</th>
-                                                    <th>Percentage</th>
-                                                    <th>Date</th>
+                                                    <th>Billing Particulars</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {{-- Assuming you have a separate $financialStatus array --}}
-                                                @if (!empty($financialStatus) && is_array($financialStatus))
-                                                    @foreach ($financialStatus as $status)
+                                                {{-- Partial Billings --}}
+                                                
+                                                @if (!empty($project['partial_billings']))
+                                                    @php
+                                                        $partialBillings = $project['partial_billings'] ?? [];
+                                                    @endphp
+                                                    @foreach ($partialBillings as $index => $billing)
+                                                        @php
+                                                            $amount = $billing['amount'] ?? '';
+                                                            if (!$amount) continue;
+                                                            $remarks = $billing['remarks'] ?? null;
+                                                            $label = ($index + 1) . match($index + 1) {
+                                                                1 => 'st', 2 => 'nd', 3 => 'rd', default => 'th',
+                                                            } . ' Partial Billing';
+                                                        @endphp
                                                         <tr>
-                                                            <td>{{ $status['progress'] }}</td>
-                                                            <td>{{ $status['percentage'] }}%</td>
-                                                            <td>{{ $status['date'] }}</td>
+                                                            <td>{{ $label }}</td>
+                                                            <td>{{ number_format((float) $amount, 2) }}</td>
+
+
+                                                            <td>
+                                                                <span class="{{ $remarks === 'Release' ? 'text-success' : 'text-muted' }}">
+                                                                    {{ $remarks === 'Release' ? 'Released' : 'Not Released' }}
+                                                                </span>
+                                                            </td>
                                                         </tr>
                                                     @endforeach
-                                                @else
-                                                    <tr>
-                                                        <td colspan="3" class="text-center text-muted">No financial progress data available.</td>
-                                                    </tr>
                                                 @endif
+
+
+                                                {{-- Final Billing --}}
+                                                @php
+                                                
+                                                    $summary = $project['summary'] ?? [];
+                                                    $finalAmount = $summary['final']['amount'] ?? '';
+                                                    $finalRemarks = $summary['final']['remarks'] ?? null;
+                                                @endphp
+                                                <tr>
+                                                    <td>Final Billing</td>
+                                                    <td>{{ number_format((float) $finalAmount, 2) }}</td>
+                                                    <td>
+                                                         <span class="{{ strtolower($finalRemarks) === 'release' ? 'text-success' : 'text-muted' }}">
+                                                            {{ strtolower($finalRemarks) === 'release' ? 'Released' : 'Not Released' }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+
 
                             </div>
 
@@ -527,14 +560,14 @@
                                                     </div>
                                                 @endif
 
-                                                @if (!empty($extension->revised_expiry_reason))
+                                                <!-- @if (!empty($extension->revised_expiry_reason))
                                                     <div class="col-md-6">
                                                         <p class="font-base mb-1" style="font-size: 0.875rem;">Reason for Revised Expiry:</p>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <p class="text-dark mb-1" style="font-size: 0.875rem;">{{ $extension->revised_expiry_reason }}</p>
                                                     </div>
-                                                @endif
+                                                @endif -->
                                             </div>
                                         @endif
                                     @endforeach
@@ -604,7 +637,7 @@
                                         <fieldset class="border rounded shadow-sm p-3 w-100 h-100">
                                             <legend class="float-none w-auto px-2 legend-text">Funds Source</legend>
                                             <div class="table-responsive">
-                                                <table class="table table-bordered text-center align-middle"
+                                                <table class="table table-bordered text-center align-middle fund-summary-table"
                                                     id="costBreakdownTable">
                                                     <thead class="table-light">
                                                         <tr>
@@ -741,6 +774,7 @@
                                                     $mqcAmt = (float) str_replace(',', '', ($summary['mqc']['amount'] ?? 0));
                                                     $partialTotal = collect($partialBillings)->sum('amount');
                                                     $expenditures = $mobilizationAmt + $partialTotal + $finalAmt + $engAmt + $mqcAmt;
+                                                 
 
                                                     $contractBalance = $orig_contract_amount - ($mobilizationAmt + $partialTotal + $finalAmt);
                                                     $origEng = (float) str_replace(',', '', ($funds['orig_engineering'] ?? 0));
@@ -753,72 +787,101 @@
                                                     $totalBalance = $origAppropriation - $expenditures;
                                                 @endphp
 
-                                                <table class="table table-bordered text-center align-middle">
+                                                <table class="table table-bordered text-center align-middle fund-summary-table">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th>Particulars</th>
                                                             <th>Amount</th>
                                                             <th>Retention %</th>
                                                             <th>Retention Amount</th>
-                                                            <th>Remarks</th>
+                                                            <th>Total</th>
+                                                            <th>Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody style="font-weight: normal;">
                                                         <tr>
                                                             <td><strong>Total Appropriation</strong></td>
                                                             <td class="text-end" colspan="1">{{ number_format($orig_appropriation, 2) }}</td>
-                                                            <td></td>
+                                                            <td></td> <td></td>
+                                                            <td></td> <td></td>                 
                                                         </tr>
 
                                                         <tr>
                                                             <td><strong>Contract Amount</strong></td>
                                                             <td class="text-end" colspan="1">{{ number_format($orig_contract_amount, 2) }}</td>
-                                                            <td></td>
+                                                            <td></td> <td></td>
+                                                            <td></td> <td></td>    
                                                         </tr>
-
-                                                        <tr>
-                                                            <td>{{ $labels['mobilization'] }}</td>
-                                                            <td class="text-end">{{ number_format($mobilizationAmt, 2) }}</td>
-                                                            <td>{{ $summary['mobilization']['remarks'] ?? '-' }}</td>
-                                                        </tr>
-
-                                                        @foreach ($partialBillings as $index => $billing)
+                                                      <!-- Mobilization -->
                                                             @php
-                                                                $hasValue = !empty($billing['amount']) || !empty($billing['remarks']) || !empty($billing['date']);
+                                                            $mobiAmount = isset($summary['mobilization']['amount']) ? floatval($summary['mobilization']['amount']) : 0;
+                                                            $mobiRetention = $mobiAmount > 0 ? $mobiAmount * 0.10 : 0;
+                                                            $mobiTotal = $mobiAmount - $mobiRetention;
+                                                            @endphp
+                                                            <tr>
+                                                            <td>{{ $labels['mobilization'] }}</td>
+                                                            <td class="text-end">{{ number_format($mobiAmount, 2) }}</td>
+                                                            <td class="text-end"></td>
+                                                            <td class="text-end"></td>
+                                                            <td class="text-end"></td>
+                                                            <td></td>
+                                                            </tr>
+
+                                                            <!-- Partial Billings -->
+                                                            @foreach ($partialBillings as $index => $billing)
+                                                            @php
+                                                                $amount = isset($billing['amount']) ? floatval($billing['amount']) : 0;
+                                                                $hasValue = $amount > 0 || !empty($billing['remarks']) || !empty($billing['date']);
+                                                                $retention = $amount > 0 ? $amount * 0.10 : 0;
+                                                                $total = $amount - $retention;
                                                             @endphp
                                                             @if ($index === 0 || $hasValue)
                                                                 <tr>
-                                                                    <td>{{ ordinal($index + 1) }} Partial Billing</td>
-                                                                    <td class="text-end">{{ number_format($billing['amount'] ?? 0, 2) }}</td>
-                                                                    <td>{{ $billing['remarks'] ?? '-' }}</td>
+                                                                <td>{{ ordinal($index + 1) }} Partial Billing</td>
+                                                                <td class="text-end">{{ $amount > 0 ? number_format($amount, 2) : '' }}</td>
+                                                                <td class="text-end">{{ $amount > 0 ? '10%' : '' }}</td>
+                                                                <td class="text-end">{{ $amount > 0 ? number_format($retention, 2) : '' }}</td>
+                                                                <td class="text-end">{{ $amount > 0 ? number_format($total, 2) : '' }}</td>
+                                                                <td></td>
                                                                 </tr>
                                                             @endif
-                                                        @endforeach
+                                                            @endforeach
 
-                                                        <tr>
+                                                            <!-- Final Billing -->
+                                                            @php
+                                                            $finalAmount = isset($summary['final']['amount']) ? floatval($summary['final']['amount']) : 0;
+                                                            $finalRetention = $finalAmount > 0 ? $finalAmount * 0.10 : 0;
+                                                            $finalTotal = $finalAmount - $finalRetention;
+                                                            @endphp
+                                                            <tr>
                                                             <td>{{ $labels['final'] }}</td>
                                                             <td class="text-end">{{ number_format($finalAmt, 2) }}</td>
-                                                            <td>{{ $summary['final']['remarks'] ?? '-' }}</td>
-                                                        </tr>
+                                                            <td class="text-end">10%</td>
+                                                            <td class="text-end">{{ $finalAmount > 0 ? number_format($finalRetention, 2) : '' }}</td>
+                                                            <td class="text-end">{{ $finalAmount > 0 ? number_format($finalTotal, 2) : '' }}</td>
+                                                            <td></td>
+                                                            </tr>
 
                                                         <tr>
                                                             <td>Balance</td>
                                                             <td class="text-end text-success fw-semibold">{{ number_format($contractBalance, 2) }}</td>
-                                                            <td></td>
+                                                            <td></td> <td></td>    
+                                                            <td></td> <td></td> 
                                                         </tr>
 
                                                         {{-- Engineering --}}
                                                         <tr>
                                                             <td>{{ $labels['engineering'] }}</td>
                                                             <td class="text-end">{{ number_format($engAmt, 2) }}</td>
-                                                            <td class="text-start">
+                                                            <td></td> <td></td>  <td class="text-end">{{ number_format($engAmt, 2) }}</td>    
+                                                            <td class="text-end">
                                                                 <div class="d-flex justify-content-between align-items-center">
-                                                                    <span>{{ $summary['engineering']['remarks'] ?? '-' }}</span>
                                                                     <a href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#engineeringBreakdown" aria-expanded="false" aria-controls="engineeringBreakdown" class="text-decoration-none ms-2">
                                                                         <i class="bi bi-list"></i>
                                                                     </a>
                                                                 </div>
                                                             </td>
+                                                           
                                                         </tr>
                                                         <tr class="collapse" id="engineeringBreakdown">
                                                             <td colspan="6">
@@ -833,12 +896,12 @@
                                                                     <tbody>
                                                                         @forelse($engineeringEntries as $eng)
                                                                             <tr>
-                                                                                <td style="width: 20%;">
+                                                                                <td style="width: 28%;">
                                                                                     @if($eng->date_from && $eng->date_to)
                                                                                         {{ \Carbon\Carbon::parse($eng->date_from)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($eng->date_to)->format('Y-m-d') }}
                                                                                     @endif
                                                                                 </td>
-                                                                                <td style="width: 30%;">{{ $eng->name }} - {{ $eng->month }}</td>
+                                                                                <td style="width: 40%;">{{ $eng->name }} - {{ $eng->month }}</td>
                                                                                 <td class="text-end" data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
                                                                             </tr>
                                                                         @empty
@@ -854,21 +917,23 @@
                                                         <tr>
                                                             <td>Balance (Engineering)</td>
                                                             <td class="text-end text-success fw-semibold">{{ number_format($engineeringBalance, 2) }}</td>
-                                                            <td></td>
+                                                            <td></td> <td></td>    
+                                                            <td></td> <td></td> 
                                                         </tr>
 
                                                         {{-- MQC --}}
                                                         <tr>
                                                             <td>{{ $labels['mqc'] }}</td>
                                                             <td class="text-end">{{ number_format($mqcAmt, 2) }}</td>
+                                                            <td></td> <td></td> <td class="text-end">{{ number_format($mqcAmt, 2) }}</td>    
                                                             <td class="text-start">
                                                                 <div class="d-flex justify-content-between align-items-center">
-                                                                    <span>{{ $summary['mqc']['remarks'] ?? '-' }}</span>
                                                                     <a href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#mqcBreakdown" aria-expanded="false" aria-controls="mqcBreakdown" class="text-decoration-none ms-2">
                                                                         <i class="bi bi-list"></i>
                                                                     </a>
                                                                 </div>
                                                             </td>
+                                                           
                                                         </tr>
                                                         <tr class="collapse" id="mqcBreakdown">
                                                             <td colspan="6">
@@ -883,14 +948,14 @@
                                                                     <tbody>
                                                                         @forelse($mqcEntries as $mqc)
                                                                             <tr>
-                                                                                <td style="width: 20%;">
+                                                                                <td style="width: 28%;">
                                                                                     @if($mqc->date_from && $mqc->date_to)
                                                                                         {{ \Carbon\Carbon::parse($mqc->date_from)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($mqc->date_to)->format('Y-m-d') }}
                                                                                     @else
                                                                                         
                                                                                     @endif
                                                                                 </td>
-                                                                                <td style="width: 30%;">{{ $mqc->name }} - {{ $mqc->month }}</td>
+                                                                                <td style="width: 40%;">{{ $mqc->name }} - {{ $mqc->month }}</td>
                                                                                 <td class="text-end" data-amount="{{ $mqc->amount }}">₱{{ number_format($mqc->amount, 2) }}</td>
                                                                             </tr>
                                                                         @empty
@@ -906,19 +971,27 @@
                                                         <tr>
                                                             <td>Balance (MQC)</td>
                                                             <td class="text-end text-success fw-semibold">{{ number_format($mqcBalance, 2) }}</td>
-                                                            <td></td>
+                                                            <td></td>    <td></td>   
+                                                            <td></td> <td></td> 
                                                         </tr>
 
                                                         <tr class="table-info fw-bold">
                                                             <td>Total Expenditures</td>
                                                             <td class="text-end" colspan="1">{{ number_format($expenditures, 2) }}</td>
-                                                            <td></td>
+                                                            <td></td> <td></td>    
+                                                            @php
+                                                           
+                                                            $grandTotal = $mobiTotal + $partialTotal + $finalTotal + $engAmt + $mqcAmt;
+
+                                                            @endphp
+                                                            <td>{{ number_format($grandTotal, 2) }} </td> <td></td> 
                                                         </tr>
 
                                                         <tr class="table-success fw-bold">
                                                             <td>Total Savings</td>
                                                             <td class="text-end" colspan="1">{{ number_format($totalBalance, 2) }}</td>
-                                                            <td></td>
+                                                            <td></td> <td></td>    
+                                                            <td></td> <td></td> 
                                                         </tr>
                                                     </tbody>
                                                 </table>

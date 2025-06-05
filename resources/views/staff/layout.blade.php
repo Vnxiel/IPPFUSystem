@@ -142,6 +142,13 @@
         <script src="{{ asset('js/Datatables/search-filter.js') }}"></script>
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
         <script src="{{ asset('js/activityLogs.js') }}"></script>
+        <script src="{{ asset('js/Filters/contractor-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/search-filter.js') }}"></script>
+        <script src="{{ asset('js/Filters/location-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/engineer-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/contractors-address.js') }}"></script>
+        <script src="{{ asset('js/Filters/sourceOfFund-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/year-search.js') }}"></script>
 
        
         <script src="{{ asset('js/Projects/projects-toggle.js') }}"></script>

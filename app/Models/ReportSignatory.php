@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReportSignatory extends Model
 {
-    protected $fillable = ['project_id', 'reviewed_by', 'noted_by'];
+    protected $fillable = ['project_id', 'reviewed_by', 'noted_by', 'reviewed_by_position', 'noted_by_position'];
 }

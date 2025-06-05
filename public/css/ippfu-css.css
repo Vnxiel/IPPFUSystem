@@ -125,3 +125,10 @@ tbody tr:first-child td {
   background-color: #f9f9f9;
   font-size: 0.95em;
 }
+
+.fund-summary-table td,
+.fund-summary-table th {
+    white-space: nowrap;
+    font-size: clamp(0.75rem, 1vw, 1rem); /* Responsive font size */
+}
+

@@ -77,7 +77,7 @@
                             </div>
                             <div class="row g-3 mb-2 ">
                                 <div class="col-md-3">
-                                    <label for="location" class="form-label">Location of Project
+                                    <label for="location" class="form-label">Location
                                         <span class="text-danger">*</span>
                                     </label>
                                 </div>
@@ -103,84 +103,32 @@
                             <!-- Project Description -->
                             <div class="row mb-2 g-3">
                                 <div class="col-3 ">
-                                    <label for="description" class="form-label">Project Description<span
+                                    <label for="projectDescription" class="form-label">Project Description<span
                                             class="text-danger">*</span></label>
                                 </div>
                                 <div class="col">
-                                    <textarea class="form-control" id="description" name="description"
+                                    <textarea class="form-control" id="projectDescription" name="projectDescription"
                                         rows="4" required></textarea>
                                 </div>
                             </div>
 
-                            <!-- Firm Name Input with Dynamic Suggestions -->
-                            <div class="row g-3 mb-2">
+                            <!-- Contractor Input with Dynamic Suggestions -->
+                            <div class="row g-3 mb-2 ">
                                 <div class="col-md-3">
-                                    <label for="firm_name" class="form-label">Name of Firm <span class="text-danger">*</span></label>
+                                    <label for="firm_name" class="form-label">Contractor <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-md-9 position-relative">
-                                <input type="text" class="form-control" id="firm_name" name="firm_name"
-                                    placeholder="Select or enter name of firm" autocomplete="off" required />
+                                    <input type="text" class="form-control" id="firm_name" name="firm_name"
+                                        placeholder="Select or enter contractor name" autocomplete="off"
+                                        oninput="filterAndReorderContractors()" onfocus="filterAndReorderContractors()">
 
-                                    <!-- Dropdown container -->
-                                    <div id="firmDropdown"
-                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                    @foreach($contractors->pluck('firm_name')->unique()->sort() as $firm)
-                                        <button type="button" class="list-group-item list-group-item-action">
-                                        {{ $firm }}
-                                        </button>
-                                    @endforeach
-                                    </div>
-
-                                </div>
-                            </div>
-
-
-                             <!-- Contractor Name Input with Dynamic Suggestions -->
-                             <div class="row g-3 mb-2">
-                                <div class="col-md-3">
-                                    <label for="contractor_name" class="form-label">Contractor's Name <span class="text-danger">*</span></label>
-                                </div>
-                                <div class="col-md-9 position-relative">
-                                    <input type="text" class="form-control" id="contractor_name" name="contractor_name"
-                                        placeholder="Select or enter contractor name" autocomplete="off" required />
-
-                                        <div id="contractorNameDropdown"
+                                    <!-- Container for dynamically inserted buttons -->
+                                    <div id="projectContractorDropdown"
                                         class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                        style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                        @foreach($contractors->pluck('contractor_name')->unique()->sort() as $contractor_name)
-                                            <button type="button" class="list-group-item list-group-item-action">
-                                            {{ $contractor_name }}
-                                            </button>
-                                        @endforeach
-                                        </div>
-
-                                </div>
-                            </div>
-
-                            <div class="row g-3 mb-2">
-                                <div class="col-md-3">
-                                    <label for="contractor_address" class="form-label">
-                                        Address of Contractor/Firm <span class="text-danger">*</span>
-                                    </label>
-                                </div>
-                                <div class="col-md-9 position-relative">
-                                    <input type="text" class="form-control" id="contractor_address" name="contractor_address"
-                                    placeholder="Select or enter contractor address" autocomplete="off" />
-
-                                    <!-- Dropdown container -->
-                                    <div id="contractor_addressDropdown"
-                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                    @foreach($locations as $location)
-                                        <button type="button" class="list-group-item list-group-item-action">
-                                        {{ $location }}
-                                        </button>
-                                    @endforeach
+                                        style="dis  play: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                     </div>
                                 </div>
                             </div>
-
 
                             <div class="row mb-2 g-3 ">
                                 <div class="col-md-3 ">
@@ -276,13 +224,11 @@
                                 <div class="col-md-4 position-relative">
                                     <input type="text" class="form-control" id="engineer_name" name="engineer_name"
                                     placeholder="Select or enter engineer name" autocomplete="off">
-                                    
                                     <div id="projectEngineerDropdown"
                                         class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                         style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
                                     </div>
                                 </div>
-
                                 <div class="col-1 ">
                                     <label for="engineer_position" class="form-label">Position<span
                                             class="text-danger">*</span></label>
@@ -290,11 +236,21 @@
                                 <div class="col-4">
                                     <select class="form-select" id="engineer_position" name="engineer_position" required>
                                         <option value="" disabled selected>Select Position</option>
-                                        <option value="Engineer Aide">Engineer Aide</option>
+                                        <option value="Engineer Aid">Engineer Aid</option>
                                         <option value="Engineer Assistant">Engineer Assistant</option>
                                         <option value="Engineer I">Engineer I</option>
                                     </select>
                                 </div>
+                                <!-- <div class="col-3 ">
+                                    <label for="ea_monthlyRate" class="form-label">Monthly Rate<span
+                                            class="text-danger">*</span></label>
+                                </div>
+                                <div class="col-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">₱</span>
+                                        <input type="text" class="form-control currency-input" id="ea_monthlyRate" name="ea_monthlyRate">
+                                    </div>
+                                </div> -->
                             </div> 
                         </fieldset>
 
@@ -412,9 +368,55 @@
                                         <input type="date" class="form-control" id="ntp_received_date" name="ntp_received_date">
                                     </div>
                                 </div>
-                                
+                                <!-- <div class="row mb-2">
+                                    <div class="col-3 ">
+                                        <label for="official_starting_date" class="form-label">Official Start<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="date" class="form-control" id="official_starting_date" name="official_starting_date">
+                                    </div>
+                                    <div class="col-3 ">
+                                        <label for="target_completion_date" class="form-label">Target Completion Date<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="date" class="form-control" id="target_completion_date"
+                                            name="target_completion_date">
+                                    </div>
+                                </div> -->
+
+
+                                <!-- <div class="row mb-2">
+                                    <div class="col-3 ">
+                                        <label for="actual_completion_date" class="form-label">Completion Date<span
+                                                class="text-danger">*</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="date" style="background-color: lightgray;" class="form-control"
+                                            id="actual_completion_date" name="actual_completion_date">
+                                    </div>
+                                    <div class="col-3 ">
+                                        <label for="revisedCompletionDate" class="form-label">Revised Completion
+                                            Date</label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="date" class="form-control" id="revisedCompletionDate"
+                                            name="revisedCompletionDate">
+                                    </div>
+                                </div> -->
                             </div>
                         </fieldset>
+
+                        <!-- <div class="row">
+                                <div class="mb-2">
+                                    <label for="revisedTargetCompletion" class="form-label">Revised Target
+                                        Completion</label>
+                                    <input type="date" class="form-control" style="background-color: lightgray;"
+                                        id="revisedTargetCompletion" name="revisedTargetCompletion">
+                                </div> 
+                            </div> -->
 
                         <!-- Implementation Details -->
                         <div class="border p-3 mb-4 rounded shadow-sm">
@@ -449,125 +451,82 @@
                                             name="target_completion_date">
                                     </div>
                                 </div>
-                                  <!-- Buttons for adding/removing Suspension and Resumption Orders -->
-                                  <div class="row mb-3">
-                                <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addOrderFields()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Suspension and Resumption Order">
-                                    <span class="fa-solid fa-square-plus"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeLastOrderFields()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Suspension and Resumption Order">
-                                    <span class="fa-solid fa-circle-minus"></span>
-                                    </button>
-                                </div>
-                                </div>
                           
-                                <!-- Suspension and Resumption Orders Section -->
-                                <div id="orderContainer" class="col-12">
-                                    <fieldset class="border p-2 mb-3" id="orderFieldset1">
-                                        <div class="row mb-2">
-                                        <div class="col-3">
-                                            <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1</label>
+                                <div class="row">
+                                    <!-- Order pair container -->
+                                    <div id="orderContainer" class="col-12 ">
+                                        <div class="row mt-2 mb-2 order-set" id="orderSet1">
+                                            <!-- Suspension and Resumption Order Row -->
+                                            <div class="row mb-2">
+                                                <div class="col-3 ">
+                                                    <label for="suspensionOrderNo1" class="form-label">Suspension Order No.1</label>
+                                                </div>                        
+                                                <div class="col-3">
+                                                    <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
+                                                </div>
+                                                <div class="col-3 mb-2 ">
+                                                    <label for="resumeOrderNo1" class="form-label">Resumption Order No.1</label>
+                                                </div>
+                                                <div class="col-3">
+                                                        <input type="date" class="form-control" id="resumeOrderNo1"
+                                                        name="resumeOrderNo1">
+                                                </div>
+                                                <!-- Remarks Row -->
+                                                <div class="row mt-1 mb-2">
+                                                    <div class="col-md-3 mb-3 ">
+                                                        <label for="suspensionOrderNo1Remarks" class="form-label">Reason for Suspension</label>
+                                                    </div>
+                                                    <div class="col-9">
+                                                        <textarea class="form-control" id="suspensionOrderNo1Remarks"
+                                                            name="suspensionOrderNo1Remarks" rows="2"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-3">
-                                            <input type="date" class="form-control" id="suspensionOrderNo1" name="suspensionOrderNo1">
-                                        </div>
-                                        <div class="col-3">
-                                            <label for="resumeOrderNo1" class="form-label">Resumption Order No.1</label>
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="date" class="form-control" id="resumeOrderNo1" name="resumeOrderNo1">
-                                        </div>
-                                        </div>
-
-                                        <!-- Reason for Suspension -->
-                                        <div class="row mb-2">
-                                        <div class="col-3">
-                                            <label for="suspensionOrderNo1Remarks" class="form-label">Reason for Suspension</label>
-                                        </div>
-                                        <div class="col-9">
-                                            <textarea class="form-control" id="suspensionOrderNo1Remarks" name="suspensionOrderNo1Remarks" rows="2"></textarea>
-                                            <div class="invalid-feedback">Please provide a reason for the suspension/resumption.</div>
-                                        </div>
-                                        </div>
-                                    </fieldset>
+                                    </div>
                                 </div>
-
-                              
-
-                                <!-- Time Extension Section -->
-                                 <!-- Add & Remove Time Extension Buttons -->
-                                 <div class="row mb-2">
-                                <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-outline-primary btn-sm mr-1" onclick="addTimeExtension()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Time Extension">
-                                    <span class="fa-solid fa-square-plus"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastTimeExtension()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Last Time Extension">
-                                    <span class="fa-solid fa-circle-minus"></span>
-                                    </button>
+                                <div class="row mb-1">
+                                    <div class="col-md-10">
+                                        <hr>
+                                    </div>
+                                    <div class="col-2 text-center mb-2">
+                                        <button type="button" class="btn btn-outline-primary btn-sm mr-1"
+                                            onclick="addOrderFields()" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Add Suspension and Resumption Order">
+                                            <span class="fa-solid fa-square-plus"></span> </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                            onclick="removeLastOrderFields()" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Suspension and Resumption Order">
+                                            <span class="fa-solid fa-circle-minus"></span>
+                                        </button>
+                                    </div>
                                 </div>
+                                <div class="row mb-2">
+                                    <div class="col-3 ">
+                                        <label for="timeExtension" class="form-label">Number of Days Extension</label>
+                                    </div>                        
+                                    <div class="col-9">
+                                        <input type="number" class="form-control" id="timeExtension"
+                                            name="timeExtension">
+                                    </div>
                                 </div>
-                                <div id="timeExtensionContainer">
-                                <fieldset class="border p-2 mb-2" id="extensionFieldset1">
-                                    <legend class="float-none w-auto px-2 small">Time Extension 1</legend>
-                                    <div class="row" id="extensionRow1">
-                                    <div class="col-3">
-                                        <label for="timeExtension1" class="form-label">No. of Days of Extension</label>
-                                    </div>
-                                    <div class="col-3">
-                                    <input type="number" class="form-control" id="timeExtension1" name="timeExtension1" onchange="calculateRevisedCompletionDate()"
->
-                                    </div>
-                                    <div class="col-3">
-                                        <label for="extensionReason1" class="form-label">Reason for Extension</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="text" class="form-control" id="extensionReason1" name="extensionReason1">
-                                    </div>
-                                    <div class="col-3 mt-2">
-                                        <label for="revisedExpiry1" class="form-label">Revised Expiry Date</label>
-                                    </div>
-                                    <div class="col-3 mt-2">
-                                        <input type="date" class="form-control" id="revisedExpiry1" name="revisedExpiry1" readonly>
-                                    </div>
-                                    <!-- <div class="col-3 mt-2">
-                                        <label for="revisedReason1" class="form-label">Reason for Revised Expiry</label>
-                                    </div> -->
-                                    <!-- <div class="col-3 mt-2">
-                                        <input type="text" class="form-control" id="revisedReason1" name="revisedReason1">
-                                    </div> -->
-                                    </div>
-                                </fieldset>
-                                </div>
-
                                 <!-- New Target and Completion Dates -->
                                 <div id="newDatesSection" class="row mb-2" style="display: none;">
-                                    <div class="col-3">
+                                    <div class="col-3 ">
                                         <label for="revised_target_date" class="form-label">New Target Completion Date</label>
-                                    </div>
+                                    </div>                        
                                     <div class="col-3">
-                                        <input type="date" class="form-control" id="revised_target_date" name="revised_target_date" >
+                                        <input type="date" class="form-control" id="revised_target_date" name="revised_target_date">
                                     </div>
-                                    <!-- <div class="col-3">
-                                        <label for="revisedCompletionDate " class="form-label">Actual Completion Date</label>
+                                    <div class="col-3 ">
+                                        <label for="actual_completion_date" class="form-label">Actual Completion Date</label>
+                                    </div>                        
+                                    <div class="col-3">
+                                        <input type="date" class="form-control" id="actual_completion_date" name="actual_completion_date">
                                     </div>
-                                    <div class="col-3 mb-2">
-                                        <input type="date" class="form-control" id="revisedCompletionDate " name="revisedCompletionDate">
-                                    </div>
-                                    Actual Length inside newDatesSection but initially hidden
-                                    <div class="col-3  actual-length-label" style="display:none;">
-                                        <label for="actual_length_new" class="form-label">Actual Length:</label>
-                                    </div>
-                                    <div class="col-4 actual-length-input" style="display:none;">
-                                        <input type="text" class="form-control" id="actual_length_new" name="actual_length"
-                                            placeholder="Enter project's actual length">
-                                    </div> -->
                                 </div>
 
-                                <div class="row" id="completionSection">
+                                <div class="row">
                                     <!-- Actual Completion Date (Default View) -->
                                     <div class="row mb-2">
                                         <div class="col-3">
@@ -578,17 +537,15 @@
                                                 value="{{ old('actual_completion_date', $project['actual_completion_date'] ?? '') }}"
                                                 style="background-color: lightgray;">
                                         </div>
-                                        <div class="col-2 actual-length-label">
+                                        <div class="col-2 ">
                                             <label for="actual_length" class="form-label">Actual Length:</label>
                                         </div>
-                                        <div class="col-4 actual-length-input">
+                                        <div class="col-4">
                                             <input type="text" class="form-control" id="actual_length" name="actual_length"
                                                 placeholder="Enter project's actual length">
                                         </div>
                                     </div>
                                 </div>
-
-                              
                             </div>
                         </div>
                     </fieldset>
@@ -607,24 +564,25 @@
     </div>
 </div>
 
+<script id="contractor-data" type="application/json">
+    {!! json_encode($contractors->pluck('name')) !!}
+</script>
+<script id="engineer-data" type="application/json">
+  {!! json_encode($projectEA->pluck('engineer_name')->map(fn($engineer_name) => trim($engineer_name))->values()) !!}
+</script>
+
 
 
 @section('page-scripts')
         <script src="{{ asset('js/Projects/projects-addSubmit.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-addOrder.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-suspension-remarks.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-time_extension.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-actual_date-condition.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-currencyFormatting.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-dateValidation.js') }}"></script>
        <script src="{{ asset('js/Projects/projects-restrictionsValue.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-suggestionBox.js') }}"></script>
-        <script src="{{ asset('js/Projects/projects-toggle.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-valueCalculations.js') }}"></script>
         <script src="{{ asset('js/Filters/contractor-search.js') }}"></script>
         <script src="{{ asset('js/Filters/location-search.js') }}"></script>
         <script src="{{ asset('js/Filters/engineer-search.js') }}"></script>
-        <script src="{{ asset('js/Filters/contractors-address.js') }}"></script>
         <script src="{{ asset('js/Filters/sourceOfFund-search.js') }}"></script>
-        <script src="{{ asset('js/Filters/year-search.js') }}"></script>
 @endsection

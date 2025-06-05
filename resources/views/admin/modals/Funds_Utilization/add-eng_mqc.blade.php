@@ -40,19 +40,17 @@
               </select>
             </div>
 
-            <div class="col-md-2">
-              <label for="entryDate" class="form-label form-label-sm">Date</label>
-              <input type="date" id="entryDate" class="form-control form-control-sm">
-            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm mb-1">Period (From - To)</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">From</span>
+                  <input type="date" id="entryDateFrom" class="form-control" aria-label="Start date">
+                  <span class="input-group-text">To</span>
+                  <input type="date" id="entryDateTo" class="form-control" aria-label="End date">
+                </div>
+              </div>
 
-            <div class="col-md-2">
-              <label for="entryPeriod" class="form-label form-label-sm">Period</label>
-              <select id="entryPeriod" class="form-select form-select-sm">
-                <option value="" disabled selected>Select Period</option>
-                <option value="1st Quincena">1st Quincena</option>
-                <option value="2nd Quincena">2nd Quincena</option>
-              </select>
-            </div>
+           
 
             <div class="col-md-2">
               <label for="entryAmount" class="form-label form-label-sm">Amount</label>
@@ -73,7 +71,6 @@
                 <th>Type</th>
                 <th>Name</th>
                 <th>Month</th>
-                <th>Date</th>
                 <th>Period</th>
                 <th>Amount</th>
                 <th>Action</th>

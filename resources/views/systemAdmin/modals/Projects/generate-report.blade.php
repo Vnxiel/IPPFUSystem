@@ -16,10 +16,20 @@
           <label for="reviewerInput" class="form-label fw-semibold">Reviewed by:</label>
           <input type="text" class="form-control" id="reviewedByInput" placeholder="Enter reviewer name" />
         </div>
+        <div class="mb-3 text-start">
+          <label for="reviewedByPosition" class="form-label fw-semibold">Position:</label>
+          <input type="text" class="form-control" id="reviewedByPosition" placeholder="Enter position" />
+        </div>
+
+        <hr class="w-50 mx-auto my-3">
 
         <div class="mb-3 text-start">
           <label for="notedByInput" class="form-label fw-semibold">Noted By:</label>
           <input type="text" class="form-control" id="notedByInput" placeholder="Enter noted by name" />
+        </div>
+        <div class="mb-3 text-start">
+          <label for="notedByPosition" class="form-label fw-semibold">Position:</label>
+          <input type="text" class="form-control" id="notedByPosition" placeholder="Ente position" />
         </div>
       </div>
       <div class="modal-footer justify-content-between">

@@ -559,6 +559,28 @@ function ordinal($number) {
 
 
 
+  
+</div>
+@if (!empty($projectFiles))
+  <div style="page-break-before: always;"></div>
+  <div class="container mt-5">
+    <h5 class="text-center mb-4" style="text-decoration: underline; font-weight: bold;">
+      Project File Attachments (Images Only)
+    </h5>
+
+    @foreach ($projectFiles as $file)
+      <div class="text-center mb-5">
+        <img src="{{ $file['data'] }}"
+             alt="Attachment: {{ $file['name'] }}"
+             style="max-width: 90%; max-height: 600px; border: 1px solid #666; padding: 6px;">
+        <div style="font-size: 12px; margin-top: 6px;">
+          Attachment: <strong>{{ $file['name'] }}</strong>
+        </div>
+      </div>
+    @endforeach
+  </div>
+@endif
+
 
 
 <div style="margin-top: 50px;">

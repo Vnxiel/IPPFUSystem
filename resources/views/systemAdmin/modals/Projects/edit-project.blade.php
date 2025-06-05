@@ -423,6 +423,20 @@
                           
                                 <!-- Suspension and Resumption Orders Section -->
                             <div id="orderContainer" class="col-12">
+                                  <!-- Buttons for adding/removing Suspension and Resumption Orders -->
+                                  <div class="row mb-3">
+                                <div class="col-12 text-end">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addOrderFields()" 
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Suspension and Resumption Order">
+                                    <span class="fa-solid fa-square-plus"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeLastOrderFields()" 
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Suspension and Resumption Order">
+                                    <span class="fa-solid fa-circle-minus"></span>
+                                    </button>
+                                </div>
+                                </div>
+
                                 <fieldset class="border p-2 mb-3" id="orderFieldset1">
                                     @php
                                     $remarksData = $project['remarksData'] ?? [];
@@ -487,27 +501,29 @@
                                                 id="suspensionOrderNo{{ $order['index'] }}Remarks"
                                                 name="suspensionOrderNo{{ $order['index'] }}Remarks">{{ trim($remarksData[(string) $order['index']]['suspensionOrderRemarks'] ?? '') }}</textarea>
                                         </div>
+                                        <div class="invalid-feedback">Please provide a reason for the suspension/resumption.</div>
                                     </div>
                                 </fieldset>
                                 @endforeach
                             </div>
 
-                                <!-- Buttons for adding/removing Suspension and Resumption Orders -->
-                                <div class="row mb-3">
+                              
+                                <!-- Time Extension Section -->
+                                <div id="timeExtensionContainer">
+                                    
+                                <!-- Add & Remove Time Extension Buttons -->
+                                <div class="row mb-2">
                                 <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addOrderFields()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Suspension and Resumption Order">
+                                    <button type="button" class="btn btn-outline-primary btn-sm mr-1" onclick="addTimeExtension()" 
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Time Extension">
                                     <span class="fa-solid fa-square-plus"></span>
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeLastOrderFields()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Suspension and Resumption Order">
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastTimeExtension()" 
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Last Time Extension">
                                     <span class="fa-solid fa-circle-minus"></span>
                                     </button>
                                 </div>
                                 </div>
-
-                                <!-- Time Extension Section -->
-                                <div id="timeExtensionContainer">
                                     @if ($timeExtensions->isEmpty())
                                         <!-- Default empty fieldset when no extensions exist -->
                                         <fieldset class="border p-2 mb-2" id="extensionFieldset1">
@@ -531,12 +547,12 @@
                                                 <div class="col-3 mt-2">
                                                     <input type="date" class="form-control" id="revisedExpiry1" name="revisedExpiry1" readonly>
                                                 </div>
-                                                <div class="col-3 mt-2">
+                                                <!-- <div class="col-3 mt-2">
                                                     <label for="revisedReason1" class="form-label">Reason for Revised Expiry</label>
                                                 </div>
                                                 <div class="col-3 mt-2">
                                                     <input type="text" class="form-control" id="revisedReason1" name="revisedReason1">
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </fieldset>
                                     @else
@@ -574,7 +590,7 @@
                                                             value="{{ $extension->revised_expiry }}"
                                                             readonly>
                                                     </div>
-                                                    <div class="col-3 mt-2">
+                                                    <!-- <div class="col-3 mt-2">
                                                         <label for="revisedReason{{ $index + 1 }}" class="form-label">Reason for Revised Expiry</label>
                                                     </div>
                                                     <div class="col-3 mt-2">
@@ -582,29 +598,12 @@
                                                             id="revisedReason{{ $index + 1 }}"
                                                             name="revisedReason{{ $index + 1 }}"
                                                             value="{{ $extension->revised_expiry_reason }}">
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                             </fieldset>
                                         @endforeach
                                     @endif
                                 </div>
-
-
-
-                                <!-- Add & Remove Time Extension Buttons -->
-                                <div class="row mb-2">
-                                <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-outline-primary btn-sm mr-1" onclick="addTimeExtension()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Add Time Extension">
-                                    <span class="fa-solid fa-square-plus"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLastTimeExtension()" 
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Last Time Extension">
-                                    <span class="fa-solid fa-circle-minus"></span>
-                                    </button>
-                                </div>
-                                </div>
-
 
 
                                <!-- New Target and Completion Dates -->
@@ -613,7 +612,7 @@
                                         <label for="revised_target_date" class="form-label">New Target Completion Date</label>
                                     </div>
                                     <div class="col-3">
-                                        <input type="date" class="form-control" id="revised_target_date" name="revised_target_date" readonly>
+                                        <input type="date" class="form-control" id="revised_target_date" name="revised_target_date">
                                     </div>
                                     <!-- <div class="col-3">
                                         <label for="revisedCompletionDate " class="form-label">Actual Completion Date</label>
@@ -674,6 +673,7 @@
 @section('page-scripts')
         <script src="{{ asset('js/Projects/projects-addSubmit.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-addOrder.js') }}"></script>
+        <script src="{{ asset('js/Projects/projects-suspension-remarks.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-time_extension.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-actual_date-condition.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-currencyFormatting.js') }}"></script>
