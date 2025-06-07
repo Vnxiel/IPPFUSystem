@@ -4,21 +4,20 @@
 
 @section('content')
     <!-- Project Overview -->
-    <hr class="mx-2">
-    <div class="container-fluid mt-5">
-        <div class="row">
-            <div class="col-md-12 d-flex align-items-center justify-content-between mb-3" style="margin-top:25px;">
-                <div class="d-flex align-items-center gap-2">
-                    <a id="back-to-projects" class="btn btn-outline-secondary btn-sm"
-                        href="{{ url('/staff/projects') }}">
-                        <span class="fa fa-arrow-left"></span>
-                    </a>
-
-                    <h5 class="m-0">Project Overview</h5>
+     <div class="container-fluid py-4" style="background-color: transparent;">
+        <div class="card mb-1 border-0 shadow-lg "style="margin-top:75px;" >
+            <div class="card-body p-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <a id="back-to-projects" class="btn btn-outline-secondary btn-sm"
+                            href="{{ url('/staff/projects') }}">
+                            <span class="fa fa-arrow-left"></span>
+                        </a>
+                        <h5 class="m-0">Project Overview</h5>
+                    </div>
                 </div>
             </div>
         </div>
-
         <div class="row mb-1">
             <div class="col-md-12">
                 <div class="card shadow-sm">
