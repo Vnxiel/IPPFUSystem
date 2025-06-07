@@ -77,16 +77,22 @@ class FileManager extends Controller
             }
 
             try {
-                // Store file in the "public/project_files" directory
-                $filepath = $file->storeAs('project_files', $file_name, 'public');
+                // Store the file directly in the root of the shared folder (no subfolder)
+                $filepath = Storage::disk('public')->putFileAs('', $file, $file_name);
+
+                if (!$filepath) {
+                    // Handle error: upload failed
+                    return response()->json(['error' => 'Upload failed'], 500);
+                }
 
                 // Save file info to DB
                 $projectFile = ProjectFile::create([
                     'project_id' => $project_id,
-                    'file_name' => $file_name,
+                    'file_name' => $file_name,    // store file name, or $filepath if you want full path
                     'file_id' => uniqid(),
                     'action_by' => $username,
                 ]);
+
 
                 // Prepare log action
                 $action = "Uploaded file: $file_name.";
