@@ -17,176 +17,212 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class FileManager extends Controller 
 {
-    // Handle file upload for a specific project
-    public function uploadFile(Request $request, $project_id)
-    {
-        // Log the incoming request for debugging
-        Log::info("Upload Request Received", $request->all());
 
-        // Check if files are present in the request
-        if (!$request->hasFile('files')) {
-            return response()->json(['status' => 'error', 'message' => 'No files uploaded.'], 400);
+    private function getUploadPath()
+{
+    $setting = \App\Models\UploadSetting::latest()->first();
+    return $setting ? rtrim($setting->upload_path, DIRECTORY_SEPARATOR) : null;
+}
+
+public function uploadFile(Request $request, $project_id)
+{
+    Log::info("Upload Request Received", $request->all());
+
+    if (!$request->hasFile('files')) {
+        return response()->json(['status' => 'error', 'message' => 'No files uploaded.'], 400);
+    }
+
+    $files = $request->file('files');
+    if (!is_array($files)) {
+        $files = [$files];
+    }
+
+    $uploaded = [];
+    $errors = [];
+
+    if (!session()->has('loggedIn')) {
+        return response()->json(['status' => 'error', 'message' => 'Session not found'], 401);
+    }
+
+    $sessionData = session()->get('loggedIn');
+    $username = $sessionData['performed_by'];
+    $ofmis_id = $sessionData['ofmis_id'];
+    $role = $sessionData['role'];
+    $user_id = $sessionData['user_id'] ?? null;
+
+    foreach ($files as $file) {
+        $file_name = $file->getClientOriginalName();
+
+        $validator = Validator::make(['file' => $file], [
+            'file' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf,docx,xlsx,zip'
+        ]);
+
+        if ($validator->fails()) {
+            $errors[] = [
+                'file' => $file_name,
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors()
+            ];
+            continue;
         }
 
-        $files = $request->file('files');
-        if (!is_array($files)) {
-            $files = [$files]; // Ensure $files is always an array
+        if (ProjectFile::where('project_id', $project_id)->where('file_name', $file_name)->exists()) {
+            $errors[] = [
+                'file' => $file_name,
+                'message' => 'File already exists'
+            ];
+            continue;
         }
 
-        $uploaded = [];
-        $errors = [];
+        try {
+            $dynamicRoot = $this->getUploadPath();
+            if (!$dynamicRoot) {
+                return response()->json(['status' => 'error', 'message' => 'Upload path not configured.'], 500);
+            }
 
-        // Check if the user is logged in via session
-        if (!session()->has('loggedIn')) {
-            return response()->json(['status' => 'error', 'message' => 'Session not found'], 401);
-        }
+            // Create folder if it doesn't exist
+            if (!is_dir($dynamicRoot)) {
+                try {
+                    if (!@mkdir($dynamicRoot, 0777, true) && !is_dir($dynamicRoot)) {
+                        throw new \RuntimeException("Unable to create directory at $dynamicRoot");
+                    }
+                } catch (\Throwable $e) {
+                    Log::error("Failed to create upload directory", [
+                        'path' => $dynamicRoot,
+                        'error' => $e->getMessage()
+                    ]);
+            
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => "Directory creation failed: " . $e->getMessage()
+                    ], 500);
+                }
+            }
+            
 
-        // Get user session data
-        $sessionData = session()->get('loggedIn');
-        $username = $sessionData['performed_by'];
-        $ofmis_id = $sessionData['ofmis_id'];
-        $role = $sessionData['role'];
-        $user_id = $sessionData['user_id'] ?? null;
-
-        // Process each file
-        foreach ($files as $file) {
-            $file_name = $file->getClientOriginalName();
-
-            // Validate file type and size
-            $validator = Validator::make(['file' => $file], [
-                'file' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf,docx,xlsx,zip'
+            Log::info("Uploading to dynamic path", [
+                'full_path' => $dynamicRoot,
+                'file_name' => $file_name,
+                'project_id' => $project_id,
+                'uploaded_by' => $username
             ]);
 
-            // If validation fails, skip this file
-            if ($validator->fails()) {
-                $errors[] = [
-                    'file' => $file_name,
-                    'message' => 'Validation failed.',
-                    'errors' => $validator->errors()
-                ];
-                continue;
+            $disk = Storage::build([
+                'driver' => 'local',
+                'root' => $dynamicRoot,
+            ]);
+
+            $filepath = $disk->putFileAs('', $file, $file_name);
+
+            if (!$filepath) {
+                return response()->json(['error' => 'Upload failed'], 500);
             }
 
-            // Check for duplicate file in DB for this project
-            if (ProjectFile::where('project_id', $project_id)->where('file_name', $file_name)->exists()) {
-                $errors[] = [
-                    'file' => $file_name,
-                    'message' => 'File already exists'
-                ];
-                continue;
-            }
+            ProjectFile::create([
+                'project_id' => $project_id,
+                'file_name' => $file_name,
+                'file_id' => uniqid(),
+                'action_by' => $username,
+                'file_path' => $dynamicRoot // Add this field to DB if needed
+            ]);
+            
 
-            try {
-                // Store the file directly in the root of the shared folder (no subfolder)
-                $filepath = Storage::disk('public')->putFileAs('', $file, $file_name);
+            $action = "Uploaded file: $file_name.";
+            $request->session()->put('UploadedFile', [
+                'user_id' => $user_id,
+                'ofmis_id' => $ofmis_id,
+                'performed_by' => $username,
+                'role' => $role,
+                'action' => $action,
+            ]);
 
-                if (!$filepath) {
-                    // Handle error: upload failed
-                    return response()->json(['error' => 'Upload failed'], 500);
-                }
+            (new ActivityLogs)->userAction($user_id, $ofmis_id, $username, $role, $action);
 
-                // Save file info to DB
-                $projectFile = ProjectFile::create([
-                    'project_id' => $project_id,
-                    'file_name' => $file_name,    // store file name, or $filepath if you want full path
-                    'file_id' => uniqid(),
-                    'action_by' => $username,
-                ]);
+            $uploaded[] = $file_name;
 
+        } catch (\Exception $e) {
+            Log::error("Upload failed for {$file_name}", ['error' => $e->getMessage()]);
 
-                // Prepare log action
-                $action = "Uploaded file: $file_name.";
-                $request->session()->put('UploadedFile', [
-                    'user_id' => $user_id,
-                    'ofmis_id' => $ofmis_id,
-                    'performed_by' => $username,
-                    'role' => $role,
-                    'action' => $action,
-                ]);
-
-                // Log user action
-                (new ActivityLogs)->userAction($user_id, $ofmis_id, $username, $role, $action);
-
-                // Add file_name to success array
-                $uploaded[] = $file_name;
-
-            } catch (\Exception $e) {
-                // Catch error and add to errors list
-                $errors[] = [
-                    'file' => $file_name,
-                    'message' => 'Upload failed: ' . $e->getMessage()
-                ];
-            }
+            $errors[] = [
+                'file' => $file_name,
+                'message' => 'Upload failed: ' . $e->getMessage()
+            ];
         }
-
-        // Return upload status and results
-        return response()->json([
-            'status' => 'success',
-            'uploaded' => $uploaded,
-            'errors' => $errors
-        ]);
     }
 
-    // Retrieve files for a specific project
-    public function getFiles($project_id)
-    {
-        // Get all files by project ID, newest first
-        $files = ProjectFile::where('project_id', $project_id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json([
-            'status' => 'success',
-            'files' => $files
-        ]);
+    return response()->json([
+        'status' => 'success',
+        'uploaded' => $uploaded,
+        'errors' => $errors
+    ]);
+}
+public function getFiles($project_id)
+{
+    $uploadPath = $this->getUploadPath();
+    if (!$uploadPath) {
+        return response()->json(['status' => 'error', 'message' => 'Upload path not configured.'], 500);
     }
+
+    $files = ProjectFile::where('project_id', $project_id)
+        ->where('file_path', $uploadPath)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return response()->json([
+        'status' => 'success',
+        'files' => $files
+    ]);
+}
+
+    
+
 
     // Delete a file by its file_name
     public function delete($file_name)
     {
-        // Find file record
         $file = ProjectFile::where('file_name', $file_name)->first();
-
-        // If file doesn't exist, return error
+    
         if (!$file) {
             return response()->json(['status' => 'error', 'message' => 'File not found.'], 404);
         }
-
-        // Delete physical file from storage
-        Storage::disk('public')->delete('project_files/' . $file->file_name);
-
-        // Delete record from database
+    
+        $dynamicRoot = $this->getUploadPath();
+        if (!$dynamicRoot) {
+            return response()->json(['status' => 'error', 'message' => 'Upload path not configured.'], 500);
+        }
+    
+        $filePath = $dynamicRoot . DIRECTORY_SEPARATOR . $file_name;
+    
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+    
         $file->delete();
-
+    
         return response()->json(['status' => 'success', 'message' => 'File deleted successfully.']);
     }
+    
+
 
     // Download a file by file_name
     public function downloadFile($file_name)
     {
-        // Get file record
-        $file = ProjectFile::where('file_name', $file_name)->first();
-
-        // Check if DB record exists
-        if (!$file) {
-            return response()->json(['status' => 'error', 'message' => 'File record not found.'], 404);
+        $dynamicRoot = $this->getUploadPath();
+        if (!$dynamicRoot) {
+            return response()->json(['status' => 'error', 'message' => 'Upload path not configured.'], 500);
         }
-
-        // Path to the physical file
-        $filePath = storage_path('app/public/project_files/' . $file_name);
-
-        // If file is not found in storage
+    
+        $filePath = $dynamicRoot . DIRECTORY_SEPARATOR . $file_name;
+    
         if (!file_exists($filePath)) {
             return response()->json(['status' => 'error', 'message' => 'File not found or inaccessible.'], 404);
         }
-
-        // Check if file type can be previewed
+    
         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
         if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'pdf'])) {
-            return response()->file($filePath); // View inline
+            return response()->file($filePath);
         }
-
-        // Otherwise, download the file
+    
         return response()->download($filePath);
     }
 }

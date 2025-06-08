@@ -16,6 +16,7 @@ class ProjectFile extends Model
         'file_name',
         'file_id',
         'action_by',
+        'file_path',
     ];
 
     public function project()

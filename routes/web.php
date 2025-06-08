@@ -12,6 +12,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\GenerateProjectReport;
 use App\Http\Controllers\ReportSignatoryController;
 use App\Http\Controllers\ProjectTimeExtensionController;
+use App\Http\Controllers\UploadSettingsController;
 
 // PUBLIC ROUTES
 Route::controller(UserManager::class)->group(function () {
@@ -119,7 +120,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/files/{projectID}', 'getFiles')->name('get.files');
         Route::delete('/file-delete/{file_name}',  'delete')->name('file.delete');
         Route::get('/download-file/{file_name}', 'downloadFile');
+        Route::post('/set-upload-path', 'setUploadPath');
+
     });
+
+    Route::post('/upload-path', [UploadSettingsController::class, 'store']);
+    Route::get('/upload-paths', [UploadSettingsController::class, 'fetchAll']);
 
         // SIGNATORIES ROUTES
     Route::post('/signatories', [ReportSignatoryController::class, 'store']);

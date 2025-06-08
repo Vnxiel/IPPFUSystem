@@ -12,9 +12,10 @@ return new class extends Migration {
             $table->string('file_name');
             $table->string('file_id');
             $table->string('action_by');
-
+            $table->text('file_path');
             $table->timestamps();
         });
+        
     }
 
     public function down() {

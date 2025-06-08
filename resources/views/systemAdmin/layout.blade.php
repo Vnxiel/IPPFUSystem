@@ -167,7 +167,8 @@
 
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>
       
-         <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
+        
+        <script src="{{ asset('js/Files/uploadFiles.js') }}"></script>
         <script src="{{ asset('js/Files/downloadFile.js') }}"></script>
         <script src="{{ asset('js/Files/deleteFile.js') }}"></script>
         <script src="{{ asset('js/Account/logout.js') }}"></script>
@@ -177,92 +178,3 @@
         @include('systemAdmin.modals.FilepathDirectory.upload-path')
     </body>
 </html>
-
-
-     <!-- Update Project Modal -->
-     <div class="modal fade" id="filterSearch" tabindex="-1" aria-labelledby="newProjectLabel" aria-hidden="true">
-            <div class="modal-dialog  modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="newProjectLabel"><span class="fa fa-filter"></span>&nbsp;Filter</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form>
-                        <div class="modal-body">
-                            <!-- Date Range -->
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <label for="dateRangeStart" class="form-label fw-bolder">Date Range</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input type="date" id="dateRangeStart" class="form-control flex-grow-1" placeholder="Start Date">
-                                        <span>-</span>
-                                        <input type="date" id="dateRangeEnd" class="form-control flex-grow-1" placeholder="End Date">
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <!-- Source of Fund -->
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bolder">Source of Fund</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="trustFund">
-                                        <label class="form-check-label" for="trustFund">Trust Fund</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="rfFund">
-                                        <label class="form-check-label" for="rfFund">RF</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <!-- Project Status -->
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bolder">Project Status</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="ongoing">
-                                        <label class="form-check-label" for="ongoing">On-going</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="completed">
-                                        <label class="form-check-label" for="completed">Completed</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="discontinued">
-                                        <label class="form-check-label" for="discontinued">Discontinued</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <!-- Amount Range -->
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bolder">Amount Range</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input type="number" id="min" class="form-control flex-grow-1" placeholder="Min">
-                                        <span>-</span>
-                                        <input type="number" id="max" class="form-control flex-grow-1" placeholder="Max">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary">Search</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
