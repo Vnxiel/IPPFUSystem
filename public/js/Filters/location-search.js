@@ -145,9 +145,11 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
 
 // Example setup
 document.addEventListener('DOMContentLoaded', () => {
-  setupDropdownHandlers('location_filter', 'location_filter_dropdown', 'locToggleBtn');
-  setupDropdownHandlers('year_filter_input', 'year_filter_dropdown'); // for your year input
+  setupDropdownHandlers('contractor_filter', 'contractorDropdown');
+  setupDropdownHandlers('location_filter', 'location_filter_dropdown');
+  setupDropdownHandlers('year_filter_input', 'year_filter_dropdown');
 });
+
 
 
 

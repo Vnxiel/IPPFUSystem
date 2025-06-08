@@ -24,6 +24,20 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
                          <span class="font-title-overview mb-0 text-uppercase">{{ $project['title'] ?? '' }}</span>
+                         <div class="d-flex gap-2">
+                             <!-- Report Button -->
+                             <button type="button"
+                                    id="generateProjectBtn"
+                                    class="btn btn-info btn-sm d-flex align-items-center gap-1"
+                                    data-bs-toggle="modal"
+                                    data-project-id="{{ $project['id'] }}"
+                                    data-bs-target="#generateProjectModal"
+                                    title="Generate/Download Report">
+                                <i class="fa fa-download"></i>
+                                <span class=" d-md-inline">Report</span>
+                            </button>
+                        </div>
+                    
                     </div>
                     <div class="card-body font-content">
                         <div class="row gy-2 mb-2">
@@ -1082,5 +1096,6 @@
         
     </script>
 
+@include('staff.modals.Projects.generate-report')
 
 @endsection

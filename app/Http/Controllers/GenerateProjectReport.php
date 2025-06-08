@@ -24,6 +24,25 @@ class GenerateProjectReport extends Controller
 
             $project = Project::findOrFail($project_id);
 
+            // Decode reason_for_suspension JSON from project model
+                $remarksData = [];
+
+                if (!empty($project->reason_for_suspension)) {
+                    $decoded = json_decode($project->reason_for_suspension, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $remarksData = $decoded;
+                    } else {
+                        Log::warning("Invalid JSON in reason_for_suspension", [
+                            'project_id' => $project_id,
+                            'error' => json_last_error_msg(),
+                            'raw_data' => $project->reason_for_suspension,
+                        ]);
+                    }
+                } else {
+                    Log::info("No reason_for_suspension found for Project ID: {$project_id}");
+                }
+
+
             if ($project->source_of_funds === 'Others') {
                 $project->source_of_funds = $project->otherFund;
             }
@@ -80,6 +99,9 @@ class GenerateProjectReport extends Controller
                     Log::info('Variation Order:', $vo->toArray());
                 }
             }
+
+            Log::info('Suspension Remarks JSON: ' . $project->suspensionRemarksJson);
+            Log::info('Decoded Remarks Data: ', json_decode($project->suspensionRemarksJson ?? '{}', true));
 
             $projectFileNames = ProjectFile::where('project_id', $project_id)
                 ->where(function ($query) {
@@ -142,6 +164,7 @@ class GenerateProjectReport extends Controller
                 'notedBy' => $notedBy,
                 'noted_by_position' => $notedByPosition,
                 'printedAt' => now()->format('F j, Y g:i A'),
+                'remarksData' => $remarksData,
             ])
             ->setPaper([0, 0, 612, 936], 'portrait');
 

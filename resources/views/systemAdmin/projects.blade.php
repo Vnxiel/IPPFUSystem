@@ -41,9 +41,9 @@
                                             {{ $firm }}
                                         </button>
                                     @endforeach
-
                                 </div>
                             </div>
+
 
                             <!-- Amount Filter -->
                             <div class="col-md-2">

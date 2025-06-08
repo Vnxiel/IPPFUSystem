@@ -36,6 +36,7 @@
                                     id="generateProjectBtn"
                                     class="btn btn-info btn-sm d-flex align-items-center gap-1"
                                     data-bs-toggle="modal"
+                                    data-project-id="{{ $project['id'] }}"
                                     data-bs-target="#generateProjectModal"
                                     title="Generate/Download Report">
                                 <i class="fa fa-download"></i>

@@ -2,130 +2,134 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
   const input = document.getElementById(inputId);
   const dropdown = document.getElementById(dropdownId);
   const toggleBtn = toggleBtnId ? document.getElementById(toggleBtnId) : null;
+  const buttons = Array.from(dropdown.querySelectorAll('button'));
+  const data = buttons.map(btn => btn.textContent.trim());
   let selectedIndex = -1;
-  if (!input || !dropdown) {
-    console.warn(`Missing input or dropdown element: ${inputId}, ${dropdownId}`);
-    return;
+
+  if (!input || !dropdown) return;
+
+  function toTitleCase(str) {
+    return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
   }
 
-  function attachClickHandlers() {
-      const buttons = dropdown.querySelectorAll('button');
-      buttons.forEach(button => {
-          button.onmousedown = () => {
-              const value = button.textContent.trim();
-
-              // Reset input value
-              if (value.toLowerCase() === 'all contractors') {
-                  input.value = '';
-              } else {
-                  input.value = value;
-              }
-
-              input.dispatchEvent(new Event('input', { bubbles: true }));
-              dropdown.style.display = 'none';
-              selectedIndex = -1;
-          };
-      });
+  function updateActive(visibleButtons) {
+    buttons.forEach(b => b.classList.remove('active'));
+    if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
+      visibleButtons[selectedIndex].classList.add('active');
+      visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
   }
 
-  function showDropdown(showAll = false) {
-      const buttons = dropdown.querySelectorAll('button');
-      buttons.forEach(button => button.style.display = showAll ? '' : button.style.display);
-      dropdown.style.display = 'block';
-      attachClickHandlers();
-      selectedIndex = -1;
+  function selectValue(value) {
+    input.value = value;
+    dropdown.style.display = 'none';
+    selectedIndex = -1;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
-  function hideDropdown() {
-      setTimeout(() => {
-          dropdown.style.display = 'none';
-          selectedIndex = -1;
-      }, 200);
+  function finalizeValue() {
+    const val = input.value.trim();
+    if (!val) return;
+    const match = data.find(d => d.toLowerCase() === val.toLowerCase());
+    input.value = match ? match : toTitleCase(val);
   }
 
-  function filterDropdown() {
-      const filter = input.value.toLowerCase();
-      const buttons = dropdown.querySelectorAll('button');
-      buttons.forEach(button => {
-          const text = button.textContent.toLowerCase();
-          button.style.display = text.includes(filter) ? '' : 'none';
-      });
-      selectedIndex = -1;
-      updateActiveButton();
-  }
-
-  function updateActiveButton() {
-      const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(btn => btn.style.display !== 'none');
-      dropdown.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-      if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
-          visibleButtons[selectedIndex].classList.add('active');
-          visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectValue(btn.textContent.trim());
+      const allInputs = Array.from(document.querySelectorAll('input, select, textarea'));
+      const currentIndex = allInputs.indexOf(input);
+      if (currentIndex >= 0 && currentIndex + 1 < allInputs.length) {
+        allInputs[currentIndex + 1].focus();
       }
-  }
+    });
+  });
 
   input.addEventListener('focus', () => {
-      // Always show all buttons when refocusing
-      showDropdown(true);
+    dropdown.style.display = 'block';
   });
 
   input.addEventListener('input', () => {
-      dropdown.style.display = 'block';
-      filterDropdown();
+    const query = input.value.toLowerCase().trim();
+    selectedIndex = -1;
+
+    let hasVisible = false;
+
+    buttons.forEach(btn => {
+      const text = btn.textContent.toLowerCase();
+      const match = text.includes(query);
+      btn.style.display = match ? '' : 'none';
+      if (match) hasVisible = true;
+    });
+
+    dropdown.style.display = hasVisible ? 'block' : 'none';
   });
 
-  input.addEventListener('blur', hideDropdown);
+  input.addEventListener('blur', () => {
+    setTimeout(() => {
+      dropdown.style.display = 'none';
+      finalizeValue();
+    }, 150);
+  });
 
-  input.addEventListener('keydown', (e) => {
-      const isArrowKey = e.key === 'ArrowDown' || e.key === 'ArrowUp';
+  input.addEventListener('keydown', e => {
+    const visibleButtons = buttons.filter(b => b.style.display !== 'none');
 
-      if (isArrowKey && dropdown.style.display !== 'block') {
-          showDropdown(true); // Show all options on arrow key when hidden
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && dropdown.style.display !== 'block') {
+      dropdown.style.display = 'block';
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
+      updateActive(visibleButtons);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (selectedIndex > 0) selectedIndex--;
+      updateActive(visibleButtons);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (visibleButtons.length === 1) {
+        selectValue(visibleButtons[0].textContent.trim());
+      } else if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
+        selectValue(visibleButtons[selectedIndex].textContent.trim());
+      } else {
+        finalizeValue();
       }
 
-      const visibleButtons = Array.from(dropdown.querySelectorAll('button')).filter(btn => btn.style.display !== 'none');
-
-      if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          if (selectedIndex < visibleButtons.length - 1) selectedIndex++;
-          updateActiveButton();
-      } else if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          if (selectedIndex > 0) selectedIndex--;
-          updateActiveButton();
-      } else if (e.key === 'Enter') {
-          e.preventDefault();
-          if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
-              visibleButtons[selectedIndex].click();
-          }
-      } else if (e.key === 'Escape') {
-          dropdown.style.display = 'none';
-          selectedIndex = -1;
+      const allInputs = Array.from(document.querySelectorAll('input, select, textarea'));
+      const currentIndex = allInputs.indexOf(input);
+      if (currentIndex >= 0 && currentIndex + 1 < allInputs.length) {
+        allInputs[currentIndex + 1].focus();
       }
+    } else if (e.key === 'Escape') {
+      dropdown.style.display = 'none';
+    }
   });
 
   if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => {
-          if (dropdown.style.display === 'block') {
-              dropdown.style.display = 'none';
-              selectedIndex = -1;
-          } else {
-              input.focus();
-          }
-      });
+    toggleBtn.addEventListener('click', () => {
+      if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+        selectedIndex = -1;
+      } else {
+        input.focus();
+      }
+    });
   }
 
-  // Close dropdown when clicking outside
   document.addEventListener('click', (event) => {
-      if (!input.contains(event.target) && !dropdown.contains(event.target)) {
-          dropdown.style.display = 'none';
-          selectedIndex = -1;
-      }
+    if (!input.contains(event.target) && !dropdown.contains(event.target)) {
+      dropdown.style.display = 'none';
+      selectedIndex = -1;
+    }
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   setupDropdownHandlers('contractor_filter', 'contractorDropdown', 'contractorToggleBtn');
 });
+
 
 
 document.addEventListener('DOMContentLoaded', () => {

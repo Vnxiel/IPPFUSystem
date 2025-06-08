@@ -86,6 +86,11 @@
                                                 <i class="fas fa-history me-2"></i>Activity Logs
                                             </a>
                                         </li>
+                                        <li>
+                                            <button type="button" class="dropdown-item py-2" data-bs-toggle="modal" data-bs-target="#filePathSettingsModal">
+                                                <i class="fas fa-folder-open me-2"></i>Change Upload Path
+                                            </button>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
@@ -168,7 +173,8 @@
         <script src="{{ asset('js/Account/logout.js') }}"></script>
 
         @yield('page-scripts') <!-- Add this line here -->
-
+        
+        @include('systemAdmin.modals.FilepathDirectory.upload-path')
     </body>
 </html>
 

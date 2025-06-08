@@ -322,36 +322,34 @@
               <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntp_received_date)->format('F d, Y') }}</td>
           </tr>
 
-
-
           @php
-            // Collect suspension/resume pairs with remarks
-            $orderPairs = [];
-            $remarksData = json_decode($project->suspensionRemarksJson ?? '{}', true);
+              // Collect suspension/resume pairs with remarks
+              $orderPairs = [];
 
-            foreach ($project->getAttributes() as $key => $value) {
-                if (preg_match('/^suspensionOrderNo(\d+)$/', $key, $matches)) {
-                  $index = $matches[1];
-                  $susp = $value;
-                  $resumeKey = "resumeOrderNo{$index}";
-                  $resume = $project->{$resumeKey} ?? null;
+              foreach ($project->getAttributes() as $key => $value) {
+                  if (preg_match('/^suspensionOrderNo(\d+)$/', $key, $matches)) {
+                      $index = $matches[1];
+                      $susp = $value;
+                      $resumeKey = "resumeOrderNo{$index}";
+                      $resume = $project->{$resumeKey} ?? null;
 
-                  // 🔧 FIX: force $index to string when accessing JSON keys
-                  $remarks = $remarksData[$index]['suspensionOrderRemarks'] ?? '';
+                      // Use the passed remarksData array from the controller
+                      $remarks = $remarksData[(string)$index]['suspensionOrderRemarks'] ?? '';
 
-                    if (!empty($susp) || !empty($resume)) {
-                        $orderPairs[] = [
-                            'index' => $index,
-                            'suspension' => $susp,
-                            'resume' => $resume,
-                            'remarks' => $remarks
-                        ];
-                    }
-                }
-            }
+                      if (!empty($susp) || !empty($resume)) {
+                          $orderPairs[] = [
+                              'index' => $index,
+                              'suspension' => $susp,
+                              'resume' => $resume,
+                              'remarks' => $remarks,
+                          ];
+                      }
+                  }
+              }
 
-            $hasSuspension = count($orderPairs) > 0;
-        @endphp
+              $hasSuspension = count($orderPairs) > 0;
+          @endphp
+
 
             <tr class="fit-text-row">
                 <th>Start Date:</th>
@@ -377,7 +375,7 @@
                     <td style="white-space: nowrap;">
                         {{ $pair['suspension'] ? \Carbon\Carbon::parse($pair['suspension'])->format('F d, Y') : ' ' }}
                     </td>
-                    <td colspan="2">Reason for suspension: {{ $pair['remarks'] ?: '' }}</td>
+                    <td colspan="4">Reason for suspension: {{ $pair['remarks'] ?: '' }}</td>
                 </tr>
                 <tr class="fit-text-row">
                     <th>Resume Order No. {{ $pair['index'] }}</th>
@@ -679,7 +677,7 @@
           <td style="text-align: right;">{{ $mobiAmount > 0 ? number_format($mobiAmount, 2) : '' }}</td>
           <td style="text-align: right;"></td>
           <td style="text-align: right;"></td>
-          <td style="text-align: right;">{{ $mobiAmount > 0 ? number_format($mobiAmount, 2) : '' }}</td>
+          <td style="text-align: right;"></td>
         </tr>
 
         <!-- Partial Billings -->

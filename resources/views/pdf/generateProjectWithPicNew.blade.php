@@ -325,33 +325,32 @@
 
 
           @php
-            // Collect suspension/resume pairs with remarks
-            $orderPairs = [];
-            $remarksData = json_decode($project->suspensionRemarksJson ?? '{}', true);
+              // Collect suspension/resume pairs with remarks
+              $orderPairs = [];
 
-            foreach ($project->getAttributes() as $key => $value) {
-                if (preg_match('/^suspensionOrderNo(\d+)$/', $key, $matches)) {
-                  $index = $matches[1];
-                  $susp = $value;
-                  $resumeKey = "resumeOrderNo{$index}";
-                  $resume = $project->{$resumeKey} ?? null;
+              foreach ($project->getAttributes() as $key => $value) {
+                  if (preg_match('/^suspensionOrderNo(\d+)$/', $key, $matches)) {
+                      $index = $matches[1];
+                      $susp = $value;
+                      $resumeKey = "resumeOrderNo{$index}";
+                      $resume = $project->{$resumeKey} ?? null;
 
-                  // 🔧 FIX: force $index to string when accessing JSON keys
-                  $remarks = $remarksData[$index]['suspensionOrderRemarks'] ?? '';
+                      // Use the passed remarksData array from the controller
+                      $remarks = $remarksData[(string)$index]['suspensionOrderRemarks'] ?? '';
 
-                    if (!empty($susp) || !empty($resume)) {
-                        $orderPairs[] = [
-                            'index' => $index,
-                            'suspension' => $susp,
-                            'resume' => $resume,
-                            'remarks' => $remarks
-                        ];
-                    }
-                }
-            }
+                      if (!empty($susp) || !empty($resume)) {
+                          $orderPairs[] = [
+                              'index' => $index,
+                              'suspension' => $susp,
+                              'resume' => $resume,
+                              'remarks' => $remarks,
+                          ];
+                      }
+                  }
+              }
 
-            $hasSuspension = count($orderPairs) > 0;
-        @endphp
+              $hasSuspension = count($orderPairs) > 0;
+          @endphp
 
             <tr class="fit-text-row">
                 <th>Start Date:</th>
@@ -377,7 +376,7 @@
                     <td style="white-space: nowrap;">
                         {{ $pair['suspension'] ? \Carbon\Carbon::parse($pair['suspension'])->format('F d, Y') : ' ' }}
                     </td>
-                    <td colspan="2">Reason for suspension: {{ $pair['remarks'] ?: '' }}</td>
+                    <td colspan="4">Reason for suspension: {{ $pair['remarks'] ?: '' }}</td>
                 </tr>
                 <tr class="fit-text-row">
                     <th>Resume Order No. {{ $pair['index'] }}</th>
@@ -456,7 +455,7 @@
                   )
                     {{ number_format($projectFundsUtilization['actual_contract_amount'], 2) }}
                   @else
-                    --
+                  {{ number_format($projectFundsUtilization['orig_contract_amount'], 2) }}
                   @endif
                 </td>
               </tr>
@@ -491,7 +490,8 @@
                   @if (
                     isset($projectFundsUtilization['actual_contract_amount']) &&
                     isset($projectVariationOrder[1]['vo_contract_amount']) &&
-                    isset($projectVariationOrder[2]['vo_contract_amount'])
+                    isset($projectVariationOrder[2]['vo_contract_amount'])  &&
+                    isset($projectVariationOrder[3]['vo_contract_amount'])
                   )
                     {{ number_format($projectFundsUtilization['actual_contract_amount'], 2) }}
                   @else
@@ -499,6 +499,48 @@
                   @endif
                 </td>
               </tr>
+              <tr class="fit-text-table">
+                <th></th>
+                <td style="text-align: right;"></td>
+                <td style="text-align: center; width: 50px;">4</td>
+                <td style="text-align: right;">
+                  {{ isset($projectVariationOrder[3]['vo_contract_amount']) ? number_format($projectVariationOrder[3]['vo_contract_amount'], 2) : '--' }}
+                </td>
+                <td style="text-align: right;">
+                  @if (
+                    isset($projectFundsUtilization['actual_contract_amount']) &&
+                    isset($projectVariationOrder[1]['vo_contract_amount']) &&
+                    isset($projectVariationOrder[2]['vo_contract_amount']) &&
+                    isset($projectVariationOrder[3]['vo_contract_amount'])
+                  )
+                    {{ number_format($projectFundsUtilization['actual_contract_amount'], 2) }}
+                  @else
+                    --
+                  @endif
+                </td>
+              </tr>
+              <tr class="fit-text-table">
+                <th></th>
+                <td style="text-align: right;"></td>
+                <td style="text-align: center; width: 50px;">5</td>
+                <td style="text-align: right;">
+                  {{ isset($projectVariationOrder[4]['vo_contract_amount']) ? number_format($projectVariationOrder[4]['vo_contract_amount'], 2) : '--' }}
+                </td>
+                <td style="text-align: right;">
+                  @if (
+                    isset($projectFundsUtilization['actual_contract_amount']) &&
+                    isset($projectVariationOrder[1]['vo_contract_amount']) &&
+                    isset($projectVariationOrder[2]['vo_contract_amount']) &&
+                    isset($projectVariationOrder[3]['vo_contract_amount']) &&
+                    isset($projectVariationOrder[4]['vo_contract_amount'])
+                  )
+                    {{ number_format($projectFundsUtilization['actual_contract_amount'], 2) }}
+                  @else
+                    --
+                  @endif
+                </td>
+              </tr>
+
 
               <tr class="fit-text-table">
                 <th>Savings</th>

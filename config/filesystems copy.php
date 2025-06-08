@@ -38,11 +38,12 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'root' => '\\\\192.168.250.24\\FWTU_Shared_Files\\Shared Files\\OJT',
             'visibility' => 'public',
-            'throw' => false,
+            'throw' => true,
         ],
+        
+        
 
         's3' => [
             'driver' => 's3',
