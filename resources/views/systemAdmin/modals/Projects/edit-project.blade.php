@@ -670,7 +670,9 @@
 </div>
 
 
-
+<script id="engineer-data" type="application/json">
+  {!! json_encode($engineer_name->pluck('engineer_name')->map(fn($engineer_name) => trim($engineer_name))->values()) !!}
+</script>
 @section('page-scripts')
         <script src="{{ asset('js/Projects/projects-addSubmit.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-addOrder.js') }}"></script>

@@ -1,4 +1,20 @@
 $(document).ready(function () {
+    // Responsive button adjustment
+    function adjustButtons() {
+        const width = $(window).width();
+        $(".responsive-btn").each(function () {
+            if (width <= 576) {
+                $(this).addClass("btn-sm").html(`<i class="${$(this).data("icon")}"></i>`);
+            } else {
+                $(this).removeClass("btn-sm").html(`<i class="${$(this).data("icon")} me-1"></i>${$(this).data("text")}`);
+            }
+        });
+    }
+
+    // Adjust buttons on load and resize
+    adjustButtons();
+    $(window).on("resize", adjustButtons);
+
     // Handle Add Status button click
     $(document).on("click", "#addStatusBtn", function () {
         const project_id = sessionStorage.getItem("project_id");
@@ -15,7 +31,7 @@ $(document).ready(function () {
         $("#addStatusModal").modal("show");
     });
 
-    // Toggle manual date
+    // Toggle auto/manual date
     $("#autoDate").on("change", function () {
         if ($(this).is(":checked")) {
             $("#date").prop("disabled", true).val(new Date().toISOString().split("T")[0]);
@@ -24,21 +40,24 @@ $(document).ready(function () {
         }
     });
 
-    // Handle progress change (e.g., Completed auto-fills percentage)
-    $("#progress").on("change", function () {
-        const selected = $(this).val();
-        const statusData = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
-        const prevPercentage = parseFloat(statusData.percentage || 0);
-        const remaining = 100 - prevPercentage;
+   // Auto-fill percentage based on progress
+        $("#progress").on("change", function () {
+            const selected = $(this).val();
+            const statusData = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
+            const prevPercentage = parseFloat(statusData.percentage || 0);
+            const remaining = 100 - prevPercentage;
 
-        if (selected === "Completed") {
-            $("#percentage").val(remaining).prop("disabled", true);
-        } else {
-            $("#percentage").val("").prop("disabled", false);
-        }
-    });
+            if (selected === "Completed") {
+                $("#percentage").val(remaining).prop("disabled", true);
+            } else if (selected === "Discontinued" || selected === "Suspended") {
+                $("#percentage").val(0).prop("disabled", true);
+            } else {
+                $("#percentage").val("").prop("disabled", false);
+            }
+        });
 
-    // Submit new status
+
+    // Submit Add Status form
     $("#addStatusForm").on("submit", function (e) {
         e.preventDefault();
 
@@ -46,22 +65,26 @@ $(document).ready(function () {
         const progress = $("#progress").val();
         let percentage = parseFloat($("#percentage").val());
         const statusData = JSON.parse(sessionStorage.getItem("latestStatusData") || "{}");
+        const allStatuses = JSON.parse(sessionStorage.getItem("allStatusData") || "[]");
         const prevPercentage = parseFloat(statusData.percentage || 0);
         const remaining = 100 - prevPercentage;
 
         if (progress === "Completed") {
             percentage = remaining;
+        } else if (progress === "Discontinued" || progress === "Suspended") {
+            percentage = 0;
         }
+        
 
         const date = $("#autoDate").is(":checked")
             ? new Date().toISOString().split("T")[0]
             : $("#date").val();
 
-        if (!progress || isNaN(percentage) || percentage <= 0 || percentage > 100) {
+        if (!progress || isNaN(percentage) || percentage < 0 || percentage > 100) {
             return Swal.fire({
                 icon: "warning",
                 title: "Invalid Input",
-                text: "Please provide valid progress and percentage (1-100)."
+                text: "Please provide valid progress and percentage (0–100)."
             });
         }
 
@@ -70,6 +93,19 @@ $(document).ready(function () {
                 icon: "warning",
                 title: "Exceeded Limit",
                 text: `Only ${remaining}% progress is remaining.`
+            });
+        }
+
+        // Validate date against all previous dates
+        const duplicateDate = allStatuses.find(s =>
+            new Date(s.date).toISOString().split("T")[0] === date
+        );
+
+        if (duplicateDate) {
+            return Swal.fire({
+                icon: "error",
+                title: "Duplicate Date",
+                text: `A status with date ${date} already exists.`
             });
         }
 
@@ -86,6 +122,7 @@ $(document).ready(function () {
             }
         }
 
+        // Submit to backend
         $.ajax({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -115,7 +152,7 @@ $(document).ready(function () {
 
                 Swal.fire({
                     icon: "error",
-                    title: "Error Adding New Status",
+                    title: "Error Adding Status",
                     text: errorMessage
                 });
             }

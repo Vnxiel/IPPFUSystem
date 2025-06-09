@@ -159,22 +159,41 @@
                                                     {{ $project['physical_status'] ?? '' }}
                                                 </span><br>
                                                 <small style="font-weight: normal;">
-                                                    {{ $totalPercentage }}% Completed
+                                                    {{ $totalPercentage }}%
+                                                    @php
+                                                        $status = strtolower($project['physical_status'] ?? '');
+                                                    @endphp
+
+                                                    @if($status === 'completed')
+                                                        Completed
+                                                    @elseif($status === 'discontinued')
+                                                        Discontinued
+                                                    @elseif($status === 'suspended')
+                                                        Suspended
+                                                    @elseif($status === 'ongoing')
+                                                        Ongoing
+                                                    @else
+                                                        Progress
+                                                    @endif
+
                                                     @if ($latestDate)
                                                         as of {{ \Carbon\Carbon::parse($latestDate)->format('F j, Y') }}
                                                     @endif
                                                 </small>
+
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-5 ">
-                                                <p class="d-block">Slippage:</p>
+                                        @if(!empty($project['project_slippage']))
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <p class="d-block">Slippage:</p>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <span class="badge bg-danger text-white">{{ $project['project_slippage'] }}</span>
+                                                </div>
                                             </div>
-                                            <div class="col-md-7">
-                                                <span
-                                                    class="badge bg-danger text-white">{{ $project['project_slippage'] ?? '' }}</span>
-                                            </div>
-                                        </div>
+                                        @endif
+
                                     </div>
                                 </div>
                             </div>

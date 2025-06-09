@@ -568,7 +568,7 @@
     {!! json_encode($contractors->pluck('name')) !!}
 </script>
 <script id="engineer-data" type="application/json">
-  {!! json_encode($projectEA->pluck('engineer_name')->map(fn($engineer_name) => trim($engineer_name))->values()) !!}
+  {!! json_encode($engineer_name->pluck('engineer_name')->map(fn($engineer_name) => trim($engineer_name))->values()) !!}
 </script>
 
 

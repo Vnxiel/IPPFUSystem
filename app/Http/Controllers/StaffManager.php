@@ -43,13 +43,13 @@ class StaffManager extends Controller
         ->whereNotNull('year')
         ->orderBy('year')
         ->get();
-        $projectEA = Project::select('engineer_name')
+        $engineer_name = Project::select('engineer_name')
         ->distinct()
         ->whereNotNull('engineer_name')
         ->orderBy('engineer_name')
         ->get();
 
-         return view('staff.index', compact('contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
+         return view('staff.index', compact('contractors', 'locations', 'source_of_funds', 'engineer_name', 'year'));
 }
 
 

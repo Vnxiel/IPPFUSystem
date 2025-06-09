@@ -21,6 +21,7 @@ use App\Models\VariationOrder;
 use App\Models\ProjectTimeExtension;
 use App\Models\FundsBreakdowns;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class ProjectManager extends Controller
 {
@@ -384,7 +385,7 @@ public function fetchTrashedProjects()
         
             $source_of_funds = Project::select('source_of_funds')->distinct()->whereNotNull('source_of_funds')->orderBy('source_of_funds')->get();
             $year = Project::select('year')->distinct()->whereNotNull('year')->orderBy('year')->get();
-            $projectEA = Project::select('engineer_name')->distinct()->whereNotNull('engineer_name')->orderBy('engineer_name')->get();
+            $engineer_name = Project::select('engineer_name')->distinct()->whereNotNull('engineer_name')->orderBy('engineer_name')->get();
     
             $projectData = Project::find($id);
     
@@ -573,7 +574,7 @@ public function fetchTrashedProjects()
                     return redirect()->back()->withErrors(['Unauthorized role.']);
             }
     
-            return view($view, compact('contractors', 'project', 'locations', 'source_of_funds', 'year', 'timeExtensions', 'projectEA', 'projectStatusData', 'engineeringEntries', 'mqcEntries'));
+            return view($view, compact('contractors', 'project', 'locations', 'source_of_funds', 'year', 'timeExtensions', 'engineer_name', 'projectStatusData', 'engineeringEntries', 'mqcEntries'));
     
         } catch (\Exception $e) {
             Log::error('Error fetching project details: ' . $e->getMessage());
@@ -882,69 +883,91 @@ public function fetchTrashedProjects()
 
     
      
-public function addStatus(Request $request)
-{
-    $request->validate([
-        'project_id' => 'required|integer|exists:projects,id',
-        'progress' => 'required|string',
-        'percentage' => 'required|numeric|min:0|max:100',
-        'date' => 'required|date',
-    ]);
-
-    try {
-        $project = Project::where('id', $request->project_id)->first();
-
-        if (!$project) {
-            return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
-        }
-
-        if (in_array($project->physical_status, ['Completed', 'Discontinued'])) {
+    public function addStatus(Request $request)
+    {
+        $request->validate([
+            'project_id' => 'required|integer|exists:projects,id',
+            'progress' => 'required|string',
+            'percentage' => 'required|numeric|min:0|max:100',
+            'date' => 'required|date',
+        ]);
+    
+        try {
+            $project = Project::find($request->project_id);
+    
+            if (!$project) {
+                return response()->json(['status' => 'error', 'message' => 'Project not found.'], 404);
+            }
+    
+            if (in_array($project->physical_status, ['Completed', 'Discontinued'])) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Cannot add status to a completed or discontinued project.'
+                ], 403);
+            }
+    
+            // Check if this exact date already exists
+            $dateExists = PhysicalStatus::where('project_id', $request->project_id)
+                ->whereDate('date', $request->date)
+                ->exists();
+    
+            if ($dateExists) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'A status with this date already exists. Please choose a later date.'
+                ], 409);
+            }
+    
+            // Get the latest status date (if any)
+            $latestStatus = PhysicalStatus::where('project_id', $request->project_id)
+                ->orderByDesc('date')
+                ->first();
+    
+            if ($latestStatus) {
+                $newDate = Carbon::parse($request->date);
+                $lastDate = Carbon::parse($latestStatus->date);
+    
+                if ($newDate->lessThanOrEqualTo($lastDate)) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'The new status date must be after the last recorded status date: ' . $lastDate->format('Y-m-d')
+                    ], 422);
+                }
+            }
+    
+            DB::beginTransaction();
+    
+            PhysicalStatus::create([
+                'project_id' => $request->project_id,
+                'progress' => $request->progress,
+                'percentage' => $request->percentage,
+                'date' => $request->date,
+            ]);
+    
+            $ongoing_status = $request->percentage . ' - ' . $request->date;
+    
+            $project->update([
+                'physical_status' => $request->progress,
+                'ongoing_status' => $ongoing_status,
+            ]);
+    
+            DB::commit();
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Status successfully added.'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('AddStatus Error: ' . $e->getMessage());
+    
             return response()->json([
                 'status' => 'error',
-                'message' => 'Cannot add status to a completed or discontinued project.'
-            ], 403);
+                'message' => 'Failed to insert status.',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $latestStatus = PhysicalStatus::where('project_id', $request->project_id)
-            ->orderByDesc('date')
-            ->orderByDesc('percentage')
-            ->first(); 
-
-        DB::beginTransaction();
-
-        PhysicalStatus::insert([
-            'project_id' => $request->project_id,
-            'progress' => $request->progress,
-            'percentage' => $request->percentage,
-            'date' => $request->date,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        $ongoing_status = $request->percentage . ' - ' . $request->date;
-
-        Project::where('id', $request->project_id)
-            ->update([
-                'physical_status' => $request->progress,
-                'ongoing_status' =>$request->percentage,
-                'updated_at' => now()
-            ]);
-
-        DB::commit();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Project status successfully inserted and project updated.'
-        ]);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        \Log::error("Error in addStatus: " . $e->getMessage());
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to insert status or update project.',
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
-
+    
+    
 }

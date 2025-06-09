@@ -79,74 +79,73 @@ document.addEventListener('DOMContentLoaded', () => {
             dropdown.appendChild(item);
         });
         dropdown.style.display = 'block';
-        if (historyLabel) historyLabel.style.display = 'block';
+        historyLabel.style.display = 'block';
     }
 
     percentageInput.addEventListener('focus', showHistory);
-
-    percentageInput.addEventListener('input', () => {
-    showHistory();
-
-    const currentValue = parseInt(percentageInput.value);
-    const duplicate = existingPercentages.includes(currentValue);
-    const exceedsLimit = currentValue > remainingPercentage;
-
-    percentageInput.setCustomValidity('');
-
-    // Check for exceeding remaining percentage
-    if (exceedsLimit) {
-        percentageInput.setCustomValidity(`Only ${remainingPercentage}% remaining. Please enter a value within the limit.`);
-    }
-
-    //  Automatically set progress to "Completed" if user enters remaining %
-    if (currentValue === remainingPercentage && progressSelect.value !== 'Completed') {
-        progressSelect.value = 'Completed';
-    }
-
-    //  If user reduces value again, allow manual override of status
-    if (currentValue < remainingPercentage && progressSelect.value === 'Completed') {
-        progressSelect.value = ''; // or revert to previous status if you track it
-    }
-
-    percentageInput.reportValidity();
-});
-
     percentageInput.addEventListener('blur', () => {
         setTimeout(() => {
             dropdown.style.display = 'none';
-            if (historyLabel) historyLabel.style.display = 'none';
+            historyLabel.style.display = 'none';
         }, 200);
     });
 
-    // If 'Completed' is selected, auto-fill remaining % and disable editing
-    progressSelect.addEventListener('change', () => {
-        const selected = progressSelect.value;
+    percentageInput.addEventListener('input', () => {
+        showHistory();
+        const currentValue = parseInt(percentageInput.value);
+        const exceedsLimit = currentValue > remainingPercentage;
 
-        if (selected === 'Completed') {
-            percentageInput.value = remainingPercentage;
-            percentageInput.disabled = true;
-            percentageInput.setCustomValidity('');
-        } else {
-            percentageInput.disabled = false;
+        percentageInput.setCustomValidity('');
+
+        if (exceedsLimit) {
+            percentageInput.setCustomValidity(`Only ${remainingPercentage}% remaining.`);
         }
 
-        percentageInput.dispatchEvent(new Event('input')); // Re-validate
+        if (currentValue === remainingPercentage && progressSelect.value !== 'Completed') {
+            progressSelect.value = 'Completed';
+        }
+
+        if (currentValue < remainingPercentage && progressSelect.value === 'Completed') {
+            progressSelect.value = '';
+        }
+
+        percentageInput.reportValidity();
     });
 
-    // Auto date handling
+    // Set date input
+    if (autoDate.checked) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+        dateInput.disabled = true;
+    }
+
     autoDate.addEventListener('change', () => {
         if (autoDate.checked) {
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.value = today;
+            dateInput.value = new Date().toISOString().split('T')[0];
             dateInput.disabled = true;
         } else {
             dateInput.disabled = false;
         }
     });
 
-    if (autoDate.checked) {
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today;
-    }
+    // Handle percentage logic based on selected status
+    progressSelect.addEventListener('change', () => {
+        const selected = progressSelect.value;
+
+        if (selected === 'Completed') {
+            percentageInput.value = remainingPercentage;
+            percentageInput.disabled = true;
+            percentageInput.parentElement.style.display = 'block';
+        } else if (selected === 'Suspended' || selected === 'Discontinued') {
+            percentageInput.value = 0;
+            percentageInput.disabled = true;
+            percentageInput.parentElement.style.display = 'none'; // hide the input
+        } else {
+            percentageInput.disabled = false;
+            percentageInput.value = '';
+            percentageInput.parentElement.style.display = 'block';
+        }
+
+        percentageInput.dispatchEvent(new Event('input'));
+    });
 });
 </script>

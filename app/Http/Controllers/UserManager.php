@@ -364,7 +364,7 @@ public function getUserRole(Request $request)
         ->whereNotNull('year')
         ->orderBy('year')
         ->get();
-        $projectEA = Project::select('engineer_name')
+        $engineer_name = Project::select('engineer_name')
         ->distinct()
         ->whereNotNull('engineer_name')
         ->orderBy('engineer_name')
@@ -372,7 +372,7 @@ public function getUserRole(Request $request)
 
 
         // default to system admin
-        return view('systemAdmin.projects', compact('contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
+        return view('systemAdmin.projects', compact('contractors', 'locations', 'source_of_funds', 'engineer_name', 'year'));
     }
     
     

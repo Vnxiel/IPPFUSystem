@@ -6,7 +6,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
   @page {
-    margin: 15mm 15mm 15mm 15mm;
+    margin: 10mm 15mm 5mm 15mm;
   }
     
   body {
@@ -214,6 +214,7 @@
 
 <div class="container">
   <!-- Header -->
+<header>
   <table class="header-table">
     <tr>
       <td style="width: 15%; text-align: left;">
@@ -246,21 +247,24 @@
     </tr>
   </table>
 
-  <table class="contact-table mt-2">
-  <tr>
-    <td class="text-left">
-      <span class="label"><b> TEL .NO.: </span> (078) 332-3000 Loc 418</b>
-    </td>
-    <td style="text-align: right;">
-      <span class="label"><b>E_MAIL:</span> PLGYNUEVAVIZCAYA.PEO@GMAIL.COM</b>
-    </td>
-  </tr>
-</table>
+
+    <table class="contact-table mt-2">
+    <tr>
+      <td class="text-left">
+        <span class="label"><b> TEL .NO.: </span> (078) 332-3000 Loc 418</b>
+      </td>
+      <td style="text-align: right;">
+        <span class="label"><b>E_MAIL:</span> PLGYNUEVAVIZCAYA.PEO@GMAIL.COM</b>
+      </td>
+    </tr>
+  </table>
 
   <!-- Decorative Footer Line -->
   <div class="footer-line">
 
   </div>
+
+</header>
       <!-- Project Information -->
       <table class="project-info-table">
         <tbody>
@@ -760,7 +764,7 @@
 </div>
 
 <div style="page-break-inside: avoid;">
-  <table style="width: 100%; border-collapse: collapse;">
+  <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
     <tr>
       <td style="width: 33%; vertical-align: top; font-size: 12px; padding-bottom: 5px;">
         <span style="margin-bottom: 20px; display: inline-block;">Prepared by</span>

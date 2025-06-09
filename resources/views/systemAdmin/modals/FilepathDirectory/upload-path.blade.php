@@ -53,16 +53,18 @@
     })
     .then(response => response.json())
     .then(data => {
-      Swal.fire({
-        title: 'Success',
-        text: data.message,
-        icon: 'success',
-        confirmButtonText: 'OK'
-      }).then(() => {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('filePathSettingsModal'));
-        modal.hide();
-      });
-    })
+    Swal.fire({
+      title: 'Success',
+      text: data.message,
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('filePathSettingsModal'));
+      modal.hide();
+      location.reload(); // Reload the page after modal is hidden
+    });
+  })
+
     .catch(error => {
       console.error('Error:', error);
       Swal.fire({

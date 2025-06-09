@@ -59,14 +59,14 @@ class AdminManager extends Controller
             ->get();
 
         // Get distinct list of implementing/executing agencies
-        $projectEA = Project::select('engineer_name')
+        $engineer_name = Project::select('engineer_name')
             ->distinct()
             ->whereNotNull('engineer_name')
             ->orderBy('engineer_name')
             ->get();
 
         // Return the admin.index view with required data
-        return view('admin.index', compact('contractors', 'locations', 'source_of_funds', 'projectEA', 'year'));
+        return view('admin.index', compact('contractors', 'locations', 'source_of_funds', 'engineer_name', 'year'));
     }
 
     // Method to return the admin.projects view with mapped project details
