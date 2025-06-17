@@ -52,16 +52,16 @@
 
                           
                           <!-- Year Filter -->
-                            <div class="col-md-2 position-relative">
+                          <div class="col-md-2 position-relative">
                                 <input type="text" class="form-control" id="year_filter_input" name="year_filter"
                                     placeholder="Year" maxlength="4" minlength="4" autocomplete="off"
                                     oninput="validateYearInput(this)" />
                                 <div id="year_filter_dropdown" class="list-group position-absolute w-100 shadow-sm bg-white rounded"
                                     style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                    @for ($y = 2015; $y <= now()->year; $y++)
+                                    @foreach ($year->sortByDesc('year') as $y)
                                         <button type="button" class="list-group-item list-group-item-action"
-                                                onclick="selectYear('{{ $y }}')">{{ $y }}</button>
-                                    @endfor
+                                                onclick="selectYear('{{ $y->year }}')">{{ $y->year }}</button>
+                                    @endforeach
                                 </div>
                             </div>
 
@@ -122,7 +122,7 @@
                             <th style="width: 10%; white-space: nowrap;"><small>Contract Amount</small></th>
                             <th style="width: 12%; white-space: nowrap;"><small>Contractor</small></th>
                             <th style="width: 6%; white-space: nowrap;"><small>Contract Days</small></th>
-                            <th style="width: 6%; white-space: nowrap;"><small>Year</small></th>
+                            <th style="width: 6%; white-space: nowrap;" class="text-start"><small>Year</small></th>
                             <th style="width: 15%; white-space: nowrap;"><small>Action</small></th>
                         </tr>
                     </thead>
@@ -136,7 +136,7 @@
                         <td>₱{{ $project['amount'] }}</td>
                         <td>{{ $project['contractor'] }}</td>
                         <td>{{ $project['duration'] }}</td>
-                        <td>{{ $project['year'] }}</td>
+                        <td class="text-start">{{ $project['year'] }}</td>
                         <td>
                             <div class="d-flex gap-1 flex-wrap">
                                 <!-- View Button -->

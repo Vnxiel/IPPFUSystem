@@ -43,6 +43,7 @@ class StaffManager extends Controller
         ->whereNotNull('year')
         ->orderBy('year')
         ->get();
+
         $engineer_name = Project::select('engineer_name')
         ->distinct()
         ->whereNotNull('engineer_name')
@@ -63,6 +64,11 @@ public function projects()
        })
        ->orderBy('created_at', 'desc')
        ->get();
+       $year = Project::select('year')
+        ->distinct()
+        ->whereNotNull('year')
+        ->orderBy('year')
+        ->get();
 
  
        $contractors = Project::orderBy('firm_name', 'asc')->get();
@@ -120,7 +126,7 @@ public function projects()
        ];
    });
     
-    return view('staff.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'engineer_name'));
+    return view('staff.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'engineer_name', 'year'));
 }
 
     public function activityLogs() {

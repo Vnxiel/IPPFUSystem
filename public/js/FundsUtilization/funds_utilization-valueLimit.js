@@ -46,31 +46,21 @@ document.addEventListener('DOMContentLoaded', function () {
       if (input) {
         input.addEventListener('blur', function () {
           const appropriationValue = parseCurrency(origAppropriationInput.value);
-
-          // Check if any field in this group exceeds appropriation value
           let exceeded = false;
           group.ids.forEach(fieldId => {
             const fieldEl = document.getElementById(fieldId);
             if (!fieldEl) return;
-
             const fieldValue = parseCurrency(fieldEl.value);
-            if (fieldValue > appropriationValue) {
-              exceeded = true;
-            }
+            if (fieldValue > appropriationValue) exceeded = true;
           });
 
           if (exceeded) {
             showError(group.label);
-
-            // Clear all fields in this group that exceed appropriation value
             group.ids.forEach(fieldId => {
               const fieldEl = document.getElementById(fieldId);
               if (!fieldEl) return;
-
               const fieldValue = parseCurrency(fieldEl.value);
-              if (fieldValue > appropriationValue) {
-                fieldEl.value = '';
-              }
+              if (fieldValue > appropriationValue) fieldEl.value = '';
             });
           }
         });
@@ -78,29 +68,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  const actualEng = document.getElementById("actual_engineering");
-  const amountEng = document.querySelector('input[name="amountEng"]');
-
-  const actualMqc = document.getElementById("actual_mqc");
-  const summaryMqc = document.querySelector('input[name="amountMqc"]');
-
-  if (actualEng && amountEng) {
-    actualEng.addEventListener("input", () => {
-      amountEng.value = actualEng.value;
-    });
-  }
-
-  if (actualMqc && summaryMqc) {
-    actualMqc.addEventListener("input", () => {
-      summaryMqc.value = actualMqc.value;
-    });
-  }
-
   const amountTotal = document.querySelector('input[name="amountTotal"]');
   const amountSavings = document.querySelector('input[name="amountSavings"]');
   const origAppropriation = document.getElementById('orig_appropriation');
 
-  const validateExpenditures = () => {
+  // Make function available globally
+  window.validateExpenditures = function () {
     const appropriation = parseCurrency(origAppropriation.value);
     const total = parseCurrency(amountTotal.value);
     const savings = parseCurrency(amountSavings.value);
@@ -112,8 +85,10 @@ document.addEventListener('DOMContentLoaded', function () {
         text: 'Total Expenditures cannot exceed the Original Appropriation!',
       });
       amountTotal.value = '';
+      if (amountSavings) amountSavings.value = ''; // Clear savings too
       return false;
     }
+    
 
     if (savings < 0) {
       Swal.fire({
@@ -128,32 +103,18 @@ document.addEventListener('DOMContentLoaded', function () {
     return true;
   };
 
-  // Handle click on Add Entry (inside modal)
   const addEntryBtn = document.getElementById('addEntryBtn');
-
   if (addEntryBtn) {
-    addEntryBtn.addEventListener('click', function (e) {
+    addEntryBtn.addEventListener('click', function () {
       const type = document.getElementById('entryType')?.value;
-
       if (!type) {
         showAlert('Please select entry type.', 'info');
         return;
       }
 
-      // Allow adding entry logic here
+      if (!window.validateExpenditures()) return;
+
+      // Proceed with entry logic...
     });
   }
-
-  // // Restrict contract inputs
-  // const contractInputs = document.querySelectorAll('#amountMobilization, [id^="amountPartial"], #amountFinal');
-  // contractInputs.forEach(input => {
-  //   input.addEventListener('focus', function (e) {
-  //     const contractBalance = parseBalance('contractBalance');
-  //     const currentValue = e.target.value.trim();
-  //     if (contractBalance <= 0 && currentValue === '') {
-  //       e.target.blur();
-  //       showAlert('Cannot add new contract amount. Contract balance is zero.', 'error');
-  //     }
-  //   });
-  // });
 });

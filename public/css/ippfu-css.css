@@ -132,3 +132,38 @@ tbody tr:first-child td {
     font-size: clamp(0.75rem, 1vw, 1rem); /* Responsive font size */
 }
 
+.loading-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .loading-overlay.active {
+    display: flex;
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #ccc;
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .loading-text {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 500;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }

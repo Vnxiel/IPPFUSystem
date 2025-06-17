@@ -8,10 +8,6 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
 
   if (!input || !dropdown) return;
 
-  function toTitleCase(str) {
-    return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-  }
-
   function updateActive(visibleButtons) {
     buttons.forEach(b => b.classList.remove('active'));
     if (selectedIndex >= 0 && visibleButtons[selectedIndex]) {
@@ -31,7 +27,7 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
     const val = input.value.trim();
     if (!val) return;
     const match = data.find(d => d.toLowerCase() === val.toLowerCase());
-    input.value = match ? match : toTitleCase(val);
+    input.value = match ? match : val;
   }
 
   buttons.forEach(btn => {
@@ -128,11 +124,6 @@ function setupDropdownHandlers(inputId, dropdownId, toggleBtnId = null) {
 
 document.addEventListener('DOMContentLoaded', () => {
   setupDropdownHandlers('contractor_filter', 'contractorDropdown', 'contractorToggleBtn');
-});
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
   setupDropdown('firm_name', 'firmDropdown');
   setupDropdown('contractor_name', 'contractorNameDropdown');
   setupDropdown('contractor_address', 'contractor_addressDropdown');
@@ -162,11 +153,11 @@ function setupDropdown(inputId, dropdownId) {
 
   input.addEventListener('keydown', e => {
     const visible = Array.from(buttons).filter(btn => btn.style.display !== 'none');
-  
+
     if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && dropdown.style.display !== 'block') {
       showAllOptions();
     }
-  
+
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (selectedIndex < visible.length - 1) selectedIndex++;
@@ -195,7 +186,7 @@ function setupDropdown(inputId, dropdownId) {
       dropdown.style.display = 'none';
     }
   });
-  
+
   function filterOptions() {
     const filter = input.value.toLowerCase().trim();
     let anyVisible = false;
@@ -228,7 +219,7 @@ function setupDropdown(inputId, dropdownId) {
       btn => btn.textContent.toLowerCase().trim() === val.toLowerCase()
     );
 
-    input.value = match ? match.textContent.trim() : toTitleCase(val);
+    input.value = match ? match.textContent.trim() : val;
   }
 
   function selectValue(value) {
@@ -242,9 +233,5 @@ function setupDropdown(inputId, dropdownId) {
       visibleButtons[selectedIndex].classList.add('active');
       visibleButtons[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
-  }
-
-  function toTitleCase(str) {
-    return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
   }
 }

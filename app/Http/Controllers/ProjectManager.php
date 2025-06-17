@@ -247,6 +247,8 @@ protected function logUserAction(Request $request, $title, $actionPrefix)
         ->whereNotNull('source_of_funds')
         ->orderBy('source_of_funds')
         ->get();
+        $year = Project::select('year')->distinct()->whereNotNull('year')->orderBy('year')->get();
+          
 
         $engineer_name = Project::select('engineer_name')
         ->distinct()
@@ -273,7 +275,7 @@ protected function logUserAction(Request $request, $title, $actionPrefix)
         ];
     });
 
-    return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'engineer_name'));
+    return view('systemAdmin.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'engineer_name', 'year'));
 }
 
 public function fetchTrashedProjects()
@@ -688,7 +690,7 @@ public function fetchTrashedProjects()
     
                 $oldValues = $project->only([
                     'title', 'location', 'projectID', 'firm_name',
-                    'source_of_funds', 'mode_of_implementation', 'actual_length',
+                    'source_of_funds', 'mode_of_implementation', 'contractor_name', 'contractor_address','actual_length',
                     'physical_status', 'ongoing_status', 'contract_days',
                     'noa_issued_date', 'noa_received_date', 'ntp_issued_date', 'ntp_received_date',
                     'official_starting_date', 'target_completion_date', 'timeExtension', 'revised_target_date', 

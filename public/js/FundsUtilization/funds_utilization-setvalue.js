@@ -95,20 +95,45 @@ document.addEventListener('DOMContentLoaded', function () {
     const str = num.toString().replace(/[^0-9.]/g, '');
     const parts = str.split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return parts.join('.');
+    const formatted = parts.join('.');
+    return '₱' + formatted;
   }
   
   
   
+  
 
 
-  function updateActualField(field, latestVO) {
-    const latestVOInput = document.getElementById(`vo_${field}_${latestVO}`);
+  function updateActualField(field) {
     const actualInput = document.getElementById(`actual_${field}`);
-    if (latestVOInput && actualInput) {
-      actualInput.value = latestVOInput.value;
+    if (!actualInput) return;
+  
+    let latestNonEmptyValue = '';
+    let allEmpty = true;
+  
+    for (let i = voCount; i >= 1; i--) {
+      const voInput = document.getElementById(`vo_${field}_${i}`);
+      if (voInput && voInput.value.trim() !== '') {
+        latestNonEmptyValue = voInput.value.trim();
+        allEmpty = false;
+        break;
+      }
+    }
+  
+    if (latestNonEmptyValue) {
+      actualInput.value = latestNonEmptyValue;
+    } else if (field === 'contract_amount' && allEmpty) {
+      const origInput = document.getElementById(`orig_${field}`);
+      if (origInput && origInput.value.trim() !== '') {
+        actualInput.value = origInput.value.trim();
+      } else {
+        actualInput.value = '';
+      }
+    } else {
+      actualInput.value = '';
     }
   }
+  
 
   // Initial set of actual_* fields on load
   pageLoadFields.forEach(function (field) {

@@ -36,6 +36,7 @@
                                     id="generateProjectBtn"
                                     class="btn btn-info btn-sm d-flex align-items-center gap-1"
                                     data-bs-toggle="modal"
+                                    data-project-id="{{ $project['id'] }}"
                                     data-bs-target="#generateProjectModal"
                                     title="Generate/Download Report">
                                 <i class="fa fa-download"></i>
@@ -138,15 +139,22 @@
                                         </div>
                                         @php
                                             $ongoing_status = $projectStatusData['ongoing_status'] ?? [];
-
                                             $totalPercentage = is_array($ongoing_status) ? array_sum(array_column($ongoing_status, 'percentage')) : 0;
+
+                                            $status = strtolower($project['physical_status'] ?? '');
+
+                                            // If status is 'completed', force percentage to 100
+                                            if ($status === 'completed') {
+                                                $totalPercentage = 100;
+                                            }
 
                                             $latestDate = null;
                                             if (is_array($ongoing_status) && count($ongoing_status) > 0) {
                                                 $dates = array_column($ongoing_status, 'date');
-                                                $latestDate = max($dates); // gets the latest (most recent) date
+                                                $latestDate = max($dates);
                                             }
                                         @endphp
+
 
                                         <!-- Project Status Display -->
                                         <div class="row">
@@ -187,7 +195,7 @@
                                         <span><i class="bi bi-bar-chart-line me-2"></i><strong>Progress</strong></span>
 
                                         @if ($totalPercentage < 100)
-                                            <button type="button" class="btn btn-sm btn-outline-primary" id="addStatusBtn">
+                                            <button type="button" class="btn btn-sm btn-outline-primary"  data-requires-admin="true" id="addStatusBtn">
                                                 <i class="bi bi-plus-circle me-1"></i>Add
                                             </button>
                                         @endif
@@ -622,7 +630,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
                         <a href="{{ route('project.fund-utilization', ['project_id' => $project['id']]) }}"
-                            class="btn btn-primary btn-sm d-flex align-items-center gap-2 ms-auto"
+                            class="btn btn-primary btn-sm d-flex align-items-center gap-2 ms-auto"  data-requires-admin="true"
                             title="Add Fund Utilization Details">
                             <i class="fa fa-plus"></i>
                             <span class=" d-md-inline">Add/Edit Fund Utilization</span>
@@ -806,12 +814,7 @@
                                                             <td></td> <td></td>                 
                                                         </tr>
 
-                                                        <tr>
-                                                            <td><strong>Contract Amount</strong></td>
-                                                            <td class="text-end" colspan="1">{{ number_format($orig_contract_amount, 2) }}</td>
-                                                            <td></td> <td></td>
-                                                            <td></td> <td></td>    
-                                                        </tr>
+                                                       
                                                       <!-- Mobilization -->
                                                             @php
                                                             $mobiAmount = isset($summary['mobilization']['amount']) ? floatval($summary['mobilization']['amount']) : 0;
@@ -1028,6 +1031,10 @@
                         </button>
                     </div>
                     <div class="card-body p-2">
+                            <div id="loadingOverlay" class="loading-overlay">
+                                <div class="spinner"></div>
+                                <span class="loading-text">Uploading...</span>
+                            </div>
                         <div class="table-responsive">
                             <div class="row projectInfo">
                                 <div class="table-container table-responsive">
@@ -1132,7 +1139,6 @@
     </script>
 
     @include('admin.modals.Projects.add-status')
-    @include('admin.modals.Projects.edit-project')
     @include('admin.modals.Projects.uploadFiles')
     @include('admin.modals.Projects.generate-report')
     

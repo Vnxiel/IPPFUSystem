@@ -279,7 +279,7 @@ function ordinal($number) {
           </tr>
           <tr class="fit-text-row">
             <th colspan="2" style="width: 30%;">Project Title:</th>
-            <td colspan="4" style="font-size: 13px; font-weight: bold; text-transform: uppercase; white-space: nowrap;">
+            <td colspan="4" style="font-size: 13px; font-weight: bold; text-transform: uppercase;">
                 {{ $project->title }}
             </td>
             </tr>
@@ -457,14 +457,7 @@ function ordinal($number) {
         <td></td>
       </tr>
 
-      <!-- Contract Amount -->
-      <tr>
-        <td style="text-align: right;">CONTRACT AMOUNT</td>
-        <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_contract_amount']) ? number_format($projectFundsUtilization['actual_contract_amount'], 2) : '' }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
+      
 <!-- Mobilization -->
 @php
   $mobiAmount = isset($summary['mobilization']['amount']) ? floatval($summary['mobilization']['amount']) : 0;
@@ -561,11 +554,11 @@ function ordinal($number) {
 
 
 
-<div style="margin-top: 50px;">
-  <table style="width: 100%; border-collapse: collapse;">
+<div style="page-break-inside: avoid;">
+  <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
     <tr>
-      <td style="width: 33%; vertical-align: top; font-size: 12px;">
-        <span>Prepared by</span>
+      <td style="width: 33%; vertical-align: top; font-size: 12px; padding-bottom: 5px;">
+        <span style="margin-bottom: 20px; display: inline-block;">Prepared by</span>
       </td>
       <td style="width: 33%; vertical-align: top; font-size: 12px;">
         <span>Reviewed by</span>
@@ -576,19 +569,19 @@ function ordinal($number) {
     </tr>
     <tr>
       <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
-        <div style="border-bottom: 1px solid #000; width: 70%; margin-bottom: 3px;">
-          <span style="display: inline-block; padding-top: 3px;">{{ $userName }}</span>
+        <div style="margin-top: 5px; border-bottom: 1px solid #000; width: 70%; margin: 5px auto 3px auto;">
+          <span style="display: inline-block; padding-top: 1px;">{{ $userName }}</span>
         </div>
-        <span>Position</span>
+        <span>{{ $userPosition }}</span>
       </td>
       <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
-        <div style="border-bottom: 1px solid #000; width: 70%; margin: 0 auto 3px auto;">
+        <div style="border-bottom: 1px solid #000; width: 70%; margin: 5px auto 3px auto;">
           <span style="display: inline-block; padding-top: 3px;">{{ $reviewedBy }}</span>
         </div>
         <span>{{ $reviewed_by_position }}</span>
       </td>
       <td style="width: 33%; vertical-align: top; text-align: center; font-size: 12px;">
-        <div style="border-bottom: 1px solid #000; width: 70%; margin: 0 auto 3px auto;">
+        <div style="border-bottom: 1px solid #000; width: 70%; margin: 5px auto 3px auto;">
           <span style="display: inline-block; padding-top: 3px;">{{ $notedBy }}</span>
         </div>
         <span>{{ $noted_by_position }}</span>

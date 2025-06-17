@@ -5,11 +5,13 @@ function parseAmount(value) {
 
 // Format number with comma separators and two decimals
 function formatWithCommasAndTwoDecimals(value) {
-    return parseAmount(value).toLocaleString('en-US', {
+    const num = parseAmount(value);
+    return '₱' + num.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
 }
+
 
 // Format input field with full formatting on blur
 function formatInput(input) {

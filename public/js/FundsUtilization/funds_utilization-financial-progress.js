@@ -1,67 +1,70 @@
+document.addEventListener('DOMContentLoaded', function () {
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const checkboxes = document.querySelectorAll('.release-checkbox');
+  // ✅ Parse amount safely, removing ₱, commas, %, spaces, etc.
+  function parseAmount(value) {
+    return parseFloat(value.replace(/[₱,%\s,]/g, '')) || 0;
+  }
 
-    checkboxes.forEach(function (checkbox) {
-      checkbox.addEventListener('change', function () {
-        const labelId = this.getAttribute('data-label-id');
-        const label = document.getElementById(labelId);
+  // ✅ Update checkbox label and state based on the amount input value
+  function updateCheckboxState(amountInputId, checkboxId, labelId) {
+    const amountInput = document.getElementById(amountInputId);
+    const checkbox = document.getElementById(checkboxId);
+    const label = document.getElementById(labelId);
+    if (!amountInput || !checkbox || !label) return;
 
-        if (this.checked) {
-          label.textContent = 'Released';
-          label.classList.remove('text-muted');
-          label.classList.add('text-success');
-        } else {
-          label.textContent = 'Not Released';
-          label.classList.remove('text-success');
-          label.classList.add('text-muted');
-        }
-      });
-    });
+    const amountValue = parseAmount(amountInput.value);
 
+    if (amountValue <= 0) {
+      checkbox.disabled = true;
+      checkbox.checked = false;
+      label.textContent = 'Not Released';
+      label.classList.remove('text-success');
+      label.classList.add('text-muted');
+    } else {
+      checkbox.disabled = false;
+      // Keep current checked state; update label only on change
+    }
+  }
 
-    
-    function updateCheckboxState(amountInputId, checkboxId, labelId) {
-      const amountInput = document.getElementById(amountInputId);
-      const checkbox = document.getElementById(checkboxId);
+  // ✅ Handle checkbox toggle: update release label text and style
+  const checkboxes = document.querySelectorAll('.release-checkbox');
+  checkboxes.forEach(function (checkbox) {
+    checkbox.addEventListener('change', function () {
+      const labelId = this.getAttribute('data-label-id');
       const label = document.getElementById(labelId);
-      if (!amountInput || !checkbox || !label) return;
+      if (!label) return;
 
-      const amountValue = parseFloat(amountInput.value) || 0;
-      if (amountValue <= 0) {
-        checkbox.disabled = true;
-        checkbox.checked = false;
+      if (this.checked) {
+        label.textContent = 'Released';
+        label.classList.remove('text-muted');
+        label.classList.add('text-success');
+      } else {
         label.textContent = 'Not Released';
         label.classList.remove('text-success');
         label.classList.add('text-muted');
-      } else {
-        checkbox.disabled = false;
-        // Keep checkbox state and label as is
       }
-    }
-
-    // Check Mobilization checkbox
-    updateCheckboxState('amountMobilization', 'releaseMobilization', 'labelMobi');
-
-    // Check Partial Billing checkboxes
-    for (let i = 1; i <= 5; i++) {
-      updateCheckboxState(`amountPartial${i}`, `releasePartial${i}`, `labelPartial${i}`);
-    }
-
-    // Optional: Add event listeners to dynamically update checkbox state on amount input changes
-    function addInputListener(amountInputId, checkboxId, labelId) {
-      const amountInput = document.getElementById(amountInputId);
-      if (!amountInput) return;
-      amountInput.addEventListener('input', () => {
-        updateCheckboxState(amountInputId, checkboxId, labelId);
-      });
-    }
-
-    addInputListener('amountMobilization', 'releaseMobilization', 'labelMobi');
-    for (let i = 1; i <= 5; i++) {
-      addInputListener(`amountPartial${i}`, `releasePartial${i}`, `labelPartial${i}`);
-    }
-
-
+    });
   });
 
+  // ✅ Initialize checkbox states on page load
+  updateCheckboxState('amountMobilization', 'releaseMobilization', 'labelMobi');
+  for (let i = 1; i <= 5; i++) {
+    updateCheckboxState(`amountPartial${i}`, `releasePartial${i}`, `labelPartial${i}`);
+  }
+
+  // ✅ Re-check checkbox eligibility when amount fields change
+  function addInputListener(amountInputId, checkboxId, labelId) {
+    const amountInput = document.getElementById(amountInputId);
+    if (!amountInput) return;
+
+    amountInput.addEventListener('input', () => {
+      updateCheckboxState(amountInputId, checkboxId, labelId);
+    });
+  }
+
+  addInputListener('amountMobilization', 'releaseMobilization', 'labelMobi');
+  for (let i = 1; i <= 5; i++) {
+    addInputListener(`amountPartial${i}`, `releasePartial${i}`, `labelPartial${i}`);
+  }
+
+});

@@ -165,7 +165,7 @@
                                     </label>
                                 </div>
                                 <div class="col-md-9 position-relative">
-                                    <input type="text" class="form-control" id="contractor_address" name="contractor_address"
+                                    <input type="text" class="form-control" id="contractor_address" name="contractor_address" 
                                     placeholder="Select or enter contractor address" autocomplete="off" />
 
                                     <!-- Dropdown container -->

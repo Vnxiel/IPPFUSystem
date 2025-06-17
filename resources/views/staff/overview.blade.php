@@ -125,13 +125,19 @@
                                         </div>
                                         @php
                                             $ongoing_status = $projectStatusData['ongoing_status'] ?? [];
-
                                             $totalPercentage = is_array($ongoing_status) ? array_sum(array_column($ongoing_status, 'percentage')) : 0;
+
+                                            $status = strtolower($project['physical_status'] ?? '');
+
+                                            // If status is 'completed', force percentage to 100
+                                            if ($status === 'completed') {
+                                                $totalPercentage = 100;
+                                            }
 
                                             $latestDate = null;
                                             if (is_array($ongoing_status) && count($ongoing_status) > 0) {
                                                 $dates = array_column($ongoing_status, 'date');
-                                                $latestDate = max($dates); // gets the latest (most recent) date
+                                                $latestDate = max($dates);
                                             }
                                         @endphp
 

@@ -117,6 +117,11 @@ class AdminManager extends Controller
         ->whereNotNull('engineer_name')
         ->orderBy('engineer_name')
         ->get();
+        $year = Project::select('year')
+            ->distinct()
+            ->whereNotNull('year')
+            ->orderBy('year')
+            ->get();
 
 
         $mappedProjects = $projects->map(function ($project) {
@@ -138,7 +143,7 @@ class AdminManager extends Controller
         ];
     });
         // Return the view with prepared data
-        return view('admin.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'engineer_name'));
+        return view('admin.projects', compact('mappedProjects', 'contractors', 'locations', 'source_of_funds', 'engineer_name', 'year'));
     }
 
     // Loads the activity logs page (view only)

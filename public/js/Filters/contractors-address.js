@@ -66,18 +66,29 @@ document.addEventListener('DOMContentLoaded', () => {
       function finalizeAddress() {
         let val = input.value.trim().replace(/,\s*nueva\s*vizcaya\s*$/i, '');
         if (val === '') return;
-  
-        const matchBtn = Array.from(buttons).find(
-          btn => btn.textContent.toLowerCase().trim() === val.toLowerCase()
+      
+        const lowerVal = val.toLowerCase();
+      
+        // 1. Try exact match
+        let matchBtn = Array.from(buttons).find(
+          btn => btn.textContent.toLowerCase().trim() === lowerVal
         );
-  
+      
+        // 2. If not found, try "includes" match (e.g., 'bay' → 'Bayombong')
+        if (!matchBtn) {
+          matchBtn = Array.from(buttons).find(
+            btn => btn.textContent.toLowerCase().includes(lowerVal)
+          );
+        }
+      
+        // 3. If matched, use the full address; else fallback to title-cased input
         if (matchBtn) {
           input.value = matchBtn.textContent.trim() + ', Nueva Vizcaya';
         } else {
           input.value = toTitleCase(val) + ', Nueva Vizcaya';
         }
       }
-  
+      
       function selectAddress(value) {
         input.value = value.trim() + ', Nueva Vizcaya';
         dropdown.style.display = 'none';

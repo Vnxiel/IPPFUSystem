@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const anyChecked = Array.from(document.querySelectorAll('.release-checkbox')).some(cb => cb.checked);
 
     const proceedToSave = (financial_completion_date = '') => {
-      // 1) Gather Variation Orders
       const voCount = parseInt(document.getElementById('voCount').value) || 1;
       const variation_orders = [];
       for (let i = 1; i <= voCount; i++) {
@@ -28,44 +27,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }
 
-      // 2) Build the base formData object
       const formData = {
         project_id,
-        orig_abc:             document.getElementById('orig_abc').value,
+        orig_abc: document.getElementById('orig_abc').value,
         orig_contract_amount: document.getElementById('orig_contract_amount').value,
-        orig_engineering:     document.getElementById('orig_engineering').value,
-        orig_mqc:             document.getElementById('orig_mqc').value,
-        orig_bid:             document.getElementById('orig_bid').value,
-        orig_contingency:     document.getElementById('orig_contingency').value,
-        orig_appropriation:   document.getElementById('orig_appropriation').value,
+        orig_engineering: document.getElementById('orig_engineering').value,
+        orig_mqc: document.getElementById('orig_mqc').value,
+        orig_bid: document.getElementById('orig_bid').value,
+        orig_contingency: document.getElementById('orig_contingency').value,
+        orig_appropriation: document.getElementById('orig_appropriation').value,
         variation_orders,
-        actual_abc:             document.getElementById('actual_abc').value,
+        actual_abc: document.getElementById('actual_abc').value,
         actual_contract_amount: document.getElementById('actual_contract_amount').value,
-        actual_engineering:     document.getElementById('actual_engineering').value,
-        actual_mqc:             document.getElementById('actual_mqc').value,
-        actual_bid:             document.getElementById('actual_bid').value,
-        actual_contingency:     document.getElementById('actual_contingency').value,
-        actual_appropriation:   document.getElementById('actual_appropriation').value,
+        actual_engineering: document.getElementById('actual_engineering').value,
+        actual_mqc: document.getElementById('actual_mqc').value,
+        actual_bid: document.getElementById('actual_bid').value,
+        actual_contingency: document.getElementById('actual_contingency').value,
+        actual_appropriation: document.getElementById('actual_appropriation').value,
 
         summary: {
           mobilization: {
-            date:    document.querySelector('[name="dateMobilization"]')?.value || '',
-            amount:  document.querySelector('[name="amountMobilization"]')?.value || '',
-            remarks: 'Not Released'  // will override below
+            date: document.querySelector('[name="dateMobilization"]')?.value || '',
+            amount: document.querySelector('[name="amountMobilization"]')?.value || '',
+            remarks: 'Not Released'
           },
           final: {
-            date:    document.querySelector('[name="dateFinal"]')?.value || '',
-            amount:  document.querySelector('[name="amountFinal"]')?.value || '',
+            date: document.querySelector('[name="dateFinal"]')?.value || '',
+            amount: document.querySelector('[name="amountFinal"]')?.value || '',
             remarks: 'Not Released'
           },
           engineering: {
-            date:    document.querySelector('[name="dateEng"]')?.value || '',
-            amount:  document.querySelector('[name="amountEng"]')?.value || '',
+            date: document.querySelector('[name="dateEng"]')?.value || '',
+            amount: document.querySelector('[name="amountEng"]')?.value || '',
             remarks: document.querySelector('[name="remEng"]')?.value || ''
           },
           mqc: {
-            date:    document.querySelector('[name="dateMqc"]')?.value || '',
-            amount:  document.querySelector('[name="amountMqc"]')?.value || '',
+            date: document.querySelector('[name="dateMqc"]')?.value || '',
+            amount: document.querySelector('[name="amountMqc"]')?.value || '',
             remarks: document.querySelector('[name="remMqc"]')?.value || ''
           },
           totalExpenditures: {
@@ -79,38 +77,32 @@ document.addEventListener('DOMContentLoaded', function () {
         partialBillings: []
       };
 
-      // 3) Pull Mobilization & Final checkboxes by their IDs
       const mobiCheckbox = document.getElementById('releaseMobilization');
       const finalCheckbox = document.getElementById('releaseFinal');
 
       formData.summary.mobilization.remarks = mobiCheckbox?.checked ? 'Release' : 'Not Released';
       formData.summary.final.remarks = finalCheckbox?.checked ? 'Release' : 'Not Released';
 
-      // 4) Handle Partial Billing rows, but only those that are actually visible
       let allPartialsReleased = true;
       const partialRows = document.querySelectorAll('.partial-billing');
       partialRows.forEach((row, idx) => {
-        if (row.offsetParent === null) return; // skip hidden rows
+        if (row.offsetParent === null) return;
 
-        const dateInput       = row.querySelector(`[name="partialBillings[${idx + 1}][amount]"]`);
+        const dateInput = row.querySelector(`[name="partialBillings[${idx + 1}][amount]"]`);
         const releaseCheckbox = row.querySelector('.release-partial');
-
         const released = releaseCheckbox?.checked ?? false;
+
         if (!released) allPartialsReleased = false;
 
         formData.partialBillings.push({
-          date:    row.querySelector(`[name="partialBillings[${idx + 1}][date]"]`)?.value || '',
-          amount:  dateInput?.value || '',
+          date: row.querySelector(`[name="partialBillings[${idx + 1}][date]"]`)?.value || '',
+          amount: dateInput?.value || '',
           remarks: released ? 'Release' : 'Not Released'
         });
       });
 
-      // 5) Check if EVERY required piece is marked “Release”
       const allReleased = (mobiCheckbox?.checked) && (finalCheckbox?.checked) && allPartialsReleased;
 
-      // 6) If allReleased and no completion date (should not happen here), could prompt, but handled outside
-
-      // 7) Send POST request to save
       fetch('/fund-utilization/store', {
         method: 'POST',
         headers: {
@@ -134,7 +126,19 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     };
 
-    // If none of the release checkboxes are checked, warn first
+    // 🛑 Check if amountTotal or amountSavings is empty
+    const amountTotalVal = document.querySelector('[name="amountTotal"]')?.value.trim();
+    const amountSavingsVal = document.querySelector('[name="amountSavings"]')?.value.trim();
+    if (!amountTotalVal || !amountSavingsVal) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Required Fields',
+        text: 'Total Expenditures and Total Savings must not be empty before submitting.'
+      });
+      return;
+    }
+
+    // 🟡 No checkboxes checked warning
     if (!anyChecked) {
       Swal.fire({
         icon: 'warning',
@@ -151,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // If some are checked, check if all released
     const mobiCheckbox = document.getElementById('releaseMobilization');
     const finalCheckbox = document.getElementById('releaseFinal');
     const partialRows = document.querySelectorAll('.partial-billing');
@@ -163,35 +166,32 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     const allReleased = (mobiCheckbox?.checked) && (finalCheckbox?.checked) && allPartialsReleased;
 
-    // If all released and no existing date, prompt for date
-  // If any release is checked and no existing date, prompt for date
-if (anyChecked && !existingDateValue) {
-  Swal.fire({
-    title: 'Set Financial Completion Date',
-    input: 'date',
-    inputLabel: 'Financial Completion Date',
-    inputPlaceholder: 'Select the financial completion date',
-    inputAttributes: {
-      max: new Date().toISOString().split("T")[0]  // prevent future dates
-    },
-    showCancelButton: true,
-    confirmButtonText: 'Submit',
-    cancelButtonText: 'Cancel',
-    preConfirm: (dateValue) => {
-      if (!dateValue) {
-        Swal.showValidationMessage('Completion date is required');
-      }
-      return dateValue;
+    // 🟢 If any release is checked but no financial date, prompt for it
+    if (anyChecked && !existingDateValue) {
+      Swal.fire({
+        title: 'Set Financial Completion Date',
+        input: 'date',
+        inputLabel: 'Financial Completion Date',
+        inputPlaceholder: 'Select the financial completion date',
+        inputAttributes: {
+          max: new Date().toISOString().split("T")[0]
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        preConfirm: (dateValue) => {
+          if (!dateValue) {
+            Swal.showValidationMessage('Completion date is required');
+          }
+          return dateValue;
+        }
+      }).then(result => {
+        if (result.isConfirmed) {
+          proceedToSave(result.value);
+        }
+      });
+    } else {
+      proceedToSave(existingDateValue);
     }
-  }).then(result => {
-    if (result.isConfirmed) {
-      proceedToSave(result.value);
-    }
-    // Cancelled → do nothing
-  });
-} else {
-  // Otherwise proceed immediately, passing existing date or empty string
-  proceedToSave(existingDateValue);
-}
   });
 });

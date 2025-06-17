@@ -7,8 +7,8 @@
   <div class="card mb-1 border-0 shadow-lg" style="margin-top:75px;">
     <div class="card-body p-2">
       <div class="d-flex align-items-center gap-2">
-        <a href="{{ url('/systemAdmin/overview/' . $project['id']) }}" 
-           class="btn btn-outline-secondary btn-sm">
+        <a href="{{ url('/admin//' . $project['id']) }}" 
+           class="btn btn-outline-secondary btn-sm">overview
           <i class="fa fa-arrow-left"></i>
         </a>
         <h5 class="mb-0">Funds Utilization</h5>
@@ -220,7 +220,7 @@
                   </div>
                 </td>
               <td>
-                <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                <input type="text" class="form-control form-control-sm text-end amount-input expenditure-amount"
                       name="amountMobilization" id="amountMobilization"
                       value="{{ $summary['mobilization']['amount'] ?? '' }}">
               </td>
@@ -268,7 +268,7 @@
                   <tr class="partial-billing billing-{{ $i }}" style="{{ $showRow ? '' : 'display: none;' }}">
                     <td>{{ $i }}{{ $suffix }} Partial Billing</td>
                     <td>
-                      <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                      <input type="text" class="form-control form-control-sm text-end amount-input expenditure-amount"
                             name="partialBillings[{{ $i }}][amount]" id="amountPartial{{ $i }}"
                             value="{{ $amount }}">
                     </td>
@@ -481,7 +481,7 @@
                   <td><input type="text" class="form-control form-control-sm text-end" id="amountTotal" name="amountTotal"></td>
                   <td></td>
                   <td></td>
-                  <td> <input type="text" id="totalAmount" readonly class="form-control form-control-sm text-end" /></td>
+                  <td></td>
                   <td></td>
                 </tr>
                 <tr>
@@ -499,7 +499,7 @@
         </fieldset>
         <div class="row text-end mt-2">
           <div class="text-end mt-4 mr-5">
-            <a href="{{ url('/systemAdmin/overview/' . $project['id']) }}" 
+            <a href="{{ url('/admin/overview/' . $project['id']) }}" 
               class="btn btn-outline-secondary  px-4"> Back
             </a>
             <button type="button" id="submitFundsUtilization" 

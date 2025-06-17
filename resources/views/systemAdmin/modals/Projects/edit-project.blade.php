@@ -165,7 +165,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row g-3 mb-2">
                                 <div class="col-md-3">
                                     <label for="contractor_address" class="form-label">
@@ -173,23 +172,32 @@
                                     </label>
                                 </div>
                                 <div class="col-md-9 position-relative">
-                                    <input type="text" class="form-control" id="contractor_address" name="contractor_address"
-                                        placeholder="Select or enter contractor address" autocomplete="off" value="{{ old('contractor_address', $project['contractor_address'] ?? '') }}"
-                                        oninput="filterContractors()" onblur="finalizeContractor()" onfocus="showContractorDropdown()" required />
+                                    <input type="text" class="form-control" id="contractor_address" name="contractor_address" value="{{ old('contractor_address', $project['contractor_address'] ?? '') }}"
+                                    placeholder="Select or enter contractor address" autocomplete="off" />
 
                                     <!-- Dropdown container -->
                                     <div id="contractor_addressDropdown"
-                                        class="list-group position-absolute w-100 shadow-sm bg-white rounded"
-                                        style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
-                                        @foreach($contractors->pluck('contractor_address')->unique()->sort() as $contractor_address)
-                                            <button type="button" class="list-group-item list-group-item-action"
-                                                onclick="selectContractor('{{ $contractor_address }}')">
-                                                {{ $contractor_address }}
-                                            </button>
-                                        @endforeach
+                                    class="list-group position-absolute w-100 shadow-sm bg-white rounded"
+                                    style="display: none; max-height: 180px; overflow-y: auto; z-index: 1050;">
+                                    @php
+                                        // Normalize and remove duplicates (ignore ', Nueva Vizcaya')
+                                        $uniqueLocations = collect($locations)
+                                            ->map(fn($loc) => trim(preg_replace('/,\s*nueva\s*vizcaya\s*$/i', '', $loc)))
+                                            ->unique()
+                                            ->sort()
+                                            ->values();
+                                    @endphp
+
+                                    @foreach($uniqueLocations as $location)
+                                        <button type="button" class="list-group-item list-group-item-action">
+                                            {{ $location }}
+                                        </button>
+                                    @endforeach
+
                                     </div>
                                 </div>
                             </div>
+
                             
 
 
@@ -608,7 +616,7 @@
 
 
                                <!-- New Target and Completion Dates -->
-                               <div id="newDatesSection" class="row mb-2" style="display: none;">
+                               <div class="row mb-2">
                                     <div class="col-3">
                                         <label for="revised_target_date" class="form-label">New Target Completion Date</label>
                                     </div>
@@ -687,6 +695,7 @@
         <script src="{{ asset('js/Filters/contractor-search.js') }}"></script>
         <script src="{{ asset('js/Filters/location-search.js') }}"></script>
         <script src="{{ asset('js/Filters/engineer-search.js') }}"></script>
+        <script src="{{ asset('js/Filters/contractors-address.js') }}"></script>
         <script src="{{ asset('js/Filters/sourceOfFund-search.js') }}"></script>
         <script src="{{ asset('js/Filters/year-search.js') }}"></script>
 @endsection

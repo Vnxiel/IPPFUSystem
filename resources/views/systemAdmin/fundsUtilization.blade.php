@@ -200,14 +200,28 @@
             <tbody>
               <tr>
                 <td>Total Appropriation</td>
-                <td><input type="text" class="form-control text-end" id="totalAppro" name="totalAppro"  value="{{ $funds['orig_appropriation'] ?? '' }}" readonly></td>
+                <td><input type="text" class="form-control text-end amount-input" id="totalAppro" name="totalAppro"  value="{{ $funds['orig_appropriation'] ?? '' }}" readonly></td>
                 <td></td><td></td><td></td><td></td>
               </tr>
               <tr>
-                <td>Contract Amount</td>
-                <td><input type="text" class="form-control text-end" id="contract_amount" name="contract_amount" readonly></td>
+              <tr>
+                <td>Orig Contract Amount</td>
+                <td>
+                  <input type="text" class="form-control text-end amount-input"
+                    value="{{ $funds['orig_contract_amount'] ?? '' }}" readonly>
+                </td>
                 <td></td><td></td><td></td><td></td>
               </tr>
+
+              <tr id="revisedRow" style="display: none;">
+                <td>Revised Contract Amount</td>
+                <td>
+                  <input type="text" class="form-control text-end amount-input"
+                    id="contract_amount" name="contract_amount" readonly>
+                </td>
+                <td></td><td></td><td></td><td></td>
+              </tr>
+
               <tr>
                 <td>
                   <div class="d-flex align-items-center">
@@ -220,7 +234,7 @@
                   </div>
                 </td>
               <td>
-                <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                <input type="text" class="form-control form-control-sm text-end amount-input expenditure-amount"
                       name="amountMobilization" id="amountMobilization"
                       value="{{ $summary['mobilization']['amount'] ?? '' }}">
               </td>
@@ -268,7 +282,7 @@
                   <tr class="partial-billing billing-{{ $i }}" style="{{ $showRow ? '' : 'display: none;' }}">
                     <td>{{ $i }}{{ $suffix }} Partial Billing</td>
                     <td>
-                      <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                      <input type="text" class="form-control form-control-sm text-end amount-input expenditure-amount"
                             name="partialBillings[{{ $i }}][amount]" id="amountPartial{{ $i }}"
                             value="{{ $amount }}">
                     </td>
@@ -399,9 +413,7 @@
                             <td class="text-end" data-amount="{{ $eng->amount }}">{{ number_format($eng->amount, 2) }}</td>
                           </tr>
                         @empty
-                          <tr>
-                            <td colspan="4" class="text-muted">No entries found.</td>
-                          </tr>
+                          
                         @endforelse
                       </tbody>
 
@@ -420,7 +432,7 @@
                 <tr>
                   <td>MQC</td>
                   <td>
-                    <input type="text" class="form-control form-control-sm text-end expenditure-amount"
+                    <input type="text" class="form-control form-control-sm text-end amount-input expenditure-amount"
                           name="amountMqc" id="amountMqc" value="{{ $summary['mqc']['amount'] ?? '' }}" readonly>
                   </td>
                   <td></td>
@@ -462,10 +474,7 @@
                             <td class="text-end" data-amount="{{ $mqc->amount }}">{{ number_format($mqc->amount, 2) }}</td>
                           </tr>
                       @empty
-                      <tr>
-                          <td></td>
-                          <td class="text-muted">No entries found.</td>
-                        </tr>
+                    
                         @endforelse
                       </tbody>
                     </table>
@@ -481,7 +490,7 @@
                   <td><input type="text" class="form-control form-control-sm text-end" id="amountTotal" name="amountTotal"></td>
                   <td></td>
                   <td></td>
-                  <td> <input type="text" id="totalAmount" readonly class="form-control form-control-sm text-end" /></td>
+                  <td></td>
                   <td></td>
                 </tr>
                 <tr>
@@ -562,11 +571,11 @@
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setvalue.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-financial-progress.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-format-amounts.js') }}"></script>
-<script src="{{ asset('js/FundsUtilization/funds_utilization-add-set.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-addBreakdown.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-valueLimit.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-updateTotal.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-submit.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-setCurrencyFormatting.js') }}"></script>
 <script src="{{ asset('js/FundsUtilization/funds_utilization-Totals.js') }}"></script>
+<script src="{{ asset('js/FundsUtilization/funds_utilization-add-set.js') }}"></script>
 @endsection

@@ -606,7 +606,7 @@
 
 
                                <!-- New Target and Completion Dates -->
-                               <div id="newDatesSection" class="row mb-2" style="display: none;">
+                               <div class="row mb-2">
                                     <div class="col-3">
                                         <label for="revised_target_date" class="form-label">New Target Completion Date</label>
                                     </div>

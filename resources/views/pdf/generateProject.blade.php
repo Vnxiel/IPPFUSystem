@@ -311,20 +311,29 @@
           
           </tr>
           <tr class="fit-text-row">
-              <th>Notice of Award:</th>
-              <td style="white-space: nowrap;"><i>Issued Date</i></td>
-              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->noa_issued_date)->format('F d, Y') }}</td>
-              <td style="white-space: nowrap;"><i>Received Date</i></td>
-              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->noa_received_date)->format('F d, Y') }}</td>
-          </tr>
+            <th>Notice of Award:</th>
+            <td style="white-space: nowrap;"><i>Issued Date</i></td>
+            <td style="white-space: nowrap;">
+                {{ $project->noa_issued_date ? \Carbon\Carbon::parse($project->noa_issued_date)->format('F d, Y') : '' }}
+            </td>
+            <td style="white-space: nowrap;"><i>Received Date</i></td>
+            <td style="white-space: nowrap;">
+                {{ $project->noa_received_date ? \Carbon\Carbon::parse($project->noa_received_date)->format('F d, Y') : '' }}
+            </td>
+        </tr>
 
-          <tr class="fit-text-row">
-              <th>Notice to Proceed:</th>
-              <td style="white-space: nowrap;"><i>Issued Date</i></td>
-              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntp_issued_date)->format('F d, Y') }}</td>
-              <td style="white-space: nowrap;"><i>Received Date</i></td>
-              <td style="white-space: nowrap;">{{ \Carbon\Carbon::parse($project->ntp_received_date)->format('F d, Y') }}</td>
-          </tr>
+        <tr class="fit-text-row">
+            <th>Notice to Proceed:</th>
+            <td style="white-space: nowrap;"><i>Issued Date</i></td>
+            <td style="white-space: nowrap;">
+                {{ $project->ntp_issued_date ? \Carbon\Carbon::parse($project->ntp_issued_date)->format('F d, Y') : '' }}
+            </td>
+            <td style="white-space: nowrap;"><i>Received Date</i></td>
+            <td style="white-space: nowrap;">
+                {{ $project->ntp_received_date ? \Carbon\Carbon::parse($project->ntp_received_date)->format('F d, Y') : '' }}
+            </td>
+        </tr>
+
 
           @php
               // Collect suspension/resume pairs with remarks
@@ -631,14 +640,14 @@
             <td></td>
           </tr>
 
-          <!-- Contract Amount -->
+          <!-- Contract Amount
           <tr>
             <td style="text-align: right;">CONTRACT AMOUNT</td>
             <td style="text-align: right;">{{ isset($projectFundsUtilization['actual_contract_amount']) ? number_format($projectFundsUtilization['actual_contract_amount'], 2) : '' }}</td>
             <td></td>
             <td></td>
             <td></td>
-          </tr>
+          </tr> -->
 
           <!-- Mobilization -->
           @php
@@ -759,7 +768,7 @@
               {{ $projectFundsUtilization->financial_completion_date ? \Carbon\Carbon::parse($projectFundsUtilization->financial_completion_date)->format('F d, Y') : ' ' }}
           </td>
       </tr>
-</tbody>
+  </tbody>
   </table>
 </div>
 

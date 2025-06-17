@@ -1,12 +1,25 @@
 $(document).ready(function () {
-    // Fetch trashed projects only if you're on the Trash page
+    // Fetch trashed projects if on the Trash page
     if (window.location.pathname === '/systemAdmin/trash' || 
         window.location.pathname === '/admin/trash' || 
         window.location.pathname === '/staff/trash') {
         fetchTrashedProjects();
     }
 
-    $(document).on("click", "#trashProjectBtn", function () {
+    $(document).on("click", "#trashProjectBtn", function (event) {
+        const userRole = sessionStorage.getItem('user_role') || window.currentUserRole;
+
+        if (userRole === 'Admin') {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Access Denied',
+                text: 'Only System Admins are allowed to archive projects.',
+                confirmButtonColor: '#3085d6',
+            });
+            return;
+        }
+
         Swal.fire({
             title: "Are you sure?",
             text: "This project will be archived (hidden). You can restore it later.",
@@ -37,13 +50,9 @@ $(document).ready(function () {
                         if (data.status === "success") {
                             Swal.fire("Archived!", "The project has been hidden.", "success")
                                 .then(() => {
-                                    const role = sessionStorage.getItem('user_role');
-
-                                    if (role === 'System Admin') {
-                                        window.location.href = "/systemAdmin/trash";
-                                    } else if (role === 'Admin') {
+                                    if (userRole === 'Admin') {
                                         window.location.href = "/admin/trash";
-                                    } else if (role === 'Staff') {
+                                    } else if (userRole === 'Staff') {
                                         window.location.href = "/staff/trash";
                                     } else {
                                         Swal.fire("Error!", "Unknown role. Cannot redirect.", "error");

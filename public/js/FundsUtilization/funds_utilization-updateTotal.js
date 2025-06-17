@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const finalAmountTotalInput = document.getElementById('finalAmountTotal');
   const mobilizationTotalInput = document.getElementById('mobilizationTotal');
-  const totalAmountOutput = document.getElementById('totalAmount');
+  // const totalAmountOutput = document.getElementById('totalAmount');
 
   const mqcAmountInput = document.getElementById('TotalMqc');
   const engAmountInput = document.getElementById('TotalEng');
@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const total = mqcAmount + engAmount + finalAmountTotal + totalPartial + mobilizationTotal;
 
-    totalAmountOutput.value = total.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+    // totalAmountOutput.value = total.toLocaleString(undefined, {
+    //   minimumFractionDigits: 2,
+    //   maximumFractionDigits: 2
+    // });
   }
 
   const allInputs = [

@@ -69,13 +69,7 @@
                                     <i class="fas fa-users me-2"></i>User Management
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link px-3 py-2 rounded-3 {{ Request::is('admin/trash') ? 'fw-bold text-white' : '' }}"
-                                    style="{{ Request::is('admin/trash') || Request::is('admin/overview') ? 'background: #2196F3;' : 'color: #2c3e50;' }}"
-                                    href="{{ url('/admin/trash') }}">
-                                    <i class="fas fa-users me-2"></i>Archive
-                                    </a>
-                                </li>
+                                
                                
                             </ul>
 
@@ -147,6 +141,8 @@
         <script src="{{ asset('js/Projects/fetchProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/addNewProjectStatus.js') }}"></script>
         <script src="{{ asset('js/Projects/projects-total_savings.js') }}"></script>
+        <script src="{{ asset('js/Projects/admin-actions.js') }}"></script>
+
 
 
         <script src="{{ asset('js/Filters/clear-filters.js') }}"></script>

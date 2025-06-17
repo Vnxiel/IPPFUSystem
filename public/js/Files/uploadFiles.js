@@ -2,7 +2,7 @@ $(document).ready(function () {
   // Preview selected files
   $("#file").on("change", function () {
     const previewContainer = $("#imagePreviewContainer");
-    previewContainer.empty(); // Clear previous previews
+    previewContainer.empty();
 
     const files = this.files;
     if (!files.length) {
@@ -47,11 +47,20 @@ $(document).ready(function () {
     let formData = new FormData();
     formData.append("project_id", project_id);
     Array.from(files).forEach(file => {
-      formData.append("files[]", file); // Note the array syntax
+      formData.append("files[]", file);
+    });
+
+    // Show SweetAlert2 loading spinner
+    Swal.fire({
+      title: 'Uploading...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
     });
 
     $.ajax({
-      url: `/upload-file/${project_id}`, // Controller should match this route
+      url: `/upload-file/${project_id}`,
       method: "POST",
       data: formData,
       processData: false,
@@ -60,58 +69,47 @@ $(document).ready(function () {
         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
       },
       success: function (response) {
-        let duplicateFiles = response.errors?.filter(err => err.message.includes("already exists")) || [];
-        let otherErrors = response.errors?.filter(err => !err.message.includes("already exists")) || [];
+        Swal.close();
 
-        let showSuccess = () => {
+        const duplicateFiles = response.errors?.filter(err => err.message.includes("already exists")) || [];
+        const otherErrors = response.errors?.filter(err => !err.message.includes("already exists")) || [];
+
+        const showSuccess = () => {
           if (response.uploaded && response.uploaded.length > 0) {
             return Swal.fire({
-              title: "Success",
+              title: "Upload Complete",
               text: `${response.uploaded.length} file(s) uploaded successfully.`,
               icon: "success",
               confirmButtonText: "OK"
             });
-          } else {
-            return Promise.resolve();
           }
+          return Promise.resolve();
         };
 
-        let showDuplicates = () => {
+        const showDuplicates = () => {
           if (duplicateFiles.length > 0) {
-            let duplicatesHtml = `<ul>`;
-            duplicateFiles.forEach(err => {
-              duplicatesHtml += `<li>${err.file} already exists.</li>`;
-            });
-            duplicatesHtml += `</ul>`;
-
+            const duplicatesHtml = `<ul>${duplicateFiles.map(err => `<li>${err.file} already exists.</li>`).join("")}</ul>`;
             return Swal.fire({
               title: "Duplicate Files",
               html: duplicatesHtml,
               icon: "warning",
               confirmButtonText: "OK"
             });
-          } else {
-            return Promise.resolve();
           }
+          return Promise.resolve();
         };
 
-        let showErrors = () => {
+        const showErrors = () => {
           if (otherErrors.length > 0) {
-            let errorHtml = `<ul>`;
-            otherErrors.forEach(err => {
-              errorHtml += `<li>${err.file}: ${err.message}</li>`;
-            });
-            errorHtml += `</ul>`;
-
+            const errorHtml = `<ul>${otherErrors.map(err => `<li>${err.file}: ${err.message}</li>`).join("")}</ul>`;
             return Swal.fire({
               title: "Upload Errors",
               html: errorHtml,
               icon: "error",
               confirmButtonText: "OK"
             });
-          } else {
-            return Promise.resolve();
           }
+          return Promise.resolve();
         };
 
         showSuccess()
@@ -124,6 +122,7 @@ $(document).ready(function () {
           });
       },
       error: function (xhr) {
+        Swal.close();
         console.error("Upload Error:", xhr.responseText);
         Swal.fire("Error", "An error occurred during upload.", "error");
       }

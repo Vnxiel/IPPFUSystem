@@ -139,15 +139,22 @@
                                         </div>
                                         @php
                                             $ongoing_status = $projectStatusData['ongoing_status'] ?? [];
-
                                             $totalPercentage = is_array($ongoing_status) ? array_sum(array_column($ongoing_status, 'percentage')) : 0;
+
+                                            $status = strtolower($project['physical_status'] ?? '');
+
+                                            // If status is 'completed', force percentage to 100
+                                            if ($status === 'completed') {
+                                                $totalPercentage = 100;
+                                            }
 
                                             $latestDate = null;
                                             if (is_array($ongoing_status) && count($ongoing_status) > 0) {
                                                 $dates = array_column($ongoing_status, 'date');
-                                                $latestDate = max($dates); // gets the latest (most recent) date
+                                                $latestDate = max($dates);
                                             }
                                         @endphp
+
 
                                         <!-- Project Status Display -->
                                         <div class="row">
@@ -826,12 +833,7 @@
                                                             <td></td> <td></td>                 
                                                         </tr>
 
-                                                        <tr>
-                                                            <td><strong>Contract Amount</strong></td>
-                                                            <td class="text-end" colspan="1">{{ number_format($orig_contract_amount, 2) }}</td>
-                                                            <td></td> <td></td>
-                                                            <td></td> <td></td>    
-                                                        </tr>
+                                                      
                                                       <!-- Mobilization -->
                                                             @php
                                                             $mobiAmount = isset($summary['mobilization']['amount']) ? floatval($summary['mobilization']['amount']) : 0;
@@ -1048,6 +1050,11 @@
                         </button>
                     </div>
                     <div class="card-body p-2">
+                            <div id="loadingOverlay" class="loading-overlay">
+                                <div class="spinner"></div>
+                                <span class="loading-text">Uploading...</span>
+                            </div>
+
                         <div class="table-responsive">
                             <div class="row projectInfo">
                                 <div class="table-container table-responsive">
